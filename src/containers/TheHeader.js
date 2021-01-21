@@ -100,10 +100,13 @@ class TheHeader extends Component {
             errors["confirm_password"] = "Please enter confirm password.";
         }
 
-        if(fields["password"]!==fields["confirm_password"]){
-            formIsValid = false;
-            errors["confirm_password"] = "Password and confirm password doesn't match.";
+        if(fields["confirm_password"]){
+            if(fields["password"]!==fields["confirm_password"]){
+                formIsValid = false;
+                errors["confirm_password"] = "Password and confirm password doesn't match.";
+            }
         }
+
 
         this.setState({resetErrors: errors});
         if(formIsValid){
@@ -277,17 +280,19 @@ class TheHeader extends Component {
             formIsValid = false;
             errors["confirm_password"] = "Please enter confirm password.";
         }
-
-        if(fields["password"]!==fields["confirm_password"]){
-            formIsValid = false;
-            errors["confirm_password"] = "Password and confirm password doesn't match.";
+        if(fields["confirm_password"]){
+            if(fields["password"]!==fields["confirm_password"]){
+                formIsValid = false;
+                errors["confirm_password"] = "Password and confirm password doesn't match.";
+            }
         }
 
 
-        if(!this.state.checkbox){
-            formIsValid = false;
-            errors["checkbox"] = "Please agree terms & conditions.";
-        }
+
+        // if(!this.state.checkbox){
+        //     formIsValid = false;
+        //     errors["checkbox"] = "Please agree terms & conditions.";
+        // }
 
         this.setState({errors: errors});
         if(formIsValid){
@@ -341,7 +346,7 @@ class TheHeader extends Component {
 
                                 <li style={{ width: '100%' }} className="nav-item">
                                     <div className="search">
-                                        <input placeholder="Search By keywords" type="text" /><i className='bx bx-search'></i>
+                                        <input placeholder="Search by keywords" type="text" /><i className='bx bx-search'></i>
                                     </div>
                                 </li>
                                 </ul>
@@ -407,11 +412,11 @@ class TheHeader extends Component {
                                             <label>Confirm Password</label>
                                         </div> 
                                         <span className="error-msg">{this.state.errors["confirm_password"]}</span>
-                                        <p className="check_">
+                                        {/*<p className="check_">
                                             <input required type="checkbox" id="test1" onClick={()=> this.setState({checkbox:!this.state.checkbox})} checked={this.state.checkbox}/>
                                             <label for="test1">By Signup you are agree to our <a style={{ color: '#fff',textDecoration: 'underline' }} href="#">Terms & Policy</a></label>
                                         </p>
-                                        <span className="error-msg">{this.state.errors["checkbox"]}</span>
+                                        <span className="error-msg">{this.state.errors["checkbox"]}</span>*/}
                                         <div className="full_btn">
                                             <button className="yellow_btn" type="button"  onClick={this.handleRegisterSubmit.bind(this)}>Signup</button>
                                         </div>
