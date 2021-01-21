@@ -79,13 +79,13 @@ class TheHeader extends Component {
 
         if(!fields["otp"]){
             formIsValid = false;
-            errors["otp"] = "Please enter otp.";
+            errors["otp"] = "Please enter otp";
         }
         
 
         if(!fields["password"]){
             formIsValid = false;
-            errors["password"] = "Please enter password.";
+            errors["password"] = "Please enter password";
         }
         else{
             let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
@@ -97,13 +97,13 @@ class TheHeader extends Component {
 
         if(!fields["confirm_password"]){
             formIsValid = false;
-            errors["confirm_password"] = "Please enter confirm password.";
+            errors["confirm_password"] = "Please enter confirm password";
         }
 
         if(fields["confirm_password"]){
             if(fields["password"]!==fields["confirm_password"]){
                 formIsValid = false;
-                errors["confirm_password"] = "Password and confirm password doesn't match.";
+                errors["confirm_password"] = "Password and confirm password doesn't match";
             }
         }
 
@@ -155,7 +155,7 @@ class TheHeader extends Component {
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
             	formIsValid = false;
-            	errors["email"] = "Please enter valid email address.";
+            	errors["email"] = "Please enter valid email address";
             }
         }
         this.setState({forgotErrors: errors});
@@ -193,20 +193,20 @@ class TheHeader extends Component {
         let formIsValid = true;
         if(!fields["email"]){
             formIsValid = false;
-            errors["email"] = "Please enter email.";
+            errors["email"] = "Please enter email";
         }
         if(typeof fields["email"] !== "undefined"){
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
             	formIsValid = false;
-            	errors["email"] = "Please enter valid email address.";
+            	errors["email"] = "Please enter valid email address";
             }
         }
 
         if(!fields["password"]){
             formIsValid = false;
-            errors["password"] = "Please enter password.";
+            errors["password"] = "Please enter password";
         }
 
         this.setState({loginErrors: errors});
@@ -249,24 +249,24 @@ class TheHeader extends Component {
         
         if(!fields["name"]){
             formIsValid = false;
-            errors["name"] = "Please enter name.";
+            errors["name"] = "Please enter name";
         }
         if(!fields["email"]){
             formIsValid = false;
-            errors["email"] = "Please enter email.";
+            errors["email"] = "Please enter email";
         }
         if(typeof fields["email"] !== "undefined"){
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
             	formIsValid = false;
-            	errors["email"] = "Please enter valid email address.";
+            	errors["email"] = "Please enter valid email address";
             }
         }
 
         if(!fields["password"]){
             formIsValid = false;
-            errors["password"] = "Please enter password.";
+            errors["password"] = "Please enter password";
         }
         else{
             let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
@@ -278,12 +278,12 @@ class TheHeader extends Component {
 
         if(!fields["confirm_password"]){
             formIsValid = false;
-            errors["confirm_password"] = "Please enter confirm password.";
+            errors["confirm_password"] = "Please enter confirm password";
         }
         if(fields["confirm_password"]){
             if(fields["password"]!==fields["confirm_password"]){
                 formIsValid = false;
-                errors["confirm_password"] = "Password and confirm password doesn't match.";
+                errors["confirm_password"] = "Password and confirm password doesn't match";
             }
         }
 
@@ -310,7 +310,7 @@ class TheHeader extends Component {
                 return response.json();
             }).then((data) => {
                 if (data.code === 409) {
-                    return toast.error('Email already registered. Please try another one.');
+                    return toast.error('Email already registered. Please try another one');
                 }else if(data.code === 200){
                     this.setState({openModelRegister:!this.state.openModelRegister})
                     fields.name = '';
@@ -318,7 +318,7 @@ class TheHeader extends Component {
                     fields.email = '';
                     fields.confirm_password = '';
                     this.setState({fields});
-                    return toast.info('Your are register successfully.');
+                    return toast.info('Your are register successfully');
                 }
                 
             });
