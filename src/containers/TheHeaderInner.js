@@ -30,7 +30,7 @@ class TheHeaderInner extends Component {
 
                           <li style={{ width: '100%' }} class="nav-item">
                             <div class="search">
-                                <input placeholder="Search By keywords" type="text" /><i class='bx bx-search'></i>
+                                <input placeholder="Search by keywords" type="text" /><i class='bx bx-search'></i>
                             </div>
                           </li>
                         </ul>
@@ -53,7 +53,7 @@ class TheHeaderInner extends Component {
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link " href="redirect">
+                                    <a class="nav-link " href="#/add_contest">
                                         <button class="blue_btn" type="button"><img src="./murabbo/img/create.svg" alt="Create"/> Create</button>
                                     </a>
                                 </li>

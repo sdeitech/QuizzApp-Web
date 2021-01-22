@@ -1015,6 +1015,7 @@ img.con-close {
 }
 .cate-box img{
     width: 100%;
+    border-radius: 20px 20px 0px 0px;
 }
 .cat_title h3 {
     letter-spacing: 0.8px;
@@ -1592,8 +1593,34 @@ p.addmore {
 
 .error-msg
 {
-    color: red;
+    color: #E3234A;
     font-size:15px;
     position: relative;
     bottom: 20px;
+}
+
+
+
+.checkbox-buttons-container input {
+  position: absolute;
+  left: -100vw; / don't hide the input but move it out of view instead for better accessibility   /
+}
+
+.checkbox-buttons-container label {
+    padding: 0;
+    border: 0;
+    display: inline-block;
+    position: relative;
+}
+
+.checkbox-buttons-container label:not(:last-child) {
+  margin-right: 16px;
+}
+
+
+.checkbox-buttons-container input:checked + label {
+    background-color: transparent;
+    color: #fff;
+    border: 3px solid #fff;
+    border-radius: 20px;
 }

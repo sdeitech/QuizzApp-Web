@@ -110,7 +110,7 @@ class TheHeader extends Component {
 
         this.setState({resetErrors: errors});
         if(formIsValid){
-            fields.roleId = '0';
+            fields.roleId = '2';
             fields.email = reactLocalStorage.get('forgot_email')
             this.setState({resetFields:fields});
             fetch(configuration.baseURL+"user/resetPassword", {
@@ -160,7 +160,7 @@ class TheHeader extends Component {
         }
         this.setState({forgotErrors: errors});
         if(formIsValid){
-            fields.roleId = '0';
+            fields.roleId = '2';
             this.setState({forgotFields:fields});
             fetch(configuration.baseURL+"user/forgotPassword", {
                 method: "post",
@@ -211,7 +211,7 @@ class TheHeader extends Component {
 
         this.setState({loginErrors: errors});
         if(formIsValid){
-            fields.roleId = '0';
+            fields.roleId = '2';
             this.setState({loginFields:fields});
             fetch(configuration.baseURL+"user/userLogin", {
                 method: "post",
@@ -296,7 +296,7 @@ class TheHeader extends Component {
 
         this.setState({errors: errors});
         if(formIsValid){
-            fields.roleId = '0';
+            fields.roleId = '2';
             this.setState({fields});
             
             fetch(configuration.baseURL+"user/userSignup", {

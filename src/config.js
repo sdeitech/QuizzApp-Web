@@ -3,11 +3,12 @@ var jwt = require('jsonwebtoken');
 
 const config = {
     appName: 'Murabbo',
-    baseURL: 'http://54.201.160.69:3051/api/',
+    baseURL: 'http://54.201.160.69:3051/api/app/',
 
     saveTokenData(data,done) {
         var token = this.generateToken(data);
         reactLocalStorage.set('token', token);
+        reactLocalStorage.set('clientToken', data.accessToken);
         reactLocalStorage.set('userData', JSON.stringify(data));
         reactLocalStorage.set('is_login', 'true');
         done({})
