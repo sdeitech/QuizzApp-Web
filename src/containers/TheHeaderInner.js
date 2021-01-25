@@ -1,8 +1,34 @@
 import React, {Component} from 'react'
 import Session from '../session';
 import {reactLocalStorage} from 'reactjs-localstorage';
-
+import configuration from '../config';
+var jwt = require('jsonwebtoken');
 class TheHeaderInner extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            profile_picture:'avatars/placeholder-user.png',
+            name:''
+        };
+    }
+
+    componentDidMount(){
+        let that = this;
+        var token = reactLocalStorage.get('token');
+        jwt.verify(token, configuration.appName , function (err, decoded){
+            if (err){
+                decoded = null;
+                reactLocalStorage.set('token', '');
+                reactLocalStorage.set('userData', '');
+                reactLocalStorage.set('is_login', 'false');
+                window.location.href = '/#/'
+            }
+            if(decoded){
+                that.setState({profilePic: (JSON.parse(reactLocalStorage.get('userData')).profilePic === '' ? 'avatars/placeholder-user.png' : JSON.parse(reactLocalStorage.get('userData')).profilePic), name:JSON.parse(reactLocalStorage.get('userData')).name})
+            }
+        });
+    }
 
     handleLogout()
     {
@@ -38,17 +64,17 @@ class TheHeaderInner extends Component {
                             <ul class="navbar-nav mr-auto">
                                 <div class="dropdown">
                                     <div class="dropdown-toggle cus_img" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <img src="./murabbo/img/team-1.jpg" alt="Team"/> James Pati
+                                        <img src={ this.state.profile_picture } alt="Team"/> {this.state.name}
                                     </div>
                                     <div class="dropdown-menu drop_menu" aria-labelledby="dropdownMenu2">
-                                        <a href="redirect"><li><i class='bx bx-user'></i> My Account</li></a>
+                                        <a href="javascript:void(0);"><li><i class='bx bx-user'></i> My Account</li></a>
                                         <a href="#/contest"><li><i class='bx bx-user'></i> List Contest</li></a>
                                         <a href="#/add_contest"><li><i class='bx bx-user'></i> Add Contest</li></a>
                                         <span style={{ cursor:'pointer'}} onClick={this.handleLogout.bind(this)}><li><i class='bx bx-log-in' ></i> Logout</li></span>
                                     </div>
                                 </div>
                                 <li class="nav-item">
-                                    <a data-toggle="modal" data-target="#setpin" class="nav-link" href="redirect">
+                                    <a data-toggle="modal" data-target="#setpin" class="nav-link" href="javascript:void(0);">
                                         <button class="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Set Pin</button>
                                     </a>
                                 </li>

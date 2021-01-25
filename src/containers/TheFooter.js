@@ -14,10 +14,10 @@ class TheFooter extends Component {
                         <div class="col-lg-12 col-sm-12 col-md-12">
                             <div class="first_col">
                                 <div style={{color:'#fff'}} class="link">
-                                    <a href="redirect">Home</a>  
-                                    <a href="redirect">About Us</a> 
-                                    <a href="redirect">Privacy Policy</a> 
-                                    <a href="redirect">Terms & Conditions</a> 
+                                    <a href="javascript:void(0);">Home</a>  
+                                    <a href="javascript:void(0);">About Us</a> 
+                                    <a href="javascript:void(0);">Privacy Policy</a> 
+                                    <a href="javascript:void(0);">Terms & Conditions</a> 
                                 </div>
                                 <div class="copyright">
                                     Copyright ® 2020 Murabbo. All Rights Reserved.

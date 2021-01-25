@@ -59,51 +59,7 @@ class RoundTray extends Component {
 			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 			                                        <img class="con-ico" src="./murabbo/img/hangman.svg" alt="" />
 			                                        <h3>HangMan</h3>
-			                                        <p>25 Questions</p>
-			                                    </div>
-			                                </a>
-			                            </div>
-			                            <div class="col-lg-3 col-md-4 col-sm-6">
-			                                <a href="round-detail2.html">
-			                                    <div class="contest-box yellow-bg">
-			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-			                                        <img class="con-ico" src="./murabbo/img/quizz.svg" alt="" />
-			                                        <h3>Quizz</h3>
-			                                        <p>25 Questions</p>
-			                                    </div>
-			                                </a>
-			                            </div>
-			                            <div class="col-lg-3 col-md-4 col-sm-6">
-			                                <a href="round-detail2.html">
-			                                    <div class="contest-box dark-pink">
-			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-			                                        <img class="con-ico" src="./murabbo/img/abc.svg" alt="" />
-			                                        <h3>Unscramble</h3>
-			                                        <p>25 Questions</p>
-			                                    </div>
-			                                </a>
-			                            </div>
-			                            <div class="col-lg-3 col-md-4 col-sm-6">
-			                                <a href="round-detail2.html">
-			                                    <div class="contest-box light-pink">
-			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-			                                        <img class="con-ico" src="./murabbo/img/giberish.svg" alt="" />
-			                                        <h3>Giberish</h3>
-			                                        <p>25 Questions</p>
-			                                    </div>
-			                                </a>
-			                            </div>
-			                            <div class="col-lg-3 col-md-4 col-sm-6">
-			                                <a href="round-detail2.html">
-			                                    <div class="contest-box green-bg">
-			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-			                                        <img class="con-ico" src="./murabbo/img/bingo.svg" alt="" />
-			                                        <h3>Bingo</h3>
-			                                        <p>25 Questions</p>
+			                                        <p></p>
 			                                    </div>
 			                                </a>
 			                            </div>
@@ -114,7 +70,18 @@ class RoundTray extends Component {
 			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 			                                        <img class="con-ico" src="./murabbo/img/cups.svg" alt="" />
 			                                        <h3>Match It</h3>
-			                                        <p>25 Questions</p>
+			                                        <p></p>
+			                                    </div>
+			                                </a>
+			                            </div>
+			                            <div class="col-lg-3 col-md-4 col-sm-6">
+			                                <a href="round-detail2.html">
+			                                    <div class="contest-box dark-pink">
+			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+			                                        <img class="con-ico" src="./murabbo/img/abc.svg" alt="" />
+			                                        <h3>Unscramble</h3>
+			                                        <p></p>
 			                                    </div>
 			                                </a>
 			                            </div>
@@ -125,7 +92,40 @@ class RoundTray extends Component {
 			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 			                                        <img class="con-ico" src="./murabbo/img/brain.svg" alt="" />
 			                                        <h3>Guess & Go</h3>
-			                                        <p>25 Questions</p>
+			                                        <p></p>
+			                                    </div>
+			                                </a>
+			                            </div>
+			                            <div class="col-lg-3 col-md-4 col-sm-6">
+			                                <a href="round-detail2.html">
+			                                    <div class="contest-box light-pink">
+			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+			                                        <img class="con-ico" src="./murabbo/img/giberish.svg" alt="" />
+			                                        <h3>Giberish</h3>
+			                                        <p></p>
+			                                    </div>
+			                                </a>
+			                            </div>
+			                            <div class="col-lg-3 col-md-4 col-sm-6">
+			                                <a href="round-detail2.html">
+			                                    <div class="contest-box green-bg">
+			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+			                                        <img class="con-ico" src="./murabbo/img/bingo.svg" alt="" />
+			                                        <h3>Bingo</h3>
+			                                        <p></p>
+			                                    </div>
+			                                </a>
+			                            </div>			                            
+			                            <div class="col-lg-3 col-md-4 col-sm-6">
+			                                <a href="round-detail2.html">
+			                                    <div class="contest-box yellow-bg">
+			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+			                                        <img class="con-ico" src="./murabbo/img/quizz.svg" alt="" />
+			                                        <h3>Quizz</h3>
+			                                        <p></p>
 			                                    </div>
 			                                </a>
 			                            </div>
@@ -136,7 +136,7 @@ class RoundTray extends Component {
 			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 			                                        <img class="con-ico" src="./murabbo/img/padlock.svg" alt="" />
 			                                        <h3>Taboo</h3>
-			                                        <p>25 Questions</p>
+			                                        <p></p>
 			                                    </div>
 			                                </a>
 			                            </div>
@@ -146,8 +146,8 @@ class RoundTray extends Component {
 			                                        <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
 			                                        <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 			                                        <img class="con-ico" src="./murabbo/img/more.svg" alt="" />
-			                                        <h3>Lorem Ips</h3>
-			                                        <p>25 Questions</p>
+			                                        <h3></h3>
+			                                        <p></p>
 			                                    </div>
 			                                </a>
 			                            </div>
@@ -187,51 +187,7 @@ class RoundTray extends Component {
 						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 						                            <img class="con-ico" src="./murabbo/img/hangman.svg" alt="" />
 						                            <h3>HangMan</h3>
-						                            <p>25 Questions</p>
-						                        </div>
-						                    </a>
-						                </div>
-						                <div class="col-lg-4 col-md-6 col-sm-12">
-						                    <a href="round-detail2.html">
-						                        <div class="contest-box yellow-bg">
-						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-						                            <img class="con-ico" src="./murabbo/img/quizz.svg" alt="" />
-						                            <h3>Quizz</h3>
-						                            <p>25 Questions</p>
-						                        </div>
-						                    </a>
-						                </div>
-						                <div class="col-lg-4 col-md-6 col-sm-12">
-						                    <a href="round-detail2.html">
-						                        <div class="contest-box dark-pink">
-						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-						                            <img class="con-ico" src="./murabbo/img/abc.svg" alt="" />
-						                            <h3>Unscramble</h3>
-						                            <p>25 Questions</p>
-						                        </div>
-						                    </a>
-						                </div>
-						                <div class="col-lg-4 col-md-6 col-sm-12">
-						                    <a href="round-detail2.html">
-						                        <div class="contest-box light-pink">
-						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-						                            <img class="con-ico" src="./murabbo/img/giberish.svg" alt="" />
-						                            <h3>Giberish</h3>
-						                            <p>25 Questions</p>
-						                        </div>
-						                    </a>
-						                </div>
-						                <div class="col-lg-4 col-md-6 col-sm-12">
-						                    <a href="round-detail2.html">
-						                        <div class="contest-box green-bg">
-						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
-						                            <img class="con-ico" src="./murabbo/img/bingo.svg" alt="" />
-						                            <h3>Bingo</h3>
-						                            <p>25 Questions</p>
+						                            <p></p>
 						                        </div>
 						                    </a>
 						                </div>
@@ -242,7 +198,19 @@ class RoundTray extends Component {
 						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 						                            <img class="con-ico" src="./murabbo/img/cups.svg" alt="" />
 						                            <h3>Match It</h3>
-						                            <p>25 Questions</p>
+						                            <p></p>
+						                        </div>
+						                    </a>
+						                </div>
+						                
+						                <div class="col-lg-4 col-md-6 col-sm-12">
+						                    <a href="round-detail2.html">
+						                        <div class="contest-box dark-pink">
+						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+						                            <img class="con-ico" src="./murabbo/img/abc.svg" alt="" />
+						                            <h3>Unscramble</h3>
+						                            <p></p>
 						                        </div>
 						                    </a>
 						                </div>
@@ -253,7 +221,40 @@ class RoundTray extends Component {
 						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 						                            <img class="con-ico" src="./murabbo/img/brain.svg" alt="" />
 						                            <h3>Guess & Go</h3>
-						                            <p>25 Questions</p>
+						                            <p></p>
+						                        </div>
+						                    </a>
+						                </div>
+						                <div class="col-lg-4 col-md-6 col-sm-12">
+						                    <a href="round-detail2.html">
+						                        <div class="contest-box light-pink">
+						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+						                            <img class="con-ico" src="./murabbo/img/giberish.svg" alt="" />
+						                            <h3>Giberish</h3>
+						                            <p></p>
+						                        </div>
+						                    </a>
+						                </div>
+						                <div class="col-lg-4 col-md-6 col-sm-12">
+						                    <a href="round-detail2.html">
+						                        <div class="contest-box green-bg">
+						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+						                            <img class="con-ico" src="./murabbo/img/bingo.svg" alt="" />
+						                            <h3>Bingo</h3>
+						                            <p></p>
+						                        </div>
+						                    </a>
+						                </div>
+						                <div class="col-lg-4 col-md-6 col-sm-12">
+						                    <a href="round-detail2.html">
+						                        <div class="contest-box yellow-bg">
+						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
+						                            <img class="con-ico" src="./murabbo/img/quizz.svg" alt="" />
+						                            <h3>Quizz</h3>
+						                            <p></p>
 						                        </div>
 						                    </a>
 						                </div>
@@ -264,7 +265,7 @@ class RoundTray extends Component {
 						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 						                            <img class="con-ico" src="./murabbo/img/padlock.svg" alt="" />
 						                            <h3>Taboo</h3>
-						                            <p>25 Questions</p>
+						                            <p></p>
 						                        </div>
 						                    </a>
 						                </div>
@@ -274,8 +275,8 @@ class RoundTray extends Component {
 						                            <img class="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
 						                            <img class="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 						                            <img class="con-ico" src="./murabbo/img/more.svg" alt="" />
-						                            <h3>Lorem Ips</h3>
-						                            <p>25 Questions</p>
+						                            <h3></h3>
+						                            <p></p>
 						                        </div>
 						                    </a>
 						                </div>

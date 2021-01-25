@@ -44,6 +44,7 @@ class AddContest extends Component {
 
 	componentDidMount(){
 
+        $('.display-profile-pic').hide();
 		let fields = this.state.fields;
 		fields.language = 'English';
 		this.setState({fields})
@@ -105,7 +106,7 @@ class AddContest extends Component {
 		}
 		this.setState({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected});
 		
-
+		console.log({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected});
 		let fields = this.state.fields;
 		fields.categoryIds=JSON.stringify(categoryListObj);
 		this.setState({fields})
@@ -141,6 +142,63 @@ class AddContest extends Component {
 		this.setState({fields})
     }
 
+    handleRemoveCategory(data,e){
+    	let categoryListObj = this.state.categoryListObj;
+		let categoryListObjSelected = this.state.categoryListObjSelected;
+
+    	categoryListObj = categoryListObj.filter(function(value, index, arr){ 
+			if(value.categoryId !== data.categoryId)
+			{
+				return value;
+			}
+			else
+			{
+				$('#'+data.categoryId).prop('checked', false);
+			}
+		});
+
+		categoryListObjSelected = categoryListObjSelected.filter(function(value, index, arr){ 
+			if(value.categoryId !== data.categoryId)
+			{
+				return value;
+			}
+		});
+
+    	this.setState({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected});
+		
+
+		let fields = this.state.fields;
+		fields.categoryIds=JSON.stringify(categoryListObj);
+		this.setState({fields})
+    }
+
+
+    handleRemoveBrand(data,e){
+    	let brandListObj = this.state.brandListObj;
+		let brandListObjSelected = this.state.brandListObjSelected;
+		brandListObj = brandListObj.filter(function(value, index, arr){ 
+			if(value !== data.id)
+			{
+				return value;
+			}
+			else
+			{
+				$('#'+data.id).prop('checked', false);
+			}
+		});
+
+		brandListObjSelected = brandListObjSelected.filter(function(value, index, arr){ 
+			if(value.id !== data.id)
+			{
+				return value;
+			}
+		});
+		this.setState({brandListObj:brandListObj,brandListObjSelected:brandListObjSelected});
+		let fields = this.state.fields;
+		fields.brandIds=brandListObj.join()
+		this.setState({fields})
+    }
+
 
 	handleChange(field, e){   
         let fields = this.state.fields;
@@ -157,7 +215,9 @@ class AddContest extends Component {
 		fields.hashtag= this.state.items.join();
 		this.setState({fields})
 
-        // console.log(fields["hashtag"]);
+		var categoryArr = (fields['categoryIds']) ? JSON.parse(fields['categoryIds']) : [];
+
+
         if(!fields["title"]){
             formIsValid = false;
             errors["title"] = "Please enter title";
@@ -191,7 +251,7 @@ class AddContest extends Component {
         }
 
 
-        if(!fields["categoryIds"]){
+        if(typeof categoryArr === 'undefined' || categoryArr.length === 0){
             formIsValid = false;
             errors["categoryIds"] = "Please select atleast one category";
         }
@@ -222,7 +282,7 @@ class AddContest extends Component {
         	data.append('categoryIds',this.state.fields.categoryIds);
         	data.append('brandIds',this.state.fields.brandIds);
             if(this.state.fields.image === 'image'){
-            	// console.log(this.uploadInput.files)
+            	console.log(this.uploadInput.files)
                 data.append('image', this.uploadInput.files[0]);
             } 
             // console.log(data);
@@ -238,7 +298,7 @@ class AddContest extends Component {
             }).then((data) => {
             	// console.log(data);
                 if(data.code === 200){
-                	window.location.href = '/#/contest'
+                	window.location.href = '/#/tray'
                 }
                 else
                 {
@@ -285,7 +345,6 @@ class AddContest extends Component {
         let fields = this.state.fields;
         fields['image'] = 'image';
         this.setState({fields});
-
         // console.log(this.uploadInput.files)
     }
 
@@ -296,10 +355,9 @@ class AddContest extends Component {
 					var reader = new FileReader();
 					reader.onload = function (e) {
 						// console.log(e.target.result);
-						$('.profile-pic').attr('src', e.target.result);
-						$('#notimage').hide();
-						$('#add_image').hide();
-						$('.profile-pic').css('width','100%');
+						$('.display-profile-pic').attr('src', e.target.result);
+						$('.display-profile-pic').show();
+						$('#start').hide();
 					}
 					reader.readAsDataURL(input.files[0]);
 				}
@@ -451,6 +509,7 @@ class AddContest extends Component {
 
 			                                      <label for="file-upload" id="file-drag">
 			                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
+			                                        <img className="display-profile-pic" src='' alt=""  />
 			                                        <div id="start">
 													  <img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
 			                                          <div id="notimage">Please select an image</div>
@@ -551,8 +610,10 @@ class AddContest extends Component {
 			                                    <label>Choose Category <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={()=> this.setState({openModelCategory:true})} /></label><br />
 
 			                                    { this.state.categoryListObjSelected.map((e, key) => {
-				                                		return <div className="category">
-					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo"/></p>
+				                                		return <div className="category" style={{ 
+														marginRight: '5px'
+													}}>
+					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo" onClick={this.handleRemoveCategory.bind(this,e)}/></p>
 					                                    </div>
 				                                    })
 				                                }
@@ -563,8 +624,10 @@ class AddContest extends Component {
 			                                    <label>Choose Brand <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={()=> this.setState({openModelBrand:true})} /></label><br />
 
 			                                    { this.state.brandListObjSelected.map((e, key) => {
-				                                		return <div className="category">
-					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo"/></p>
+				                                		return <div className="category" style={{ 
+														marginRight: '5px'
+													}}>
+					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo" onClick={this.handleRemoveBrand.bind(this,e)}/></p>
 					                                    </div>
 				                                    })
 				                                }
