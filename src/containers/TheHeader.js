@@ -23,7 +23,7 @@ class TheHeader extends Component {
             openModelForgot:false,
             openModelRegister:false,
             openModelLogin:false,
-            openModelReset:false,
+            openModelReset:true,
             openModelCongratulation:false,
             checkbox:false
         };
@@ -55,10 +55,11 @@ class TheHeader extends Component {
         if(field === 'name' && !fields["name"]){
             errors["name"] = "Please enter name";
         }
+
         if(field === 'email' && !fields["email"]){
             errors["email"] = "Please enter email";
         }
-        if(field === 'email' && typeof fields["email"] !== "undefined"){
+        else if(field === 'email' && typeof fields["email"] !== "undefined"){
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
@@ -98,7 +99,7 @@ class TheHeader extends Component {
         if(field === 'email' && !fields["email"]){
             errors["email"] = "Please enter email";
         }
-        if(field === 'email' && typeof fields["email"] !== "undefined"){
+        else if(field === 'email' && typeof fields["email"] !== "undefined"){
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
@@ -267,7 +268,7 @@ class TheHeader extends Component {
             formIsValid = false;
             errors["email"] = "Please enter email.";
         }
-        if(typeof fields["email"] !== "undefined"){
+        else if(typeof fields["email"] !== "undefined"){
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
@@ -312,7 +313,7 @@ class TheHeader extends Component {
             formIsValid = false;
             errors["email"] = "Please enter email";
         }
-        if(typeof fields["email"] !== "undefined"){
+        else if(typeof fields["email"] !== "undefined"){
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
@@ -372,7 +373,7 @@ class TheHeader extends Component {
             formIsValid = false;
             errors["email"] = "Please enter email";
         }
-        if(typeof fields["email"] !== "undefined"){
+        else if(typeof fields["email"] !== "undefined"){
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
