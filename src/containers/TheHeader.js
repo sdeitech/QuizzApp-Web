@@ -23,7 +23,7 @@ class TheHeader extends Component {
             openModelForgot:false,
             openModelRegister:false,
             openModelLogin:false,
-            openModelReset:true,
+            openModelReset:false,
             openModelCongratulation:false,
             checkbox:false
         };
