@@ -25,7 +25,7 @@ class AddContest extends Component {
 			brandList: [],
 			brandListObj:[],
 			brandListObjSelected:[],
-			fields:{},
+			fields:{description:'',saveToId:'',brandIds:''},
 			errors:{},
 			openModel:false,
 			items: [],
@@ -204,6 +204,22 @@ class AddContest extends Component {
         let fields = this.state.fields;
         fields[field] = e.target.value;        
         this.setState({fields});
+
+
+        let errors = {};
+        if(field === 'title' && !fields["title"]){
+            errors["title"] = "Please enter title";
+        }
+
+        if(field === 'visibility' && !fields["visibility"]){
+            errors["visibility"] = "Please select visibility";
+        }
+
+        if(field === 'playerType' && !fields["playerType"]){
+            errors["playerType"] = "Please select player type";
+        }
+        this.setState({errors: errors});
+
     }
 
 	
@@ -213,6 +229,8 @@ class AddContest extends Component {
         let formIsValid = true;
         
 		fields.hashtag= this.state.items.join();
+
+
 		this.setState({fields})
 
 		var categoryArr = (fields['categoryIds']) ? JSON.parse(fields['categoryIds']) : [];
@@ -223,16 +241,16 @@ class AddContest extends Component {
             errors["title"] = "Please enter title";
         }
 
-        if(!fields["description"]){
-            formIsValid = false;
-            errors["description"] = "Please enter description";
-        }
+        // if(!fields["description"]){
+        //     formIsValid = false;
+        //     errors["description"] = "Please enter description";
+        // }
 
 
-        if(!fields["hashtag"]){
-            formIsValid = false;
-            errors["hashtag"] = "Please enter hashtag";
-        }
+        // if(!fields["hashtag"]){
+        //     formIsValid = false;
+        //     errors["hashtag"] = "Please enter hashtag";
+        // }
 
 
         if(!fields["visibility"]){
@@ -245,10 +263,10 @@ class AddContest extends Component {
             errors["playerType"] = "Please select player type";
         }
 
-        if(!fields["saveToId"]){
-            formIsValid = false;
-            errors["saveToId"] = "Please enter save to";
-        }
+        // if(!fields["saveToId"]){
+        //     formIsValid = false;
+        //     errors["saveToId"] = "Please enter save to";
+        // }
 
 
         if(typeof categoryArr === 'undefined' || categoryArr.length === 0){
@@ -256,15 +274,15 @@ class AddContest extends Component {
             errors["categoryIds"] = "Please select atleast one category";
         }
 
-		if(!fields["brandIds"]){
-            formIsValid = false;
-            errors["brandIds"] = "Please select atleast one brand";
-        }
+		// if(!fields["brandIds"]){
+  //           formIsValid = false;
+  //           errors["brandIds"] = "Please select atleast one brand";
+  //       }
       	
-      	if(!fields["image"]){
-            formIsValid = false;
-            errors["image"] = "Please select image";
-        }
+  //     	if(!fields["image"]){
+  //           formIsValid = false;
+  //           errors["image"] = "Please select image";
+  //       }
 
 
         this.setState({errors: errors});

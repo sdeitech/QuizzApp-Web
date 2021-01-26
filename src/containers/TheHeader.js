@@ -23,7 +23,7 @@ class TheHeader extends Component {
             openModelForgot:false,
             openModelRegister:false,
             openModelLogin:false,
-            openModelReset:false,
+            openModelReset:true,
             openModelCongratulation:false,
             checkbox:false
         };
@@ -45,17 +45,73 @@ class TheHeader extends Component {
     }
     
 
-    handleChangeRegister(field, e){   
-        console.log( e.target.value)      
+    handleChangeRegister(field, e){    
         let fields = this.state.fields;
         fields[field] = e.target.value;        
         this.setState({fields});
+
+        let errors = {};
+        
+        if(field === 'name' && !fields["name"]){
+            errors["name"] = "Please enter name";
+        }
+        if(field === 'email' && !fields["email"]){
+            errors["email"] = "Please enter email";
+        }
+        if(field === 'email' && typeof fields["email"] !== "undefined"){
+            let lastAtPos = fields["email"].lastIndexOf('@');
+            let lastDotPos = fields["email"].lastIndexOf('.');
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
+                errors["email"] = "Please enter valid email address";
+            }
+        }
+
+        if(field === 'password' && !fields["password"]){
+            errors["password"] = "Please enter password";
+        }
+        else{
+            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            if(field === 'password' && !re.test(fields["password"])){
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters";
+            }
+        }
+
+        if(field === 'confirm_password' && !fields["confirm_password"]){
+            errors["confirm_password"] = "Please enter confirm password";
+        }
+        if(field === 'confirm_password' && fields["confirm_password"]){
+            if(fields["password"]!==fields["confirm_password"]){
+                errors["confirm_password"] = "Password and confirm password doesn't match";
+            }
+        }
+
+        this.setState({errors: errors});
     }
 
     handleChangeLogin(field, e){         
         let loginFields = this.state.loginFields;
         loginFields[field] = e.target.value;        
         this.setState({loginFields});
+
+        let fields = this.state.loginFields;
+        let errors = {};
+        if(field === 'email' && !fields["email"]){
+            errors["email"] = "Please enter email";
+        }
+        if(field === 'email' && typeof fields["email"] !== "undefined"){
+            let lastAtPos = fields["email"].lastIndexOf('@');
+            let lastDotPos = fields["email"].lastIndexOf('.');
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
+                errors["email"] = "Please enter valid email address";
+            }
+        }
+
+        if(field === 'password' && !fields["password"]){
+            errors["password"] = "Please enter password";
+        }
+
+        this.setState({loginErrors: errors});
+
     }
 
     handleChangeForgotPassword(field, e){         
@@ -63,12 +119,67 @@ class TheHeader extends Component {
         forgotFields[field] = e.target.value;        
         this.setState({forgotFields});   
         reactLocalStorage.set('forgot_email',e.target.value) 
+
+        let fields = this.state.forgotFields;
+        let errors = {};
+        if(field === 'email' && !fields["email"]){
+            errors["email"] = "Please enter email.";
+        }
+        else if(field === 'email' && typeof fields["email"] !== "undefined"){
+            let lastAtPos = fields["email"].lastIndexOf('@');
+            let lastDotPos = fields["email"].lastIndexOf('.');
+            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
+                errors["email"] = "Please enter valid email address";
+            }
+        }
+        this.setState({forgotErrors: errors});
+
     }
 
     handleChangeResetPassword(field, e){         
         let resetFields = this.state.resetFields;
         resetFields[field] = e.target.value;        
         this.setState({resetFields});
+
+        let fields = this.state.resetFields;
+        let errors = {};
+        let formIsValid = true;
+        
+
+        if(field === 'otp' && !fields["otp"]){
+            errors["otp"] = "Please enter OTP";
+        }
+        else{
+            let re = /^(\s*\d{6}\s*)(,\s*\d{6}\s*)*,?\s*$/;
+            if(field === 'otp' && !re.test(fields["otp"])){
+                errors["otp"] = "Please enter valid OTP";
+            }
+        }
+        
+
+        if(field === 'password' && !fields["password"]){
+            errors["password"] = "Please enter password";
+        }
+        else{
+            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            if(field === 'password' && !re.test(fields["password"])){
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters";
+            }
+        }
+
+        if(field === 'confirm_password' && !fields["confirm_password"]){
+            errors["confirm_password"] = "Please enter confirm password";
+        }
+
+        if(field === 'confirm_password' &&  fields["confirm_password"]){
+            if(fields["password"]!==fields["confirm_password"]){
+                errors["confirm_password"] = "Password and confirm password doesn't match";
+            }
+        }
+
+
+        this.setState({resetErrors: errors});
+
     }
 
     handleResetPasswordSubmit(){
@@ -79,7 +190,13 @@ class TheHeader extends Component {
 
         if(!fields["otp"]){
             formIsValid = false;
-            errors["otp"] = "Please enter otp";
+            errors["otp"] = "Please enter OTP";
+        }
+        else{
+            let re = /^(\s*\d{6}\s*)(,\s*\d{6}\s*)*,?\s*$/;
+            if(!re.test(fields["otp"])){
+                errors["otp"] = "Please enter valid OTP";
+            }
         }
         
 
