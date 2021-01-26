@@ -1002,10 +1002,13 @@ img.con-close {
     box-shadow: 0px 14px 23px #000000;
 }
 .cate-title p {
-    font: normal normal normal 18px/45px Montserrat;
+    font: normal normal normal 24px Montserrat;
     letter-spacing: 0px;
-    color: #ADBAC1;
+    color: #fff;
     margin: 0;
+    font-weight: 500;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 .seeall p {
     font: normal normal normal 13px/45px Montserrat;
@@ -1023,16 +1026,17 @@ img.con-close {
 .cate-box img{
     width: 100%;
     border-radius: 20px 20px 0px 0px;    
-    max-height: 150px;
-    min-height: 150px;
+    max-height: 70px;
+    min-height: 70px;
 }
 .cat_title h3 {
     letter-spacing: 0.8px;
-    color: #56D8F1;
-    font-size: 16px;
+    color: #ffffff;
+    font-size: 12px;
     text-align: center;
-    padding: 20px;
+    padding: 10px 0px;
     margin: 0;
+    font-weight: 500;
 }
 
 .lanfilter select {
@@ -1058,8 +1062,8 @@ img.con-close {
 .cate-box2 img{
     width: 100%;
     border-radius: 20px 20px 0 0px;
-    min-height: 225px;
-    max-height: 225px;
+    min-height: 150px;
+    max-height: 150px;
 }
 .cat_title2 h3 {
     letter-spacing: 0.8px;

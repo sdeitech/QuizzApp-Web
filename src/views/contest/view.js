@@ -16,7 +16,7 @@ class Contest extends Component {
 			openModel:false,
 			listData:[],
 			categoryList: [],
-			categoryArr : ['General', 'Entertainment', 'Business', 'Sports', 'Art& Design ', 'Latest in Murabbo', 'Food', 'History', 'International', 'Nature & Life, Kids', 'Fitness' , 'Religion', 'Technology', 'Cars', 'Travel & Leisure', 'Education'],
+			gameTypeArr : ['HangMan','Match It', 'Unscramble',  'Guess & Go', 'Giberish','Bingo', 'Quizz',  'Taboo'],
 			brandList: [],
 		};
 	}
@@ -63,19 +63,19 @@ class Contest extends Component {
 	   		this.setState({ listData:data.data});
 		});	
 
-		// fetch(configuration.baseURL+"category/category", {
-  //               method: "GET",
-  //               headers: {
-  //                   'Accept': 'application/json',
-  //                   'Content-Type': 'application/json',
-  //                   'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-  //               }
-  //           }).then((response) =>{
-	 //    	return response.json();
-	 //    }).then((data)=> {
-		// 	var category = data.data;
-	 //   		this.setState({ categoryList:category});
-		// });	
+		fetch(configuration.baseURL+"category/category", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+			var category = data.data;
+	   		this.setState({ categoryList:category});
+		});	
 
 
 		fetch(configuration.baseURL+"brand/brand", {
@@ -113,7 +113,7 @@ class Contest extends Component {
 			                                    <div class="filterinline">
 			                                        <div class="lanfilter">
 			                                            Language: 
-			                                            <select onChange={this.handleChange.bind(this, "language")}>
+			                                            <select onChange={this.handleChange.bind(this, "language")} >
 			                                            <option value="">Select</option>
 				                                            {
 				                                            	languages.languages.map((e, key) => {
@@ -123,8 +123,8 @@ class Contest extends Component {
 			                                            </select>
 			                                        </div>
 			                                        <div class="lanfilter">
-			                                            Game Type: 
-			                                            <select onChange={this.handleChange.bind(this, "playerType")}>
+			                                            Player Type: 
+			                                            <select onChange={this.handleChange.bind(this, "playerType")} >
 			                                                <option value="">All</option>
 			                                                <option value="1">Single Player</option>
 			                                                <option value="2">Multi Player</option>
@@ -132,21 +132,26 @@ class Contest extends Component {
 			                                        </div>
 			                                        <div class="lanfilter">
 			                                            Category:
-			                                            <select onChange={this.handleChange.bind(this, "categoryIds")}>
+			                                            <select onChange={this.handleChange.bind(this, "categoryIds")} >
 			                                            	<option value="">All</option>
 			                                                {
-				                                            	this.state.categoryArr.map((e, key) => {
-				                                                    return <option value={e}>{e} </option>;
+				                                            	this.state.categoryList.map((e, key) => {
+				                                                    return <option value={e._id}>{e.name} </option>;
 				                                                })
 				                                            }
 			                                            </select>
 			                                        </div>
-			                                        <div class="lanfilter">
-			                                            Trending:
-			                                            <select>
-			                                                <option>All</option>
+			                                        {/*<div class="lanfilter" >
+			                                            Game Type:
+			                                            <select onChange={this.handleChange.bind(this, "gameType")} >
+			                                                <option value="">All</option>
+			                                                {
+				                                            	this.state.gameTypeArr.map((e, key) => {
+				                                                    return <option value={e}>{e} </option>;
+				                                                })
+				                                            }
 			                                            </select>
-			                                        </div>
+			                                        </div>*/}
 			                                    </div>
 			                                </div>
 			                            </div>
@@ -155,19 +160,24 @@ class Contest extends Component {
 			                    <div style={{paddingBottom: '30px'}} class="contest-info">
 			                        <div class="row">
 			                        {
+
+			                        	(this.state.listData.length > 0) ? 
 			                        	this.state.listData.map((e, key) => {
-                                            return <div class="col-lg-4 col-md-4 col-sm-6">
+                                            return <div class="col-lg-3 col-md-4 col-sm-6">
 				                                <a href="#/add_contest">
 				                                    <div class="cate-box2">
-				                                        <img src={e.image} alt="Game"/>
+				                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game"/>
 				                                        <div class="cat_title2">
-				                                            <h3>{e.totalQuestions} {(e.totalQuestions > 1) ? 'Questions' : 'Question'} <span>{JSON.parse(reactLocalStorage.get('userData')).name}</span></h3>
+				                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
 				                                            <p>{e.title}</p>
 				                                        </div>
 				                                    </div>
 				                                </a>
 				                            </div>
-                                        })
+                                        }) : 
+								        (
+								        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+								        )
 			                        }
 			                        </div>
 			                    </div>

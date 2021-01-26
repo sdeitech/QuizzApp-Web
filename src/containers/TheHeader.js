@@ -43,7 +43,6 @@ class TheHeader extends Component {
             });
         }
     }
-    
 
     handleChangeRegister(field, e){    
         let fields = this.state.fields;
@@ -63,7 +62,7 @@ class TheHeader extends Component {
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
-                errors["email"] = "Please enter valid email address";
+                errors["email"] = "Please enter valid email";
             }
         }
 
@@ -82,7 +81,7 @@ class TheHeader extends Component {
         }
         if(field === 'confirm_password' && fields["confirm_password"]){
             if(fields["password"]!==fields["confirm_password"]){
-                errors["confirm_password"] = "Password and confirm password doesn't match";
+                errors["confirm_password"] = "Password and confirm password not matched";
             }
         }
 
@@ -103,7 +102,7 @@ class TheHeader extends Component {
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
-                errors["email"] = "Please enter valid email address";
+                errors["email"] = "Please enter valid email";
             }
         }
 
@@ -130,7 +129,7 @@ class TheHeader extends Component {
             let lastAtPos = fields["email"].lastIndexOf('@');
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
-                errors["email"] = "Please enter valid email address";
+                errors["email"] = "Please enter valid email";
             }
         }
         this.setState({forgotErrors: errors});
@@ -174,7 +173,7 @@ class TheHeader extends Component {
 
         if(field === 'confirm_password' &&  fields["confirm_password"]){
             if(fields["password"]!==fields["confirm_password"]){
-                errors["confirm_password"] = "Password and confirm password doesn't match";
+                errors["confirm_password"] = "Password and confirm password not matched";
             }
         }
 
@@ -221,7 +220,7 @@ class TheHeader extends Component {
         if(fields["confirm_password"]){
             if(fields["password"]!==fields["confirm_password"]){
                 formIsValid = false;
-                errors["confirm_password"] = "Password and confirm password doesn't match";
+                errors["confirm_password"] = "Password and confirm password not matched";
             }
         }
 
@@ -273,7 +272,7 @@ class TheHeader extends Component {
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
             	formIsValid = false;
-            	errors["email"] = "Please enter valid email address";
+            	errors["email"] = "Please enter valid email";
             }
         }
         this.setState({forgotErrors: errors});
@@ -318,7 +317,7 @@ class TheHeader extends Component {
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
             	formIsValid = false;
-            	errors["email"] = "Please enter valid email address";
+            	errors["email"] = "Please enter valid email";
             }
         }
 
@@ -378,7 +377,7 @@ class TheHeader extends Component {
             let lastDotPos = fields["email"].lastIndexOf('.');
             if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
             	formIsValid = false;
-            	errors["email"] = "Please enter valid email address";
+            	errors["email"] = "Please enter valid email";
             }
         }
 
@@ -401,7 +400,7 @@ class TheHeader extends Component {
         if(fields["confirm_password"]){
             if(fields["password"]!==fields["confirm_password"]){
                 formIsValid = false;
-                errors["confirm_password"] = "Password and confirm password doesn't match";
+                errors["confirm_password"] = "Password and confirm password not matched";
             }
         }
 

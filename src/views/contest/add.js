@@ -22,10 +22,11 @@ class AddContest extends Component {
 			categoryList: [],
 			categoryListObj:[],
 			categoryListObjSelected:[],
+			categoryListObjDisplaySelected:[],
 			brandList: [],
 			brandListObj:[],
 			brandListObjSelected:[],
-			fields:{description:'',saveToId:'',brandIds:''},
+			fields:{description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
 			errors:{},
 			openModel:false,
 			items: [],
@@ -105,12 +106,27 @@ class AddContest extends Component {
 			});
 		}
 		this.setState({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected});
-		
-		console.log({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected});
-		let fields = this.state.fields;
+
+		// console.log(this.state.categoryListObjDisplaySelected);	
+    }
+
+    handleSubmitCategory(e)
+    {
+    	let categoryListObj = this.state.categoryListObj;
+    	let categoryListObjSelected = this.state.categoryListObjSelected;
+    	let categoryListObjDisplaySelected = this.state.categoryListObjSelected;
+    	this.setState({categoryListObjDisplaySelected:categoryListObjDisplaySelected});
+    	let fields = this.state.fields;
 		fields.categoryIds=JSON.stringify(categoryListObj);
 		this.setState({fields})
-	
+		this.setState({openModelCategory:false})
+
+		let errors = {};		
+		if(typeof categoryListObjSelected === 'undefined' || categoryListObjSelected.length === 0){
+            errors["categoryIds"] = "Please select atleast one category";
+        }
+        this.setState({errors: errors});
+
     }
 
     handleChangeBrand(maindata, e){   
@@ -164,12 +180,20 @@ class AddContest extends Component {
 			}
 		});
 
-    	this.setState({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected});
+
+    	this.setState({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected,categoryListObjDisplaySelected:categoryListObjSelected});
 		
 
 		let fields = this.state.fields;
 		fields.categoryIds=JSON.stringify(categoryListObj);
 		this.setState({fields})
+
+		let errors = {};		
+		if(typeof categoryListObjSelected === 'undefined' || categoryListObjSelected.length === 0){
+            errors["categoryIds"] = "Please select atleast one category";
+        }
+        this.setState({errors: errors});
+
     }
 
 
@@ -423,7 +447,7 @@ class AddContest extends Component {
 							                            </div>
 
 							                            { e.categories.map((cat, ckey) => {
-							                            return <div className="col-lg-4 col-md-4 col-sm-6 checkbox-buttons-container">
+							                            return <div className="col-lg-3 col-md-4 col-sm-4 checkbox-buttons-container">
 									                        <input type="checkbox" id={cat._id} onChange={this.handleChangeCategory.bind(this,cat,e)} />
 									                        <label for={cat._id}>
 									                            <div style={{ marginBottom: '0' }} className="cate-box">
@@ -440,7 +464,7 @@ class AddContest extends Component {
 					                        	})
 					                    }
 					                    <div style={{ textAlign: 'center' }} class="">
-						                    <button class="blue_btn" type="button"  onClick={() => this.setState({openModelCategory:false}) } >Done</button>
+						                    <button class="blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
 						                </div>
 							        </div>
 	                            </div>
@@ -466,7 +490,7 @@ class AddContest extends Component {
 					                    {
 
 					                    	this.state.brandList.map((brand, key) => {
-							                            return <div className="col-4 checkbox-buttons-container">
+							                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
 									                        <input type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
 									                        <label for={brand._id}>
 									                            <div style={{ marginBottom: '0' }} className="cate-box">
@@ -562,11 +586,11 @@ class AddContest extends Component {
 												<input type="text" required value={this.state.input} onChange={this.handleInputChange} onKeyDown={this.handleInputKeyDown}  />
 												<label>Hashtag</label>
 			                                </div>
-											<div className="add-category">
+											<div className="add-category" >
 												{this.state.items.map((item, i) => 
 
 													<div className="category" style={{ 
-														marginRight: '5px'
+														marginRight: '5px',marginTop: '-15px'
 													}}>
 														<p>{item} <img src="./murabbo/img/closewhite.svg" onClick={this.handleRemoveItem(i)} alt="Murabbo"/></p>
 													</div>
@@ -590,7 +614,14 @@ class AddContest extends Component {
 			                            </div>
 			                            <div className="col-lg-4 col-md-6 col-sm-12">
 			                                <div className="cus_input input_wrap">
-			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> <input type="text" required onChange={this.handleChange.bind(this, "saveToId")} value={this.state.fields["saveToId"]}/>
+			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> 
+			                                    <select className="floating-select" onChange={this.handleChange.bind(this,'saveToId')} value={this.state.fields.saveToId} required>
+							                      	<option value=""></option>
+							                      	<option value="Personal">Personal</option>
+							                      	<option value="Favourite">Favourite</option>
+							                      	<option value="Important">Important</option>
+							                      	<option value="Education">Education</option>
+			                                    </select>
 			                                    <label>Save To</label>
 			                                </div>
 											<span className="error-msg">{this.state.errors["saveToId"]}</span>
@@ -627,7 +658,7 @@ class AddContest extends Component {
 			                                <div className="add-category">
 			                                    <label>Choose Category <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={()=> this.setState({openModelCategory:true})} /></label><br />
 
-			                                    { this.state.categoryListObjSelected.map((e, key) => {
+			                                    { this.state.categoryListObjDisplaySelected.map((e, key) => {
 				                                		return <div className="category" style={{ 
 														marginRight: '5px'
 													}}>
