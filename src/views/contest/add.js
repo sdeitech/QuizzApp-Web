@@ -21,11 +21,12 @@ class AddContest extends Component {
         this.state = {
 			categoryList: [],
 			categoryListObj:[],
-			categoryListObjSelected:[],
+			categoryListSelected:[],
 			categoryListObjDisplaySelected:[],
 			brandList: [],
 			brandListObj:[],
-			brandListObjSelected:[],
+			brandListSelected:[],
+			brandListObjDisplaySelected:[],
 			fields:{description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
 			errors:{},
 			openModel:false,
@@ -82,12 +83,49 @@ class AddContest extends Component {
 
 	}
 
-	handleChangeCategory(catdata,maindata, e){   
+	handleCloseClick(e) {
+        $('body').removeClass('modal-open');
+
+        this.setState({
+            openModelCategory:false,
+            openModelBrand:false
+        });
+    }
+
+	handleOpenCategoryModel()
+	{
+		$('body').addClass('modal-open');
+		let categoryListSelecte = this.state.categoryListSelected;
+		$('.categoryCheckbox').each(function() {
+		    $(this).prop( "checked", categoryListSelecte.includes($(this).attr('id')) );
+		});
+
+		this.setState({openModelCategory:true});	
+	}
+
+	handleOpenBrandModel()
+	{
+		$('body').addClass('modal-open');
+		let brandListSelected = this.state.brandListSelected;
+		$('.brandCheckbox').each(function() {
+		    $(this).prop( "checked", brandListSelected.includes($(this).attr('id')) );
+		});
+
+		this.setState({openModelBrand:true});
+	}
+
+	handleChangeCategory(catdata,maindata, e){  
+
 		let categoryListObj = this.state.categoryListObj;
-		let categoryListObjSelected = this.state.categoryListObjSelected;
 		if (e.target.checked) {
-	        categoryListObj.push({'categoryId':catdata._id,'mainLabelId':maindata.id});
-	        categoryListObjSelected.push({'categoryId':catdata._id,'name':catdata.name});
+			categoryListObj = categoryListObj.filter(function(value, index, arr){ 
+				if(value.categoryId !== catdata._id)
+				{
+					return value;
+				}
+			});
+
+			categoryListObj.push({'categoryId':catdata._id,'mainLabelId':maindata.id,'name':catdata.name});
 		}
 		else
 		{
@@ -97,32 +135,37 @@ class AddContest extends Component {
 					return value;
 				}
 			});
-
-			categoryListObjSelected = categoryListObjSelected.filter(function(value, index, arr){ 
-				if(value.categoryId !== catdata._id)
-				{
-					return value;
-				}
-			});
 		}
-		this.setState({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected});
-
-		// console.log(this.state.categoryListObjDisplaySelected);	
+		this.setState({categoryListObj:categoryListObj});
     }
 
     handleSubmitCategory(e)
     {
     	let categoryListObj = this.state.categoryListObj;
-    	let categoryListObjSelected = this.state.categoryListObjSelected;
-    	let categoryListObjDisplaySelected = this.state.categoryListObjSelected;
-    	this.setState({categoryListObjDisplaySelected:categoryListObjDisplaySelected});
+
+		let categoryListSelected = [];
+    	let displayArr = [];
+
+    	for (var i = 0; i < categoryListObj.length; i++) {
+
+			categoryListSelected.push(categoryListObj[i].categoryId);
+    		var obj = {};
+    		obj.categoryId = categoryListObj[i].categoryId;
+    		obj.name = categoryListObj[i].name;
+    		displayArr.push(obj);
+    	}
+
+
+
+    	this.setState({categoryListObjDisplaySelected:displayArr,categoryListSelected:categoryListSelected});
+
     	let fields = this.state.fields;
 		fields.categoryIds=JSON.stringify(categoryListObj);
 		this.setState({fields})
 		this.setState({openModelCategory:false})
 
 		let errors = {};		
-		if(typeof categoryListObjSelected === 'undefined' || categoryListObjSelected.length === 0){
+		if(typeof categoryListObj === 'undefined' || categoryListObj.length === 0){
             errors["categoryIds"] = "Please select atleast one category";
         }
         this.setState({errors: errors});
@@ -130,38 +173,66 @@ class AddContest extends Component {
     }
 
     handleChangeBrand(maindata, e){   
-		let brandListObj = this.state.brandListObj;
-		let brandListObjSelected = this.state.brandListObjSelected;
+
+    	let brandListObj = this.state.brandListObj;
 		if (e.target.checked) {
-	        brandListObj.push(maindata._id);
-	        brandListObjSelected.push({id:maindata._id,name:maindata.name});
-		}
-		else
-		{
 			brandListObj = brandListObj.filter(function(value, index, arr){ 
-				if(value !== maindata._id)
+				if(value.id !== maindata._id)
 				{
 					return value;
 				}
 			});
 
-			brandListObjSelected = brandListObjSelected.filter(function(value, index, arr){ 
+			brandListObj.push({id:maindata._id,name:maindata.name});
+		}
+		else
+		{
+			brandListObj = brandListObj.filter(function(value, index, arr){ 
 				if(value.id !== maindata._id)
 				{
 					return value;
 				}
 			});
 		}
-		this.setState({brandListObj:brandListObj,brandListObjSelected:brandListObjSelected});
-		let fields = this.state.fields;
-		fields.brandIds=brandListObj.join()
-		this.setState({fields})
+		this.setState({brandListObj:brandListObj});
+
     }
+
+	handleSubmitBrand(e)
+    {
+    	let brandListObj = this.state.brandListObj;
+
+		let brandListSelected = [];
+    	let displayArr = [];
+
+    	for (var i = 0; i < brandListObj.length; i++) {
+
+			brandListSelected.push(brandListObj[i].id);
+    		var obj = {};
+    		obj.id = brandListObj[i].id;
+    		obj.name = brandListObj[i].name;
+    		displayArr.push(obj);
+    	}
+
+
+
+    	this.setState({brandListObjDisplaySelected:displayArr,brandListSelected:brandListSelected});
+
+    	
+
+    	let fields = this.state.fields;
+		fields.brandIds=brandListSelected.join()
+		this.setState({fields})
+
+		this.setState({openModelBrand:false});
+
+    }
+
 
     handleRemoveCategory(data,e){
     	let categoryListObj = this.state.categoryListObj;
-		let categoryListObjSelected = this.state.categoryListObjSelected;
-
+    	let categoryListObjDisplaySelected = this.state.categoryListObjDisplaySelected;
+    	let categoryListSelected = this.state.categoryListSelected;
     	categoryListObj = categoryListObj.filter(function(value, index, arr){ 
 			if(value.categoryId !== data.categoryId)
 			{
@@ -172,8 +243,14 @@ class AddContest extends Component {
 				$('#'+data.categoryId).prop('checked', false);
 			}
 		});
+		categoryListSelected = categoryListSelected.filter(function(value, index, arr){ 
+			if(value !== data.categoryId)
+			{
+				return value;
+			}
+		});
 
-		categoryListObjSelected = categoryListObjSelected.filter(function(value, index, arr){ 
+		categoryListObjDisplaySelected = categoryListObjDisplaySelected.filter(function(value, index, arr){ 
 			if(value.categoryId !== data.categoryId)
 			{
 				return value;
@@ -181,7 +258,7 @@ class AddContest extends Component {
 		});
 
 
-    	this.setState({categoryListObj:categoryListObj,categoryListObjSelected:categoryListObjSelected,categoryListObjDisplaySelected:categoryListObjSelected});
+    	this.setState({categoryListObj:categoryListObj,categoryListObjDisplaySelected:categoryListObjDisplaySelected,categoryListSelected:categoryListSelected});
 		
 
 		let fields = this.state.fields;
@@ -189,7 +266,7 @@ class AddContest extends Component {
 		this.setState({fields})
 
 		let errors = {};		
-		if(typeof categoryListObjSelected === 'undefined' || categoryListObjSelected.length === 0){
+		if(typeof categoryListObj === 'undefined' || categoryListObj.length === 0){
             errors["categoryIds"] = "Please select atleast one category";
         }
         this.setState({errors: errors});
@@ -198,10 +275,12 @@ class AddContest extends Component {
 
 
     handleRemoveBrand(data,e){
+    	
     	let brandListObj = this.state.brandListObj;
-		let brandListObjSelected = this.state.brandListObjSelected;
-		brandListObj = brandListObj.filter(function(value, index, arr){ 
-			if(value !== data.id)
+    	let brandListObjDisplaySelected = this.state.brandListObjDisplaySelected;
+    	let brandListSelected = this.state.brandListSelected;
+    	brandListObj = brandListObj.filter(function(value, index, arr){ 
+			if(value.id !== data.id)
 			{
 				return value;
 			}
@@ -210,16 +289,26 @@ class AddContest extends Component {
 				$('#'+data.id).prop('checked', false);
 			}
 		});
+		brandListSelected = brandListSelected.filter(function(value, index, arr){ 
+			if(value !== data.id)
+			{
+				return value;
+			}
+		});
 
-		brandListObjSelected = brandListObjSelected.filter(function(value, index, arr){ 
+		brandListObjDisplaySelected = brandListObjDisplaySelected.filter(function(value, index, arr){ 
 			if(value.id !== data.id)
 			{
 				return value;
 			}
 		});
-		this.setState({brandListObj:brandListObj,brandListObjSelected:brandListObjSelected});
+
+
+    	this.setState({brandListObj:brandListObj,brandListObjDisplaySelected:brandListObjDisplaySelected,brandListSelected:brandListSelected});
+		
+
 		let fields = this.state.fields;
-		fields.brandIds=brandListObj.join()
+		fields.brandIds=JSON.stringify(brandListSelected);
 		this.setState({fields})
     }
 
@@ -299,14 +388,14 @@ class AddContest extends Component {
         }
 
 		// if(!fields["brandIds"]){
-  //           formIsValid = false;
-  //           errors["brandIds"] = "Please select atleast one brand";
-  //       }
-      	
-  //     	if(!fields["image"]){
-  //           formIsValid = false;
-  //           errors["image"] = "Please select image";
-  //       }
+		  //           formIsValid = false;
+		  //           errors["brandIds"] = "Please select atleast one brand";
+		  //       }
+		      	
+		  //     	if(!fields["image"]){
+		  //           formIsValid = false;
+		  //           errors["image"] = "Please select image";
+		  //       }
 
 
         this.setState({errors: errors});
@@ -416,104 +505,108 @@ class AddContest extends Component {
 				<TheHeaderInner />				
 					<main id="main">
 					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
-					<CModal size="lg" show={this.state.openModelCategory} onClose={() => this.setState({openModelCategory:!this.state.openModelCategory})} color="danger"  centered>
-                    	<CModalBody className="model-bg">
 
-	                    <div>
-	                        <div className="modal-body">
-	                            <button type="button" className="close"  onClick={()=> this.setState({openModelCategory:false})}>
-	                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-	                        </button>
-	                            <div className="model_data">
-	                                <div className="model-title">
-		                                <h3>Choose Category</h3>
-	                                </div>
-	                                <div className="contest">
+					<div className={(this.state.openModelCategory) ? 'stopScorll' : ''}>
+						<CModal className="model" size="lg" show={this.state.openModelCategory} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>
+	                    	<CModalBody className="model-bg">
 
-					                    {
+		                    <div>
+		                        <div className="modal-body">
+		                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
+		                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+		                        </button>
+		                            <div className="model_data">
+		                                <div className="model-title">
+			                                <h3>Choose Category</h3>
+		                                </div>
+		                                <div className="contest">
 
-					                    	this.state.categoryList.map((e, key) => {
-														
-													return  <div className="row">
-							                            <div className="col-8">
-							                                <div className="cate-title">
-							                                    <p>{e.title}</p>
-							                                </div>
-							                            </div>
-							                            <div className="col-4">
-							                                {/*<div className="seeall">
-							                                    <p>See All</p>
-							                                </div>*/}
-							                            </div>
+						                    {
 
-							                            { e.categories.map((cat, ckey) => {
-							                            return <div className="col-lg-3 col-md-4 col-sm-4 checkbox-buttons-container">
-									                        <input type="checkbox" id={cat._id} onChange={this.handleChangeCategory.bind(this,cat,e)} />
-									                        <label for={cat._id}>
-									                            <div style={{ marginBottom: '0' }} className="cate-box">
-									                                <img src={cat.image} />
-									                                <div className="cat_title">
-									                                    <h3>{cat.name}</h3>
-									                                </div>
-									                            </div>
-									                        </label>
-									                    </div>
-							                            })
-							                        }
-							                        </div>
-					                        	})
-					                    }
-					                    <div style={{ textAlign: 'center' }} class="">
-						                    <button class="blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
-						                </div>
-							        </div>
-	                            </div>
-	                        </div>
-	                        </div>
-	                    </CModalBody>
-	                </CModal>
+						                    	this.state.categoryList.map((e, key) => {
+															
+														return  <div className="row">
+								                            <div className="col-8">
+								                                <div className="cate-title">
+								                                    <p>{e.title}</p>
+								                                </div>
+								                            </div>
+								                            <div className="col-4">
+								                                {/*<div className="seeall">
+								                                    <p>See All</p>
+								                                </div>*/}
+								                            </div>
 
-	                <CModal size="lg" show={this.state.openModelBrand} onClose={() => this.setState({openModelBrand:!this.state.openModelBrand})} color="danger"  centered>
-                    	<CModalBody className="model-bg">
+								                            { e.categories.map((cat, ckey) => {
+								                            return <div className="col-lg-3 col-md-4 col-sm-4 checkbox-buttons-container">
+										                        <input type="checkbox" className='categoryCheckbox' id={cat._id}    onChange={this.handleChangeCategory.bind(this,cat,e)} />
+										                        <label for={cat._id}>
+										                            <div style={{ marginBottom: '0' }} className="cate-box">
+										                                <img src={cat.image} />
+										                                <div className="cat_title">
+										                                    <h3>{cat.name}</h3>
+										                                </div>
+										                            </div>
+										                        </label>
+										                    </div>
+								                            })
+								                        }
+								                        </div>
+						                        	})
+						                    }
+						                    <div style={{ textAlign: 'center' }} class="">
+							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
+							                </div>
+								        </div>
+		                            </div>
+		                        </div>
+		                        </div>
+		                    </CModalBody>
+		                </CModal>
+	                </div>
+	                <div className={(this.state.openModelBrand) ? 'stopScorll' : ''}>
+		                <CModal size="lg" show={this.state.openModelBrand} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  aria-hidden="true" color="danger"  centered>
+	                    	<CModalBody className="model-bg">
 
-	                    <div>
-	                        <div className="modal-body">
-	                            <button type="button" className="close"  onClick={()=> this.setState({openModelBrand:false})}>
-	                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-	                        </button>
-	                            <div className="model_data">
-	                                <div className="model-title">
-		                                <h3>Choose Brand</h3>
-	                                </div>
-	                                <div className="contest">
-	                                	<div className="row">
-					                    {
+		                    <div>
+		                        <div className="modal-body">
+		                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
+		                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+		                        </button>
+		                            <div className="model_data">
+		                                <div className="model-title">
+			                                <h3>Choose Brand</h3>
+		                                </div>
+		                                <div className="contest">
+		                                	<div className="row">
+						                    {
 
-					                    	this.state.brandList.map((brand, key) => {
-							                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
-									                        <input type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
-									                        <label for={brand._id}>
-									                            <div style={{ marginBottom: '0' }} className="cate-box">
-									                                <img src={brand.image} />
-									                                <div className="cat_title">
-									                                    <h3>{brand.name}</h3>
-									                                </div>
-									                            </div>
-									                        </label>
-									                    </div>
-									                })
-					                    }
-							        	</div>
+						                    	this.state.brandList.map((brand, key) => {
+								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
+										                        <input className="brandCheckbox" type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
+										                        <label for={brand._id}>
+										                            <div style={{ marginBottom: '0' }} className="cate-box">
+										                                <img src={brand.image} />
+										                                <div className="cat_title">
+										                                    <h3>{brand.name}</h3>
+										                                </div>
+										                            </div>
+										                        </label>
+										                    </div>
+										                })
+						                    }
+								        	</div>
 
-					                    <div style={{ textAlign: 'center' }} class="">
-						                    <button class="blue_btn" type="button"   onClick={() => this.setState({openModelBrand:false}) } >Done</button>
-						                </div>
-							        </div>
-	                            </div>
-	                        </div>
-	                        </div>
-	                    </CModalBody>
-	                </CModal>
+						                    <div style={{ textAlign: 'center' }} class="">
+							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
+							                </div>
+								        </div>
+		                            </div>
+		                        </div>
+		                        </div>
+		                    </CModalBody>
+		                </CModal>
+	                </div>
 					
 			            <section id="contest" className="d-flex align-items-center">
 			                <div className="container">
@@ -656,7 +749,7 @@ class AddContest extends Component {
 											<span className="error-msg">{this.state.errors["visibility"]}</span>
 											</label>
 			                                <div className="add-category">
-			                                    <label>Choose Category <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={()=> this.setState({openModelCategory:true})} /></label><br />
+			                                    <label>Choose Category <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={this.handleOpenCategoryModel.bind(this)} /></label><br />
 
 			                                    { this.state.categoryListObjDisplaySelected.map((e, key) => {
 				                                		return <div className="category" style={{ 
@@ -670,9 +763,9 @@ class AddContest extends Component {
 			                                </div>
 			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["categoryIds"]}</span>
 			                                <div className="add-category">
-			                                    <label>Choose Brand <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={()=> this.setState({openModelBrand:true})} /></label><br />
+			                                    <label>Choose Brand <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={this.handleOpenBrandModel.bind(this)}  /></label><br />
 
-			                                    { this.state.brandListObjSelected.map((e, key) => {
+			                                    { this.state.brandListObjDisplaySelected.map((e, key) => {
 				                                		return <div className="category" style={{ 
 														marginRight: '5px'
 													}}>

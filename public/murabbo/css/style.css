@@ -1047,10 +1047,16 @@ img.con-close {
 }
 .lanfilter {
     letter-spacing: 0px;
-    color: #FFFFFF;
     padding: 4px 10px;
     font-size: 13px;
     display: inline-block;
+}
+.lanfilter p{
+        color: #fff;
+    float: left;
+    position: relative;
+    top: 8px;
+    right: 5px;
 }
 
 .cate-box2 {
@@ -1152,7 +1158,7 @@ img.con-close {
     width: 100%;
 }
 .filterinline {
-    text-align: right;
+    text-align: left;
 }
 @media (max-width: 767px) {
     .filterinline {
@@ -1640,4 +1646,43 @@ p.addmore {
     color: #fff;
     border: 3px solid #fff;
     border-radius: 20px;
+}
+
+.multi-select {
+    width: 150px;
+    text-align: left;
+    float: right;
+}
+
+.multi-select .dropdown-container span {
+    color: #78868B;
+}
+.dropdown-heading {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none;
+}
+.dropdown-container {
+    background: transparent !important;
+    border: none !important;
+    outline: none;
+    box-shadow: none !important;
+}
+
+.fil_btn{
+    width: 100%;
+    text-align: right;
+}
+.fil_btn button{
+    margin:5px;
+}
+
+.stopScorll{
+    overflow-x: hidden;
+}
+
+@media (max-width: 767px) {
+    .lanfilter {
+        width: 100%;
+    }
 }

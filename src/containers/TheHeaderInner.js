@@ -55,9 +55,9 @@ class TheHeaderInner extends Component {
                         <ul class="navbar-nav mr-auto">
 
                           <li style={{ width: '100%' }} class="nav-item">
-                            <div class="search">
+                            {/*<div class="search">
                                 <input placeholder="Search by keywords" type="text" /><i class='bx bx-search'></i>
-                            </div>
+                            </div>*/}
                           </li>
                         </ul>
                         <form class="form-inline my-2 my-lg-0">

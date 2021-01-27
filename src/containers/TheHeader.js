@@ -7,6 +7,7 @@ import {
     CModal,
     CModalBody,
   } from '@coreui/react';
+import $ from 'jquery';
 class TheHeader extends Component {
 
     constructor(props) {
@@ -44,6 +45,52 @@ class TheHeader extends Component {
         }
     }
 
+    handleClick(stateName,value,stateName1,value1,e) {
+        $('body').addClass('modal-open');
+        this.setState({
+            fields: {name:'',email:'',password:'',confirm_password:''},
+            errors: {name:'',email:'',password:'',confirm_password:''},
+            loginFields:{email:'',password:''},
+            loginErrors:{email:'',password:''},
+            forgotFields:{email:''},
+            forgotErrors:{email:''},
+            resetFields:{otp:'',password:'',confirm_password:''},
+            resetErrors:{otp:'',password:'',confirm_password:''},
+        });
+
+        if (stateName === 'openModelForgot') {
+            this.setState({openModelForgot:value});
+        }
+        else if (stateName === 'openModelRegister') {
+            this.setState({openModelRegister:value});
+        }
+        else if (stateName === 'openModelLogin') {
+            this.setState({openModelLogin:value});
+        }
+        else if (stateName === 'openModelReset') {
+            this.setState({openModelReset:value});
+        }
+
+
+        if (stateName1 === 'openModelRegister') {
+            this.setState({openModelRegister:value1});
+        }
+        else if (stateName1 === 'openModelLogin') {
+            this.setState({openModelLogin:value1});
+        }
+    }
+
+    handleCloseClick(e) {
+        $('body').removeClass('modal-open');
+
+        this.setState({
+            openModelForgot:false,
+            openModelRegister:false,
+            openModelLogin:false,
+            openModelReset:false,
+            openModelCongratulation:false
+        });
+    }
     handleChangeRegister(field, e){    
         let fields = this.state.fields;
         fields[field] = e.target.value;        
@@ -245,7 +292,8 @@ class TheHeader extends Component {
                     fields.otp = '';
                     fields.password = '';
                     fields.confirm_password = '';
-                    this.setState({resetFields:fields});
+                    this.setState({resetFields:fields});                    
+                    this.handleCloseClick();
                 }
                 else if(data.code === 400){
                     return toast.error('Invalid OTP!');
@@ -290,6 +338,7 @@ class TheHeader extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
+                    this.setState({resetFields:{},resetErrors: {}});
                     this.setState({openModelForgot:!this.state.openModelForgot,openModelReset:!this.state.openModelReset})
                     fields.email = '';
                     this.setState({forgotFields:fields});
@@ -435,6 +484,7 @@ class TheHeader extends Component {
                     fields.email = '';
                     fields.confirm_password = '';
                     this.setState({fields});
+                    this.handleCloseClick();
                     return toast.info('Your are register successfully');
                 }
                 
@@ -462,18 +512,18 @@ class TheHeader extends Component {
                                 <ul className="navbar-nav mr-auto">
 
                                 <li style={{ width: '100%' }} className="nav-item">
-                                    <div className="search">
+                                    {/*<div className="search">
                                         <input placeholder="Search by keywords" type="text" /><i className='bx bx-search'></i>
-                                    </div>
+                                    </div>*/}
                                 </li>
                                 </ul>
                                 <form className="form-inline my-2 my-lg-0">
                                     <ul className="navbar-nav mr-auto">
                                         <li className="nav-item">
-                                            <button onClick={() => this.setState({openModelLogin:!this.state.openModelLogin})} className="nav-link pink_btn" type="button" ><img src="./murabbo/img/login.svg" alt="Login" /> Login</button>
+                                            <button onClick={this.handleClick.bind(this,'openModelLogin',true) } className="nav-link pink_btn" type="button" ><img src="./murabbo/img/login.svg" alt="Login" /> Login</button>
                                         </li>
                                         <li className="nav-item">
-                                            <button className="nav-link blue_btn" type="button" onClick={() => this.setState({openModelRegister:!this.state.openModelRegister})}> <img src="./murabbo/img/create.svg" alt="Login" /> Register</button>
+                                            <button className="nav-link blue_btn" type="button" onClick={this.handleClick.bind(this,'openModelRegister',true) }> <img src="./murabbo/img/create.svg" alt="Login" /> Register</button>
                                         </li>
                                         {/* <li className="nav-item">
                                             <a data-toggle="modal" data-target="#setpin" className="nav-link" href="redirect">
@@ -491,237 +541,246 @@ class TheHeader extends Component {
                         </nav>
                     </div>
                 </header>
+                <div className={(this.state.openModelRegister) ? 'stopScorll' : ''}>
+                    <CModal show={this.state.openModelRegister}  closeOnBackdrop={false} onClose={this.handleCloseClick.bind(this) }
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+                            <button onClick={this.handleCloseClick.bind(this) } style={{position: 'absolute',right: '0',padding: '0 20px',cursor: 'pointer',zIndex: '999'}} type="button" className="close">
+                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                            <div className="modal-body">
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <h3>Welcome to Murrabbo!</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg" />
+                                    <img className="shape3" src="./murabbo/img/shape3.svg" />
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/username.svg" /> 
+                                                <input required type="text"  onChange={this.handleChangeRegister.bind(this, "name")} value={this.state.fields["name"]}/>
+                                                <label>Name</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.errors["name"]}</span>
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/email.svg" /> <input required type="text"  onChange={this.handleChangeRegister.bind(this, "email")} value={this.state.fields["email"]}/>
+                                                <label>Email</label>
+                                            </div>
+                                            <span className="error-msg">{this.state.errors["email"]}</span>
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeRegister.bind(this, "password")} value={this.state.fields["password"]}/>
+                                                <label>Password</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.errors["password"]}</span>
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeRegister.bind(this, "confirm_password")} value={this.state.fields["confirm_password"]}/>
+                                                <label>Confirm Password</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.errors["confirm_password"]}</span>
+                                            {/*<p className="check_">
+                                                <input required type="checkbox" id="test1" onClick={()=> this.setState({checkbox:!this.state.checkbox})} checked={this.state.checkbox}/>
+                                                <label for="test1">By Signup you are agree to our <a style={{ color: '#fff',textDecoration: 'underline' }} href="#">Terms & Policy</a></label>
+                                            </p>
+                                            <span className="error-msg">{this.state.errors["checkbox"]}</span>*/}
+                                            <div className="full_btn">
+                                                <button className="yellow_btn" type="button"  onClick={this.handleRegisterSubmit.bind(this)}>Signup</button>
+                                            </div>
+                                
+                                            <div className="social-login">
+                                                <a href="#"><img src="./murabbo/img/facebook.svg" /></a>
+                                                <a href="#"><img src="./murabbo/img/google.svg"/></a>
+                                            </div>
 
-                <CModal show={this.state.openModelRegister} onClose={() => this.setState({openModelRegister:!this.state.openModelRegister})}
-                color="danger" 
-                centered>
-                    <CModalBody className="model-bg">
-                        <button onClick={()=> this.setState({openModelRegister:false})} style={{position: 'absolute',right: '0',padding: '0 20px',cursor: 'pointer',zIndex: '999'}} type="button" className="close">
-                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                        </button>
-                        <div className="modal-body">
-                            <div className="model_data">
-                                <div className="model-title">
-                                    <h3>Welcome to Murrabbo!</h3>
-                                </div>
-                                <img className="shape2" src="./murabbo/img/shape2.svg" />
-                                <img className="shape3" src="./murabbo/img/shape3.svg" />
-                                <div className="row">
-                                    <div className="col-md-10 offset-md-1">
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/username.svg" /> 
-                                            <input required type="text"  onChange={this.handleChangeRegister.bind(this, "name")} value={this.state.fields["name"]}/>
-                                            <label>Name</label>
-                                        </div> 
-                                        <span className="error-msg">{this.state.errors["name"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/email.svg" /> <input required type="text"  onChange={this.handleChangeRegister.bind(this, "email")} value={this.state.fields["email"]}/>
-                                            <label>Email</label>
-                                        </div>
-                                        <span className="error-msg">{this.state.errors["email"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeRegister.bind(this, "password")} value={this.state.fields["password"]}/>
-                                            <label>Password</label>
-                                        </div> 
-                                        <span className="error-msg">{this.state.errors["password"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeRegister.bind(this, "confirm_password")} value={this.state.fields["confirm_password"]}/>
-                                            <label>Confirm Password</label>
-                                        </div> 
-                                        <span className="error-msg">{this.state.errors["confirm_password"]}</span>
-                                        {/*<p className="check_">
-                                            <input required type="checkbox" id="test1" onClick={()=> this.setState({checkbox:!this.state.checkbox})} checked={this.state.checkbox}/>
-                                            <label for="test1">By Signup you are agree to our <a style={{ color: '#fff',textDecoration: 'underline' }} href="#">Terms & Policy</a></label>
-                                        </p>
-                                        <span className="error-msg">{this.state.errors["checkbox"]}</span>*/}
-                                        <div className="full_btn">
-                                            <button className="yellow_btn" type="button"  onClick={this.handleRegisterSubmit.bind(this)}>Signup</button>
-                                        </div>
-                            
-                                        <div className="social-login">
-                                            <a href="#"><img src="./murabbo/img/facebook.svg" /></a>
-                                            <a href="#"><img src="./murabbo/img/google.svg"/></a>
-                                        </div>
-
-                                        <div className="full_btn mt50">
-                                            <button className="blue_btn" type="button" onClick={() => this.setState({openModelLogin:!this.state.openModelLogin,openModelRegister:false})} >Go To Login</button>
+                                            <div className="full_btn mt50">
+                                                <button className="blue_btn" type="button" onClick={this.handleClick.bind(this,'openModelLogin',true,'openModelRegister',false) } >Go To Login</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </CModalBody>
-                </CModal>
+                        </CModalBody>
+                    </CModal>
+                </div>
 
-                <CModal show={this.state.openModelLogin} onClose={() => this.setState({openModelLogin:!this.state.openModelLogin})}
-                color="danger" 
-                centered >
-                    <CModalBody className="model-bg">
+                <div className={(this.state.openModelLogin) ? 'stopScorll' : ''}>
+                    <CModal show={this.state.openModelLogin}  aria-hidden="true" closeOnBackdrop={false} onClose={this.handleCloseClick.bind(this) }
+                    color="danger"  
+                    centered >
+                        <CModalBody className="model-bg">
 
-                    <div>
-                            
-                        <div className="modal-body">
-                            <button type="button" className="close"  onClick={()=> this.setState({openModelLogin:false})}>
+                        <div>
+                                
+                            <div className="modal-body">
+                                <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) }>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <h3>Login</h3>
+                                    </div>
+                                    <img className="shape1" src="./murabbo/img/shape.svg"/>
+                                    <img className="shape1_" src="./murabbo/img/shape.svg"/>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/email.svg" /> 
+                                                <input required type="text" onChange={this.handleChangeLogin.bind(this, "email")} value={this.state.loginFields["email"]}/>
+                                                <label>Email</label>
+                                            </div>  
+                                                <span className="error-msg">{this.state.loginErrors["email"]}</span>
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeLogin.bind(this, "password")} value={this.state.loginFields["password"]}/>
+                                                <label>Password</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.loginErrors["password"]}</span>
+                                            <div className="full_btn">
+                                                <button className="yellow_btn" type="button" onClick={this.handleLoginSubmit.bind(this)}>Login</button>
+                                            </div>
+                                            <div className="forgot">
+                                                <span style={{ cursor:'pointer'}} onClick={this.handleClick.bind(this,'openModelForgot',true,'openModelLogin',false) } >Forgot password?</span>
+                                            </div>
+                                            <div className="social-login">
+                                                <a href="#"><img src="./murabbo/img/facebook.svg"/></a>
+                                                <a href="#"><img src="./murabbo/img/google.svg"/></a>
+                                            </div>
+
+                                            <div className="full_btn mt50">
+                                                <button onClick={this.handleClick.bind(this,'openModelLogin',false,'openModelRegister',true) } className="blue_btn" type="button">Create Account</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+                </div>
+                      
+                <div className={(this.state.openModelForgot) ? 'stopScorll' : ''}>
+                    <CModal show={this.state.openModelForgot}  closeOnBackdrop={false} onClose={this.handleCloseClick.bind(this) }
+                    color="danger" 
+                    centered >
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) }>
                                 <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
                             </button>
-                            <div className="model_data">
-                                <div className="model-title">
-                                    <h3>Login</h3>
-                                </div>
-                                <img className="shape1" src="./murabbo/img/shape.svg"/>
-                                <img className="shape1_" src="./murabbo/img/shape.svg"/>
-                                <img className="shape2" src="./murabbo/img/shape2.svg"/>
-                                <img className="shape3" src="./murabbo/img/shape3.svg"/>
-                                <div className="row">
-                                    <div className="col-md-10 offset-md-1">
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/email.svg" /> 
-                                            <input required type="text" onChange={this.handleChangeLogin.bind(this, "email")} value={this.state.loginFields["email"]}/>
-                                            <label>Email</label>
-                                        </div>  
-                                            <span className="error-msg">{this.state.loginErrors["email"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeLogin.bind(this, "password")} value={this.state.loginFields["password"]}/>
-                                            <label>Password</label>
-                                        </div> 
-                                        <span className="error-msg">{this.state.loginErrors["password"]}</span>
-                                        <div className="full_btn">
-                                            <button className="yellow_btn" type="button" onClick={this.handleLoginSubmit.bind(this)}>Login</button>
-                                        </div>
-                                        <div className="forgot">
-                                            <span style={{ cursor:'pointer'}} onClick={()=> this.setState({openModelForgot:true,openModelLogin:false})}  >Forgot password?</span>
-                                        </div>
-                                        <div className="social-login">
-                                            <a href="#"><img src="./murabbo/img/facebook.svg"/></a>
-                                            <a href="#"><img src="./murabbo/img/google.svg"/></a>
-                                        </div>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    <h3>Reset Password!</h3>
+                                    <p>Please enter your registered mail and we will send OTP for same.</p>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/email.svg" /> 
+                                                <input required type="text"  onChange={this.handleChangeForgotPassword.bind(this, "email")} value={this.state.forgotFields["email"]}/>
+                                                <label>Email</label>
+                                                
+                                            </div>  <span className="error-msg">{this.state.forgotErrors["email"]}</span>
 
-                                        <div className="full_btn mt50">
-                                            <button onClick={()=> this.setState({openModelRegister:true,openModelLogin:false})} className="blue_btn" type="button">Create Account</button>
+                                            <div className="full_btn">
+                                                <button className="yellow_btn" type="button" onClick={this.handleForgotPasswordSubmit.bind(this)}>Submit</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        </div>
-                    </CModalBody>
-                </CModal>
-                                        
-                <CModal show={this.state.openModelForgot} onClose={() => this.setState({openModelForgot:!this.state.openModelForgot})}
-                color="danger" 
-                centered >
-                    <CModalBody className="model-bg">
-
-                    <div>
-                        <div className="modal-body">
-                            <button type="button" className="close"  onClick={()=> this.setState({openModelForgot:false})}>
-                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                        </button>
-                            <div className="model_data">
-                                <div className="model-title">
-                                <h3>Reset Password!</h3>
-                                <p>Please enter your registered mail and we will send OTP for same.</p>
-                                </div>
-                                <img className="shape2" src="./murabbo/img/shape2.svg"/>
-                                <img className="shape3" src="./murabbo/img/shape3.svg"/>
-                                <div className="row">
-                                    <div className="col-md-10 offset-md-1">
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/email.svg" /> 
-                                            <input required type="text"  onChange={this.handleChangeForgotPassword.bind(this, "email")} value={this.state.forgotFields["email"]}/>
-                                            <label>Email</label>
-                                            
-                                        </div>  <span className="error-msg">{this.state.forgotErrors["email"]}</span>
-
-                                        <div className="full_btn">
-                                            <button className="yellow_btn" type="button" onClick={this.handleForgotPasswordSubmit.bind(this)}>Submit</button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
-                        </div>
-                    </CModalBody>
-                </CModal>
+                        </CModalBody>
+                    </CModal>
+                </div>
                 
-                <CModal show={this.state.openModelReset} onClose={() => this.setState({openModelReset:!this.state.openModelReset})}
-                color="danger" 
-                aria-labelledby="contained-modal-title-vcenter"
-                centered >
-                    <CModalBody className="model-bg">
+                <div className={(this.state.openModelReset) ? 'stopScorll' : ''}>
+                    <CModal show={this.state.openModelReset}  closeOnBackdrop={false} onClose={this.handleCloseClick.bind(this) }
+                    color="danger" 
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered >
+                        <CModalBody className="model-bg">
 
-                    <div>
-                        <div className="modal-body">
-                            <button type="button" className="close"  onClick={()=> this.setState({openModelReset:false})}>
-                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                        </button>
-                            <div className="model_data">
-                                <div className="model-title">
-                                <h3>Enter OTP!</h3>
-                                <p>Please enter your OTP sent to mail {reactLocalStorage.get('forgot_email')}</p>
-                                </div>
-                                <img className="shape2" src="./murabbo/img/shape2.svg"/>
-                                <img className="shape3" src="./murabbo/img/shape3.svg"/>
-                                <div className="row">
-                                    <div className="col-md-10 offset-md-1">
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/otp.svg" /> 
-                                            <input required type="text"  onChange={this.handleChangeResetPassword.bind(this, "otp")} value={this.state.resetFields["otp"]}/>
-                                            <label>Enter OTP</label>
-                                        </div> 
-                                            <span className="error-msg">{this.state.resetErrors["otp"]}</span>
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) }>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    <h3>Enter OTP!</h3>
+                                    <p>Please enter your OTP sent to mail {reactLocalStorage.get('forgot_email')}</p>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/otp.svg" /> 
+                                                <input required type="text"  onChange={this.handleChangeResetPassword.bind(this, "otp")} value={this.state.resetFields["otp"]}/>
+                                                <label>Enter OTP</label>
+                                            </div> 
+                                                <span className="error-msg">{this.state.resetErrors["otp"]}</span>
 
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeResetPassword.bind(this, "password")} value={this.state.resetFields["password"]}/>
-                                            <label>Password</label>
-                                        </div> 
-                                        <span className="error-msg">{this.state.resetErrors["password"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeResetPassword.bind(this, "confirm_password")} value={this.state.resetFields["confirm_password"]}/>
-                                            <label>Confirm Password</label>
-                                        </div>  
-                                        <span className="error-msg">{this.state.resetErrors["confirm_password"]}</span>
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeResetPassword.bind(this, "password")} value={this.state.resetFields["password"]}/>
+                                                <label>Password</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.resetErrors["password"]}</span>
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeResetPassword.bind(this, "confirm_password")} value={this.state.resetFields["confirm_password"]}/>
+                                                <label>Confirm Password</label>
+                                            </div>  
+                                            <span className="error-msg">{this.state.resetErrors["confirm_password"]}</span>
 
-                                        <div className="full_btn">
-                                            <button className="yellow_btn" type="button" onClick={this.handleResetPasswordSubmit.bind(this)}>Submit</button>
+                                            <div className="full_btn">
+                                                <button className="yellow_btn" type="button" onClick={this.handleResetPasswordSubmit.bind(this)}>Submit</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        </div>
-                    </CModalBody>
-                </CModal>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+                </div>
 
-                <CModal show={this.state.openModelCongratulation} onClose={() => this.setState({openModelCongratulation:!this.state.openModelCongratulation})}
-                color="danger" 
-                centered>
-                    <CModalBody className="model-bg">
+                <div className={(this.state.openModelCongratulation) ? 'stopScorll' : ''}>
+                    <CModal show={this.state.openModelCongratulation}  closeOnBackdrop={false} onClose={this.handleCloseClick.bind(this) }
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
 
-                    <div>
-                        <div className="modal-body">
-                            <button type="button" className="close"  onClick={()=> this.setState({openModelCongratulation:false})}>
-                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                        </button>
-                            <div className="model_data">
-                                <div className="model-title">
-                                <h3>Congratulations!</h3>
-                                <p>Your password has been changed successfully.</p>
-                                </div>
-                                <img className="shape2" src="./murabbo/img/shape2.svg"/>
-                                <img className="shape3" src="./murabbo/img/shape3.svg"/>
-                                <div className="row">
-                                    <div className="col-md-10 offset-md-1">
-                                        <div className="full_btn">
-                                            <button className="yellow_btn" type="button" onClick={()=> this.setState({openModelCongratulation:false})}>Done</button>
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) }>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    <h3>Congratulations!</h3>
+                                    <p>Your password has been changed successfully.</p>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                            <div className="full_btn">
+                                                <button className="yellow_btn" type="button" onClick={()=> this.setState({openModelCongratulation:false})}>Done</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        </div>
-                    </CModalBody>
-                </CModal>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+                </div>
             
             </div>
         )

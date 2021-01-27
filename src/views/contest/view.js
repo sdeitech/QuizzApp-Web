@@ -7,6 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
 import configuration from '../../config';
 import {reactLocalStorage} from 'reactjs-localstorage';
+import MultiSelect from "react-multi-select-component";
+
+
 class Contest extends Component {
 	constructor(props) {
         super(props);
@@ -15,7 +18,12 @@ class Contest extends Component {
 			errors:{},
 			openModel:false,
 			listData:[],
+			selected:[],
+			languageList:[],
+			languageSelected:[],
+			playerTypeSelected:[],
 			categoryList: [],
+			playerTypeList: [],
 			gameTypeArr : ['HangMan','Match It', 'Unscramble',  'Guess & Go', 'Giberish','Bingo', 'Quizz',  'Taboo'],
 			brandList: [],
 		};
@@ -23,7 +31,13 @@ class Contest extends Component {
 
 	handleChange(field, e){   
         let fields = this.state.fields;
-        fields[field] = e.target.value;        
+        if (field !== "categoryIds") {
+        	fields[field] = e.target.value; 
+        }       
+        else
+        {
+        	this.setState({selected:e});
+        }
         this.setState({fields});
 
         var str = [];
@@ -49,6 +63,12 @@ class Contest extends Component {
 
 
 	componentDidMount(){
+		var playerTypeList = [
+		    { label: "Single Player", value: "1" },
+		    { label: "Multi Player ", value: "2" }
+		 ];
+
+	  	this.setState({ playerTypeList:playerTypeList});
 		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 		fetch(configuration.baseURL+"contest/contest?userId="+userId, {
                 method: "GET",
@@ -63,6 +83,13 @@ class Contest extends Component {
 	   		this.setState({ listData:data.data});
 		});	
 
+	    var lanOption = []
+		languages.languages.map((e, key) => {
+            lanOption.push({label:e.name,value: e.name});
+        })
+	   	this.setState({ languageList:lanOption});
+
+
 		fetch(configuration.baseURL+"category/category", {
                 method: "GET",
                 headers: {
@@ -74,8 +101,14 @@ class Contest extends Component {
 	    	return response.json();
 	    }).then((data)=> {
 			var category = data.data;
-	   		this.setState({ categoryList:category});
+			const options = [];
+
+		  	for (var i = 0; i < category.length; i++) {
+		  		options.push({label:category[i].name,value: category[i]._id});
+		  	}
+	   		this.setState({ categoryList:options});
 		});	
+
 
 
 		fetch(configuration.baseURL+"brand/brand", {
@@ -104,45 +137,74 @@ class Contest extends Component {
 			                    <div class="create-contest">
 			                        <div class="contest-title">
 			                            <div class="row">
-			                                <div class="col-md-3">
+			                                <div class="col-md-8">
 			                                    <div class="main_title">
 			                                        <h3>All Contest</h3>  
 			                                    </div> 
 			                                </div>
-			                                <div class="col-md-9">
+			                                <div class="col-md-4">
+				                                <div className="search">
+			                                        <input placeholder="Search by keywords" type="text" /><i className='bx bx-search'></i>
+			                                    </div>
+			                                </div>
+			                                <div class="col-md-12" style={{marginTop:'20px'}}>
 			                                    <div class="filterinline">
 			                                        <div class="lanfilter">
-			                                            Language: 
-			                                            <select onChange={this.handleChange.bind(this, "language")} >
+			                                            
+			                                            <p>Language:</p>
+			                                            <MultiSelect
+												        options={this.state.languageList}
+												        onChange={this.handleChange.bind(this, "categoryIds")}
+												        value={this.state.languageSelected}
+												        labelledBy={"Select"}
+												      /> 
+			                                            {/*<select onChange={this.handleChange.bind(this, "language")} >
 			                                            <option value="">Select</option>
 				                                            {
 				                                            	languages.languages.map((e, key) => {
 				                                                    return <option value={e.name}>{e.name} </option>;
 				                                                })
 				                                            }
-			                                            </select>
+			                                            </select>*/}
 			                                        </div>
 			                                        <div class="lanfilter">
-			                                            Player Type: 
+			                                            {/*Player Type: 
 			                                            <select onChange={this.handleChange.bind(this, "playerType")} >
 			                                                <option value="">All</option>
 			                                                <option value="1">Single Player</option>
 			                                                <option value="2">Multi Player</option>
-			                                            </select>
+			                                            </select>*/}
+
+			                                            <p>Player Type:</p>
+			                                            <MultiSelect
+												        options={this.state.playerTypeList}
+												        onChange={this.handleChange.bind(this, "categoryIds")}
+												        value={this.state.playerTypeSelected}
+												        labelledBy={"Select"}
+												      /> 
+
 			                                        </div>
 			                                        <div class="lanfilter">
-			                                            Category:
-			                                            <select onChange={this.handleChange.bind(this, "categoryIds")} >
+			                                            <p>Category:</p>
+
+			                                            <MultiSelect
+												        options={this.state.categoryList}
+												        onChange={this.handleChange.bind(this, "categoryIds")}
+												        value={this.state.selected}
+												        labelledBy={"Select"}
+												      />
+
+			                                            {/*<select onChange={this.handleChange.bind(this, "categoryIds")} >
 			                                            	<option value="">All</option>
 			                                                {
 				                                            	this.state.categoryList.map((e, key) => {
 				                                                    return <option value={e._id}>{e.name} </option>;
 				                                                })
 				                                            }
-			                                            </select>
+			                                            </select>*/}
 			                                        </div>
-			                                        {/*<div class="lanfilter" >
-			                                            Game Type:
+			                                        <div class="lanfilter" >
+			                                            {/*Game Type:
 			                                            <select onChange={this.handleChange.bind(this, "gameType")} >
 			                                                <option value="">All</option>
 			                                                {
@@ -150,8 +212,20 @@ class Contest extends Component {
 				                                                    return <option value={e}>{e} </option>;
 				                                                })
 				                                            }
-			                                            </select>
-			                                        </div>*/}
+			                                            </select>*/}
+
+			                                            <p>Game Type:</p>
+
+			                                            <MultiSelect
+												        options={[]}
+												        onChange={this.handleChange.bind(this, "categoryIds")}
+												        value={this.state.selected}
+												        labelledBy={"Select"} />
+			                                        </div>
+			                                        <div class="lanfilter fil_btn" >
+			                                            <button className="pink_btn" type="button" >Clear All</button>
+			                                            <button className="blue_btn" type="button" >Apply</button>
+			                                        </div>
 			                                    </div>
 			                                </div>
 			                            </div>
