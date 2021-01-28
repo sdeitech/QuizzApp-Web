@@ -1019,15 +1019,20 @@ img.con-close {
 }
 .cate-box {
     background: #22343C 0% 0% no-repeat padding-box;
-    border: 1px solid #56D8F1;
+    /*border: 1px solid #56D8F1;*/
     border-radius: 20px;
     margin-bottom: 30px;
 }
 .cate-box img{
     width: 100%;
     border-radius: 20px 20px 0px 0px;    
-    max-height: 70px;
-    min-height: 70px;
+    max-height: 110px;
+    min-height: 110px;
+}
+
+.brand .cate-box img{   
+    max-height: 60px !important;
+    min-height: 60px !important;
 }
 .cat_title h3 {
     letter-spacing: 0.8px;
@@ -1644,7 +1649,7 @@ p.addmore {
 .checkbox-buttons-container input:checked + label {
     background-color: transparent;
     color: #fff;
-    border: 3px solid #fff;
+    border: 2px solid #fff;
     border-radius: 20px;
 }
 
@@ -1685,4 +1690,27 @@ p.addmore {
     .lanfilter {
         width: 100%;
     }
+}
+
+
+.dropdown-menu {
+    min-width: 12rem;
+}
+
+/**/
+
+
+
+.round-box img.ico {
+    padding: 20px;
+    width: 80px;
+}
+
+.round-box .contest-box h3 {
+    font: normal normal 600 20px Montserrat !important;
+    padding: 0px 20px 0 !important;
+}
+
+.search-brand-cat i {
+    left: 20px !important;
 }

@@ -15,10 +15,15 @@ import {
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
 
+
 class AddContest extends Component {
 	constructor(props) {
         super(props);
         this.state = {
+        	searchTerm: '',
+        	searchCategoryTerm: '',
+        	filterBrandList:[],
+        	filterCategoryList:[],
 			categoryList: [],
 			categoryListObj:[],
 			categoryListSelected:[],
@@ -36,11 +41,14 @@ class AddContest extends Component {
 			openModelCategory:false,
 			openModelBrand:false,
             image:'avatars/placeholder-user.png',
+            localArr:[],
 		};
-
+		this.searchUpdated = this.searchUpdated.bind(this)
+		this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
 		this.handleRemoveItem = this.handleRemoveItem.bind(this);
+
 	}
 
 
@@ -62,9 +70,11 @@ class AddContest extends Component {
             }).then((response) =>{
 	    	return response.json();
 	    }).then((data)=> {
-			var category = data.data;
-	   		this.setState({ categoryList:category});
+			var categoryList = data.data;
+	   		this.setState({categoryList:categoryList,filterCategoryList:categoryList});
 		});	
+
+
 
 
 		fetch(configuration.baseURL+"brand/brand", {
@@ -78,7 +88,7 @@ class AddContest extends Component {
 	    	return response.json();
 	    }).then((data)=> {
 			var brandList = data.data;
-	   		this.setState({ brandList:brandList});
+	   		this.setState({ brandList:brandList,filterBrandList:brandList});
 		});		
 
 	}
@@ -88,8 +98,12 @@ class AddContest extends Component {
 
         this.setState({
             openModelCategory:false,
-            openModelBrand:false
+            openModelBrand:false,
+            searchTerm: '',
+        	searchCategoryTerm: ''
         });
+        this.searchUpdatedCategory('');
+        this.searchUpdated('');
     }
 
 	handleOpenCategoryModel()
@@ -169,6 +183,14 @@ class AddContest extends Component {
             errors["categoryIds"] = "Please select atleast one category";
         }
         this.setState({errors: errors});
+        $('body').removeClass('modal-open');
+
+        this.setState({
+            searchTerm: '',
+        	searchCategoryTerm: ''
+        });
+        this.searchUpdatedCategory('');
+        this.searchUpdated('');
 
     }
 
@@ -225,7 +247,14 @@ class AddContest extends Component {
 		this.setState({fields})
 
 		this.setState({openModelBrand:false});
+		$('body').removeClass('modal-open');
 
+		this.setState({
+            searchTerm: '',
+        	searchCategoryTerm: ''
+        });
+        this.searchUpdatedCategory('');
+        this.searchUpdated('');
     }
 
 
@@ -427,9 +456,13 @@ class AddContest extends Component {
             }).then((response) => {
                 return response.json();
             }).then((data) => {
-            	// console.log(data);
                 if(data.code === 200){
-                	window.location.href = '/#/tray'
+                	this.props.history.push({
+					  pathname: '/tray/'+data.data._id,
+					  state: { contest_id: data.data._id }
+					})
+
+                	// window.location.href = '/#/tray'
                 }
                 else
                 {
@@ -478,6 +511,90 @@ class AddContest extends Component {
         this.setState({fields});
         // console.log(this.uploadInput.files)
     }
+    searchUpdated (term = '') {
+    	if (term !== '') {
+    		term = term.target.value;
+    	}
+    	let brandList = this.state.brandList;
+    	
+    	let filterBrandList = [];
+    	filterBrandList = brandList.filter(function(value, index, arr){ 
+			if((value.name).includes(term) || (value.name.toLowerCase()).includes(term) || (value.name.toUpperCase()).includes(term))
+			{
+				return value;
+			}
+		});
+    	
+    	if (term === '') {
+    		filterBrandList = brandList;
+    	}
+	    this.setState({searchTerm: term,filterBrandList:filterBrandList});
+	}
+
+	searchUpdatedCategory(term = '') {
+		if (term !== '') {
+    		term = term.target.value;
+    	}
+
+    	let filterCategoryList = [];
+    	if (term) {  
+
+    		fetch(configuration.baseURL+"category/categoryList", {
+	                method: "GET",
+	                headers: {
+	                    'Accept': 'application/json',
+	                    'Content-Type': 'application/json',
+	                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+	                }
+	            }).then((response) =>{
+		    	return response.json();
+		    }).then((data)=> {
+				var categoryList1 = data.data;
+		    	for (var i = 0; i < categoryList1.length; i++) {
+		    		var innerArr = []
+		    		for (var k = 0; k < categoryList1[i].categories.length; k++) {
+		    			var name = categoryList1[i].categories[k].name;
+		    			if(name.includes(term) || (name.toLowerCase()).includes(term) || (name.toUpperCase()).includes(term))
+						{
+							innerArr.push(categoryList1[i].categories[k]);
+						}
+		    		}
+		    		if (innerArr.length > 0) {
+		    			var obj = {};
+		    			obj = categoryList1[i];
+		    			obj.categories = innerArr;
+		    			filterCategoryList.push(obj);
+		    		}    	
+		    	} 
+		    	this.setState({searchCategoryTerm: term,filterCategoryList:filterCategoryList});
+			});	
+
+    		
+	    }
+	    else
+	    {
+	    	fetch(configuration.baseURL+"category/categoryList", {
+	                method: "GET",
+	                headers: {
+	                    'Accept': 'application/json',
+	                    'Content-Type': 'application/json',
+	                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+	                }
+	            }).then((response) =>{
+		    	return response.json();
+		    }).then((data)=> {
+				var category = data.data;
+				this.setState({searchCategoryTerm: term,filterCategoryList:category});
+			});	
+	    	
+	    }
+
+	    
+	}
+
+
+	
+
 
 	render() {
 		$(document).ready(function() {
@@ -500,6 +617,7 @@ class AddContest extends Component {
             	$(".file-upload").click();
             });
         });
+
 		return (
 			<>
 				<TheHeaderInner />				
@@ -521,9 +639,11 @@ class AddContest extends Component {
 		                                </div>
 		                                <div className="contest">
 
-						                    {
-
-						                    	this.state.categoryList.map((e, key) => {
+		                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
+				                                <input type="text" placeholder="Search by keywords"  value={this.state.searchCategoryTerm} onChange={this.searchUpdatedCategory.bind(this)}  /><i className='bx bx-search' ></i>
+			                                </div>
+									        {
+									        	this.state.filterCategoryList.map((e, key) => {
 															
 														return  <div className="row">
 								                            <div className="col-8">
@@ -554,6 +674,9 @@ class AddContest extends Component {
 								                        </div>
 						                        	})
 						                    }
+
+
+						                    
 						                    <div style={{ textAlign: 'center' }} class="">
 							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
 							                </div>
@@ -579,13 +702,17 @@ class AddContest extends Component {
 		                                </div>
 		                                <div className="contest">
 		                                	<div className="row">
+		                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
+				                                <input type="text" value={this.state.searchTerm} placeholder="Search by keywords" onChange={this.searchUpdated.bind(this)} /><i className='bx bx-search' ></i>
+			                                </div>
+
 						                    {
 
-						                    	this.state.brandList.map((brand, key) => {
-								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
+						                    	this.state.filterBrandList.map((brand, key) => {
+								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container brand">
 										                        <input className="brandCheckbox" type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
 										                        <label for={brand._id}>
-										                            <div style={{ marginBottom: '0' }} className="cate-box">
+										                            <div style={{ marginBottom: '0' }} className=" cate-box">
 										                                <img src={brand.image} />
 										                                <div className="cat_title">
 										                                    <h3>{brand.name}</h3>
@@ -597,7 +724,7 @@ class AddContest extends Component {
 						                    }
 								        	</div>
 
-						                    <div style={{ textAlign: 'center' }} class="">
+						                    <div style={{ marginTop:"25px",textAlign: 'center' }} class="">
 							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
 							                </div>
 								        </div>

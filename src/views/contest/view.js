@@ -18,7 +18,7 @@ class Contest extends Component {
 			errors:{},
 			openModel:false,
 			listData:[],
-			selected:[],
+			categorySelected:[],
 			languageList:[],
 			languageSelected:[],
 			playerTypeSelected:[],
@@ -29,23 +29,68 @@ class Contest extends Component {
 		};
 	}
 
-	handleChange(field, e){   
-        let fields = this.state.fields;
-        if (field !== "categoryIds") {
-        	fields[field] = e.target.value; 
-        }       
-        else
-        {
-        	this.setState({selected:e});
-        }
-        this.setState({fields});
+	handleChange(field, e){  
+        if (field === "categoryIds") {
+        	this.setState({categorySelected:e});
+        } 
+        else if (field === "language") {
+        	this.setState({languageSelected:e});
+        }   
+        else if (field === "playerType") {
+        	this.setState({playerTypeSelected:e});
+        }     
+        else if (field === "searchKey") {
+        	let fields = this.state.fields;
+        	fields['searchKey'] = e.target.value;
+        	this.setState({fields});
+        } 
+
+    }
+
+    handleClearAllFilter()
+    {
+    	this.setState({
+			categorySelected:[],
+			languageSelected:[],
+			playerTypeSelected:[]});
+		let fields = this.state.fields;
+    	fields['searchKey'] = '';
+    	this.setState({fields});
+    	this.componentDidMount();
+    	
+    }
+
+    handleApplyFilter(){
+    	let fields = this.state.fields;
+    	let langArr = [];
+    	let languageSelected = this.state.languageSelected;
+    	for (var i = 0; i < languageSelected.length; i++) {
+    		langArr.push(languageSelected[i].value);
+    	}
+    	fields['language'] = langArr.join();
+
+    	let cateArr = [];
+    	let categorySelected = this.state.categorySelected;
+    	for (var i = 0; i < categorySelected.length; i++) {
+    		cateArr.push(categorySelected[i].value);
+    	}
+    	fields['categoryIds'] = cateArr.join();
+
+    	let playerTypeArr = [];
+    	let playerTypeSelected = this.state.playerTypeSelected;
+    	for (var i = 0; i < playerTypeSelected.length; i++) {
+    		playerTypeArr.push(playerTypeSelected[i].value);
+    	}
+    	fields['playerType'] = playerTypeArr.join();
+    	this.setState({fields});
 
         var str = [];
 		for (var p in this.state.fields)
 		if (this.state.fields.hasOwnProperty(p)) {
-		  str.push(encodeURIComponent(p) + "=" + encodeURIComponent(this.state.fields[p]));
+		  str.push((p) + "=" + (this.state.fields[p]));
 		}
 		var queryStr = (str.join("&") === '') ? '' : '&'+str.join("&");
+		console.log(queryStr);
         var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 		fetch(configuration.baseURL+"contest/contest?userId="+userId+queryStr, {
                 method: "GET",
@@ -144,7 +189,7 @@ class Contest extends Component {
 			                                </div>
 			                                <div class="col-md-4">
 				                                <div className="search">
-			                                        <input placeholder="Search by keywords" type="text" /><i className='bx bx-search'></i>
+			                                        <input placeholder="Search by keywords" type="text" onChange={this.handleChange.bind(this, "searchKey")} value={this.state.fields["searchKey"]} /><i className='bx bx-search' ></i>
 			                                    </div>
 			                                </div>
 			                                <div class="col-md-12" style={{marginTop:'20px'}}>
@@ -154,9 +199,8 @@ class Contest extends Component {
 			                                            <p>Language:</p>
 			                                            <MultiSelect
 												        options={this.state.languageList}
-												        onChange={this.handleChange.bind(this, "categoryIds")}
+												        onChange={this.handleChange.bind(this, "language")}
 												        value={this.state.languageSelected}
-												        labelledBy={"Select"}
 												      /> 
 			                                            {/*<select onChange={this.handleChange.bind(this, "language")} >
 			                                            <option value="">Select</option>
@@ -178,9 +222,9 @@ class Contest extends Component {
 			                                            <p>Player Type:</p>
 			                                            <MultiSelect
 												        options={this.state.playerTypeList}
-												        onChange={this.handleChange.bind(this, "categoryIds")}
+												        onChange={this.handleChange.bind(this, "playerType")}
 												        value={this.state.playerTypeSelected}
-												        labelledBy={"Select"}
+												        
 												      /> 
 
 			                                        </div>
@@ -190,8 +234,8 @@ class Contest extends Component {
 			                                            <MultiSelect
 												        options={this.state.categoryList}
 												        onChange={this.handleChange.bind(this, "categoryIds")}
-												        value={this.state.selected}
-												        labelledBy={"Select"}
+												        value={this.state.categorySelected}
+												        
 												      />
 
 			                                            {/*<select onChange={this.handleChange.bind(this, "categoryIds")} >
@@ -219,12 +263,12 @@ class Contest extends Component {
 			                                            <MultiSelect
 												        options={[]}
 												        onChange={this.handleChange.bind(this, "categoryIds")}
-												        value={this.state.selected}
+												        value={""}
 												        labelledBy={"Select"} />
 			                                        </div>
 			                                        <div class="lanfilter fil_btn" >
-			                                            <button className="pink_btn" type="button" >Clear All</button>
-			                                            <button className="blue_btn" type="button" >Apply</button>
+			                                            <button className="pink_btn" type="button" onClick={this.handleClearAllFilter.bind(this)}>Clear All</button>
+			                                            <button className="blue_btn" type="button" onClick={this.handleApplyFilter.bind(this)}>Apply</button>
 			                                        </div>
 			                                    </div>
 			                                </div>
