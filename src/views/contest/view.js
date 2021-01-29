@@ -37,7 +37,9 @@ class Contest extends Component {
         	this.setState({languageSelected:e});
         }   
         else if (field === "playerType") {
-        	this.setState({playerTypeSelected:e});
+        	let fields = this.state.fields;
+        	fields['playerType'] = e.target.value;
+        	this.setState({fields});
         }     
         else if (field === "searchKey") {
         	let fields = this.state.fields;
@@ -51,13 +53,12 @@ class Contest extends Component {
     {
     	this.setState({
 			categorySelected:[],
-			languageSelected:[],
-			playerTypeSelected:[]});
+			languageSelected:[]});
 		let fields = this.state.fields;
     	fields['searchKey'] = '';
+    	fields['playerType'] = '';
     	this.setState({fields});
     	this.componentDidMount();
-    	
     }
 
     handleApplyFilter(){
@@ -76,13 +77,13 @@ class Contest extends Component {
     	}
     	fields['categoryIds'] = cateArr.join();
 
-    	let playerTypeArr = [];
-    	let playerTypeSelected = this.state.playerTypeSelected;
-    	for (var i = 0; i < playerTypeSelected.length; i++) {
-    		playerTypeArr.push(playerTypeSelected[i].value);
-    	}
-    	fields['playerType'] = playerTypeArr.join();
-    	this.setState({fields});
+    	// let playerTypeArr = [];
+    	// let playerTypeSelected = this.state.playerTypeSelected;
+    	// for (var i = 0; i < playerTypeSelected.length; i++) {
+    	// 	playerTypeArr.push(playerTypeSelected[i].value);
+    	// }
+    	// fields['playerType'] = playerTypeArr.join();
+    	// this.setState({fields});
 
         var str = [];
 		for (var p in this.state.fields)
@@ -172,6 +173,12 @@ class Contest extends Component {
 
 	}
 
+	editHandler(id,e){
+		this.props.history.push('/edit_contest/'+id);
+	}
+
+
+
 	render() {
 		return (
 			<>
@@ -212,20 +219,20 @@ class Contest extends Component {
 			                                            </select>*/}
 			                                        </div>
 			                                        <div class="lanfilter">
-			                                            {/*Player Type: 
-			                                            <select onChange={this.handleChange.bind(this, "playerType")} >
+			                                            
+			                                            <p>Player Type:</p>
+			                                            <select className="single-select" value={this.state.fields['playerType']} onChange={this.handleChange.bind(this, "playerType")} >
 			                                                <option value="">All</option>
 			                                                <option value="1">Single Player</option>
 			                                                <option value="2">Multi Player</option>
-			                                            </select>*/}
+			                                            </select>
 
-			                                            <p>Player Type:</p>
-			                                            <MultiSelect
+			                                            {/*<MultiSelect
 												        options={this.state.playerTypeList}
 												        onChange={this.handleChange.bind(this, "playerType")}
 												        value={this.state.playerTypeSelected}
 												        
-												      /> 
+												      /> */}
 
 			                                        </div>
 			                                        <div class="lanfilter">
@@ -281,16 +288,14 @@ class Contest extends Component {
 
 			                        	(this.state.listData.length > 0) ? 
 			                        	this.state.listData.map((e, key) => {
-                                            return <div class="col-lg-3 col-md-4 col-sm-6">
-				                                <a href="#/add_contest">
-				                                    <div class="cate-box2">
-				                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game"/>
-				                                        <div class="cat_title2">
-				                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
-				                                            <p>{e.title}</p>
-				                                        </div>
-				                                    </div>
-				                                </a>
+                                            return <div class="col-lg-3 col-md-4 col-sm-6" onClick={this.editHandler.bind(this,e._id)}>
+			                                	<div class="cate-box2">
+			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game"/>
+			                                        <div class="cat_title2">
+			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
+			                                            <p>{e.title}</p>
+			                                        </div>
+			                                    </div>
 				                            </div>
                                         }) : 
 								        (

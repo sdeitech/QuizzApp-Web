@@ -44,7 +44,7 @@ class TheHeaderInner extends Component {
             <div class="container align-items-center">
                 <nav class="navbar navbar-expand-lg navbar-dark">
                     <h1 class="logo mr-auto">
-                        <a href="redirect">
+                        <a href="javascript:void(0);">
                             <img src="./murabbo/img/logo.svg" alt="logo"/>
                         </a>
                     </h1>

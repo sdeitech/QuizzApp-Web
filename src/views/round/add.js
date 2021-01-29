@@ -107,7 +107,7 @@ class AddRound extends Component {
 			                            <div class="row">
 			                                <div class="col-md-12">
 			                                    <div class="footer-btn">
-			                                        <a data-toggle="modal" data-target="#addword" href="redirect"><button class="blue_btn" type="button">Add Words</button></a>
+			                                        <a data-toggle="modal" data-target="#addword" href="javascript:void(0);"><button class="blue_btn" type="button">Add Words</button></a>
 			                                        <a href="generate-questions.html"><button class="yellow_btn" type="button">Generate Words</button></a>
 			                                        <a href="#/round"><button class="pink_btn" type="button">Save & Exit</button></a>
 			                                    </div> 

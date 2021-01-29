@@ -1026,8 +1026,8 @@ img.con-close {
 .cate-box img{
     width: 100%;
     border-radius: 20px 20px 0px 0px;    
-    max-height: 110px;
-    min-height: 110px;
+    max-height: 70px;
+    min-height: 70px;
 }
 
 .brand .cate-box img{   
@@ -1700,17 +1700,35 @@ p.addmore {
 /**/
 
 
-
 .round-box img.ico {
     padding: 20px;
     width: 80px;
+    height: 80px;
 }
 
 .round-box .contest-box h3 {
-    font: normal normal 600 20px Montserrat !important;
+    font: normal normal 600 16px Montserrat !important;
     padding: 0px 20px 0 !important;
 }
 
 .search-brand-cat i {
     left: 20px !important;
+}
+
+
+.minus img , .plus img
+{
+    border-bottom: 3px solid #1c2e35;
+}
+
+.single-select
+{
+    float: right;
+    width: 150px;
+    position: relative;
+    top: 8px;
+}
+.round-box .number {
+    padding: 0px 0px !important;
+    text-align: center;
 }

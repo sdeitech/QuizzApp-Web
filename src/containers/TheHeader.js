@@ -501,7 +501,7 @@ class TheHeader extends Component {
                     <div className="container align-items-center">
                         <nav className="navbar navbar-expand-lg navbar-dark">
                             <h1 className="logo mr-auto">
-                                <a href="redirect">
+                                <a href="javascript:void(0);">
                                     <img src="./murabbo/img/logo.svg" alt="logo"/>
                                 </a>
                             </h1>
@@ -526,7 +526,7 @@ class TheHeader extends Component {
                                             <button className="nav-link blue_btn" type="button" onClick={this.handleClick.bind(this,'openModelRegister',true) }> <img src="./murabbo/img/create.svg" alt="Login" /> Register</button>
                                         </li>
                                         {/* <li className="nav-item">
-                                            <a data-toggle="modal" data-target="#setpin" className="nav-link" href="redirect">
+                                            <a data-toggle="modal" data-target="#setpin" className="nav-link" href="javascript:void(0);">
                                                 <button className="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Set Pin</button>
                                             </a>
                                         </li>

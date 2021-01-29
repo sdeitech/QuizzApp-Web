@@ -14,9 +14,9 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
+let contest_id;
 
-
-class AddContest extends Component {
+class EditContest extends Component {
 	constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +32,7 @@ class AddContest extends Component {
 			brandListObj:[],
 			brandListSelected:[],
 			brandListObjDisplaySelected:[],
-			fields:{description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
+			fields:{image:'',description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
 			errors:{},
 			openModel:false,
 			items: [],
@@ -53,6 +53,40 @@ class AddContest extends Component {
 
 
 	componentDidMount(){
+
+		var url = window.location.href;
+        contest_id =url.substring(url.lastIndexOf('/') + 1);
+		fetch(configuration.baseURL+"contest/contest?contestId="+contest_id, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	   		// this.setState({fields:data.data});
+	   		// this.setState({items:data.data.hashtag});
+		})
+
+
+		// this.setState({fields:})
+
+		fetch(configuration.baseURL+"category/categoryList", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+			var categoryList = data.data;
+	   		this.setState({categoryList:categoryList,filterCategoryList:categoryList});
+		});	
+
 
         $('.display-profile-pic').hide();
 		let fields = this.state.fields;
@@ -446,8 +480,8 @@ class AddContest extends Component {
                 data.append('image', this.uploadInput.files[0]);
             } 
             // console.log(data);
-            fetch(configuration.baseURL+"contest/contest", {
-                method: "post",
+            fetch(configuration.baseURL+"contest/contest/"+contest_id, {
+                method: "PUT",
                 headers: {
 					'contentType': "application/json",
                     'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
@@ -457,12 +491,7 @@ class AddContest extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
-                	this.props.history.push({
-					  pathname: '/tray/'+data.data._id,
-					  state: { contest_id: data.data._id }
-					})
-
-                	// window.location.href = '/#/tray'
+                	this.props.history.push('/contest')
                 }
                 else
                 {
@@ -591,10 +620,6 @@ class AddContest extends Component {
 
 	    
 	}
-
-
-	
-
 
 	render() {
 		$(document).ready(function() {
@@ -742,7 +767,7 @@ class AddContest extends Component {
 			                            <div className="row">
 			                                <div className="col-md-4">
 			                                    <div className="main_title">
-			                                        <h3>Create Contest</h3>  
+			                                        <h3>Edit Contest</h3>  
 			                                    </div> 
 			                                </div>
 			                                {/*<div className="col-md-8">
@@ -771,11 +796,11 @@ class AddContest extends Component {
 
 			                                      <label for="file-upload" id="file-drag">
 			                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
-			                                        <img className="display-profile-pic" src='' alt=""  />
+			                                        <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
 			                                        <div id="start">
-													  <img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
+													  {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
 			                                          <div id="notimage">Please select an image</div>
-			                                          <div id="add_image">Add Image</div>
+			                                          <div id="add_image">Add Image</div></div> : null}
 			                                        </div>
 			                                        <div id="response" className="hidden">
 			                                          <div id="messages"></div>
@@ -925,4 +950,4 @@ class AddContest extends Component {
 	}
 }
 
-export default AddContest
+export default EditContest
