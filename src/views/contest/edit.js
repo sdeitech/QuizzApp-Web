@@ -39,11 +39,13 @@ class EditContest extends Component {
 			focused: false,
 			input: '',
 			openModelCategory:false,
+			publishConfirmationModel:false,
 			openModelBrand:false,
 			confirmationModel:false,
             image:'avatars/placeholder-user.png',
             localArr:[],
-            delete_id:''
+            delete_id:'',
+            publish_id:''
 		};
 		this.searchUpdated = this.searchUpdated.bind(this)
 		this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this)
@@ -721,23 +723,33 @@ class EditContest extends Component {
 	}
 
 
-	publishContestHandler()
+	publishContestHandler(type = '')
 	{
-		fetch(configuration.baseURL+"contest/publishContest/"+contest_id, {
-		        method: "PUT",
-		        headers: {
-		            'Accept': 'application/json',
-		            'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-		        }
-		    }).then((response) =>{
-			return response.json();
-		}).then((data)=> {
-			if (data.code === 200) {
-                return toast.info("Contest Publish Successfully");
-            }else{
-                return toast.error(data.message);
-            }
-		});	
+		if (this.state.publish_id !== '' && type === 'publish') {
+			
+			fetch(configuration.baseURL+"contest/publishContest/"+contest_id, {
+			        method: "PUT",
+			        headers: {
+			            'Accept': 'application/json',
+			            'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			        }
+			    }).then((response) =>{
+				return response.json();
+			}).then((data)=> {
+				if (data.code === 200) {
+					this.props.history.push('/contest');
+	            }else{
+	                return toast.error(data.message);
+	            }
+			});
+	    }
+	    else
+	    {
+	    	this.setState({publish_id:contest_id,publishConfirmationModel:true});
+
+	    }
+
+			
 	}
 
 	render() {
@@ -889,7 +901,7 @@ class EditContest extends Component {
 			                                <div className="col-md-8">
 			                                    <ul className="title-link">
 			                                        <li onClick={this.removeContestHandler.bind(this)} style={{ cursor:'pointer'}}><img src="./murabbo/img/close2.svg" alt="Murabbo" /> Remove</li>
-			                                        {(this.state.fields['isPublish'] !== true ) ?  <li onClick={this.publishContestHandler.bind(this)} style={{ cursor:'pointer'}}><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="Murabbo" /> Publish</li> : null }
+			                                        <li onClick={this.publishContestHandler.bind(this)} style={{ cursor:'pointer'}}><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="Murabbo" /> Publish</li>
 			                                    </ul>  
 			                                </div>
 			                            </div>
@@ -1087,6 +1099,39 @@ class EditContest extends Component {
 							                </div>
                                 			<div style={{ textAlign: 'center' , float:'left' }} className="">
 							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.removeContestHandler.bind(this,'delete')} >Yes</button>
+							                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
+                    <CModal show={this.state.publishConfirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({publishConfirmationModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({publishConfirmationModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    	<h3>Are you sure you want to publish?</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+
+							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({publishConfirmationModel:false,publish_id:''})} >No</button>
+							                </div>
+                                			<div style={{ textAlign: 'center' , float:'left' }} className="">
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.publishContestHandler.bind(this,'publish')} >Yes</button>
 							                </div>
                                         </div>
                                     </div>
