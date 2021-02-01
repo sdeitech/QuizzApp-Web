@@ -14,7 +14,7 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
-let contest_id;
+let contest_id,user_id;
 
 class EditContest extends Component {
 	constructor(props) {
@@ -40,8 +40,10 @@ class EditContest extends Component {
 			input: '',
 			openModelCategory:false,
 			openModelBrand:false,
+			confirmationModel:false,
             image:'avatars/placeholder-user.png',
             localArr:[],
+            delete_id:''
 		};
 		this.searchUpdated = this.searchUpdated.bind(this)
 		this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this)
@@ -56,39 +58,8 @@ class EditContest extends Component {
 
 		var url = window.location.href;
         contest_id =url.substring(url.lastIndexOf('/') + 1);
-		fetch(configuration.baseURL+"contest/contest?contestId="+contest_id, {
-                method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-                }
-            }).then((response) =>{
-	    	return response.json();
-	    }).then((data)=> {
-	   		// this.setState({fields:data.data});
-	   		// this.setState({items:data.data.hashtag});
-		})
-
-
-		// this.setState({fields:})
-
-		fetch(configuration.baseURL+"category/categoryList", {
-                method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-                }
-            }).then((response) =>{
-	    	return response.json();
-	    }).then((data)=> {
-			var categoryList = data.data;
-	   		this.setState({categoryList:categoryList,filterCategoryList:categoryList});
-		});	
-
-
-        $('.display-profile-pic').hide();
+		user_id = JSON.parse(reactLocalStorage.get('userData')).userId;
+		
 		let fields = this.state.fields;
 		fields.language = 'English';
 		this.setState({fields})
@@ -124,6 +95,106 @@ class EditContest extends Component {
 			var brandList = data.data;
 	   		this.setState({ brandList:brandList,filterBrandList:brandList});
 		});		
+
+
+		fetch(configuration.baseURL+"contest/contest?contestId="+contest_id+"&userId="+user_id, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	   		if (data.data.length > 0) {
+	   			this.setState({fields:data.data[0]});
+	   			this.setState({items:data.data[0].hashtag});
+	   			this.setCategory(data.data[0].categoryIds);
+	   			this.setBrand(data.data[0].brandIds);
+	   		}
+	   		else
+	   		{
+                return toast.error(data.message);
+	   		}
+		})
+
+	}
+
+	setBrand(data)
+	{
+		let brandList = this.state.brandList;
+		let brandListObj = [];
+		let brandListSelected = [];
+    	let displayArr = [];
+
+    	for (var i = 0; i < brandList.length; i++) {
+    		if (data.includes(brandList[i]._id)) {
+    			var obj = {};
+	    		obj.id = brandList[i]._id;
+	    		obj.name = brandList[i].name;
+	    		displayArr.push(obj);
+				brandListSelected.push(brandList[i]._id);
+				brandListObj.push({id:brandList[i]._id,name:brandList[i].name});
+    		}
+    	}
+
+    	this.setState({brandListObjDisplaySelected:displayArr,brandListSelected:brandListSelected,brandListObj:brandListObj});
+
+    	
+
+    	let fields = this.state.fields;
+		fields.brandIds=brandListSelected.join()
+		this.setState({fields})
+
+		this.setState({
+            searchTerm: '',
+        	searchCategoryTerm: ''
+        });
+        this.searchUpdatedCategory('');
+        this.searchUpdated('');	
+	}
+	setCategory(data)
+	{
+		let selectedCate = [];
+		let categoryList = this.state.categoryList;
+		let categoryListObj = [];
+		let categoryListSelected = [];
+    	let displayArr = [];
+
+
+    	data.filter(function(value, index, arr){ 
+			selectedCate.push(value.categoryId);
+		});
+
+		for (var i = 0; i < categoryList.length; i++) {
+    		for (var k = 0; k < categoryList[i].categories.length; k++) {
+    			if(selectedCate.includes(categoryList[i].categories[k]._id))
+				{
+					categoryListObj.push({'categoryId':categoryList[i].categories[k]._id,'mainLabelId':categoryList[i].id,'name':categoryList[i].categories[k].name});
+
+					categoryListSelected.push(categoryList[i].categories[k]._id);
+		    		var obj = {};
+		    		obj.categoryId = categoryList[i].categories[k]._id;
+		    		obj.name = categoryList[i].categories[k].name;
+		    		displayArr.push(obj);
+				}
+    		}  	
+    	}
+
+    	this.setState({categoryListObjDisplaySelected:displayArr,categoryListSelected:categoryListSelected,categoryListObj:categoryListObj});
+
+    	let fields = this.state.fields;
+		fields.categoryIds=JSON.stringify(categoryListObj);
+		this.setState({fields})
+		
+        
+        this.setState({
+            searchTerm: '',
+        	searchCategoryTerm: ''
+        });
+        this.searchUpdatedCategory('');
+        this.searchUpdated('');
 
 	}
 
@@ -463,7 +534,6 @@ class EditContest extends Component {
 
         this.setState({errors: errors});
         if(formIsValid){
-        	// console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
         	const data = new FormData();
         	data.append('title',this.state.fields.title);
         	data.append('description',this.state.fields.description);
@@ -476,10 +546,8 @@ class EditContest extends Component {
         	data.append('categoryIds',this.state.fields.categoryIds);
         	data.append('brandIds',this.state.fields.brandIds);
             if(this.state.fields.image === 'image'){
-            	console.log(this.uploadInput.files)
                 data.append('image', this.uploadInput.files[0]);
             } 
-            // console.log(data);
             fetch(configuration.baseURL+"contest/contest/"+contest_id, {
                 method: "PUT",
                 headers: {
@@ -491,7 +559,10 @@ class EditContest extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
-                	this.props.history.push('/contest')
+                	this.props.history.push({
+					  pathname: '/tray/'+data.data._id,
+					  state: { contest_id: data.data._id }
+					})
                 }
                 else
                 {
@@ -538,7 +609,6 @@ class EditContest extends Component {
         let fields = this.state.fields;
         fields['image'] = 'image';
         this.setState({fields});
-        // console.log(this.uploadInput.files)
     }
     searchUpdated (term = '') {
     	if (term !== '') {
@@ -621,16 +691,62 @@ class EditContest extends Component {
 	    
 	}
 
+
+	removeContestHandler(type = '')
+	{
+		if (this.state.delete_id !== '' && type === 'delete') {
+			
+			fetch(configuration.baseURL+"contest/contest/"+contest_id, {
+			        method: "DELETE",
+			        headers: {
+			            'Accept': 'application/json',
+			            'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			        }
+			    }).then((response) =>{
+				return response.json();
+			}).then((data)=> {
+				if (data.code === 200) {
+	            	this.props.history.push('/contest');
+					
+	            }else{
+	                return toast.error(data.message);
+	            }
+			});
+	    }
+	    else
+	    {
+	    	this.setState({delete_id:contest_id,confirmationModel:true});
+
+	    }
+	}
+
+
+	publishContestHandler()
+	{
+		fetch(configuration.baseURL+"contest/publishContest/"+contest_id, {
+		        method: "PUT",
+		        headers: {
+		            'Accept': 'application/json',
+		            'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+		        }
+		    }).then((response) =>{
+			return response.json();
+		}).then((data)=> {
+			if (data.code === 200) {
+                return toast.info("Contest Publish Successfully");
+            }else{
+                return toast.error(data.message);
+            }
+		});	
+	}
+
 	render() {
 		$(document).ready(function() {
             var readURL = function(input) {
 				if (input.files && input.files[0]) {
 					var reader = new FileReader();
 					reader.onload = function (e) {
-						// console.log(e.target.result);
 						$('.display-profile-pic').attr('src', e.target.result);
-						$('.display-profile-pic').show();
-						$('#start').hide();
 					}
 					reader.readAsDataURL(input.files[0]);
 				}
@@ -770,13 +886,12 @@ class EditContest extends Component {
 			                                        <h3>Edit Contest</h3>  
 			                                    </div> 
 			                                </div>
-			                                {/*<div className="col-md-8">
+			                                <div className="col-md-8">
 			                                    <ul className="title-link">
-			                                        <a href="javascript:void(0);"><li><img src="./murabbo/img/close2.svg" alt="Murabbo" /> Remove</li></a>
-			                                        <a href="javascript:void(0);"><li><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="Murabbo" /> Publish</li></a>
-			                                        <a href="javascript:void(0);"><li><img src="./murabbo/img/edit.svg" alt="Murabbo" /> Edit</li></a>
+			                                        <li onClick={this.removeContestHandler.bind(this)} style={{ cursor:'pointer'}}><img src="./murabbo/img/close2.svg" alt="Murabbo" /> Remove</li>
+			                                        {(this.state.fields['isPublish'] !== true ) ?  <li onClick={this.publishContestHandler.bind(this)} style={{ cursor:'pointer'}}><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="Murabbo" /> Publish</li> : null }
 			                                    </ul>  
-			                                </div>*/}
+			                                </div>
 			                            </div>
 			                        </div>
 			                    </div>
@@ -796,12 +911,9 @@ class EditContest extends Component {
 
 			                                      <label for="file-upload" id="file-drag">
 			                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
-			                                        <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
-			                                        <div id="start">
-													  {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
-			                                          <div id="notimage">Please select an image</div>
-			                                          <div id="add_image">Add Image</div></div> : null}
-			                                        </div>
+			                                        
+			                                        <img className="display-profile-pic" src={(this.state.fields['image'] !== '') ? this.state.fields['image'] : 'avatars/placeholder.png'} alt=""/>	
+			                                        
 			                                        <div id="response" className="hidden">
 			                                          <div id="messages"></div>
 			                                          
@@ -875,11 +987,15 @@ class EditContest extends Component {
 			                                    <img src="./murabbo/img/enable.svg" alt="Murabbo"/> <label className="cus_label">Player Type</label>
 			                                </div>
 			                                <label className="control control--radio">Single
-												<input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} checked={(this.state.fields.playerType === '1' ? 'checked' : '')}/>
+
+			                                {(this.state.fields.playerType === 1 ? <input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} checked /> : <input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} />)}
+
+												
 			                                  <div className="control__indicator"></div>
 			                                </label>
 			                                <label className="control control--radio">Multiplayer
-			                                  <input type="radio" name="radio1" value="2"  onChange={this.handleChange.bind(this, "playerType")} checked={(this.state.fields.playerType === '2' ? 'checked' : '')}/>
+			                                {(this.state.fields.playerType === 2 ?  <input type="radio" name="radio1" value="2"  onChange={this.handleChange.bind(this, "playerType")} checked /> :  <input type="radio" name="radio1" value="2"  onChange={this.handleChange.bind(this, "playerType")} />)}
+			                                 
 			                                  <div className="control__indicator"></div>
 			                                </label>
 			                                <label>
@@ -890,11 +1006,15 @@ class EditContest extends Component {
 			                                    <img src="./murabbo/img/enable.svg" alt="Murabbo"/> <label className="cus_label">Visibility</label>
 			                                </div>
 			                                <label className="control control--radio">All
-												<input type="radio" name="radio" value="2"  onChange={this.handleChange.bind(this, "visibility")} checked={(this.state.fields.visibility === '2' ? 'checked' : '')}/>
+
+			                                {(this.state.fields.visibility === 2 ? <input type="radio" name="radio" value="2"  onChange={this.handleChange.bind(this, "visibility")} checked /> : <input type="radio" name="radio" value="2"  onChange={this.handleChange.bind(this, "visibility")} />)}
+												
 			                                  <div className="control__indicator"></div>
 			                                </label>
 			                                <label className="control control--radio">Only Me
-			                                  <input type="radio" name="radio" value="1"  onChange={this.handleChange.bind(this, "visibility")} checked={(this.state.fields.visibility === '1' ? 'checked' : '')}/>
+
+			                                {(this.state.fields.visibility === 1 ? <input type="radio" name="radio" value="1"  onChange={this.handleChange.bind(this, "visibility")} checked /> : <input type="radio" name="radio" value="1"  onChange={this.handleChange.bind(this, "visibility")} />)}
+			                                  
 			                                  <div className="control__indicator"></div>
 			                                </label>
 			                                <label>
@@ -943,6 +1063,38 @@ class EditContest extends Component {
 			                    </div>
 			                </div>
 			            </section>
+			            <CModal show={this.state.confirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({confirmationModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({confirmationModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    	<h3>Are you sure you want to delete?</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+
+							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                </div>
+                                			<div style={{ textAlign: 'center' , float:'left' }} className="">
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.removeContestHandler.bind(this,'delete')} >Yes</button>
+							                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
 			        </main>
 		        <TheFooter />
 		    </>

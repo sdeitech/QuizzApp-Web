@@ -1069,8 +1069,9 @@ img.con-close {
     border: 1px solid #56D8F1;
     border-radius: 20px;
     margin-top: 30px;
+    position: relative;
 }
-.cate-box2 img{
+.cate-box2 .main{
     width: 100%;
     border-radius: 20px 20px 0 0px;
     min-height: 150px;
@@ -1731,4 +1732,16 @@ p.addmore {
 .round-box .number {
     padding: 0px 0px !important;
     text-align: center;
+}
+
+.cate-box2 .con-close
+{
+
+    position: absolute;
+    right: 6px;
+    cursor: pointer;
+    top: 6px;
+    background-color: #0a0f13;
+    padding: 5px;
+    border-radius: 20px;
 }

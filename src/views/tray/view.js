@@ -18,7 +18,7 @@ class RoundTray extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-			fields:{timeLimit:1},
+			fields:{timeLimit:1,execution_mode:1},
 			errors:{},
 			openModelRoundAdd:false,
 			confirmationModel:false,
@@ -186,14 +186,19 @@ class RoundTray extends Component {
         	fields[field] = e.target.checked; 
 		}
 		else
-		{
-        	fields[field] = e.target.value; 
+		{	
+			if (field === 'execution_mode') {
+        		fields[field] = parseInt(e.target.value); 
+			}
+			else
+			{
+        		fields[field] = e.target.value; 
+			}
 		}       
 
         if (field === 'execution_mode' && e.target.value !== 1) {
         	fields['negativeScoring'] = false; 
 		}
-
         this.setState({fields});
 
         let errors = {};
@@ -216,7 +221,7 @@ class RoundTray extends Component {
         this.setState({errors: errors});
 
     }
-    updateRoundHandler(e)
+    updateRoundHandler(e,type='')
     {
     	let fields = this.state.fields;
         let formIsValid = true;
@@ -268,7 +273,10 @@ class RoundTray extends Component {
             }).then((data) => {
                 if(data.code === 200){
                 	this.getList(contest_id);
-                	this.setState({openModel:!this.state.openModel})
+                	if (type === 'roundquestion') {
+                		this.props.history.push('/roundquestion/'+e);	
+                	}
+                	this.setState({openModel:!this.state.openModel});
                 }
                 else
                 {
@@ -288,6 +296,7 @@ class RoundTray extends Component {
 
     saveNextHandler(id,e)
     {
+    	this.updateRoundHandler('roundquestion',id);
     	this.props.history.push('/roundquestion/'+id);
     }
 
@@ -330,11 +339,11 @@ class RoundTray extends Component {
 			                                    </div> 
 			                                </div>
 			                                <div className="col-md-8">
-			                                    <ul className="title-link">
+			                                    {/*<ul className="title-link">
 			                                        <a href="javascript:void(0);"><li><img src="./murabbo/img/close2.svg" alt="" /> Remove</li></a>
 			                                        <a href="javascript:void(0);"><li><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="" /> Publish</li></a>
 			                                        <a href="javascript:void(0);"><li><img src="./murabbo/img/edit.svg" alt="" /> Edit</li></a>
-			                                    </ul>  
+			                                    </ul> */} 
 			                                </div>
 			                            </div>
 			                        </div>
@@ -430,7 +439,6 @@ class RoundTray extends Component {
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/book.svg" alt="Upload"/> 
 					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'execution_mode')} value={this.state.fields['execution_mode']} required>
-									                      	<option value=""></option>
 									                      	<option value="1">Assigned</option>
 									                      	<option value="2">Competitive</option>
 					                                    </select>

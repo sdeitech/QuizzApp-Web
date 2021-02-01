@@ -3,12 +3,16 @@ import {
     TheFooter,
     TheHeaderInner
 } from '../../containers/index'
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
 import configuration from '../../config';
 import {reactLocalStorage} from 'reactjs-localstorage';
 import MultiSelect from "react-multi-select-component";
-
+import {
+    CModal,
+    CModalBody,
+  } from '@coreui/react';
 
 class Contest extends Component {
 	constructor(props) {
@@ -17,6 +21,7 @@ class Contest extends Component {
 			fields:{},
 			errors:{},
 			openModel:false,
+			confirmationModel:false,
 			listData:[],
 			categorySelected:[],
 			languageList:[],
@@ -26,6 +31,7 @@ class Contest extends Component {
 			playerTypeList: [],
 			gameTypeArr : ['HangMan','Match It', 'Unscramble',  'Guess & Go', 'Giberish','Bingo', 'Quizz',  'Taboo'],
 			brandList: [],
+            delete_id:''
 		};
 	}
 
@@ -173,10 +179,43 @@ class Contest extends Component {
 
 	}
 
-	editHandler(id,e){
-		this.props.history.push('/edit_contest/'+id);
+	editHandler(data,e){
+		if (data.isPublish === false) {
+			this.props.history.push('/edit_contest/'+data._id);
+		}
+		else
+		{
+	        return toast.error('Contest is publish,you can not edit it!');
+		}
 	}
 
+	removeContestHandler(type = '',data)
+	{	
+		if (this.state.delete_id !== '' && type === 'delete') {
+			fetch(configuration.baseURL+"contest/contest/"+this.state.delete_id, {
+			        method: "DELETE",
+			        headers: {
+			            'Accept': 'application/json',
+			            'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			        }
+			    }).then((response) =>{
+				return response.json();
+			}).then((data)=> {
+				if (data.code === 200) {
+					this.setState({delete_id:'',confirmationModel:false});
+	            	this.componentDidMount();
+					
+	            }else{
+	                return toast.error(data.message);
+	            }
+			});
+	    }
+	    else
+	    {
+	    	this.setState({delete_id:data._id,confirmationModel:true});
+
+	    }
+	}
 
 
 	render() {
@@ -184,6 +223,7 @@ class Contest extends Component {
 			<>
 				<TheHeaderInner />				
 					<main id="main">
+					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
 			            <section id="contest" class="d-flex align-items-center">
 			                <div class="container">
 			                    <div class="create-contest">
@@ -254,17 +294,7 @@ class Contest extends Component {
 				                                            }
 			                                            </select>*/}
 			                                        </div>
-			                                        <div class="lanfilter" >
-			                                            {/*Game Type:
-			                                            <select onChange={this.handleChange.bind(this, "gameType")} >
-			                                                <option value="">All</option>
-			                                                {
-				                                            	this.state.gameTypeArr.map((e, key) => {
-				                                                    return <option value={e}>{e} </option>;
-				                                                })
-				                                            }
-			                                            </select>*/}
-
+			                                        {/*<div class="lanfilter" >
 			                                            <p>Game Type:</p>
 
 			                                            <MultiSelect
@@ -272,7 +302,7 @@ class Contest extends Component {
 												        onChange={this.handleChange.bind(this, "categoryIds")}
 												        value={""}
 												        labelledBy={"Select"} />
-			                                        </div>
+			                                        </div>*/}
 			                                        <div class="lanfilter fil_btn" >
 			                                            <button className="pink_btn" type="button" onClick={this.handleClearAllFilter.bind(this)}>Clear All</button>
 			                                            <button className="blue_btn" type="button" onClick={this.handleApplyFilter.bind(this)}>Apply</button>
@@ -288,10 +318,11 @@ class Contest extends Component {
 
 			                        	(this.state.listData.length > 0) ? 
 			                        	this.state.listData.map((e, key) => {
-                                            return <div class="col-lg-3 col-md-4 col-sm-6" onClick={this.editHandler.bind(this,e._id)}>
+                                            return <div class="col-lg-3 col-md-4 col-sm-6" >
 			                                	<div class="cate-box2">
-			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game"/>
-			                                        <div class="cat_title2">
+			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+			                                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" style={{ cursor:'pointer'}} onClick={this.removeContestHandler.bind(this,'no',e)} />
+			                                        <div class="cat_title2" style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>
 			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
 			                                            <p>{e.title}</p>
 			                                        </div>
@@ -306,6 +337,38 @@ class Contest extends Component {
 			                    </div>
 			                </div>
 			            </section>
+			            <CModal show={this.state.confirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({confirmationModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({confirmationModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    	<h3>Are you sure you want to delete?</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+
+							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                </div>
+                                			<div style={{ textAlign: 'center' , float:'left' }} className="">
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.removeContestHandler.bind(this,'delete')} >Yes</button>
+							                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
 			        </main>
 		        <TheFooter />
 		    </>
