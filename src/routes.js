@@ -11,9 +11,14 @@ const EditContest = React.lazy(() => import('./views/contest/edit'))
 
 // Manage Rounds
 const Tray = React.lazy(() => import('./views/tray/view'))
-const RoundQuestion = React.lazy(() => import('./views/roundquestion/view'))
 const Round = React.lazy(() => import('./views/round/view'))
 const AddRound = React.lazy(() => import('./views/round/add'))
+
+
+
+const RoundQuestion = React.lazy(() => import('./views/roundquestion/view'))
+const AddRoundQuestion = React.lazy(() => import('./views/roundquestion/add'))
+const EditRoundQuestion = React.lazy(() => import('./views/roundquestion/edit'))
 
 
 
@@ -23,7 +28,11 @@ const routes = [
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
     { path: '/tray', name: 'Tray', component: Tray },
+
     { path: '/roundquestion', name: 'RoundQuestion', component: RoundQuestion },
+    { path: '/add_round_question', name: 'AddRoundQuestion', component: AddRoundQuestion },
+    { path: '/edit_round_question', name: 'EditRoundQuestion', component: EditRoundQuestion },
+
     { path: '/round', name: 'Round', component: Round },
     { path: '/add_round', name: 'AddRound', component: AddRound },
     { path: '/choose_category', name: 'Category', component: Category },

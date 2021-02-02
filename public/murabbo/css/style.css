@@ -1745,3 +1745,15 @@ p.addmore {
     padding: 5px;
     border-radius: 20px;
 }
+
+.fancy .fa-check-circle , .fancy .fa-circle
+{
+    display: inline-block;
+    text-align: center;
+    width: 1em;
+    font-size: 26px;
+    position: relative;
+    top: 10px;
+    color: rgb(57, 99, 109);
+    margin-right: 15px;
+}
