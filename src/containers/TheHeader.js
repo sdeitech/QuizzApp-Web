@@ -98,11 +98,11 @@ class TheHeader extends Component {
 
         let errors = {};
         
-        if(field === 'name' && !fields["name"]){
+        if(field === 'name' && fields["name"].trim() === ''){
             errors["name"] = "Please enter name";
         }
 
-        if(field === 'email' && !fields["email"]){
+        if(field === 'email' && fields["email"].trim() === ''){
             errors["email"] = "Please enter email";
         }
         else if(field === 'email' && typeof fields["email"] !== "undefined"){
@@ -113,7 +113,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(field === 'password' && !fields["password"]){
+        if(field === 'password' && fields["password"].trim() === ''){
             errors["password"] = "Please enter password";
         }
         else{
@@ -123,7 +123,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(field === 'confirm_password' && !fields["confirm_password"]){
+        if(field === 'confirm_password' && fields["confirm_password"].trim() === ''){
             errors["confirm_password"] = "Please enter confirm password";
         }
         if(field === 'confirm_password' && fields["confirm_password"]){
@@ -142,7 +142,7 @@ class TheHeader extends Component {
 
         let fields = this.state.loginFields;
         let errors = {};
-        if(field === 'email' && !fields["email"]){
+        if(field === 'email' && fields["email"].trim() === ''){
             errors["email"] = "Please enter email";
         }
         else if(field === 'email' && typeof fields["email"] !== "undefined"){
@@ -153,7 +153,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(field === 'password' && !fields["password"]){
+        if(field === 'password' && fields["password"].trim() === ''){
             errors["password"] = "Please enter password";
         }
 
@@ -169,7 +169,7 @@ class TheHeader extends Component {
 
         let fields = this.state.forgotFields;
         let errors = {};
-        if(field === 'email' && !fields["email"]){
+        if(field === 'email' && fields["email"].trim() === ''){
             errors["email"] = "Please enter email.";
         }
         else if(field === 'email' && typeof fields["email"] !== "undefined"){
@@ -193,7 +193,7 @@ class TheHeader extends Component {
         let formIsValid = true;
         
 
-        if(field === 'otp' && !fields["otp"]){
+        if(field === 'otp' && fields["otp"].trim() === ''){
             errors["otp"] = "Please enter OTP";
         }
         else{
@@ -204,7 +204,7 @@ class TheHeader extends Component {
         }
         
 
-        if(field === 'password' && !fields["password"]){
+        if(field === 'password' && fields["password"].trim() === ''){
             errors["password"] = "Please enter password";
         }
         else{
@@ -214,7 +214,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(field === 'confirm_password' && !fields["confirm_password"]){
+        if(field === 'confirm_password' && fields["confirm_password"].trim() === ''){
             errors["confirm_password"] = "Please enter confirm password";
         }
 
@@ -235,7 +235,7 @@ class TheHeader extends Component {
         let formIsValid = true;
         
 
-        if(!fields["otp"]){
+        if(fields["otp"].trim() === ''){
             formIsValid = false;
             errors["otp"] = "Please enter OTP";
         }
@@ -247,7 +247,7 @@ class TheHeader extends Component {
         }
         
 
-        if(!fields["password"]){
+        if(fields["password"].trim() === ''){
             formIsValid = false;
             errors["password"] = "Please enter password";
         }
@@ -259,7 +259,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(!fields["confirm_password"]){
+        if(fields["confirm_password"].trim() === ''){
             formIsValid = false;
             errors["confirm_password"] = "Please enter confirm password";
         }
@@ -311,7 +311,7 @@ class TheHeader extends Component {
         let fields = this.state.forgotFields;
         let errors = {};
         let formIsValid = true;
-        if(!fields["email"]){
+        if(fields["email"].trim() === ''){
             formIsValid = false;
             errors["email"] = "Please enter email.";
         }
@@ -357,7 +357,7 @@ class TheHeader extends Component {
         let fields = this.state.loginFields;
         let errors = {};
         let formIsValid = true;
-        if(!fields["email"]){
+        if(fields["email"].trim() === ''){
             formIsValid = false;
             errors["email"] = "Please enter email";
         }
@@ -370,7 +370,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(!fields["password"]){
+        if(fields["password"].trim() === ''){
             formIsValid = false;
             errors["password"] = "Please enter password";
         }
@@ -413,11 +413,11 @@ class TheHeader extends Component {
         let errors = {};
         let formIsValid = true;
         
-        if(!fields["name"]){
+        if(fields["name"].trim() === ''){
             formIsValid = false;
             errors["name"] = "Please enter name";
         }
-        if(!fields["email"]){
+        if(fields["email"].trim() === ''){
             formIsValid = false;
             errors["email"] = "Please enter email";
         }
@@ -430,7 +430,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(!fields["password"]){
+        if(fields["password"].trim() === ''){
             formIsValid = false;
             errors["password"] = "Please enter password";
         }
@@ -442,7 +442,7 @@ class TheHeader extends Component {
             }
         }
 
-        if(!fields["confirm_password"]){
+        if(fields["confirm_password"].trim() === ''){
             formIsValid = false;
             errors["confirm_password"] = "Please enter confirm password";
         }
