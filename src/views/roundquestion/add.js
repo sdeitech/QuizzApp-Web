@@ -85,7 +85,7 @@ class AddRoundQuestion extends Component {
         let fields = this.state.fields;
 
         if (field === 'answerType') {
-        	this.setState({answers:[]});	
+        	this.setState({answers:[],answerTypeBoolean:false});
         }
 
 		if (field === 'negativeScoring') {
