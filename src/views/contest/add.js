@@ -32,7 +32,7 @@ class AddContest extends Component {
 			brandListObj:[],
 			brandListSelected:[],
 			brandListObjDisplaySelected:[],
-			fields:{description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
+			fields:{title:'',description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
 			errors:{},
 			openModel:false,
 			items: [],
@@ -349,7 +349,7 @@ class AddContest extends Component {
 
 
         let errors = {};
-        if(field === 'title' && !fields["title"]){
+        if(field === 'title' && fields["title"].trim() === ''){
             errors["title"] = "Please enter title";
         }
 
@@ -378,21 +378,10 @@ class AddContest extends Component {
 		var categoryArr = (fields['categoryIds']) ? JSON.parse(fields['categoryIds']) : [];
 
 
-        if(!fields["title"]){
+        if(fields["title"].trim() === ''){
             formIsValid = false;
             errors["title"] = "Please enter title";
         }
-
-        // if(!fields["description"]){
-        //     formIsValid = false;
-        //     errors["description"] = "Please enter description";
-        // }
-
-
-        // if(!fields["hashtag"]){
-        //     formIsValid = false;
-        //     errors["hashtag"] = "Please enter hashtag";
-        // }
 
 
         if(!fields["visibility"]){
@@ -405,27 +394,11 @@ class AddContest extends Component {
             errors["playerType"] = "Please select player type";
         }
 
-        // if(!fields["saveToId"]){
-        //     formIsValid = false;
-        //     errors["saveToId"] = "Please enter save to";
-        // }
-
 
         if(typeof categoryArr === 'undefined' || categoryArr.length === 0){
             formIsValid = false;
             errors["categoryIds"] = "Please select atleast one category";
         }
-
-		// if(!fields["brandIds"]){
-		  //           formIsValid = false;
-		  //           errors["brandIds"] = "Please select atleast one brand";
-		  //       }
-		      	
-		  //     	if(!fields["image"]){
-		  //           formIsValid = false;
-		  //           errors["image"] = "Please select image";
-		  //       }
-
 
         this.setState({errors: errors});
         if(formIsValid){
@@ -479,7 +452,7 @@ class AddContest extends Component {
 	}
 
 	handleInputKeyDown(evt) {
-		if ( evt.keyCode === 13 ) {
+		if ( evt.keyCode === 13 && evt.target.value.trim() !== '' ) {
 		  const {value} = evt.target;
 		  
 		  this.setState(state => ({

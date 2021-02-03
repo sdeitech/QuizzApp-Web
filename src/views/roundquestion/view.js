@@ -143,7 +143,7 @@ class RoundQuestion extends Component {
 			                         	var style = (val.active) ? {display: "block"} :{display: "none"};
 			                            return <div style={{ paddingTop:'20px',paddingBottom:'20px'}} className="contest-info"> <div className="row"><div className="col-lg-12 col-md-12 col-sm-12">
 			                                <div className="accordion-wrapper">
-			                                    <div class={className}>
+			                                    <div class={className} onClick={this.toggleHandler.bind(this,ckey)}>
 			                                        <div className="row">
 			                                            <div className="col-md-2">
 			                                                <div className="acc_img">
@@ -151,7 +151,7 @@ class RoundQuestion extends Component {
 			                                                </div>
 			                                            </div>
 			                                            <div className="col-md-10">
-			                                                <div className="acc_title" style={{cursor:'pointer'}}  onClick={this.toggleHandler.bind(this,ckey)}>
+			                                                <div className="acc_title" style={{cursor:'pointer'}}  >
 			                                                    <h4>{val.question}</h4>
 			                                                </div>
 			                                            </div>

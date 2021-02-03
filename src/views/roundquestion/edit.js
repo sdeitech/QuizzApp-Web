@@ -21,7 +21,7 @@ class EditRoundQuestion extends Component {
         super(props);
         this.state = {
         	answers:[],
-        	fields:{timeLimit:1,basePoints:0,negativeBasePoints:0,execution_mode:0, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:''},
+        	fields:{question:'',timeLimit:1,basePoints:0,negativeBasePoints:0,execution_mode:0, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:''},
 			errors:{},
 			fieldsAnswer:{},
 			errorsAnswer:{},
@@ -44,8 +44,7 @@ class EditRoundQuestion extends Component {
         if (round_id[0]) {
         	round_id = round_id[0];
         }
-        console.log(question_id);
-        console.log(round_id);
+
         if (round_id && question_id) {
 
         	
@@ -83,10 +82,13 @@ class EditRoundQuestion extends Component {
 		    	return response.json();
 		    }).then((data)=> {
 		    	if (data.data.length > 0) {	
-					var data = data.data[0];
-					let fields = this.state.fields;
-					fields['execution_mode']=data.execution_mode;
-			   		this.setState({fields});
+		    		var that = this;
+					setTimeout(function () {
+						let fields = that.state.fields;
+						fields['execution_mode']=data.data[0].execution_mode;
+				   		that.setState({fields});
+					}, 1000);
+					
 		    	}
 			});	
 		}
@@ -105,7 +107,7 @@ class EditRoundQuestion extends Component {
 		{
 
 			var fields = this.state.fields;
-			fields['timeLimit'] = fields['timeLimit'] + 1;
+			fields['timeLimit'] = (fields['timeLimit'] === 300) ? 300 : (fields['timeLimit'] + 1);
 			this.setState({fields});
 		}
 	}
@@ -132,7 +134,7 @@ class EditRoundQuestion extends Component {
         this.setState({fields});
 
         let errors = {};
-        if(field === 'question' && !fields["question"]){
+        if(field === 'question' && fields["question"].trim() === ''){
             errors["question"] = "Please enter question";
         }
 
@@ -148,7 +150,7 @@ class EditRoundQuestion extends Component {
         let formIsValid = true;
 
     	let errors = {};
-        if(!fields["question"]){
+        if(fields["question"].trim() === ''){
             errors["question"] = "Please enter question";formIsValid=false;
         }
 
@@ -158,6 +160,22 @@ class EditRoundQuestion extends Component {
     		if(this.state.answers.length === 0 && parseInt(this.state.fields['answerType']) !== 5){
 				return toast.error('Add atleast one answer!');
 	        }
+
+	        if (parseInt(this.state.fields['answerType']) !== 5) {
+	        	let answers = this.state.answers;
+				var that =this;
+				var temp = false;
+				answers = answers.filter(function(value, index, arr){ 
+					if (value.correctAnswer === true) {
+						temp = true;
+					}
+				});
+				if (temp === false) {
+					return toast.error('Select atleast one answer correct!');
+				}
+
+			}
+			
         	// console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
         	const data = new FormData();
         	data.append('question',this.state.fields.question);
@@ -184,7 +202,7 @@ class EditRoundQuestion extends Component {
             if(this.state.fields.image === 'image'){
                 data.append('file', this.uploadInput.files[0]);
             } 
-            console.log(data);
+            
             fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
                 method: "PUT",
                 headers: {
@@ -261,23 +279,26 @@ class EditRoundQuestion extends Component {
         let formIsValid = true;
 
     	let errors = {};
-        if(!fields["answer"]){
+        if(fields["answer"].trim() === ''){
             errors["answer"] = "Please enter answer";formIsValid = false;
         }
         this.setState({errorsAnswer: errors});
 
     	if(formIsValid){
     		let answers = this.state.answers;
-    		if (fields["correctAnswer"] === true && this.state.answers.length > 0 && this.state.fields['answerType'] === 1) {
-    			answers = answers.filter(function(value, index, arr){ 
-    				var obj = value;
-    				obj.correctAnswer = false;
-					return obj;
-				});
+    		
+    		if(parseInt(this.state.fields['answerType']) !== 1)
+    		{
+				fields.correctAnswer = true;
     		}
+    		else
+    		{
+    			fields.correctAnswer = false;
+    		}
+
     		answers.push(fields);
     		this.setState({answers: answers});
-    		this.setState({fieldsAnswer:{answer:'',correctAnswer:false},errorsAnswer:{answer:''},openModel:false});
+    		this.setState({fieldsAnswer:{answer:''},errorsAnswer:{answer:''},openModel:false});
     	}
 	}
 
@@ -294,8 +315,7 @@ class EditRoundQuestion extends Component {
 			}	
 			else
 			{
-				console.log(that.state.fields['answerType']);
-				if (that.state.fields['answerType'] === 1 && type === 'check') {
+				if (parseInt(that.state.fields['answerType']) === 1 && type === 'check') {
 					var obj = value;
 					obj.correctAnswer = false;
 					return obj;
@@ -497,7 +517,14 @@ class EditRoundQuestion extends Component {
 			                                    <div className="answer-box">
 			                                        <p className="fancy">
 			                                            <label >
-			                                            {(val.correctAnswer) ?  <i className="fa fa-check-circle" onClick={this.changeAnswer.bind(this,key,'uncheck')} /> : <i className="far fa-circle" onClick={this.changeAnswer.bind(this,key,'check')} /> }
+			                                            {  (val.correctAnswer) ?  
+			                                            	 (parseInt(this.state.fields['answerType']) === 1 || parseInt(this.state.fields['answerType']) === 2) ?
+			                                            		 <i className="fa fa-check-circle" onClick={this.changeAnswer.bind(this,key,'uncheck')} /> : 
+			                                            		 <i className="fa fa-check-circle" /> 
+			                                            :  (parseInt(this.state.fields['answerType']) === 1 || parseInt(this.state.fields['answerType']) === 2) ?
+					                                            <i className="far fa-circle" onClick={this.changeAnswer.bind(this,key,'check')} /> : 
+					                                            <i className="far fa-circle" /> 
+														}
 			                                                
 			                                                <span for={key}>{val.answer}</span>
 			                                            </label>
@@ -515,7 +542,8 @@ class EditRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
-		                                    <button className="blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add More Answers</button>
+		                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
+		                                    <button className="blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add More Answers</button> }
 		                                    <button className="yellow_btn" type="button"  onClick={this.updateHandler.bind(this) } >Save & Exit</button>
 	                                    </div> 
 	                                </div>
@@ -544,9 +572,9 @@ class EditRoundQuestion extends Component {
 	                                    <img src="./murabbo/img/help.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChangeAnswer.bind(this,'answer')} value={this.state.fieldsAnswer['answer']} />
 	                                    <label>Answer</label>
 	                                </div>
-	                                <span style={{top:'0'}} className="error-msg">{this.state.errorsAnswer["answer"]}</span>
+	                                <span className="error-msg">{this.state.errorsAnswer["answer"]}</span>
 
-					                <div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
+									{/*<div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
 					                     <div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
 					                        <img src="./murabbo/img/answer.svg" /> <label className="cus_label">Show Correct Answer</label>
 					                    </div>
@@ -558,7 +586,7 @@ class EditRoundQuestion extends Component {
 					                      <label for="switch-orange" className="lbl-off"></label>
 					                      <label for="switch-orange" className="lbl-on"></label>
 					                    </div>
-					                </div>
+					                </div>*/}
 					               
 					                <div className="full_btn">
 					                    <button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"  onClick={this.saveAnswerModel.bind(this)} >Done</button>

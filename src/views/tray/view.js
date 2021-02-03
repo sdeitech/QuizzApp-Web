@@ -74,7 +74,7 @@ class RoundTray extends Component {
 			{
 
 				var fields = this.state.fields;
-				fields['timeLimit'] = fields['timeLimit'] + 1;
+				fields['timeLimit'] = (fields['timeLimit'] === 300) ? 300 : (fields['timeLimit'] + 1);
 				this.setState({fields});
 			}
 		}
@@ -202,7 +202,7 @@ class RoundTray extends Component {
         this.setState({fields});
 
         let errors = {};
-        if(field === 'title' && !fields["title"]){
+        if(field === 'title' && fields["title"].trim() === ''){
             errors["title"] = "Please enter title";
         }
 
@@ -221,13 +221,15 @@ class RoundTray extends Component {
         this.setState({errors: errors});
 
     }
-    updateRoundHandler(e,type='')
+
+
+    updateRoundHandler(type='',e)
     {
     	let fields = this.state.fields;
         let formIsValid = true;
 
     	let errors = {};
-        if(!fields["title"]){
+        if(fields["title"].trim() === ''){
             errors["title"] = "Please enter title";formIsValid = false;
         }
 
@@ -260,7 +262,7 @@ class RoundTray extends Component {
             if(this.state.fields.image === 'image'){
                 data.append('image', this.uploadInput.files[0]);
             } 
-            console.log(data);
+            // console.log(data);
             fetch(configuration.baseURL+"round/round/"+this.state.fields._id, {
                 method: "PUT",
                 headers: {
@@ -273,6 +275,7 @@ class RoundTray extends Component {
             }).then((data) => {
                 if(data.code === 200){
                 	this.getList(contest_id);
+                	console.log(type);
                 	if (type === 'roundquestion') {
                 		this.props.history.push('/roundquestion/'+e);	
                 	}
@@ -297,7 +300,6 @@ class RoundTray extends Component {
     saveNextHandler(id,e)
     {
     	this.updateRoundHandler('roundquestion',id);
-    	this.props.history.push('/roundquestion/'+id);
     }
 
 
@@ -424,14 +426,14 @@ class RoundTray extends Component {
 					                                      </label>
 					                                    </form>
 					                                </div>
-					                                <span style={{top:'0'}} className="error-msg">{this.state.errors["image"]}</span>
+					                                <span  className="error-msg">{this.state.errors["image"]}</span>
 					                            </div>
 					                            <div className="col-lg-4 col-md-6 col-sm-12">
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/title.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'title')} value={this.state.fields['title']} />
 					                                    <label>Title</label>
 					                                </div>
-					                                <span style={{top:'0'}} className="error-msg">{this.state.errors["title"]}</span>
+					                                <span  className="error-msg">{this.state.errors["title"]}</span>
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/des.svg" alt="Upload"/> <input type="text" required onChange={this.handleChange.bind(this,'description')} name="" value={this.state.fields['description']} />
 					                                    <label>Description</label>
@@ -444,7 +446,7 @@ class RoundTray extends Component {
 					                                    </select>
 					                                    <label>Execution Mode</label>
 					                                </div>
-					                                <span style={{top:'0'}} className="error-msg">{this.state.errors["execution_mode"]}</span>
+					                                <span  className="error-msg">{this.state.errors["execution_mode"]}</span>
 					                               
 					                            </div>
 					                            <div className="col-lg-4 col-md-6 col-sm-12">
@@ -497,12 +499,12 @@ class RoundTray extends Component {
 					                                    <img src="./murabbo/img/score.svg" alt="Upload"/> 
 					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'scoring')} value={this.state.fields['scoring']} required>
 									                      	<option value=""></option>
-									                      	<option value="1">Manual</option>
+									                      	<option value="1">Moderator Driven</option>
 									                      	<option value="2">Automatic</option>
 					                                    </select>
 					                                    <label>Scoring</label>
 					                                </div>
-					                                <span style={{top:'0'}} className="error-msg">{this.state.errors["scoring"]}</span>
+					                                <span  className="error-msg">{this.state.errors["scoring"]}</span>
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/3d.svg" alt="Upload"/> 
 					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'renderingMode')} value={this.state.fields['renderingMode']} required>
@@ -512,7 +514,7 @@ class RoundTray extends Component {
 					                                    </select>
 					                                    <label>Rendering Mode</label>
 					                                </div>
-					                                <span style={{top:'0'}} className="error-msg">{this.state.errors["renderingMode"]}</span>
+					                                <span  className="error-msg">{this.state.errors["renderingMode"]}</span>
 					                               
 					                            </div>
 					                        </div>
