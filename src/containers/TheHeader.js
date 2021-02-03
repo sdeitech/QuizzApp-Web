@@ -342,6 +342,7 @@ class TheHeader extends Component {
                     this.setState({openModelForgot:!this.state.openModelForgot,openModelReset:!this.state.openModelReset})
                     fields.email = '';
                     this.setState({forgotFields:fields});
+                    this.handleCloseClick();
                 }
                 else
                 {
@@ -394,7 +395,9 @@ class TheHeader extends Component {
                     fields.password = '';
                     fields.email = '';
                     this.setState({loginFields:fields});
+                    var that = this;
                     configuration.saveTokenData(data.data,function(payload){
+                        that.handleCloseClick();
                         window.location.href = '/#/contest'
                     });
                 }
