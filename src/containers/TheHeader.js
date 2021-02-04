@@ -288,12 +288,13 @@ class TheHeader extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
+                                      
+                    this.handleCloseClick();
                     this.setState({openModelForgot:false,openModelReset:false,openModelCongratulation:true})
                     fields.otp = '';
                     fields.password = '';
                     fields.confirm_password = '';
-                    this.setState({resetFields:fields});                    
-                    this.handleCloseClick();
+                    this.setState({resetFields:fields});  
                 }
                 else if(data.code === 400){
                     return toast.error('Invalid OTP!');
@@ -338,11 +339,11 @@ class TheHeader extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
+                    this.handleCloseClick();
                     this.setState({resetFields:{},resetErrors: {}});
-                    this.setState({openModelForgot:!this.state.openModelForgot,openModelReset:!this.state.openModelReset})
+                    this.setState({openModelForgot:!this.state.openModelForgot,openModelReset:true})
                     fields.email = '';
                     this.setState({forgotFields:fields});
-                    this.handleCloseClick();
                 }
                 else
                 {
@@ -505,7 +506,7 @@ class TheHeader extends Component {
                         <nav className="navbar navbar-expand-lg navbar-dark">
                             <h1 className="logo mr-auto">
                                 <a href="javascript:void(0);">
-                                    <img src="./murabbo/img/logo.svg" alt="logo"/>
+                                    <img src="./murabbo/img/logo.png" alt="logo"/>
                                 </a>
                             </h1>
                             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -692,6 +693,9 @@ class TheHeader extends Component {
 
                                             <div className="full_btn">
                                                 <button className="yellow_btn" type="button" onClick={this.handleForgotPasswordSubmit.bind(this)}>Submit</button>
+                                            </div>
+                                            <div className="forgot">
+                                                <span style={{ cursor:'pointer'}} onClick={this.handleClick.bind(this,'openModelForgot',false,'openModelLogin',true) }>Go Back</span>
                                             </div>
                                         </div>
                                     </div>

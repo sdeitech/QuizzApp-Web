@@ -45,7 +45,7 @@ class TheHeaderInner extends Component {
                 <nav class="navbar navbar-expand-lg navbar-dark">
                     <h1 class="logo mr-auto">
                         <a href="javascript:void(0);">
-                            <img src="./murabbo/img/logo.svg" alt="logo"/>
+                            <img src="./murabbo/img/logo.png" alt="logo"/>
                         </a>
                     </h1>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
