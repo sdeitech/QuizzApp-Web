@@ -85,7 +85,7 @@ class AddRoundQuestion extends Component {
         let fields = this.state.fields;
 
         if (field === 'answerType') {
-        	this.setState({answers:[],answerTypeBoolean:false});
+        	this.setState({answers:[],answerTypeBoolean:false});	
         }
 
 		if (field === 'negativeScoring') {
@@ -277,7 +277,7 @@ class AddRoundQuestion extends Component {
 			else
 			{
 				
-				if (that.state.fields['answerType'] === 1 && type === 'check') {
+				if (parseInt(that.state.fields['answerType']) === 1 && type === 'check') {
 					var obj = value;
 					obj.correctAnswer = false;
 					return obj;
@@ -291,7 +291,9 @@ class AddRoundQuestion extends Component {
 		this.setState({answers: answers});
 	}
 
-
+	truncate(str, n){
+	  return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+	};
 
 	render() {
 		$(document).ready(function() {
@@ -412,19 +414,19 @@ class AddRoundQuestion extends Component {
 					            <div className="col-lg-4 col-md-6 col-sm-12">
 	                                <div className="cus_input input_wrap">
 	                                    <img src="./murabbo/img/help.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'question')} value={this.state.fields['question']} />
-	                                    <label>Question</label>
+	                                    <label>Add Question</label>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["question"]}</span>
 	                                <div className="cus_input input_wrap">
 	                                    <img src="./murabbo/img/answer.svg" alt="Upload"/> 
 	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'answerType')} value={this.state.fields['answerType']} required>
-					                      	<option value="1">Single</option>
-					                      	<option value="2">Multiple</option>
+					                      	<option value="1">Single Select</option>
+					                      	<option value="2">Multi Select</option>
 					                      	<option value="3">Free Text</option>
-					                      	<option value="4">Flash card</option>
+					                      	<option value="4">Flashcard</option>
 					                      	<option value="5">True or False</option>
 	                                    </select>
-	                                    <label>Question Type</label>
+	                                    <label>Select Question Type</label>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["answerType"]}</span>
 		                               
@@ -439,9 +441,9 @@ class AddRoundQuestion extends Component {
 	                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
 	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
 					                      	<option value="2">Always</option>
-					                      	<option value="3">On Demand</option>
+					                      	<option value="3">On demand</option>
 	                                    </select>
-	                                    <label>Hint</label>
+	                                    <label>Show Hint</label>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["hint"]}</span>
 
@@ -492,7 +494,7 @@ class AddRoundQuestion extends Component {
 					                                            <i className="far fa-circle" /> 
 														}
 			                                                
-			                                                <span for={key}>{val.answer}</span>
+			                                                <span for={key}>{this.truncate(val.answer,250)}</span>
 			                                            </label>
 			                                        </p>
 			                                        <button style={{backgroundColor: '#17252B',marginLeft: '45px'}} type="button" className="remove_btn" onClick={this.deleteHandler.bind(this,key)}><img src="./murabbo/img/close2.svg" /> Remove</button>
@@ -509,7 +511,7 @@ class AddRoundQuestion extends Component {
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
 	                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
-		                                    <button className="blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add More Answers</button> }
+		                                    <button className="blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add {(this.state.answers.length > 0) ? 'More ' : '' }Answers</button> }
 		                                    <button className="yellow_btn" type="button"  onClick={this.addHandler.bind(this) } >Save & Exit</button>
 	                                    </div> 
 	                                </div>
@@ -535,7 +537,8 @@ class AddRoundQuestion extends Component {
                                     </div>
 
                                     <div className="cus_input input_wrap">
-	                                    <img src="./murabbo/img/help.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChangeAnswer.bind(this,'answer')} value={this.state.fieldsAnswer['answer']} />
+	                                    <img src="./murabbo/img/help.svg" alt="Upload"/> 
+	                                    <input type="text" required name="" onChange={this.handleChangeAnswer.bind(this,'answer')} value={this.state.fieldsAnswer['answer']} />
 	                                    <label>Answer</label>
 	                                </div>
 	                                <span className="error-msg">{this.state.errorsAnswer["answer"]}</span>

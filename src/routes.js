@@ -6,6 +6,8 @@ const Brand = React.lazy(() => import('./views/brand/view'))
 
 // Manage Contests
 const Contest = React.lazy(() => import('./views/contest/view'))
+const GamesHistory = React.lazy(() => import('./views/games_history/view'))
+
 const AddContest = React.lazy(() => import('./views/contest/add'))
 const EditContest = React.lazy(() => import('./views/contest/edit'))
 
@@ -25,6 +27,8 @@ const EditRoundQuestion = React.lazy(() => import('./views/roundquestion/edit'))
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
     { path: '/contest', name: 'Contest', component: Contest },
+    { path: '/games_history', name: 'GamesHistory', component: GamesHistory },
+    
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
     { path: '/tray', name: 'Tray', component: Tray },

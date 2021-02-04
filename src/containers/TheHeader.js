@@ -119,7 +119,7 @@ class TheHeader extends Component {
         else{
             let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if(field === 'password' && !re.test(fields["password"])){
-                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters";
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
             }
         }
 
@@ -210,7 +210,7 @@ class TheHeader extends Component {
         else{
             let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if(field === 'password' && !re.test(fields["password"])){
-                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters";
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
             }
         }
 
@@ -255,7 +255,7 @@ class TheHeader extends Component {
             let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if(!re.test(fields["password"])){
                 formIsValid = false;
-                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters";
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
             }
         }
 
@@ -441,7 +441,7 @@ class TheHeader extends Component {
             let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if(!re.test(fields["password"])){
                 formIsValid = false;
-                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters";
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
             }
         }
 
@@ -488,7 +488,7 @@ class TheHeader extends Component {
                     fields.confirm_password = '';
                     this.setState({fields});
                     this.handleCloseClick();
-                    return toast.info('Your are register successfully');
+                    return toast.info('Your are register successfully. Please check your mail and verify.');
                 }
                 
             });
@@ -555,7 +555,7 @@ class TheHeader extends Component {
                             <div className="modal-body">
                                 <div className="model_data">
                                     <div className="model-title">
-                                        <h3>Welcome to Murrabbo!</h3>
+                                        <h3>Welcome to Murabbo!</h3>
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg" />
                                     <img className="shape3" src="./murabbo/img/shape3.svg" />

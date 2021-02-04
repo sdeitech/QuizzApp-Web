@@ -120,7 +120,7 @@ class EditRoundQuestion extends Component {
         let fields = this.state.fields;
 
         if (field === 'answerType') {
-        	this.setState({answers:[],answerTypeBoolean:false});
+        	this.setState({answers:[],answerTypeBoolean:false});	
         }
 
 		if (field === 'negativeScoring') {
@@ -328,7 +328,10 @@ class EditRoundQuestion extends Component {
 		})
 		this.setState({answers: answers});
 	}
-
+	
+	truncate(str, n){
+	  return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+	}
 
 
 	render() {
@@ -365,7 +368,7 @@ class EditRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="main_title">
-	                                        <h3>Create Quiz Question</h3>  
+	                                        <h3>Edit Quiz Question</h3>  
 	                                    </div> 
 	                                </div>
 	                            </div>
@@ -453,10 +456,10 @@ class EditRoundQuestion extends Component {
 	                                <div className="cus_input input_wrap">
 	                                    <img src="./murabbo/img/answer.svg" alt="Upload"/> 
 	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'answerType')} value={this.state.fields['answerType']} required>
-					                      	<option value="1">Single</option>
-					                      	<option value="2">Multiple</option>
+					                      	<option value="1">Single Select</option>
+					                      	<option value="2">Multi Select</option>
 					                      	<option value="3">Free Text</option>
-					                      	<option value="4">Flash card</option>
+					                      	<option value="4">Flashcard</option>
 					                      	<option value="5">True or False</option>
 	                                    </select>
 	                                    <label>Question Type</label>
@@ -474,9 +477,9 @@ class EditRoundQuestion extends Component {
 	                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
 	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
 					                      	<option value="2">Always</option>
-					                      	<option value="3">On Demand</option>
+					                      	<option value="3">On demand</option>
 	                                    </select>
-	                                    <label>Hint</label>
+	                                    <label>Show Hint</label>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["hint"]}</span>
 
@@ -526,7 +529,7 @@ class EditRoundQuestion extends Component {
 					                                            <i className="far fa-circle" /> 
 														}
 			                                                
-			                                                <span for={key}>{val.answer}</span>
+			                                                <span for={key}>{this.truncate(val.answer,250)}</span>
 			                                            </label>
 			                                        </p>
 			                                        <button style={{backgroundColor: '#17252B',marginLeft: '45px'}} type="button" className="remove_btn" onClick={this.deleteHandler.bind(this,key)}><img src="./murabbo/img/close2.svg" /> Remove</button>
@@ -543,7 +546,7 @@ class EditRoundQuestion extends Component {
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
 		                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
-		                                    <button className="blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add More Answers</button> }
+		                                    <button className="blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add {(this.state.answers.length > 0) ? 'More ' : '' }Answers</button> }
 		                                    <button className="yellow_btn" type="button"  onClick={this.updateHandler.bind(this) } >Save & Exit</button>
 	                                    </div> 
 	                                </div>

@@ -1760,3 +1760,13 @@ p.addmore {
     color: rgb(57, 99, 109);
     margin-right: 15px;
 }
+
+.answer-box p.fancy {
+    min-height: 160px;
+    max-height: 160px;
+}
+
+.list-answer-box p.fancy {
+    min-height: 100px;
+    max-height: 100px;
+}

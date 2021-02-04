@@ -92,6 +92,15 @@ class RoundQuestion extends Component {
 		this.props.history.push('/edit_round_question/'+round_id +'?'+id);
 	}
 
+	saveNextHandler()
+	{
+		this.props.history.push('/contest');
+	}
+
+	truncate(str, n){
+	  return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+	}
+
 
 	toggleHandler(key)
 	{
@@ -162,19 +171,19 @@ class RoundQuestion extends Component {
 			                                            <div className="col-md-2">
 			                                               
 			                                            </div>
-			                                            <div className="col-md-10">
+			                                            <div className="col-md-10 ">
 			                                                <div className="acc_detail" style={{marginBottom:'20px'}}>
 			                                                    <button type="button" className="remove_btn"  onClick={this.deleteHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/close2.svg" /> Remove</button>
-			                                                    <button type="button" className="remove_btn" style={{cursor:'pointer'}}><img src="./murabbo/img/edit.svg" onClick={this.editHandler.bind(this,val._id)}  /> Edit</button>
+			                                                    <button type="button" className="remove_btn" onClick={this.editHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/edit.svg"   /> Edit</button>
 			                                                </div>
 			                                                <div className="answer">
 			                                                	{val.answers.map((val1, ckey1) => {
-				                                                	return <div className="answer-box">
+				                                                	return <div className="answer-box list-answer-box">
 			                                                        <p className="fancy">
 			                                                            <label >
 			                                                            {(val1.correctAnswer === true) ? 
 			                                                              <i className="fa fa-check-circle" /> : <i className="far fa-circle" /> }
-			                                                              <span for={ckey1}>{val1.answer}</span>
+			                                                              <span for={ckey1}>{this.truncate(val1.answer,450)}</span>
 			                                                            </label>
 			                                                        </p>
 			                                                    </div>
@@ -204,6 +213,7 @@ class RoundQuestion extends Component {
 			                                <div className="col-md-12">
 			                                    <div className="footer-btn">
 			                                        <button className="blue_btn" type="button" onClick={ this.addQuestion.bind(this) }>Add {(this.state.listArr.length > 0) ? 'More ' : '' }Question</button>
+			                                        <button className="pink_btn" type="button" onClick={this.saveNextHandler.bind(this)} >Save & Exit</button>
 			                                        {/*<button className="yellow_btn" type="button">Save</button>*/}
 			                                    </div> 
 			                                </div>

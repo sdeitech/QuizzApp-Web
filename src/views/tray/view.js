@@ -83,14 +83,14 @@ class RoundTray extends Component {
 			if(type === "minus")
 			{
 				var qty = this.state.qty;
-				qty = (qty === 0) ? 0 : (qty - 1);
+				qty = (qty === 1) ? 1 : (qty - 1);
 				this.setState({qty:qty});
 			}
 			else
 			{
 
 				var qty = this.state.qty;
-				qty = qty + 1;
+				qty = (qty === 9) ? 9 : (qty + 1);
 				this.setState({qty:qty});
 			}
 		}
@@ -337,7 +337,7 @@ class RoundTray extends Component {
 			                            <div className="row">
 			                                <div className="col-md-4">
 			                                    <div className="main_title">
-			                                        <h3>Create Contest</h3>  
+			                                        <h3>Rounds</h3>  
 			                                    </div> 
 			                                </div>
 			                                <div className="col-md-8">
@@ -381,7 +381,7 @@ class RoundTray extends Component {
 			                        
 		                                <div className="col-md-8 offset-md-2">
 		                                    <div className="footer-btn">
-		                                        <a href="#contest"><button className="pink_btn" type="button">Go To Dashboard</button></a>
+		                                        <a href="#contest"><button className="pink_btn" type="button">Save & Exit</button></a>
 		                                        <button className="blue_btn" type="button" onClick={() => this.setState({openModelRoundAdd:true}) }>Add Rounds</button>
 		                                    </div> 
 		                                </div>
@@ -400,7 +400,7 @@ class RoundTray extends Component {
 		                        </button>
 		                            <div className="model_data">
 		                                <div className="model-title">
-			                                <h3>Round Detail</h3>
+			                                <h3>Round Details</h3>
 		                                </div>
 		                                <div className="contest">
 
@@ -484,7 +484,7 @@ class RoundTray extends Component {
 									                (this.state.fields['negativeScoring'] === true) ? (
 						                                		<div>
 						                                			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-									                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points</label>
+									                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points(0 - 100)</label>
 									                                </div>
 									                                <div className="range-wrap">
 									                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
@@ -546,13 +546,12 @@ class RoundTray extends Component {
 		                       		 </button>
 								        <div className="model_data">
 								            <div className="model-title">
-								                <h3>Add Round</h3>
+								                <h3>Add Rounds</h3>
 								            </div>
 								            <div className="row round-box">
 								                <div className="col-lg-3 col-md-4 col-sm-6">
 							                        <div className="contest-box">
 							                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-							                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 							                            <img className="ico" src="./murabbo/img/hangman.svg" alt="" />
 							                            <h3>HangMan</h3>
 							                            <p></p>
@@ -562,7 +561,6 @@ class RoundTray extends Component {
 								                    <div >
 								                        <div className="contest-box purple-bg">
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/cups.svg" alt="" />
 								                            <h3>Match It</h3>
 								                            <p></p>
@@ -574,7 +572,6 @@ class RoundTray extends Component {
 								                    <div >
 								                        <div className="contest-box dark-pink">
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/abc.svg" alt="" />
 								                            <h3>Unscramble</h3>
 								                            <p></p>
@@ -585,7 +582,6 @@ class RoundTray extends Component {
 								                    <div >
 								                        <div className="contest-box coffee-bg">
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/brain.svg" alt="" />
 								                            <h3>Guess & Go</h3>
 								                            <p></p>
@@ -596,9 +592,8 @@ class RoundTray extends Component {
 								                    <div >
 								                        <div className="contest-box light-pink">
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/giberish.svg" alt="" />
-								                            <h3>Giberish</h3>
+								                            <h3>Gibberish</h3>
 								                            <p></p>
 								                        </div>
 								                    </div>
@@ -607,7 +602,6 @@ class RoundTray extends Component {
 								                    <div >
 								                        <div className="contest-box green-bg">
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/bingo.svg" alt="" />
 								                            <h3>Bingo</h3>
 								                            <p></p>
@@ -618,9 +612,8 @@ class RoundTray extends Component {
 								                    <div>
 								                        <div className="contest-box yellow-bg" style={{cursor:'pointer'}} onClick={this.clickHandler.bind(this,true)}>
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/quizz.svg" alt="" />
-								                            <h3>Quizz</h3>
+								                            <h3>Quiz</h3>
 								                            <p></p>
 								                        </div>
 								                        {
@@ -640,7 +633,6 @@ class RoundTray extends Component {
 								                    <div >
 								                        <div className="contest-box lightgreen">
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/padlock.svg" alt="" />
 								                            <h3>Taboo</h3>
 								                            <p></p>
@@ -656,7 +648,6 @@ class RoundTray extends Component {
 								                    <div >
 								                        <div className="contest-box grey-bg">
 								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" />
 								                            <img className="ico" src="./murabbo/img/more.svg" alt="" />
 								                            <h3></h3>
 								                            <p></p>

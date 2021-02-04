@@ -770,9 +770,10 @@ class EditContest extends Component {
 		                                <div className="contest">
 
 		                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
-				                                <input type="text" placeholder="Search by keywords"  value={this.state.searchCategoryTerm} onChange={this.searchUpdatedCategory.bind(this)}  /><i className='bx bx-search' ></i>
+				                                <input type="text" placeholder="Search Category"  value={this.state.searchCategoryTerm} onChange={this.searchUpdatedCategory.bind(this)}  /><i className='bx bx-search' ></i>
 			                                </div>
 									        {
+									        	(this.state.filterCategoryList.length > 0) ? 
 									        	this.state.filterCategoryList.map((e, key) => {
 															
 														return  <div className="row">
@@ -803,6 +804,11 @@ class EditContest extends Component {
 								                        }
 								                        </div>
 						                        	})
+
+									        	: 
+										        (
+										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No category available</p></div>
+										        )
 						                    }
 
 
@@ -833,11 +839,12 @@ class EditContest extends Component {
 		                                <div className="contest">
 		                                	<div className="row">
 		                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
-				                                <input type="text" value={this.state.searchTerm} placeholder="Search by keywords" onChange={this.searchUpdated.bind(this)} /><i className='bx bx-search' ></i>
+				                                <input type="text" value={this.state.searchTerm} placeholder="Search Brand" onChange={this.searchUpdated.bind(this)} /><i className='bx bx-search' ></i>
 			                                </div>
 
 						                    {
 
+						                    	(this.state.filterBrandList.length > 0) ? 
 						                    	this.state.filterBrandList.map((brand, key) => {
 								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container brand">
 										                        <input className="brandCheckbox" type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
@@ -851,6 +858,10 @@ class EditContest extends Component {
 										                        </label>
 										                    </div>
 										                })
+						                    	: 
+										        (
+										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No brand available</p></div>
+										        )
 						                    }
 								        	</div>
 
@@ -872,7 +883,7 @@ class EditContest extends Component {
 			                            <div className="row">
 			                                <div className="col-md-4">
 			                                    <div className="main_title">
-			                                        <h3>Edit Contest</h3>  
+			                                        <h3>Contest Details</h3>  
 			                                    </div> 
 			                                </div>
 			                                <div className="col-md-8">
