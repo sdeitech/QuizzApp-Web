@@ -78,6 +78,9 @@ class TheHeader extends Component {
         else if (stateName1 === 'openModelLogin') {
             this.setState({openModelLogin:value1});
         }
+        else if (stateName1 === 'openModelForgot') {
+            this.setState({openModelForgot:value1});
+        }
     }
 
     handleCloseClick(e) {
@@ -642,7 +645,7 @@ class TheHeader extends Component {
                                             </div> 
                                             <span className="error-msg">{this.state.loginErrors["password"]}</span>
                                             <div className="full_btn">
-                                                <button className="yellow_btn" type="button" onClick={this.handleLoginSubmit.bind(this)}>Login</button>
+                                                <button className="blue_btn" type="button" onClick={this.handleLoginSubmit.bind(this)}>Login</button>
                                             </div>
                                             <div className="forgot">
                                                 <span style={{ cursor:'pointer'}} onClick={this.handleClick.bind(this,'openModelForgot',true,'openModelLogin',false) } >Forgot password?</span>
@@ -653,7 +656,7 @@ class TheHeader extends Component {
                                             </div>
 
                                             <div className="full_btn mt50">
-                                                <button onClick={this.handleClick.bind(this,'openModelLogin',false,'openModelRegister',true) } className="blue_btn" type="button">Create Account</button>
+                                                <button onClick={this.handleClick.bind(this,'openModelLogin',false,'openModelRegister',true) } className="yellow_btn" type="button">Create Account</button>
                                             </div>
                                         </div>
                                     </div>
@@ -692,7 +695,7 @@ class TheHeader extends Component {
                                             </div>  <span className="error-msg">{this.state.forgotErrors["email"]}</span>
 
                                             <div className="full_btn">
-                                                <button className="yellow_btn" type="button" onClick={this.handleForgotPasswordSubmit.bind(this)}>Submit</button>
+                                                <button className="blue_btn light_blue_btn" type="button" onClick={this.handleForgotPasswordSubmit.bind(this)}>Reset</button>
                                             </div>
                                             <div className="forgot">
                                                 <span style={{ cursor:'pointer'}} onClick={this.handleClick.bind(this,'openModelForgot',false,'openModelLogin',true) }>Go Back</span>
@@ -746,7 +749,10 @@ class TheHeader extends Component {
                                             <span className="error-msg">{this.state.resetErrors["confirm_password"]}</span>
 
                                             <div className="full_btn">
-                                                <button className="yellow_btn" type="button" onClick={this.handleResetPasswordSubmit.bind(this)}>Submit</button>
+                                                <button className="blue_btn light_blue_btn" type="button" onClick={this.handleResetPasswordSubmit.bind(this)}>Submit</button>
+                                            </div>
+                                            <div className="forgot">
+                                                <span style={{ cursor:'pointer'}} onClick={this.handleClick.bind(this,'openModelReset',false,'openModelForgot',true) }>Go Back</span>
                                             </div>
                                         </div>
                                     </div>

@@ -2,6 +2,10 @@ import React, {Component} from 'react'
 import Session from '../session';
 import {reactLocalStorage} from 'reactjs-localstorage';
 import configuration from '../config';
+import {
+    CModal,
+    CModalBody,
+  } from '@coreui/react';
 var jwt = require('jsonwebtoken');
 class TheHeaderInner extends Component {
 
@@ -9,7 +13,8 @@ class TheHeaderInner extends Component {
         super(props);
         this.state = {
             profile_picture:'avatars/placeholder-user.png',
-            name:''
+            name:'',
+            confirmationModel:false
         };
     }
 
@@ -29,14 +34,21 @@ class TheHeaderInner extends Component {
             }
         });
     }
+ 
 
-    handleLogout()
+    handleLogout(check,e)
     {
-        reactLocalStorage.set('token', '');
-        reactLocalStorage.set('userData', '');
-        reactLocalStorage.set('is_login', 'false');
-        window.location.href = '/#/'
-    }    
+        if (check) {
+            reactLocalStorage.set('token', '');
+            reactLocalStorage.set('userData', '');
+            reactLocalStorage.set('is_login', 'false');
+            window.location.href = '/#/'
+        }
+        else
+        {
+            this.setState({confirmationModel:true});
+        }
+    }
     render() {
         return (
         <header id="header" class="fixed-top">
@@ -74,7 +86,7 @@ class TheHeaderInner extends Component {
                                         <span style={{ cursor:'pointer'}}><li><i class='bx bx-bell'></i> Notifications</li></span>
                                         <span style={{ cursor:'pointer'}}><li><i class='bx bx-user'></i> Online Friend</li></span>
 
-                                        <span style={{ cursor:'pointer'}} onClick={this.handleLogout.bind(this)}><li><i class='bx bx-log-in' ></i> Logout</li></span>
+                                        <span style={{ cursor:'pointer'}} onClick={this.handleLogout.bind(this,false)}><li><i class='bx bx-log-in' ></i> Logout</li></span>
                                     </div>
                                 </div>
                                 <li class="nav-item">
@@ -92,6 +104,40 @@ class TheHeaderInner extends Component {
                       </div>
                 </nav>
             </div>
+            <CModal show={this.state.confirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({confirmationModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({confirmationModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <img src='./murabbo/img/exit.png' alt=""  />
+                                        <h3>Are you sure!</h3>
+                                        <h4>You really want to logout ?</h4>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                        
+                                            <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+                                                <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.handleLogout.bind(this,true)} >Logout</button>
+                                            </div>
+                                            <div style={{ textAlign: 'center' , float:'left' }} className="">
+                                                <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({confirmationModel:false})} >Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
         </header>
     )
 }

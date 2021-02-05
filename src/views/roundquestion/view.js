@@ -212,7 +212,7 @@ class RoundQuestion extends Component {
 			                            <div className="row">
 			                                <div className="col-md-12">
 			                                    <div className="footer-btn">
-			                                        <button className="blue_btn" type="button" onClick={ this.addQuestion.bind(this) }>Add {(this.state.listArr.length > 0) ? 'More ' : '' }Question</button>
+			                                        <button className="blue_btn light_blue_btn" type="button" onClick={ this.addQuestion.bind(this) }>Add {(this.state.listArr.length > 0) ? 'More ' : '' }Question</button>
 			                                        <button className="pink_btn" type="button" onClick={this.saveNextHandler.bind(this)} >Save & Exit</button>
 			                                        {/*<button className="yellow_btn" type="button">Save</button>*/}
 			                                    </div> 
@@ -235,6 +235,7 @@ class RoundQuestion extends Component {
                             </button>
                                 <div className="model_data">
                                     <div className="model-title">
+                                    	<img src='./murabbo/img/close_pink.png' alt=""  />
                                     	<h3>Are you sure you want to delete?</h3>
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg"/>
@@ -243,10 +244,10 @@ class RoundQuestion extends Component {
                                         <div className="col-md-10 offset-md-1">
 
 							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                    <button  style={{minWidth: '150px',color: '#f8c84e',fontWeight: '500'}}  className="btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
 							                </div>
                                 			<div style={{ textAlign: 'center' , float:'left' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.deleteHandler.bind(this)} >Yes</button>
+							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.deleteHandler.bind(this)} >Yes</button>
 							                </div>
                                         </div>
                                     </div>

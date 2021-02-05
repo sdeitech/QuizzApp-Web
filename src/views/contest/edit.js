@@ -814,7 +814,7 @@ class EditContest extends Component {
 
 						                    
 						                    <div style={{ textAlign: 'center' }} class="">
-							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
+							                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
 							                </div>
 								        </div>
 		                            </div>
@@ -860,13 +860,13 @@ class EditContest extends Component {
 										                })
 						                    	: 
 										        (
-										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No brand available</p></div>
+										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"100px",marginBottom:"100px"}} className="flex"><p className="item-author text-color">No brand available</p></div>
 										        )
 						                    }
 								        	</div>
 
 						                    <div style={{ marginTop:"25px",textAlign: 'center' }} class="">
-							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
+							                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
 							                </div>
 								        </div>
 		                            </div>
@@ -1055,7 +1055,7 @@ class EditContest extends Component {
 			                            <div className="row">
 			                                <div className="col-md-12">
 			                                    <div className="footer-btn">
-			                                        <button className="blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Save & Next</button>
+			                                        <button className="blue_btn light_blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Save & Next</button>
 			                                    </div> 
 			                                </div>
 			                            </div>
@@ -1075,6 +1075,7 @@ class EditContest extends Component {
                             </button>
                                 <div className="model_data">
                                     <div className="model-title">
+                                    	<img src='./murabbo/img/close_pink.png' alt=""  />
                                     	<h3>Are you sure you want to delete?</h3>
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg"/>

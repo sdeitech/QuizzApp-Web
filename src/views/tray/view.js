@@ -22,6 +22,7 @@ class RoundTray extends Component {
 			errors:{},
 			openModelRoundAdd:false,
 			confirmationModel:false,
+			saveEndConfirmationModel:false,
 			openModel:false,
 			qtyAdd:false,
 			qty:1,
@@ -302,6 +303,18 @@ class RoundTray extends Component {
     	this.updateRoundHandler('roundquestion',id);
     }
 
+    
+    saveExitHandler(check,e)
+    {
+        if (check) {
+			this.props.history.push('/contest');
+        }
+        else
+        {
+            this.setState({saveEndConfirmationModel:true});
+        }
+    }
+
 
 	render() {
 		$(document).ready(function() {
@@ -381,8 +394,8 @@ class RoundTray extends Component {
 			                        
 		                                <div className="col-md-8 offset-md-2">
 		                                    <div className="footer-btn">
-		                                        <a href="#contest"><button className="pink_btn" type="button">Save & Exit</button></a>
-		                                        <button className="blue_btn" type="button" onClick={() => this.setState({openModelRoundAdd:true}) }>Add Rounds</button>
+		                                        <button className="blue_btn light_blue_btn" type="button" onClick={() => this.setState({openModelRoundAdd:true}) }>Add Rounds</button>
+		                                        <button className="pink_btn" type="button"  onClick={this.saveExitHandler.bind(this,false)}>Save & Exit</button>
 		                                    </div> 
 		                                </div>
 				                    </div>
@@ -415,7 +428,7 @@ class RoundTray extends Component {
 					                                        <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
 					                                        <div id="start">
 					                                        	{(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
-					                                          <div id="notimage">Please select an image</div>
+					                                          
 					                                          <div id="add_image">Add Image</div></div> : null}
 															  
 					                                        </div>
@@ -463,7 +476,7 @@ class RoundTray extends Component {
 								                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus","timeLimit")}/></span>
 								                                </div>
 								                                <div style={{margin: '0px 0 5px 0'}} className="cus_input ">
-								                                    <label style={{paddingLeft: '5px'}} className="cus_label">Base Points</label>
+								                                    <label style={{paddingLeft: '5px'}} className="cus_label">Base Points (0 - 100)</label>
 								                                </div>
 							                                    <div className="range-wrap">
 							                                      <input min="0" max="100" value={this.state.fields['basePoints']} onChange={this.handleChange.bind(this,'basePoints')}  step="1" type="range" className="range" id="range" />
@@ -484,7 +497,7 @@ class RoundTray extends Component {
 									                (this.state.fields['negativeScoring'] === true) ? (
 						                                		<div>
 						                                			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-									                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points(0 - 100)</label>
+									                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points (0 - 100)</label>
 									                                </div>
 									                                <div className="range-wrap">
 									                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
@@ -521,13 +534,13 @@ class RoundTray extends Component {
 
 
 					                        <div style={{ textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={this.saveNextHandler.bind(this,this.state.fields['_id'])} >Save & Next</button>
+							                    <button  style={{minWidth: '150px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveNextHandler.bind(this,this.state.fields['_id'])} >Save & Next</button>
 							                </div>
 					                        <div style={{ textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button" >Generate Question</button>
+							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" >Generate Question</button>
 							                </div>
 						                    <div style={{ textAlign: 'center', float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button className="blue_btn" type="button"  onClick={this.updateRoundHandler.bind(this) } >Save & Exit</button>
+							                    <button className="pink_btn" type="button"  onClick={this.updateRoundHandler.bind(this) } >Save & Exit</button>
 							                </div>
 								        </div>
 		                            </div>
@@ -546,7 +559,7 @@ class RoundTray extends Component {
 		                       		 </button>
 								        <div className="model_data">
 								            <div className="model-title">
-								                <h3>Add Rounds</h3>
+								                <h3 style={{color: '#f8c748'}}>Add Rounds</h3>
 								            </div>
 								            <div className="row round-box">
 								                <div className="col-lg-3 col-md-4 col-sm-6">
@@ -657,7 +670,7 @@ class RoundTray extends Component {
 
 								                <div className="col-lg-12 col-md-12 col-sm-12">
 									                <div style={{ textAlign: 'center' }} className="">
-									                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={this.submitHandler.bind(this) } >Done</button>
+									                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.submitHandler.bind(this) } >Done</button>
 									                </div>
 								                </div>
 								            </div>
@@ -678,7 +691,10 @@ class RoundTray extends Component {
                             </button>
                                 <div className="model_data">
                                     <div className="model-title">
-                                    	<h3>Are you sure you want to delete?</h3>
+
+                                        <img src='./murabbo/img/close_pink.png' alt=""  />
+                                        <h3>Are you sure!</h3>
+                                        <h4>Are you sure,you want to delete this round?</h4>
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg"/>
                                     <img className="shape3" src="./murabbo/img/shape3.svg"/>
@@ -686,10 +702,12 @@ class RoundTray extends Component {
                                         <div className="col-md-10 offset-md-1">
 
 							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.deleteHandler.bind(this)} >Done</button>
 							                </div>
                                 			<div style={{ textAlign: 'center' , float:'left' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.deleteHandler.bind(this)} >Yes</button>
+
+							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >Cancel</button>
+							                    
 							                </div>
                                         </div>
                                     </div>
@@ -698,6 +716,42 @@ class RoundTray extends Component {
                             </div>
                         </CModalBody>
                     </CModal>
+
+                    <CModal show={this.state.saveEndConfirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({saveEndConfirmationModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({saveEndConfirmationModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <h3>Do you want to save?</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+
+							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+							                <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.saveExitHandler.bind(this,true)} >Yes</button>
+							                </div>
+                                			<div style={{ textAlign: 'center' , float:'left' }} className="">
+
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({saveEndConfirmationModel:false})} >No</button>
+							                    
+							                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
 			        </main>
 		        <TheFooter />
 		    </>

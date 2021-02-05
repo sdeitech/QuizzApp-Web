@@ -386,7 +386,6 @@ class EditRoundQuestion extends Component {
 	                                        <img className="display-profile-pic" src="" alt=""  />
 	                                        <div id="start">
 		                                        <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
-		                                          <div id="notimage">Please select an image</div>
 		                                          <div id="add_image">Add Image</div></div>
 	                                        </div>
 	                                        <div id="response" className="hidden">
@@ -546,8 +545,8 @@ class EditRoundQuestion extends Component {
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
 		                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
-		                                    <button className="blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add {(this.state.answers.length > 0) ? 'More ' : '' }Answers</button> }
-		                                    <button className="yellow_btn" type="button"  onClick={this.updateHandler.bind(this) } >Save & Exit</button>
+		                                    <button className="blue_btn light_blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add {(this.state.answers.length > 0) ? 'More ' : '' }Answers</button> }
+		                                    <button className="pink_btn" type="button"  onClick={this.updateHandler.bind(this) } >Save & Exit</button>
 	                                    </div> 
 	                                </div>
 	                            </div>

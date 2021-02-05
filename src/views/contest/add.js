@@ -657,7 +657,7 @@ class AddContest extends Component {
 
 						                    
 						                    <div style={{ textAlign: 'center' }} class="">
-							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
+							                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
 							                </div>
 								        </div>
 		                            </div>
@@ -702,13 +702,13 @@ class AddContest extends Component {
 										                })
 						                    	: 
 										        (
-										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No brand available</p></div>
+										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"100px",marginBottom:"100px"}} className="flex"><p className="item-author text-color">No brand available</p></div>
 										        )
 						                    }
 								        	</div>
 
 						                    <div style={{ marginTop:"25px",textAlign: 'center' }} class="">
-							                    <button class="blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
+							                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
 							                </div>
 								        </div>
 		                            </div>
@@ -757,7 +757,6 @@ class AddContest extends Component {
 			                                        <img className="display-profile-pic" src='' alt=""  />
 			                                        <div id="start">
 													  <img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
-			                                          <div id="notimage">Please select an image</div>
 			                                          <div id="add_image">Add Image</div>
 			                                        </div>
 			                                        <div id="response" className="hidden">
@@ -830,7 +829,7 @@ class AddContest extends Component {
 											<span className="error-msg">{this.state.errors["saveToId"]}</span>
 
 											<div style={{margin: '0px 0 5px 0'}} className="cus_input ">
-			                                    <img src="./murabbo/img/enable.svg" alt="Murabbo"/> <label className="cus_label">Player Type</label>
+			                                    <img src="./murabbo/img/mygames.png" alt="Murabbo"/> <label className="cus_label">Player Type</label>
 			                                </div>
 			                                <label className="control control--radio">Single
 												<input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} checked={(this.state.fields.playerType === '1' ? 'checked' : '')}/>
@@ -893,7 +892,7 @@ class AddContest extends Component {
 			                            <div className="row">
 			                                <div className="col-md-12">
 			                                    <div className="footer-btn">
-			                                        <button className="blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Save & Next</button>
+			                                        <button className="blue_btn light_blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Save & Next</button>
 			                                    </div> 
 			                                </div>
 			                            </div>

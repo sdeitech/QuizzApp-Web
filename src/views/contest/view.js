@@ -231,7 +231,7 @@ class Contest extends Component {
 			                            <div class="row">
 			                                <div class="col-md-8">
 			                                    <div class="main_title">
-			                                        <h3>All Contest</h3>  
+			                                        <h3>My Games</h3>  
 			                                    </div> 
 			                                </div>
 			                                <div class="col-md-4">
@@ -304,8 +304,8 @@ class Contest extends Component {
 												        labelledBy={"Select"} />
 			                                        </div>*/}
 			                                        <div class="lanfilter fil_btn" >
-			                                            <button className="pink_btn" type="button" onClick={this.handleClearAllFilter.bind(this)}>Clear All</button>
-			                                            <button className="blue_btn" type="button" onClick={this.handleApplyFilter.bind(this)}>Apply</button>
+			                                            <button className="blue_btn light_blue_btn" type="button" onClick={this.handleClearAllFilter.bind(this)}>Clear All</button>
+			                                            <button className="yellow_btn" type="button" onClick={this.handleApplyFilter.bind(this)}>Apply</button>
 			                                        </div>
 			                                    </div>
 			                                </div>
@@ -323,8 +323,9 @@ class Contest extends Component {
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
 			                                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" style={{ cursor:'pointer'}} onClick={this.removeContestHandler.bind(this,'no',e)} />
 			                                        <div class="cat_title2" style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>
-			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
+			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'}</h3>
 			                                            <p>{e.title}</p>
+			                                            <p className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</p>
 			                                        </div>
 			                                    </div>
 				                            </div>
@@ -349,6 +350,7 @@ class Contest extends Component {
                             </button>
                                 <div className="model_data">
                                     <div className="model-title">
+                                    	<img src='./murabbo/img/close_pink.png' alt=""  />
                                     	<h3>Are you sure you want to delete?</h3>
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg"/>
@@ -356,12 +358,13 @@ class Contest extends Component {
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
 
-							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+                                        	<div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
 							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
 							                </div>
                                 			<div style={{ textAlign: 'center' , float:'left' }} className="">
 							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.removeContestHandler.bind(this,'delete')} >Yes</button>
 							                </div>
+
                                         </div>
                                     </div>
                                 </div>
