@@ -128,8 +128,8 @@ class TheHeaderInner extends Component {
                                             <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
                                                 <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.handleLogout.bind(this,true)} >Logout</button>
                                             </div>
-                                            <div style={{ textAlign: 'center' , float:'left' }} className="">
-                                                <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({confirmationModel:false})} >Cancel</button>
+                                            <div style={{ textAlign: 'center' , float:'left'}} className="">
+                                                <button  style={{minWidth: '150px',color: '#f8c84e',fontWeight: '500'}}  className="btn" type="button"  onClick={()=> this.setState({confirmationModel:false})} >Cancel</button>
                                             </div>
                                         </div>
                                     </div>
