@@ -417,7 +417,7 @@ class AddRoundQuestion extends Component {
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["question"]}</span>
 	                                <div className="cus_input input_wrap">
-	                                    <img src="./murabbo/img/answer.svg" alt="Upload"/> 
+	                                    <img src="./murabbo/img/help.svg" alt="Upload"/> 
 	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'answerType')} value={this.state.fields['answerType']} required>
 					                      	<option value="1">Single Select</option>
 					                      	<option value="2">Multi Select</option>
@@ -449,7 +449,7 @@ class AddRoundQuestion extends Component {
 	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
 	                                <div>
                             			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points</label>
+		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
 		                                </div>
 		                                <div className="range-wrap">
 		                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
@@ -457,7 +457,9 @@ class AddRoundQuestion extends Component {
 		                                </div>
                             		</div> : null }
                             		{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-	                                    <label style={{paddingLeft: '5px'}} className="cus_label">Select Answer </label>
+
+		                            	<img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
+	                                    <label className="cus_label">Select Answer </label>
 	                                    <div className="button-switch">
 	                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['answerTypeBoolean']} onChange={this.handleChange.bind(this,'answerTypeBoolean')} />
 	                                      <label for="switch-orange" className="lbl-off"></label>
@@ -486,11 +488,11 @@ class AddRoundQuestion extends Component {
 			                                            <label >
 			                                            {  (val.correctAnswer) ?  
 			                                            	 (parseInt(this.state.fields['answerType']) === 1 || parseInt(this.state.fields['answerType']) === 2) ?
-			                                            		 <i className="fa fa-check-circle" onClick={this.changeAnswer.bind(this,key,'uncheck')} /> : 
-			                                            		 <i className="fa fa-check-circle" /> 
+			                                            		 <img  src="./murabbo/img/check-y.png"  className="fa fa-check-circle" onClick={this.changeAnswer.bind(this,key,'uncheck')} /> : 
+			                                            		 <img  src="./murabbo/img/check-y.png"   className="fa fa-check-circle" /> 
 			                                            :  (parseInt(this.state.fields['answerType']) === 1 || parseInt(this.state.fields['answerType']) === 2) ?
-					                                            <i className="far fa-circle" onClick={this.changeAnswer.bind(this,key,'check')} /> : 
-					                                            <i className="far fa-circle" /> 
+					                                            <span className="fa-circle" onClick={this.changeAnswer.bind(this,key,'check')} /> : 
+					                                            <span className="fa-circle" /> 
 														}
 			                                                
 			                                                <span for={key}>{this.truncate(val.answer,250)}</span>
@@ -510,7 +512,7 @@ class AddRoundQuestion extends Component {
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
 	                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
-		                                    <button className="blue_btn light_blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add {(this.state.answers.length > 0) ? 'More ' : '' }Answers</button> }
+		                                    <button className="blue_btn light_blue_btn" type="button"  onClick={this.openModel.bind(this) } >Add {(this.state.answers.length > 0) ? 'More ' : '' }Answer</button> }
 		                                    <button className="pink_btn" type="button"  onClick={this.addHandler.bind(this) } >Save & Exit</button>
 	                                    </div> 
 	                                </div>
@@ -536,9 +538,8 @@ class AddRoundQuestion extends Component {
                                     </div>
 
                                     <div className="cus_input input_wrap">
-	                                    <img src="./murabbo/img/help.svg" alt="Upload"/> 
 	                                    <input type="text" required name="" onChange={this.handleChangeAnswer.bind(this,'answer')} value={this.state.fieldsAnswer['answer']} />
-	                                    <label>Answer</label>
+	                                    <label>Type answer</label>
 	                                </div>
 	                                <span className="error-msg">{this.state.errorsAnswer["answer"]}</span>
 
@@ -571,9 +572,7 @@ class AddRoundQuestion extends Component {
 
                         <div>
                             <div className="modal-body">
-                                <button type="button" className="close"   onClick={()=> this.setState({confirmationModel:false,delete_id:''})}>
-                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                            </button>
+                                
                                 <div className="model_data">
                                     <div className="model-title">
                                     	<h3>Are you sure you want to delete?</h3>
@@ -584,10 +583,12 @@ class AddRoundQuestion extends Component {
                                         <div className="col-md-10 offset-md-1">
 
 							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.deleteHandler.bind(this,'')} >Yes</button>
 							                </div>
                                 			<div style={{ textAlign: 'center' , float:'left' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.deleteHandler.bind(this,'')} >Yes</button>
+
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                    
 							                </div>
                                         </div>
                                     </div>

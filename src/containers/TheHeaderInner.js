@@ -117,14 +117,14 @@ class TheHeaderInner extends Component {
                                 <div className="model_data">
                                     <div className="model-title">
                                         <img src='./murabbo/img/exit.png' alt=""  />
-                                        <h3>Are you sure!</h3>
-                                        <h4>You really want to logout ?</h4>
+                                        <h3>Logout</h3>
+                                        <h4>Do you want to logout?</h4>
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg"/>
                                     <img className="shape3" src="./murabbo/img/shape3.svg"/>
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
-                                        
+
                                             <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
                                                 <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.handleLogout.bind(this,true)} >Logout</button>
                                             </div>

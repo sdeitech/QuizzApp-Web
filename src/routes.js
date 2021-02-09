@@ -16,9 +16,13 @@ const Tray = React.lazy(() => import('./views/tray/view'))
 const Round = React.lazy(() => import('./views/round/view'))
 const AddRound = React.lazy(() => import('./views/round/add'))
 
+
+
 const RoundQuestion = React.lazy(() => import('./views/roundquestion/view'))
 const AddRoundQuestion = React.lazy(() => import('./views/roundquestion/add'))
 const EditRoundQuestion = React.lazy(() => import('./views/roundquestion/edit'))
+
+
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },

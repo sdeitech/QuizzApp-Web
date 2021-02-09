@@ -1022,15 +1022,20 @@ img.con-close {
 .cate-box {
     background: #22343C 0% 0% no-repeat padding-box;
     /*border: 1px solid #56D8F1;*/
-    border-radius: 20px;
+    border-radius: 10px;
     margin-bottom: 30px;
-    min-height: 116px;
+    min-height: 80px;
 }
 .cate-box img{
     width: 100%;
-    border-radius: 20px 20px 0px 0px;    
-    max-height: 70px;
-    min-height: 70px;
+    border-radius: 10px;    
+    max-height: 80px;
+    min-height: 80px;
+}
+
+
+.checked_title h3{
+    color:#f8c74a !important;
 }
 
 .brand .cate-box img{   
@@ -1045,7 +1050,25 @@ img.con-close {
     padding: 10px 0px;
     margin: 0;
     font-weight: 500;
+    padding-top: 5px;
 }
+
+
+
+.search-brand-cat input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: white !important;
+}
+.search-brand-cat input::-moz-placeholder { /* Firefox 19+ */
+  color: white !important;
+}
+.search-brand-cat input:-ms-input-placeholder { /* IE 10+ */
+  color: white !important;
+}
+.search-brand-cat input:-moz-placeholder { /* Firefox 18- */
+  color: white !important;
+}
+
+
 
 .lanfilter select {
     background: transparent;
@@ -1410,7 +1433,7 @@ button.remove_btn img{
 button.remove_btn img {
     margin-right: 5px;
     position: relative;
-    bottom: 1px;
+    bottom: 1px;  
 }
 .answer label {
     font: normal normal normal 14px Montserrat;
@@ -1419,7 +1442,22 @@ button.remove_btn img {
     padding-top: 20px;
 }
 
+.answer-box .remove_btn
+{
+    text-align: right;
+    padding-right: 0px;
+    padding-top: 0px;
+    float: right;
+    font-size: 17px;
+    position: absolute;
+    right: 9px;
+    top: 5px;
+}
 
+.answer-box .remove_btn img {
+    width: 20px;
+    margin-right: 0px !important;
+}
 
 .fancy label {
   display: inline-flex;
@@ -1655,8 +1693,8 @@ p.addmore {
 .checkbox-buttons-container input:checked + label {
     background-color: transparent;
     color: #fff;
-    border: 2px solid #fff;
-    border-radius: 20px;
+    border: 3px solid #f8c748;
+    border-radius: 10px;
 }
 
 .multi-select {
@@ -1762,8 +1800,9 @@ p.addmore {
     font-size: 26px;
     position: relative;
     top: 10px;
-    color: rgb(57, 99, 109);
+    color: rgb(10 15 19);
     margin-right: 15px;
+    height: 1em;
 }
 
 .answer-box p.fancy {
@@ -1811,4 +1850,10 @@ p.published {
 p.item-author.text-color {
     color: #898e90;
     font-weight: 500;
+}
+
+.round-box img.con-close {
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 2px;
 }

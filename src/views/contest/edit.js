@@ -794,11 +794,11 @@ class EditContest extends Component {
 										                        <label for={cat._id}>
 										                            <div style={{ marginBottom: '0' }} className="cate-box">
 										                                <img src={cat.image} />
-										                                <div className="cat_title">
-										                                    <h3 style={{fontSize: '11px'}}>{cat.name}</h3>
-										                                </div>
 										                            </div>
 										                        </label>
+										                        <div className="cat_title checked_title">
+								                                    <h3 style={{fontSize: '11px'}}>{cat.name}</h3>
+								                                </div>
 										                    </div>
 								                            })
 								                        }
@@ -846,16 +846,17 @@ class EditContest extends Component {
 
 						                    	(this.state.filterBrandList.length > 0) ? 
 						                    	this.state.filterBrandList.map((brand, key) => {
-								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container brand">
+								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
 										                        <input className="brandCheckbox" type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
 										                        <label for={brand._id}>
 										                            <div style={{ marginBottom: '0' }} className=" cate-box">
 										                                <img src={brand.image} />
-										                                <div className="cat_title">
-										                                    <h3>{brand.name}</h3>
-										                                </div>
+										                                
 										                            </div>
 										                        </label>
+										                        <div className="cat_title checked_title">
+								                                    <h3>{brand.name}</h3>
+								                                </div>
 										                    </div>
 										                })
 						                    	: 

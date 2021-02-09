@@ -394,8 +394,8 @@ class RoundTray extends Component {
 			                        
 		                                <div className="col-md-8 offset-md-2">
 		                                    <div className="footer-btn">
-		                                        <button className="blue_btn light_blue_btn" type="button" onClick={() => this.setState({openModelRoundAdd:true}) }>Add Rounds</button>
-		                                        <button className="pink_btn" type="button"  onClick={this.saveExitHandler.bind(this,false)}>Save & Exit</button>
+		                                        <button className="blue_btn light_blue_btn" style={{ letterSpacing: '2px'}} type="button" onClick={() => this.setState({openModelRoundAdd:true}) }>Add Rounds</button>
+		                                        <button className="pink_btn" type="button" style={{ letterSpacing: '2px'}} onClick={this.saveExitHandler.bind(this,false)}>Save & Exit</button>
 		                                    </div> 
 		                                </div>
 				                    </div>
@@ -686,9 +686,7 @@ class RoundTray extends Component {
 
                         <div>
                             <div className="modal-body">
-                                <button type="button" className="close"   onClick={()=> this.setState({confirmationModel:false})}>
-                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                            </button>
+                                
                                 <div className="model_data">
                                     <div className="model-title">
 
