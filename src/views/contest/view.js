@@ -326,6 +326,7 @@ class Contest extends Component {
 			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'}</h3>
 			                                            <p>{e.title}</p>
 			                                            <p className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</p>
+			                                           	
 			                                        </div>
 			                                    </div>
 				                            </div>

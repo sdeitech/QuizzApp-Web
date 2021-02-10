@@ -22,6 +22,9 @@ const RoundQuestion = React.lazy(() => import('./views/roundquestion/view'))
 const AddRoundQuestion = React.lazy(() => import('./views/roundquestion/add'))
 const EditRoundQuestion = React.lazy(() => import('./views/roundquestion/edit'))
 
+const DetailContest = React.lazy(() => import('./views/contest/detail'))
+const Invite = React.lazy(() => import('./views/startGame/view'))
+const StartGame = React.lazy(() => import('./views/startGame/start'))
 
 
 const routes = [
@@ -41,6 +44,11 @@ const routes = [
     { path: '/add_round', name: 'AddRound', component: AddRound },
     { path: '/choose_category', name: 'Category', component: Category },
     { path: '/choose_brand', name: 'Brand', component: Brand },
+    { path: '/detail-contest', name: 'DetailContest', component: DetailContest },
+    { path: '/start-game', name: 'Invite', component: Invite },
+    { path: '/play-game', name: 'StartGame', component: StartGame },
+
+    
 ]
 
 export default routes
