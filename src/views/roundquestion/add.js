@@ -123,7 +123,7 @@ class AddRoundQuestion extends Component {
 
     	if(formIsValid){
     		if(this.state.answers.length === 0 && parseInt(this.state.fields['answerType']) !== 5){
-				return toast.error('Add atleast one answer!');
+				return toast.error('Please add at least one answer');
 	        }
 
 	        if (parseInt(this.state.fields['answerType']) !== 5) {

@@ -483,7 +483,7 @@ class TheHeader extends Component {
                 return response.json();
             }).then((data) => {
                 if (data.code === 409) {
-                    return toast.error('Email already registered. Please try another one');
+                    return toast.error(data.message);
                 }else if(data.code === 200){
                     this.setState({openModelRegister:!this.state.openModelRegister})
                     fields.name = '';
@@ -492,7 +492,7 @@ class TheHeader extends Component {
                     fields.confirm_password = '';
                     this.setState({fields});
                     this.handleCloseClick();
-                    return toast.info('Your are register successfully. Please check your mail and verify.');
+                    return toast.info(data.message);
                 }
                 
             });

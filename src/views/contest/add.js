@@ -180,7 +180,7 @@ class AddContest extends Component {
 
 		let errors = {};		
 		if(typeof categoryListObj === 'undefined' || categoryListObj.length === 0){
-            errors["categoryIds"] = "Please select atleast one category";
+            errors["categoryIds"] = "Please select category";
         }
         this.setState({errors: errors});
         $('body').removeClass('modal-open');
@@ -296,7 +296,7 @@ class AddContest extends Component {
 
 		let errors = {};		
 		if(typeof categoryListObj === 'undefined' || categoryListObj.length === 0){
-            errors["categoryIds"] = "Please select atleast one category";
+            errors["categoryIds"] = "Please select category";
         }
         this.setState({errors: errors});
 
@@ -397,7 +397,7 @@ class AddContest extends Component {
 
         if(typeof categoryArr === 'undefined' || categoryArr.length === 0){
             formIsValid = false;
-            errors["categoryIds"] = "Please select atleast one category";
+            errors["categoryIds"] = "Please select category";
         }
 
         this.setState({errors: errors});
