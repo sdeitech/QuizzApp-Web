@@ -889,7 +889,7 @@ class EditContest extends Component {
 			                                </div>
 			                                <div className="col-md-8">
 			                                    <ul className="title-link">
-			                                        <li onClick={() => {this.props.history.push('/detail-contest');}} style={{ cursor:'pointer'}}><img src="./murabbo/img/play.svg" alt="Murabbo" /> Play</li>
+			                                        {/*<li onClick={() => {this.props.history.push('/detail-contest');}} style={{ cursor:'pointer'}}><img src="./murabbo/img/play.svg" alt="Murabbo" /> Play</li>*/}
 			                                        <li onClick={this.removeContestHandler.bind(this)} style={{ cursor:'pointer'}}><img src="./murabbo/img/close2.svg" alt="Murabbo" /> Remove</li>
 			                                        <li onClick={this.publishContestHandler.bind(this)} style={{ cursor:'pointer'}}><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="Murabbo" /> Publish</li>
 			                                    </ul>  

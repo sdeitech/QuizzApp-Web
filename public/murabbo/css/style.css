@@ -1137,7 +1137,8 @@ img.con-close {
     font: normal normal 300 14px Montserrat;
     letter-spacing: 0px;
     color: #FFFFFF;
-    padding: 0px 20px;
+    padding: 0px 20px;    
+    position: relative;
 }
 
 .cate-box3 {
@@ -2970,21 +2971,37 @@ img.position_right {
     max-height: 100px;
 }
 
-p.draft {
-    background-color: #e82d55;
-    margin-left: 10px;
-    padding: 4px 0px;
-    border-radius: 8px;    
-    width: 85px;
-    text-align: center;
+.draft {
+    background: #e82d55 0% 0% no-repeat padding-box;
+    font: normal normal normal 12px/25px Montserrat !important;
+    border-radius: 3px;
+    padding: 0px 10px;
+    font-size: 10px !important;
+    margin-top: 10px;
 }
 
-p.published {
-    background-color: #5fd8e7;
-    margin-left: 10px;
-    padding: 4px 0px;
-    border-radius: 8px;
-    width: 85px;
+.published {
+    background: #56D8F1 0% 0% no-repeat padding-box;
+    font: normal normal normal 12px/25px Montserrat !important;
+    border-radius: 3px;
+    padding: 0px 10px;
+    font-size: 10px !important;
+    margin-top: 10px;
+}
+
+
+.play_btn_contest {
+    background: #5da789 0% 0% no-repeat padding-box;
+    font: normal normal normal 12px/25px Montserrat !important;
+    border-radius: 3px;
+    padding: 0px 10px;
+    font-size: 10px !important;
+    margin-top: 10px;
+    float: right;
+    position: absolute !important;
+    right: 20px;
+    top: -6px;
+    min-width: 70px;
     text-align: center;
 }
 
@@ -2994,7 +3011,7 @@ p.published {
     text-align: center;
     padding: 10px 0 0;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 600;    
 }
 
 .light_blue_btn

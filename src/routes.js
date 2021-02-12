@@ -25,6 +25,7 @@ const EditRoundQuestion = React.lazy(() => import('./views/roundquestion/edit'))
 const DetailContest = React.lazy(() => import('./views/contest/detail'))
 const Invite = React.lazy(() => import('./views/startGame/view'))
 const StartGame = React.lazy(() => import('./views/startGame/start'))
+const MyAccount = React.lazy(() => import('./views/my_account/view'))
 
 
 const routes = [
@@ -47,6 +48,9 @@ const routes = [
     { path: '/detail-contest', name: 'DetailContest', component: DetailContest },
     { path: '/start-game', name: 'Invite', component: Invite },
     { path: '/play-game', name: 'StartGame', component: StartGame },
+
+    
+    { path: '/my_account', name: 'MyAccount', component: MyAccount },
 
     
 ]

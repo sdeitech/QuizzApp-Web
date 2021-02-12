@@ -20,7 +20,11 @@ class Contest extends Component {
         this.state = {
 			fields:{},
 			errors:{},
+			errorsPlay:{},
+			fieldsPlay:{display_name:'',password:''},
 			openModel:false,
+			playNewContestModel:false,
+			playContestModel:false,
 			confirmationModel:false,
 			listData:[],
 			categorySelected:[],
@@ -54,6 +58,41 @@ class Contest extends Component {
         } 
 
     }
+
+    handleChangePlay(field, e){  
+       let fields = this.state.fieldsPlay;
+    	fields[field] = e.target.value;
+    	this.setState({fieldsPlay:fields});
+
+    	let errors = {};
+        if(field === 'display_name' && fields["display_name"].trim() === ''){
+            errors["display_name"] = "Please enter Display Name";
+        }
+
+        if(field === 'password' && fields["password"].trim() !== '' && fields["password"].length < 6){
+            errors["password"] = "Please Game Password minimum size must be 6";
+        }
+        this.setState({errorsPlay: errors});
+
+    }
+
+
+    handleNext(){
+    	let fields = this.state.fieldsPlay;
+		let errors = {};
+        let formIsValid = true;
+        if(fields["display_name"].trim() === ''){
+            formIsValid = false;
+            errors["display_name"] = "Please enter Display Name";
+        }
+
+        if(fields["password"].trim() !== '' && fields["password"].length < 6){
+            errors["password"] = "Please Game Password minimum size must be 6";
+        }
+
+        this.setState({errorsPlay: errors});
+		if(formIsValid){ this.props.history.push('/detail-contest');}
+	}
 
     handleClearAllFilter()
     {
@@ -218,6 +257,10 @@ class Contest extends Component {
 	}
 
 
+	playContest(){
+		this.setState({playContestModel:true,errorsPlay:{display_name:'',password:''},fieldsPlay:{display_name:'',password:''}});
+	}
+
 	render() {
 		return (
 			<>
@@ -322,11 +365,10 @@ class Contest extends Component {
 			                                	<div class="cate-box2">
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
 			                                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" style={{ cursor:'pointer'}} onClick={this.removeContestHandler.bind(this,'no',e)} />
-			                                        <div class="cat_title2" style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>
-			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'}</h3>
-			                                            <p>{e.title}</p>
-			                                            <p className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</p>
-			                                           	
+			                                        <div class="cat_title2" style={{ cursor:'pointer'}} >
+			                                            <h3 onClick={this.editHandler.bind(this,e)}>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span style={{ cursor:'pointer'}} className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</span></h3>
+			                                            <p>{e.title} <p className="play_btn_contest" onClick={this.playContest.bind(this)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p></p>
+			                                            
 			                                        </div>
 			                                    </div>
 				                            </div>
@@ -373,6 +415,94 @@ class Contest extends Component {
                             </div>
                         </CModalBody>
                     </CModal>
+
+                    <CModal show={this.state.playContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playContestModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({playContestModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">                                	
+
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                			<div style={{ textAlign: 'center'}} className="">
+							                    <button  style={{minWidth: '250px',marginBottom: '10px'}}  className="blue_btn light_blue_btn" type="button" >Pick a Room</button>
+							                </div>
+							                <div style={{ textAlign: 'center'}} className="">
+							                   	<button  style={{minWidth: '250px',marginBottom: '10px'}}  className="yellow_btn" type="button"  onClick={()=> this.setState({playContestModel:false,playNewContestModel:true})}>Play New</button>
+							                </div>
+                                        	<div style={{ textAlign: 'center'}} className="">
+							                    <button  style={{minWidth: '250px',marginBottom: '10px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({playContestModel:false})} >Cancel</button>
+							                </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
+                    <CModal show={this.state.playNewContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playNewContestModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({playNewContestModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    	<h3>Set Password</h3>
+                                    	<h4>Password needs to be set for a private contest. Keeping it blank will make your contest Public to all.</h4>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                        	
+                                        	<div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/title.svg" /> 
+												<input required type="text"  onChange={this.handleChangePlay.bind(this, "display_name")} value={this.state.fieldsPlay["display_name"]}/>
+												<label>Display Name</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.errorsPlay["display_name"]}</span>
+
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/password.svg" />
+												<input required type="text"  onChange={this.handleChangePlay.bind(this, "password")} value={this.state.fieldsPlay["password"]}/>
+												<label>Game Password</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.errorsPlay["password"]}</span>
+                                        </div>
+                                        <div className="col-md-10 offset-md-1">
+
+							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+							                   	<button  style={{minWidth: '150px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.handleNext.bind(this)}>Next</button>
+							                </div>
+                                        	<div style={{ textAlign: 'center'}} className="">
+							                    <button  style={{minWidth: '150px', float:'left'}}  className="pink_btn" type="button"  onClick={()=> this.setState({playNewContestModel:false})} >Cancel</button>
+							                </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
 			        </main>
 		        <TheFooter />
 		    </>

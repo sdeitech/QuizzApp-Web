@@ -79,7 +79,7 @@ class TheHeaderInner extends Component {
                                         <img src={ this.state.profile_picture } alt="Team"/> {this.state.name}
                                     </div>
                                     <div class="dropdown-menu drop_menu" aria-labelledby="dropdownMenu2">
-                                        <a href="javascript:void(0);"><li><i class='bx bx-user'></i> My Account</li></a>
+                                        <a href="#/my_account"><li><i class='bx bx-user'></i> My Account</li></a>
                                         <a href="#/contest"><li><i class='bx bx-detail'></i> My Games</li></a>
                                         <a href="#/contest"><li><i class='bx bx-detail'></i> Games History</li></a>
                                         <span style={{ cursor:'pointer'}}><li><i class='bx bx-bookmark'></i> Leaderboard</li></span>
