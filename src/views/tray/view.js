@@ -377,17 +377,23 @@ class RoundTray extends Component {
 			                            </div>
 		                            </div>
 		                            <div className="row round-box">
-			                                { this.state.listArr.map((val, ckey) => {
-					                            return <div className="col-lg-2 col-md-3 col-sm-6 ">
-								                    <div className="contest-box yellow-bg">
-								                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
-								                        <img className="ico" src="./murabbo/img/quizz.svg" alt="" />
-								                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
-								                        <p></p>
-								                    </div>
-								                </div>
-					                            })
+			                                { 
+			                                	(this.state.listArr.length > 0) ?
+				                                	this.state.listArr.map((val, ckey) => {
+							                            return <div className="col-lg-2 col-md-3 col-sm-6 ">
+										                    <div className="contest-box yellow-bg">
+										                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+										                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
+										                        <img className="ico" src="./murabbo/img/quizz.svg" alt="" />
+										                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
+										                        <p></p>
+										                    </div>
+										                </div>
+						                            })
+					                            : 
+										        (
+										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"85px",marginBottom:"85px"}} className="flex"><p className="item-author text-color">No have any round</p></div>
+										        )
 	                        				}
 	                        		</div>
 		                            <div className="row" style={{marginBottom:'20px'}}>

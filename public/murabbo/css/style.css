@@ -2854,7 +2854,7 @@ img.position_right {
 }
 
 .multi-select {
-    width: 150px;
+    width: 200px;
     text-align: left;
     float: right;
 }
@@ -2948,7 +2948,7 @@ img.position_right {
     border-radius: 20px;
 }
 
-.fancy .fa-check-circle , .fancy .fa-circle
+.fancy .fa-check-circle , .fancy .fancy-circle , .fancy .fa-circle
 {
     display: inline-block;
     text-align: center;
@@ -3028,4 +3028,32 @@ p.item-author.text-color {
     border: 1px solid white;
     border-radius: 10px;
     padding: 2px;
+}
+
+select option {
+    background-color: #111b20;
+    color: #fff;
+}
+
+.answer-box .remove_btn
+{
+        background-color: rgb(23, 37, 43);
+    margin-left: 45px;
+    border-radius: 50px;
+    padding: 7px;
+    width: 30px !important;
+    height: 30px !important;
+}
+
+.answer-box .remove_btn img
+{
+    width: 13px;
+    bottom: 5px;
+    right: 1px;
+}
+
+
+.fancy .fancy-circle{
+    border-radius: 50% !important;
+    border: 3px solid gray;
 }

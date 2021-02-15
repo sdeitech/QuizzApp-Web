@@ -804,6 +804,7 @@ class AddContest extends Component {
 			                                    <img src="./murabbo/img/global.svg" alt="Murabbo"/> 
 			                                    
 												<select className="floating-select" onChange={this.handleChange.bind(this,'language')} value={this.state.fields.language} required>
+							                      	<option value=""></option>
 							                      	{
 		                                                languages.languages.map((e, key) => {
 		                                                    return <option value={e.name}>{e.name} </option>;
