@@ -278,7 +278,7 @@ class RoundTray extends Component {
                 	this.getList(contest_id);
                 	console.log(type);
                 	if (type === 'roundquestion') {
-                		this.props.history.push('/roundquestion/'+e);	
+                		this.props.history.push('/roundquestion/'+contest_id+'/'+e);	
                 	}
                 	this.setState({openModel:!this.state.openModel});
                 }
@@ -382,11 +382,11 @@ class RoundTray extends Component {
 				                                	this.state.listArr.map((val, ckey) => {
 							                            return <div className="col-lg-2 col-md-3 col-sm-6 ">
 										                    <div className="contest-box yellow-bg">
-										                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+										                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}/>
 										                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
-										                        <img className="ico" src="./murabbo/img/quizz.svg" alt="" />
+										                        <img className="ico" src="./murabbo/img/quizz.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
 										                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
-										                        <p></p>
+										                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}></p>
 										                    </div>
 										                </div>
 						                            })

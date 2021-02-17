@@ -90,9 +90,7 @@ class TheHeaderInner extends Component {
                                     </div>
                                 </div>
                                 <li class="nav-item">
-                                    <a data-toggle="modal" data-target="#setpin" class="nav-link" href="javascript:void(0);">
-                                        <button class="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Set Pin</button>
-                                    </a>
+                                    <button class="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Set Pin</button>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link " href="#/add_contest">

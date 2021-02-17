@@ -27,7 +27,8 @@ class EditRoundQuestion extends Component {
 			errorsAnswer:{},
 			openModel:false,
 			confirmationModel:false,
-			delete_id:''
+			delete_id:'',
+			tosterMsg:''
 		};
 	}
 
@@ -154,11 +155,12 @@ class EditRoundQuestion extends Component {
             errors["question"] = "Please enter question";formIsValid=false;
         }
 
-        this.setState({errors: errors});
+        this.setState({errors: errors,tosterMsg:''});
 
     	if(formIsValid){
     		if(this.state.answers.length === 0 && parseInt(this.state.fields['answerType']) !== 5){
-				return toast.error('Please add at least one answer');
+				this.setState({tosterMsg:'Please add at least one answer'});
+                 return false;
 	        }
 
 	        if (parseInt(this.state.fields['answerType']) !== 5) {
@@ -171,7 +173,9 @@ class EditRoundQuestion extends Component {
 					}
 				});
 				if (temp === false) {
-					return toast.error('Select atleast one answer correct!');
+					errors["correctAnswer"] = 'Select atleast one answer correct!';
+					this.setState({errors: errors});
+                 	return false;
 				}
 
 			}
@@ -218,7 +222,8 @@ class EditRoundQuestion extends Component {
                 }
                 else
                 {
-                    return toast.error(data.message);
+                    this.setState({tosterMsg:data.message});
+                 	return false;
                 }
                 
             });
@@ -297,7 +302,7 @@ class EditRoundQuestion extends Component {
     		}
 
     		answers.push(fields);
-    		this.setState({answers: answers});
+    		this.setState({answers: answers,tosterMsg:''});
     		this.setState({fieldsAnswer:{answer:''},errorsAnswer:{answer:''},openModel:false});
     	}
 	}
@@ -375,6 +380,16 @@ class EditRoundQuestion extends Component {
 	                        </div>
 	                    </div>
 	                    <div style={{paddingTop: '30px'}} className="contest-info">
+	                        <div className="row">
+		                        {(this.state.tosterMsg != '') ? (
+	                                <div className="tosterMsg tosterMsgQue">
+	                                    <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
+	                                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+	                                    </button>
+	                                    <span>{this.state.tosterMsg}</span>
+	                                </div>) : null
+	                            }
+	                        </div>
 	                        <div className="row">
 	                            <div className="col-lg-4 col-md-6 col-sm-12">
 	                                <div className="profile-img">
@@ -538,6 +553,9 @@ class EditRoundQuestion extends Component {
 			                            </div>
 	                            	})
 	                            }
+	                            <div className="col-lg-12 col-md-12 col-sm-12" style={{marginTop: '20px'}}>
+	                            	<span  className="error-msg">{this.state.errors["correctAnswer"]}</span>
+	                            </div>
 	                        </div>
 	                    </div>
 	                    <div className="contest-info">

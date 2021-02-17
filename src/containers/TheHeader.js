@@ -26,7 +26,8 @@ class TheHeader extends Component {
             openModelLogin:false,
             openModelReset:false,
             openModelCongratulation:false,
-            checkbox:false
+            checkbox:false,
+            tosterMsg:''
         };
     } 
     
@@ -81,6 +82,7 @@ class TheHeader extends Component {
         else if (stateName1 === 'openModelForgot') {
             this.setState({openModelForgot:value1});
         }
+        this.setState({tosterMsg:''});
     }
 
     handleCloseClick(e) {
@@ -300,11 +302,13 @@ class TheHeader extends Component {
                     this.setState({resetFields:fields});  
                 }
                 else if(data.code === 400){
-                    return toast.error('Invalid OTP!');
+                    this.setState({tosterMsg:'Invalid OTP!'});
+                    return false;
                 }
                 else
                 {
-                    return toast.error(data.message);
+                    this.setState({tosterMsg:data.message});
+                    return false;
                 }
                 
             });
@@ -350,7 +354,8 @@ class TheHeader extends Component {
                 }
                 else
                 {
-                    return toast.error(data.message);
+                    this.setState({tosterMsg:data.message});
+                    return false;
                 }
                 
             });
@@ -407,7 +412,8 @@ class TheHeader extends Component {
                 }
                 else
                 {
-                    return toast.error(data.message);
+                    this.setState({tosterMsg:data.message});
+                    return false;
                 }
                 
             });
@@ -483,7 +489,8 @@ class TheHeader extends Component {
                 return response.json();
             }).then((data) => {
                 if (data.code === 409) {
-                    return toast.error(data.message);
+                    this.setState({tosterMsg:data.message});
+                    return false;
                 }else if(data.code === 200){
                     this.setState({openModelRegister:!this.state.openModelRegister})
                     fields.name = '';
@@ -502,7 +509,7 @@ class TheHeader extends Component {
     render() {
         return (
             <div>
-                <ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
+                <ToastContainer position="top-right" autoClose={25000} style={{top:'80px'}}/>
                 
                 <header id="header" className="fixed-top">
                     <div className="container align-items-center">
@@ -565,6 +572,14 @@ class TheHeader extends Component {
                                     <img className="shape3" src="./murabbo/img/shape3.svg" />
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
+                                            {(this.state.tosterMsg != '') ? (
+                                                <div className="tosterMsg">
+                                                    <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
+                                                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                                    </button>
+                                                    <span>{this.state.tosterMsg}</span>
+                                                </div>) : null
+                                            }
                                             <div className="cus_input input_wrap">
                                                 <img src="./murabbo/img/username.svg" /> 
                                                 <input required type="text"  onChange={this.handleChangeRegister.bind(this, "name")} value={this.state.fields["name"]}/>
@@ -633,6 +648,13 @@ class TheHeader extends Component {
                                     <img className="shape3" src="./murabbo/img/shape3.svg"/>
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
+                                            {(this.state.tosterMsg != '') ? (
+                                                <div className="tosterMsg">
+                                                    <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
+                                                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                                    </button>
+                                                    <span>{this.state.tosterMsg}</span>
+                                                </div>) : null}
                                             <div className="cus_input input_wrap">
                                                 <img src="./murabbo/img/email.svg" /> 
                                                 <input required type="text" onChange={this.handleChangeLogin.bind(this, "email")} value={this.state.loginFields["email"]}/>
@@ -687,6 +709,14 @@ class TheHeader extends Component {
                                     <img className="shape3" src="./murabbo/img/shape3.svg"/>
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
+                                            {(this.state.tosterMsg != '') ? (
+                                                <div className="tosterMsg">
+                                                    <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
+                                                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                                    </button>
+                                                    <span>{this.state.tosterMsg}</span>
+                                                </div>) : null
+                                            }
                                             <div className="cus_input input_wrap">
                                                 <img src="./murabbo/img/email.svg" /> 
                                                 <input required type="text"  onChange={this.handleChangeForgotPassword.bind(this, "email")} value={this.state.forgotFields["email"]}/>
@@ -730,6 +760,14 @@ class TheHeader extends Component {
                                     <img className="shape3" src="./murabbo/img/shape3.svg"/>
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
+                                            {(this.state.tosterMsg != '') ? (
+                                                <div className="tosterMsg">
+                                                    <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
+                                                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                                    </button>
+                                                    <span>{this.state.tosterMsg}</span>
+                                                </div>) : null
+                                            }
                                             <div className="cus_input input_wrap">
                                                 <img src="./murabbo/img/otp.svg" /> 
                                                 <input required type="text"  onChange={this.handleChangeResetPassword.bind(this, "otp")} value={this.state.resetFields["otp"]}/>

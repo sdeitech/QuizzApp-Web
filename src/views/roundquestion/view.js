@@ -92,6 +92,12 @@ class RoundQuestion extends Component {
 		this.props.history.push('/edit_round_question/'+round_id +'?'+id);
 	}
 
+	backToRound(){
+		var url = window.location.href.split('/');
+        var contest_id=url[5];
+		this.props.history.push('/tray/'+contest_id);
+	}
+
 	saveNextHandler()
 	{
 		this.props.history.push('/contest');
@@ -182,7 +188,7 @@ class RoundQuestion extends Component {
 			                                                        <p className="fancy">
 			                                                            <label >
 			                                                            {(val1.correctAnswer === true) ? 
-			                                                              <i className="fa fa-check-circle" /> : <i className="far fa-circle" /> }
+			                                                              <i className="fa fa-check-circle" style={{cursor:'auto'}} /> : <span className="fancy-circle no-border" style={{cursor:'auto'}}></span> }
 			                                                              <span for={ckey1}>{this.truncate(val1.answer,450)}</span>
 			                                                            </label>
 			                                                        </p>
@@ -212,6 +218,7 @@ class RoundQuestion extends Component {
 			                            <div className="row">
 			                                <div className="col-md-12">
 			                                    <div className="footer-btn">
+			                                    	<button className="yellow_btn" type="button" onClick={ this.backToRound.bind(this) }>Back To Round</button>
 			                                        <button className="blue_btn light_blue_btn" type="button" onClick={ this.addQuestion.bind(this) }>Add {(this.state.listArr.length > 0) ? 'More ' : '' }Question</button>
 			                                        <button className="pink_btn" type="button" onClick={this.saveNextHandler.bind(this)} >Save & Exit</button>
 			                                        {/*<button className="yellow_btn" type="button">Save</button>*/}
