@@ -3109,3 +3109,21 @@ select:-webkit-autofill:focus {
     margin-left: 15px;
     margin-bottom: 30px;
 }
+
+
+
+.editprofile img.display-profile-pic {
+    width: 100px;
+    max-height: 100px;
+    min-height: 100px;
+    border-radius: 100%;
+}
+
+.editprofile .uploader label {
+    min-height: 0;
+    max-height: 210px;
+    border-radius: 100%;
+}
+.editprofile .uploader {
+    max-width: max-content;
+}

@@ -9,6 +9,9 @@ import {
     CModal,
     CModalBody,
   } from '@coreui/react';
+  import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import $ from 'jquery';
 var jwt = require('jsonwebtoken');
 
 class MyAccount extends Component {
@@ -16,7 +19,10 @@ class MyAccount extends Component {
         super(props);
         this.state = { 
         	profile_picture:'avatars/placeholder-user.png',
-            name:''
+            name:'',
+            editModel:false,
+            fields:{availabilityStatus:1},
+            errors:{},
 		};
 	}
 
@@ -35,13 +41,151 @@ class MyAccount extends Component {
                 that.setState({profilePic: (JSON.parse(reactLocalStorage.get('userData')).profilePic === '' ? 'avatars/placeholder-user.png' : JSON.parse(reactLocalStorage.get('userData')).profilePic), name:JSON.parse(reactLocalStorage.get('userData')).name})
             }
         });
+
+        var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+        fetch(configuration.baseURL+"user/userProfile?userId="+userId, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+            return response.json();
+        }).then((data)=> {
+            var data = data.data;
+            this.setState({fields:data});
+            if (data.image === '') {
+                this.setState({image: 'avatars/placeholder-user.png'})
+            }
+        });
+
+    }
+
+    handleUploadProfile(type, ev) {
+        let fields = this.state.fields;
+        fields['image'] = 'image';
+        this.setState({fields});
+        // console.log(this.uploadInput.files)
+    }
+
+    handleChange(field, e){   
+
+        let fields = this.state.fields;
+        if (field === 'availabilityStatus') {
+                fields[field] = parseInt(e.target.value); 
+        }
+        else
+        {
+            fields[field] = e.target.value; 
+        }
+        this.setState({fields});
+        let errors = {};
+
+        if(field === 'name' && fields["name"].trim() === ''){
+            errors["name"] = "Please enter name";
+        }
+
+        if(field === 'userStatus' && !fields["userStatus"]){
+            errors["userStatus"] = "Please enter status";
+        }
+
+        if(field === 'availabilityStatus' && !fields["availabilityStatus"]){
+            errors["availabilityStatus"] = "Please select availability status";
+        }
+
+        if(field === 'image' && !fields["image"]){
+            errors["image"] = "Please select image";
+        }
+
+        this.setState({errors: errors});
+
+    }
+
+    updateHandler(e)
+    {
+        let fields = this.state.fields;
+        let formIsValid = true;
+
+        let errors = {};
+        if(fields["name"].trim() === ''){
+            errors["name"] = "Please enter name";formIsValid = false;
+        }
+
+        if(!fields["userStatus"]){
+            errors["userStatus"] = "Please enter status";formIsValid = false;
+        }
+
+        if(!fields["availabilityStatus"]){
+            errors["availabilityStatus"] = "Please select availability status";formIsValid = false;
+        }
+
+        if(!fields["image"]){
+            errors["image"] = "Please select image";formIsValid = false;
+        }
+        this.setState({errors: errors});
+
+        if(formIsValid){
+            // console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
+            const data = new FormData();
+            data.append('id',this.state.fields._id);
+            data.append('name',this.state.fields.name);
+            data.append('userStatus',this.state.fields.userStatus);
+            data.append('availabilityStatus',this.state.fields.availabilityStatus);
+            if(this.state.fields.image === 'image'){
+                data.append('image', this.uploadInput.files[0]);
+            } 
+            // console.log(data);
+            fetch(configuration.baseURL+"user/userProfile", {
+                method: "PUT",
+                headers: {
+                    'contentType': "application/json",
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                },
+                body:data
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if(data.code === 200){
+                    this.setState({editModel:!this.state.editModel});
+                }
+                else
+                {
+                    return toast.error(data.message);
+                }
+                
+            });
+        }
     }
 
 	render() {
+
+        $(document).ready(function() {
+            var readURL = function(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        // console.log(e.target.result);
+                        $('.display-profile-pic').attr('src', e.target.result);
+                        $('.display-profile-pic').show();
+                        $('#start').hide();
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".file-upload").on('change', function(){
+                readURL(this);
+            });
+            $(".upload-button").on('click', function() {
+                $(".file-upload").click();
+            });
+        });
+
 		return (
 			<>
 				<TheHeaderInner />				
 					<main id="main">
+                    <ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
             <section id="contest" class="d-flex align-items-center">
                 <div class="container">
                     <div style={{ marginTop: '30px'}} class="contest-info">
@@ -126,7 +270,7 @@ class MyAccount extends Component {
                                             </div></a>
                                         </div>
                                         <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)"><div class="profile-setting">
+                                            <a href="javascript:void(0)" onClick={() => {this.setState({editModel:!this.state.editModel})}}><div class="profile-setting">
                                                 <img src="./murabbo/img/resume.svg"/>
                                                 <h3>Edit Profile <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
                                                 
@@ -140,6 +284,83 @@ class MyAccount extends Component {
                     </div>
                 </div>
             </section>
+            <CModal size="lg" show={this.state.editModel} onClose={() => this.setState({editModel:!this.state.editModel})} color="danger"  centered>
+                <CModalBody className="model-bg">
+
+                <div>
+                    <div className="modal-body">
+                        <button type="button" className="close"  onClick={()=> this.setState({editModel:false})}>
+                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                    </button>
+                        <div className="model_data">
+                            <div className="model-title">
+                                <h3>Edit Profile</h3>
+                            </div>
+                            <div className="contest editprofile">
+                                <div className="row">
+                                    <div className="col-lg-12 col-md-12 col-sm-12">
+                                        <div className="profile-img">
+                                            <form id="file-upload-form" className="uploader">
+                                              <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
+
+                                              <label for="file-upload" id="file-drag">
+                                                <img id="file-image"   src="#" alt="Preview" className="hidden"/>
+                                                <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
+                                                <div id="start">
+                                                    {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
+                                                  
+                                                  <div id="add_image">Add Image</div></div> : null}
+                                                  
+                                                </div>
+                                                <div id="response" className="hidden">
+                                                  <div id="messages"></div>
+                                                  
+                                                </div>
+                                              </label>
+                                            </form>
+                                        </div>
+
+                                        <span  className="error-msg">{this.state.errors["image"]}</span>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-lg-12 col-md-12 col-sm-12">
+                                        
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/title.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'name')} value={this.state.fields['name']} />
+                                            <label>Name</label>
+                                        </div>
+                                        <span  className="error-msg">{this.state.errors["name"]}</span>
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/des.svg" alt="Upload"/> <input type="text" required onChange={this.handleChange.bind(this,'userStatus')} name="" value={this.state.fields['userStatus']} />
+                                            <label>Status</label>
+                                        </div>
+                                        <span  className="error-msg">{this.state.errors["userStatus"]}</span>
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/book.svg" alt="Upload"/> 
+                                            <select className="floating-select" onChange={this.handleChange.bind(this,'availabilityStatus')} value={this.state.fields['availabilityStatus']} required>
+                                                <option value="1">Online</option>
+                                                <option value="2">Away</option>
+                                                <option value="3">DND</option>
+                                                <option value="4">Invisible</option>
+                                            </select>
+                                            <label>Availability Status</label>
+                                        </div>
+                                        <span  className="error-msg">{this.state.errors["availabilityStatus"]}</span>
+                                       
+                                    </div>
+                                </div>
+                                <div style={{ textAlign: 'center' , float:'left'}} className="col-md-12 footer-btn">
+                                    <button className="yellow_btn" type="button" onClick={()=> this.setState({editModel:false})} >Cancel</button>
+                                
+                                    <button className="pink_btn" type="button"  onClick={this.updateHandler.bind(this) } >Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </CModalBody>
+            </CModal>
         </main>
 		    </>
 		)
