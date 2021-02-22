@@ -14,12 +14,11 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery';
 let contest_id;
-
 class RoundTray extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-			fields:{timeLimit:1,execution_mode:1,onDemandNegativePoints:0,hint:''},
+			fields:{timeLimit:1,execution_mode:1},
 			errors:{},
 			openModelRoundAdd:false,
 			confirmationModel:false,
@@ -30,9 +29,7 @@ class RoundTray extends Component {
 			timeLimit:1,
 			delete_id:'',
 			contest_id: "",
-			listArr:[],
-			selectedType:'',
-			gameTypeArr:[{type:'Hangman',name:'HangMan',src:'./murabbo/img/hangman.svg',qtyAdd:false,qty:1,class:'contest-box'},{type:'MatchIt',name:'Match It',src:'./murabbo/img/cups.svg',qtyAdd:false,qty:1,class:'contest-box purple-bg'},{type:'Unscramble',name:'Unscramble',src:'./murabbo/img/unscramble.svg',qtyAdd:false,qty:1,class:'contest-box dark-pink'},{type:'GuessAndGo',name:'Guess & Go',src:'./murabbo/img/brain.svg',qtyAdd:false,qty:1,class:'contest-box coffee-bg'},{type:'Gibberish',name:'Gibberish',src:'./murabbo/img/giberish.svg',qtyAdd:false,qty:1,class:'contest-box light-pink'},{type:'Bingo',name:'Bingo',src:'./murabbo/img/bingo.svg',qtyAdd:false,qty:1,class:'contest-box green-bg'},{type:'Quiz',name:'Quiz',src:'./murabbo/img/quizz.svg',qtyAdd:false,qty:1,class:'contest-box yellow-bg'},{type:'Taboo',name:'Taboo',src:'./murabbo/img/padlock.svg',qtyAdd:false,qty:1,class:'contest-box lightgreen'}]
+			listArr:[]
 		};
 	}
 
@@ -55,109 +52,84 @@ class RoundTray extends Component {
 	                }
 	            }).then((response) =>{
 		    	return response.json();
-		    }).then((data)=> {				
-				if (data.data.length > 0) {
-	   				var data = data.data;
-		   			this.setState({listArr:data});
-	   			}
-	   			else
-	   			{
-		   			this.setState({listArr:[]});
-	   			}
+		    }).then((data)=> {
+				var data = data.data;
+		   		this.setState({listArr:data});
 			});	
 		}
 	}
 
-	clickHandler(field,e){
-		this.setState({selectedType:''});
-		for (var i = 0; i < this.state.gameTypeArr.length; i++) {
-    		if (this.state.gameTypeArr[i].type === field) {
-    			this.setState({selectedType:field});
-    			this.state.gameTypeArr[i].qtyAdd = !this.state.gameTypeArr[i].qtyAdd;
-    		}
-    		else
-    		{
-    			this.state.gameTypeArr[i].qtyAdd = false;
-    		}
-    	}
-    	this.setState({gameTypeArr:this.state.gameTypeArr});
+	clickHandler(){
+		this.setState({qtyAdd:!this.state.qtyAdd});
 	}
 
-	btnClickHandler(type,e){
-		if(type === "minus")
-		{
-			var fields = this.state.fields;
-			fields['timeLimit'] = (fields['timeLimit'] === 0) ? 0 : (fields['timeLimit'] - 1);
-			this.setState({fields});
+	btnClickHandler(type,field = "",e){
+		if (field === "timeLimit") {
+			if(type === "minus")
+			{
+				var fields = this.state.fields;
+				fields['timeLimit'] = (fields['timeLimit'] === 0) ? 0 : (fields['timeLimit'] - 1);
+				this.setState({fields});
+			}
+			else
+			{
+
+				var fields = this.state.fields;
+				fields['timeLimit'] = (fields['timeLimit'] === 300) ? 300 : (fields['timeLimit'] + 1);
+				this.setState({fields});
+			}
 		}
 		else
 		{
+			if(type === "minus")
+			{
+				var qty = this.state.qty;
+				qty = (qty === 1) ? 1 : (qty - 1);
+				this.setState({qty:qty});
+			}
+			else
+			{
 
-			var fields = this.state.fields;
-			fields['timeLimit'] = (fields['timeLimit'] === 300) ? 300 : (fields['timeLimit'] + 1);
-			this.setState({fields});
+				var qty = this.state.qty;
+				qty = (qty === 9) ? 9 : (qty + 1);
+				this.setState({qty:qty});
+			}
 		}
-	}
-
-	btnPlusMinusClickHandler(type,field,e){
-		for (var i = 0; i < this.state.gameTypeArr.length; i++) {
-    		if (this.state.gameTypeArr[i].type === field) {
-    			if(type === "minus")
-				{
-					var qty = this.state.gameTypeArr[i].qty;
-					this.state.gameTypeArr[i].qty = (qty === 1) ? 1 : (qty - 1);
-					this.setState({gameTypeArr:this.state.gameTypeArr});
-				}
-				else
-				{
-					var qty = this.state.gameTypeArr[i].qty;
-					this.state.gameTypeArr[i].qty = (qty === 9) ? 9 : (qty + 1);
-					this.setState({gameTypeArr:this.state.gameTypeArr});
-				}
-    		}
-    	}
 		
+
 	}
 
 	submitHandler()
 	{
-
-
-		for (var i = 0; i < this.state.gameTypeArr.length; i++) {
-    		if (this.state.gameTypeArr[i].type === this.state.selectedType) {
-    			let qty = this.state.gameTypeArr[i].qty;
-    			this.state.gameTypeArr[i].qtyAdd = false;
-    			this.state.gameTypeArr[i].qty = 1;
-
-    			const data = new FormData();
-		    	data.append('noOfRound',qty);
-		    	data.append('contestId',this.state.contest_id);
-		    	data.append('gameType',this.state.selectedType);
-		        
-		        // console.log(data);
-		        fetch(configuration.baseURL+"round/round", {
-		            method: "post",
-		            headers: {
-						'contentType': "application/json",
-		                'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-		            },
-		            body:data
-		        }).then((response) => {
-		            return response.json();
-		        }).then((data) => {
-		            if(data.code === 200){
-		            	this.setState({openModelRoundAdd:false});
-		            	this.getList(contest_id);
-		            }
-		            else
-		            {
-		                return toast.error(data.message);
-		            }
-		            
-		        });
-    		}
-    	}
-		this.setState({selectedType:'',gameTypeArr:this.state.gameTypeArr});        
+		let qty = this.state.qty;
+    	// console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
+    	const data = new FormData();
+    	data.append('noOfRound',this.state.qty);
+    	data.append('contestId',this.state.contest_id);
+    	data.append('gameType','Quiz');
+        
+        // console.log(data);
+        fetch(configuration.baseURL+"round/round", {
+            method: "post",
+            headers: {
+				'contentType': "application/json",
+                'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+            },
+            body:data
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if(data.code === 200){
+            	this.setState({qty:1,openModelRoundAdd:false});
+            	this.getList(contest_id);
+            }
+            else
+            {
+                return toast.error(data.message);
+            }
+            
+        });
+        
 
 	}
 
@@ -288,10 +260,6 @@ class RoundTray extends Component {
         	data.append('timeLimit',this.state.fields.timeLimit);
         	data.append('basePoints',this.state.fields.basePoints);
         	data.append('negativeBasePoints',this.state.fields.negativeBasePoints);
-        	if (this.state.fields.execution_mode === 1 || this.state.fields.execution_mode === '1') {
-	        	data.append('hint',this.state.fields.hint);
-	        	data.append('onDemandNegativePoints',this.state.fields.onDemandNegativePoints);
-	        }
             if(this.state.fields.image === 'image'){
                 data.append('image', this.uploadInput.files[0]);
             } 
@@ -308,15 +276,9 @@ class RoundTray extends Component {
             }).then((data) => {
                 if(data.code === 200){
                 	this.getList(contest_id);
-
+                	console.log(type);
                 	if (type === 'roundquestion') {
-                		this.props.history.push('/roundquestion/'+contest_id+'/'+e);
-			               //  		if (this.state.fields.gameType === 'Hangman' || this.state.fields.gameType === 'Unscramble' || this.state.fields.gameType === 'Gibberish') {
-			               //  			this.props.history.push('/round_words/'+contest_id+'/'+e);	
-			               //  		}
-			            			// else{
-			            					
-			            			// }
+                		this.props.history.push('/roundquestion/'+contest_id+'/'+e);	
                 	}
                 	this.setState({openModel:!this.state.openModel});
                 }
@@ -353,20 +315,6 @@ class RoundTray extends Component {
         }
     }
 
-    className(type,returnVal)
-    {
-    	for (var i = 0; i < this.state.gameTypeArr.length; i++) {
-    		if (this.state.gameTypeArr[i].type === type) {
-    			if (returnVal === 'class') {
-    				return this.state.gameTypeArr[i].class;
-    			}
-    			else
-    			{
-    				return this.state.gameTypeArr[i].src;
-    			}
-    		}
-    	}
-    }
 
 	render() {
 		$(document).ready(function() {
@@ -433,10 +381,10 @@ class RoundTray extends Component {
 			                                	(this.state.listArr.length > 0) ?
 				                                	this.state.listArr.map((val, ckey) => {
 							                            return <div className="col-lg-2 col-md-3 col-sm-6 ">
-										                    <div className={this.className(val.gameType,'class')}>
+										                    <div className="contest-box yellow-bg">
 										                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}/>
 										                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
-										                        <img className="ico" src={this.className(val.gameType,'src')} alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
+										                        <img className="ico" src="./murabbo/img/quizz.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
 										                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
 										                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}></p>
 										                    </div>
@@ -529,9 +477,9 @@ class RoundTray extends Component {
 								                                </div>
 
 								                                <div className="number">
-								                                    <span className="minus" style={{cursor:'pointer'}}><img src="./murabbo/img/minus.svg" onClick={this.btnClickHandler.bind(this,"minus")}/></span>
+								                                    <span className="minus" style={{cursor:'pointer'}}><img src="./murabbo/img/minus.svg" onClick={this.btnClickHandler.bind(this,"minus","timeLimit")}/></span>
 								                                    <input type="text" value={this.state.fields['timeLimit']} />
-								                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus")}/></span>
+								                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus","timeLimit")}/></span>
 								                                </div>
 								                                <div style={{margin: '0px 0 5px 0'}} className="cus_input ">
 								                                    <label style={{paddingLeft: '5px'}} className="cus_label">Base Points (0 - 100)</label>
@@ -549,27 +497,6 @@ class RoundTray extends Component {
 								                                      <label for="switch-orange" className="lbl-on"></label>
 								                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
 								                                </div>
-
-								                                <div className="cus_input input_wrap">
-								                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
-								                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
-												                      	<option value="2">Always</option>
-												                      	<option value="3">On demand</option>
-								                                    </select>
-								                                    <label>Show Hint</label>
-								                                </div>
-								                                <span  className="error-msg">{this.state.errors["hint"]}</span>
-
-								                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
-								                                <div>
-							                            			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-									                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
-									                                </div>
-									                                <div className="range-wrap">
-									                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
-									                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
-									                                </div>
-							                            		</div> : null }
 								                            </div> ) : null
 								                }
 								                {
@@ -585,7 +512,7 @@ class RoundTray extends Component {
 						                                		</div> ) : null
 									            }
 
-									            
+
 					                                
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/score.svg" alt="Upload"/> 
@@ -641,35 +568,101 @@ class RoundTray extends Component {
 								                <h3 style={{color: '#f8c748'}}>Add Rounds</h3>
 								            </div>
 								            <div className="row round-box">
-
-
-								            	
-								            	{
-						                        	this.state.gameTypeArr.map((e, key) => {
-			                                            return 	<div className="col-lg-3 col-md-4 col-sm-6">
-												                    <div>
-												                        <div className={e.class} style={{cursor:'pointer'}} onClick={this.clickHandler.bind(this,e.type)}>
-												                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-												                            <img className="ico" src={e.src} alt="" />
-												                            <h3>{e.name}</h3>
-												                            <p></p>
-												                        </div>
-												                        {
-												                        	(e.qtyAdd ) ? (
-
-												                        		<div className="number">
-												                                    <span className="minus" style={{cursor:'pointer'}}><img src="./murabbo/img/minus.svg" onClick={this.btnPlusMinusClickHandler.bind(this,"minus",e.type)}/></span>
-												                                    <input type="text" value="1" value={e.qty} />
-												                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnPlusMinusClickHandler.bind(this,"plus",e.type)}/></span>
-												                                </div>
-												                        	) : null
-												                        }
-
-												                    </div>
-												                </div>
-		                                        	})
-						                        }
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+							                        <div className="contest-box">
+							                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+							                            <img className="ico" src="./murabbo/img/hangman.svg" alt="" />
+							                            <h3>HangMan</h3>
+							                            <p></p>
+							                        </div>
+								                </div>
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+								                    <div >
+								                        <div className="contest-box purple-bg">
+								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+								                            <img className="ico" src="./murabbo/img/cups.svg" alt="" />
+								                            <h3>Match It</h3>
+								                            <p></p>
+								                        </div>
+								                    </div>
+								                </div>
 								                
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+								                    <div >
+								                        <div className="contest-box dark-pink">
+								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+								                            <img className="ico" src="./murabbo/img/abc.svg" alt="" />
+								                            <h3>Unscramble</h3>
+								                            <p></p>
+								                        </div>
+								                    </div>
+								                </div>
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+								                    <div >
+								                        <div className="contest-box coffee-bg">
+								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+								                            <img className="ico" src="./murabbo/img/brain.svg" alt="" />
+								                            <h3>Guess & Go</h3>
+								                            <p></p>
+								                        </div>
+								                    </div>
+								                </div>
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+								                    <div >
+								                        <div className="contest-box light-pink">
+								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+								                            <img className="ico" src="./murabbo/img/giberish.svg" alt="" />
+								                            <h3>Gibberish</h3>
+								                            <p></p>
+								                        </div>
+								                    </div>
+								                </div>
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+								                    <div >
+								                        <div className="contest-box green-bg">
+								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+								                            <img className="ico" src="./murabbo/img/bingo.svg" alt="" />
+								                            <h3>Bingo</h3>
+								                            <p></p>
+								                        </div>
+								                    </div>
+								                </div>
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+								                    <div>
+								                        <div className="contest-box yellow-bg" style={{cursor:'pointer'}} onClick={this.clickHandler.bind(this,true)}>
+								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+								                            <img className="ico" src="./murabbo/img/quizz.svg" alt="" />
+								                            <h3>Quiz</h3>
+								                            <p></p>
+								                        </div>
+								                        {
+								                        	(this.state.qtyAdd ) ? (
+
+								                        		<div className="number">
+								                                    <span className="minus" style={{cursor:'pointer'}}><img src="./murabbo/img/minus.svg" onClick={this.btnClickHandler.bind(this,"minus",'qty')}/></span>
+								                                    <input type="text" value="1" value={this.state.qty} />
+								                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus",'qty')}/></span>
+								                                </div>
+								                        	) : null
+								                        }
+
+								                    </div>
+								                </div>
+								                <div className="col-lg-3 col-md-4 col-sm-6">
+								                    <div >
+								                        <div className="contest-box lightgreen">
+								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+								                            <img className="ico" src="./murabbo/img/padlock.svg" alt="" />
+								                            <h3>Taboo</h3>
+								                            <p></p>
+								                        </div>
+								                        {/*<div className="number">
+						                                    <span className="minus"><img src="./murabbo/img/minus.svg" onClick={this.btnClickHandler.bind(this,"minus")}/></span>
+						                                    <input type="text" value="1" value={this.state.qty} />
+						                                    <span className="plus"><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus")}/></span>
+						                                </div>*/}
+								                    </div>
+								                </div>
 								                <div className="col-lg-3 col-md-4 col-sm-6">
 								                    <div >
 								                        <div className="contest-box grey-bg">

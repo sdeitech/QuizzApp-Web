@@ -150,10 +150,8 @@ class AddRoundQuestion extends Component {
         	const data = new FormData();
         	data.append('roundId',round_id);
         	data.append('question',this.state.fields.question);
-        	data.append('hint',this.state.fields.hint);
-        	data.append('hintText',this.state.fields.hintText);
+	        data.append('hintText',this.state.fields.hintText);
         	data.append('answerType',this.state.fields.answerType);
-        	data.append('onDemandNegativePoints',this.state.fields.onDemandNegativePoints);
         	data.append('answerTypeBoolean',this.state.fields.answerTypeBoolean);
         	data.append('answers',JSON.stringify(this.state.answers));
         	if (this.state.fields.execution_mode === 2 || this.state.fields.execution_mode === '2') {
@@ -161,11 +159,18 @@ class AddRoundQuestion extends Component {
 	        	data.append('timeLimit',this.state.fields.timeLimit);
 	        	data.append('negativeScoring',this.state.fields.negativeScoring);
 	        	data.append('negativeBasePoints',this.state.fields.negativeBasePoints);
+	        	data.append('hint',this.state.fields.hint);
+	        	data.append('onDemandNegativePoints',this.state.fields.onDemandNegativePoints);
         	}
-        	
+        	else
+        	{
+        		data.append('hint',1);
+	        	data.append('onDemandNegativePoints',0);
+        	}
             if(this.state.fields.image === 'image'){
                 data.append('file', this.uploadInput.files[0]);
             } 
+            data.append('questionType',2);
             
 
             fetch(configuration.baseURL+"roundQuestion/roundQuestion", {
@@ -420,6 +425,28 @@ class AddRoundQuestion extends Component {
 				                                		</div> ) : null
 							           		}
 
+							           		<div className="cus_input input_wrap">
+        	                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
+        	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
+        					                      	<option value="2">Always</option>
+        					                      	<option value="3">On demand</option>
+        	                                    </select>
+        	                                    <label>Show Hint</label>
+        	                                </div>
+        	                                <span  className="error-msg">{this.state.errors["hint"]}</span>
+        
+        	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
+            	                                <div>
+                                        			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+            		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
+            		                                </div>
+            		                                <div className="range-wrap">
+            		                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
+            		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
+            		                                </div>
+                                        		</div> 
+                                        	: null }
+
 				                            </div>) : null
 				                }
 				                
@@ -451,27 +478,8 @@ class AddRoundQuestion extends Component {
 	                                    <label>Hint</label>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["hintText"]}</span>
-	                                <div className="cus_input input_wrap">
-	                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
-	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
-					                      	<option value="2">Always</option>
-					                      	<option value="3">On demand</option>
-	                                    </select>
-	                                    <label>Show Hint</label>
-	                                </div>
-	                                <span  className="error-msg">{this.state.errors["hint"]}</span>
-
-	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
-	                                <div>
-                            			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
-		                                </div>
-		                                <div className="range-wrap">
-		                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
-		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
-		                                </div>
-                            		</div> : null }
-                            		{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+	                                
+                            			{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
 
 		                            	<img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
 	                                    <label className="cus_label">Select Answer </label>

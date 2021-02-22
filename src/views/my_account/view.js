@@ -21,8 +21,13 @@ class MyAccount extends Component {
         	profile_picture:'avatars/placeholder-user.png',
             name:'',
             editModel:false,
+            changePasswordModel:false,
             fields:{availabilityStatus:1},
             errors:{},
+            changePasswordFields:{userId:'',oldPassword:'',password:'',confirm_password:''},
+            changePasswordErrors:{},
+            tosterMsg:''
+
 		};
 	}
 
@@ -158,6 +163,103 @@ class MyAccount extends Component {
         }
     }
 
+    handleChangeChangePassword(field, e){    
+        var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+        let fields = this.state.changePasswordFields;
+        fields[field] = e.target.value;        
+        fields['userId'] = userId;        
+        this.setState({changePasswordFields:fields});
+
+        let errors = {};
+        
+        if(field === 'oldPassword' && fields["oldPassword"].trim() === ''){
+            errors["oldPassword"] = "Please enter old password";
+        }
+
+        if(field === 'password' && fields["password"].trim() === ''){
+            errors["password"] = "Please enter password";
+        }
+        else{
+            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            if(field === 'password' && !re.test(fields["password"])){
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
+            }
+        }
+
+        if(field === 'confirm_password' && fields["confirm_password"].trim() === ''){
+            errors["confirm_password"] = "Please enter confirm password";
+        }
+        if(field === 'confirm_password' && fields["confirm_password"]){
+            if(fields["password"]!==fields["confirm_password"]){
+                errors["confirm_password"] = "Password and confirm password not matched";
+            }
+        }
+
+        this.setState({changePasswordErrors: errors});
+    }
+
+    changePasswordHandler(){
+        let fields = this.state.changePasswordFields;
+        let errors = {};
+        let formIsValid = true;
+        
+        if(fields["oldPassword"].trim() === ''){
+            formIsValid = false;
+            errors["oldPassword"] = "Please enter old password";
+        }
+
+        if(fields["password"].trim() === ''){
+            formIsValid = false;
+            errors["password"] = "Please enter password";
+        }
+        else{
+            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            if(!re.test(fields["password"])){
+                formIsValid = false;
+                errors["password"] = "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
+            }
+        }
+
+        if(fields["confirm_password"].trim() === ''){
+            formIsValid = false;
+            errors["confirm_password"] = "Please enter confirm password";
+        }
+        if(fields["confirm_password"]){
+            if(fields["password"]!==fields["confirm_password"]){
+                formIsValid = false;
+                errors["confirm_password"] = "Password and confirm password not matched";
+            }
+        }
+
+        this.setState({changePasswordErrors: errors});
+        if(formIsValid){            
+            fetch(configuration.baseURL+"user/changePassword", {
+                method: "post",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body:JSON.stringify(this.state.changePasswordFields)
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if(data.code === 200){
+                    this.setState({changePasswordModel:!this.state.changePasswordModel})
+                    fields.oldPassword = '';
+                    fields.password = '';
+                    fields.confirm_password = '';
+                    this.setState({changePasswordFields:fields});
+                    return toast.info(data.message);
+                }
+                else{
+                    this.setState({tosterMsg:data.message});
+                    return false;
+                }
+                
+            });
+        }
+    }
+
 	render() {
 
         $(document).ready(function() {
@@ -185,7 +287,7 @@ class MyAccount extends Component {
 			<>
 				<TheHeaderInner />				
 					<main id="main">
-                    <ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
+                    <ToastContainer position="top-right" autoClose={25000} style={{top:'80px'}}/>
             <section id="contest" class="d-flex align-items-center">
                 <div class="container">
                     <div style={{ marginTop: '30px'}} class="contest-info">
@@ -262,7 +364,7 @@ class MyAccount extends Component {
                                             </div></a>
                                         </div>
                                         <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)"><div class="profile-setting">
+                                            <a href="javascript:void(0)" onClick={() => {this.setState({changePasswordModel:!this.state.changePasswordModel})}}><div class="profile-setting">
                                                 <img src="./murabbo/img/password_.svg"/>
                                                 <h3>Change Password <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
                                                 
@@ -305,6 +407,9 @@ class MyAccount extends Component {
 
                                               <label for="file-upload" id="file-drag">
                                                 <img id="file-image"   src="#" alt="Preview" className="hidden"/>
+                                                <div className="edit-pencil">
+                                                    <img src="/img/pen.svg" />
+                                                </div>
                                                 <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
                                                 <div id="start">
                                                     {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
@@ -321,32 +426,38 @@ class MyAccount extends Component {
                                         </div>
 
                                         <span  className="error-msg">{this.state.errors["image"]}</span>
+
+                                        
                                     </div>
                                 </div>
+                                <div className="cus_input status_input input_wrap">
+                                    <select className="floating-select" onChange={this.handleChange.bind(this,'availabilityStatus')} value={this.state.fields['availabilityStatus']} required>
+                                        <option value="1">Online</option>
+                                        <option value="2">Away</option>
+                                        <option value="3">DND</option>
+                                        <option value="4">Invisible</option>
+                                    </select>
+                                </div>
+                                <span  className="error-msg">{this.state.errors["availabilityStatus"]}</span>
                                 <div className="row">
                                     <div className="col-lg-12 col-md-12 col-sm-12">
                                         
                                         <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/title.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'name')} value={this.state.fields['name']} />
+                                            <img src="./murabbo/img/username.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'name')} value={this.state.fields['name']} />
                                             <label>Name</label>
                                         </div>
                                         <span  className="error-msg">{this.state.errors["name"]}</span>
                                         <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/des.svg" alt="Upload"/> <input type="text" required onChange={this.handleChange.bind(this,'userStatus')} name="" value={this.state.fields['userStatus']} />
+                                            <img src="./murabbo/img/email.svg" alt="Upload"/> <input type="text" required name="" value={this.state.fields['email']} readonly />
+                                            <label>Email</label>
+                                        </div>
+
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/title.svg" alt="Upload"/> <input type="text" required onChange={this.handleChange.bind(this,'userStatus')} name="" value={this.state.fields['userStatus']} />
                                             <label>Status</label>
                                         </div>
                                         <span  className="error-msg">{this.state.errors["userStatus"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/book.svg" alt="Upload"/> 
-                                            <select className="floating-select" onChange={this.handleChange.bind(this,'availabilityStatus')} value={this.state.fields['availabilityStatus']} required>
-                                                <option value="1">Online</option>
-                                                <option value="2">Away</option>
-                                                <option value="3">DND</option>
-                                                <option value="4">Invisible</option>
-                                            </select>
-                                            <label>Availability Status</label>
-                                        </div>
-                                        <span  className="error-msg">{this.state.errors["availabilityStatus"]}</span>
+                                        
                                        
                                     </div>
                                 </div>
@@ -354,6 +465,59 @@ class MyAccount extends Component {
                                     <button className="yellow_btn" type="button" onClick={()=> this.setState({editModel:false})} >Cancel</button>
                                 
                                     <button className="pink_btn" type="button"  onClick={this.updateHandler.bind(this) } >Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </CModalBody>
+            </CModal>
+
+            <CModal size="lg" show={this.state.changePasswordModel} onClose={() => this.setState({changePasswordModel:!this.state.changePasswordModel})} color="danger"  centered>
+                <CModalBody className="model-bg">
+
+                <div>
+                    <div className="modal-body">
+                        <button type="button" className="close"  onClick={()=> this.setState({changePasswordModel:false})}>
+                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                    </button>
+                        <div className="model_data">
+                            <div className="model-title">
+                                <h3>ChangePassword</h3>
+                            </div>
+                            <div className="contest editprofile">
+                                <div className="row">
+                                    <div className="col-lg-12 col-md-12 col-sm-12">
+                                        {(this.state.tosterMsg != '') ? (
+                                            <div className="tosterMsg">
+                                                <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
+                                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                                </button>
+                                                <span>{this.state.tosterMsg}</span>
+                                            </div>) : null
+                                        }
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "oldPassword")} value={this.state.changePasswordFields["oldPassword"]}/>
+                                            <label>Old Password</label>
+                                        </div>
+                                        <span className="error-msg">{this.state.changePasswordErrors["oldPassword"]}</span>
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "password")} value={this.state.changePasswordFields["password"]}/>
+                                            <label>New Password</label>
+                                        </div> 
+                                        <span className="error-msg">{this.state.changePasswordErrors["password"]}</span>
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "confirm_password")} value={this.state.changePasswordFields["confirm_password"]}/>
+                                            <label>Confirm Password</label>
+                                        </div>
+                                        <span className="error-msg">{this.state.changePasswordErrors["confirm_password"]}</span>
+                                       
+                                    </div>
+                                </div>
+                                <div style={{ textAlign: 'center' , float:'left'}} className="col-md-12 footer-btn">
+                                    <button className="yellow_btn" type="button" onClick={()=> this.setState({changePasswordModel:false})} >Cancel</button>
+                                
+                                    <button className="blue_btn light_blue_btn" type="button"  onClick={this.changePasswordHandler.bind(this) } >Change</button>
                                 </div>
                             </div>
                         </div>

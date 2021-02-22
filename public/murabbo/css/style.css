@@ -3123,7 +3123,35 @@ select:-webkit-autofill:focus {
     min-height: 0;
     max-height: 210px;
     border-radius: 100%;
+    position: relative;
 }
 .editprofile .uploader {
     max-width: max-content;
+}
+.edit-pencil {
+    position: absolute;
+    right: -7px;
+    bottom: 10px;
+    background-color: #324B55;
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    border: 2px solid #22343C;
+    cursor: pointer;
+}
+.editprofile .edit-pencil img {
+    width: 15px;
+    position: relative;
+    bottom: 4px;
+}
+.editprofile .status_input{
+    width: 200px;
+    margin: 15px auto;
+}
+.editprofile .status_input select {
+    background: #253942;
+    border: none !important;
+    padding: 8px;
+    border-radius: 3px;
+    color: #9CA3A5;
 }

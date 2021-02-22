@@ -183,16 +183,21 @@ class EditRoundQuestion extends Component {
         	// console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
         	const data = new FormData();
         	data.append('question',this.state.fields.question);
-        	data.append('hint',this.state.fields.hint);
         	data.append('hintText',this.state.fields.hintText);
         	data.append('answerType',this.state.fields.answerType);
-        	data.append('onDemandNegativePoints',this.state.fields.onDemandNegativePoints);
         	data.append('answers',JSON.stringify(this.state.answers));
         	if (this.state.fields.execution_mode === 2 || this.state.fields.execution_mode === '2') {
         		data.append('basePoints',this.state.fields.basePoints);
 	        	data.append('timeLimit',this.state.fields.timeLimit);
 	        	data.append('negativeScoring',this.state.fields.negativeScoring);
 	        	data.append('negativeBasePoints',this.state.fields.negativeBasePoints);
+	        	data.append('hint',this.state.fields.hint);
+	        	data.append('onDemandNegativePoints',this.state.fields.onDemandNegativePoints);
+        	}
+        	else
+        	{
+        		data.append('hint',1);
+	        	data.append('onDemandNegativePoints',0);
         	}
 
         	if (this.state.fields.answerType !== 5 && this.state.fields.answerType !== '5') {
@@ -202,6 +207,8 @@ class EditRoundQuestion extends Component {
 	        {
         		data.append('answerTypeBoolean',this.state.fields.answerTypeBoolean);
 	        }
+
+	        data.append('questionType',2);
 
             if(this.state.fields.image === 'image'){
                 data.append('file', this.uploadInput.files[0]);
