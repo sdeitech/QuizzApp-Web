@@ -91,7 +91,35 @@ class Contest extends Component {
         }
 
         this.setState({errorsPlay: errors});
-		if(formIsValid){ this.props.history.push('/detail-contest');}
+		if(formIsValid){ 
+			
+			const data = new FormData();
+        	data.append('displayName',fields["display_name"]);
+        	data.append('password',fields["password"]);
+        	data.append('createdBy',JSON.parse(reactLocalStorage.get('userData')).userId);
+        	data.append('contestId',fields["contestId"]);
+            
+            fetch(configuration.baseURL+"room/room", {
+                method: "post",
+                headers: {
+					'contentType': "application/json",
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                },
+                body:data
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if(data.code === 200){
+					this.props.history.push('/detail-contest/'+fields["contestId"]+'?'+data.data._id);
+                }
+                else
+                {
+                    return toast.error(data.message);
+                }
+                
+            });
+
+		}
 	}
 
     handleClearAllFilter()
@@ -257,8 +285,8 @@ class Contest extends Component {
 	}
 
 
-	playContest(){
-		this.setState({playContestModel:true,errorsPlay:{display_name:'',password:''},fieldsPlay:{display_name:'',password:''}});
+	playContest(data){
+		this.setState({playContestModel:true,errorsPlay:{display_name:'',password:''},fieldsPlay:{display_name:'',password:'',contestId:data._id}})
 	}
 
 	render() {
@@ -266,7 +294,7 @@ class Contest extends Component {
 			<>
 				<TheHeaderInner />				
 					<main id="main">
-					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
+					<ToastContainer position="top-right" autoClose={20000} style={{top:'80px'}}/>
 			            <section id="contest" class="d-flex align-items-center">
 			                <div class="container">
 			                    <div class="create-contest">
@@ -367,7 +395,7 @@ class Contest extends Component {
 			                                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" style={{ cursor:'pointer'}} onClick={this.removeContestHandler.bind(this,'no',e)} />
 			                                        <div class="cat_title2" style={{ cursor:'pointer'}} >
 			                                            <h3 style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span style={{ cursor:'context-menu'}} className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</span></h3>
-			                                            <p style={{cursor: 'context-menu'}}>{e.title} <p className="play_btn_contest" onClick={this.playContest.bind(this)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p></p>
+			                                            <p style={{cursor: 'context-menu'}}>{e.title} <p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p></p>
 			                                            
 			                                        </div>
 			                                    </div>
