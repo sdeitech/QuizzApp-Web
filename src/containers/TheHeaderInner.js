@@ -33,6 +33,28 @@ class TheHeaderInner extends Component {
                 that.setState({profilePic: (JSON.parse(reactLocalStorage.get('userData')).profilePic === '' ? 'avatars/placeholder-user.png' : JSON.parse(reactLocalStorage.get('userData')).profilePic), name:JSON.parse(reactLocalStorage.get('userData')).name})
             }
         });
+
+
+        var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+        fetch(configuration.baseURL+"user/userProfile?userId="+userId, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+            return response.json();
+        }).then((data)=> {
+            var data = data.data;
+            if (data.image === '') {
+                this.setState({image: 'avatars/placeholder-user.png',name:data.name})
+            }
+            else
+            {
+                this.setState({profile_picture: data.image,name:data.name})
+            }
+        });
     }
  
 

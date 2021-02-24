@@ -43,7 +43,7 @@ class MyAccount extends Component {
                 window.location.href = '/#/'
             }
             if(decoded){
-                that.setState({profilePic: (JSON.parse(reactLocalStorage.get('userData')).profilePic === '' ? 'avatars/placeholder-user.png' : JSON.parse(reactLocalStorage.get('userData')).profilePic), name:JSON.parse(reactLocalStorage.get('userData')).name})
+                that.setState({profile_picture: (JSON.parse(reactLocalStorage.get('userData')).profilePic === '' ? 'avatars/placeholder-user.png' : JSON.parse(reactLocalStorage.get('userData')).profilePic), name:JSON.parse(reactLocalStorage.get('userData')).name})
             }
         });
 
@@ -62,6 +62,10 @@ class MyAccount extends Component {
             this.setState({fields:data});
             if (data.image === '') {
                 this.setState({image: 'avatars/placeholder-user.png'})
+            }
+            else
+            {
+                this.setState({profile_picture: data.image})
             }
         });
 
@@ -316,9 +320,9 @@ class MyAccount extends Component {
                                                 <img src={ this.state.profile_picture }/> 
                                             </div>
                                             <div class="inline social-info">
-                                                <h3>{ this.state.name }</h3>
-                                                <img src="./murabbo/img/instagram.svg"/> <span>{ this.state.name }</span><br />
-                                                <img src="./murabbo/img/diamond.svg"/> <span>Best performer</span>
+                                                <h3>{ this.state.fields['name'] }</h3>
+                                                <span>{ this.state.fields['userStatus'] }</span><br />
+                                                <img src="./murabbo/img/diamond.svg" style={{height: 'auto'}} /> <span>Best performer</span>
                                             </div>
                                         </div>
                                         <div class="col-lg-4 col-md-6">

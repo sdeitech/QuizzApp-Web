@@ -162,6 +162,7 @@ li.nav-item {
 }
 
 .cus_img img {
+    height: 33px;
     width: 33px;
     border-radius: 100%;
     margin-right: 7px;
@@ -1633,7 +1634,7 @@ p.addmore {
 }
 .inline {
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
 }
 .startgame {
     padding: 20px;
@@ -2636,6 +2637,7 @@ li.active_side {
     border-radius: 100%;
     border: 3px solid #39636D;
     margin-right: 20px;
+    height: 95px;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 }
 
 .profile_info h3 {
