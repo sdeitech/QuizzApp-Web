@@ -33,8 +33,7 @@ class Detail extends Component {
 
         round_id =url.substring(url.lastIndexOf('/') + 1);
 
-		
-		fetch(configuration.baseURL+"round/round?roundId="+round_id, {
+		fetch(configuration.baseURL+"individual/getTrending?round_id="+round_id, {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -44,14 +43,14 @@ class Detail extends Component {
             }).then((response) =>{
 	    	return response.json();
 	    }).then((data)=> {
-	    	if (data.data.length > 0) {
+	   		if (data.data.length > 0) {
 		   		this.setState({data:data.data[0]});
 		   	}
 		   	else
 		   	{
 		   		this.props.history.push('/dashboard');
 		   	}
-		});	
+		});
 
 	}
 
