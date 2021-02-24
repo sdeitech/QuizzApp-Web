@@ -407,7 +407,7 @@ class TheHeader extends Component {
                     var that = this;
                     configuration.saveTokenData(data.data,function(payload){
                         that.handleCloseClick();
-                        window.location.href = '/#/contest'
+                        window.location.href = '/#/dashboard'
                     });
                 }
                 else
