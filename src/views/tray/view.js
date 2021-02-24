@@ -31,7 +31,7 @@ class RoundTray extends Component {
 			delete_id:'',
 			contest_id: "",
 			listArr:[],
-			selectedType:'',
+			selectedType:[],
 			gameTypeArr:[{type:'Hangman',name:'HangMan',src:'./murabbo/img/hangman.svg',qtyAdd:false,qty:1,class:'contest-box'},{type:'MatchIt',name:'Match It',src:'./murabbo/img/cups.svg',qtyAdd:false,qty:1,class:'contest-box purple-bg'},{type:'Unscramble',name:'Unscramble',src:'./murabbo/img/unscramble.svg',qtyAdd:false,qty:1,class:'contest-box dark-pink'},{type:'GuessAndGo',name:'Guess & Go',src:'./murabbo/img/brain.svg',qtyAdd:false,qty:1,class:'contest-box coffee-bg'},{type:'Gibberish',name:'Gibberish',src:'./murabbo/img/giberish.svg',qtyAdd:false,qty:1,class:'contest-box light-pink'},{type:'Bingo',name:'Bingo',src:'./murabbo/img/bingo.svg',qtyAdd:false,qty:1,class:'contest-box green-bg'},{type:'Quiz',name:'Quiz',src:'./murabbo/img/quizz.svg',qtyAdd:false,qty:1,class:'contest-box yellow-bg'},{type:'Taboo',name:'Taboo',src:'./murabbo/img/padlock.svg',qtyAdd:false,qty:1,class:'contest-box lightgreen'}]
 		};
 	}
@@ -69,15 +69,25 @@ class RoundTray extends Component {
 	}
 
 	clickHandler(field,e){
-		this.setState({selectedType:''});
 		for (var i = 0; i < this.state.gameTypeArr.length; i++) {
     		if (this.state.gameTypeArr[i].type === field) {
-    			this.setState({selectedType:field});
+    			this.state.selectedType.push(field);
+    			this.setState({selectedType:this.state.selectedType});
     			this.state.gameTypeArr[i].qtyAdd = !this.state.gameTypeArr[i].qtyAdd;
+    			if (this.state.gameTypeArr[i].qtyAdd === false) {
+    				var  selectedType = this.state.selectedType;
+    				selectedType = selectedType.filter(function(value, index, arr){ 
+						if(value !== field)
+						{
+							return value;
+						}
+					});
+					this.setState({selectedType:selectedType});
+    			}
     		}
     		else
     		{
-    			this.state.gameTypeArr[i].qtyAdd = false;
+    			// this.state.gameTypeArr[i].qtyAdd = false;
     		}
     	}
     	this.setState({gameTypeArr:this.state.gameTypeArr});
@@ -122,42 +132,45 @@ class RoundTray extends Component {
 	submitHandler()
 	{
 
+		let postRoundArr = [];
 
 		for (var i = 0; i < this.state.gameTypeArr.length; i++) {
-    		if (this.state.gameTypeArr[i].type === this.state.selectedType) {
+    		if (this.state.selectedType.includes(this.state.gameTypeArr[i].type)) {
     			let qty = this.state.gameTypeArr[i].qty;
     			this.state.gameTypeArr[i].qtyAdd = false;
     			this.state.gameTypeArr[i].qty = 1;
-
-    			const data = new FormData();
-		    	data.append('noOfRound',qty);
-		    	data.append('contestId',this.state.contest_id);
-		    	data.append('gameType',this.state.selectedType);
-		        
-		        // console.log(data);
-		        fetch(configuration.baseURL+"round/round", {
-		            method: "post",
-		            headers: {
-						'contentType': "application/json",
-		                'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-		            },
-		            body:data
-		        }).then((response) => {
-		            return response.json();
-		        }).then((data) => {
-		            if(data.code === 200){
-		            	this.setState({openModelRoundAdd:false});
-		            	this.getList(contest_id);
-		            }
-		            else
-		            {
-		                return toast.error(data.message);
-		            }
-		            
-		        });
+    			var obj = {};
+		    	obj.noOfRounds = qty;
+		    	obj.gameType = this.state.gameTypeArr[i].type;
+		    	postRoundArr.push(obj);		        
     		}
     	}
-		this.setState({selectedType:'',gameTypeArr:this.state.gameTypeArr});        
+
+    	var postData = {};
+    	postData.contestId=this.state.contest_id;
+    	postData.multipleRounds=postRoundArr;
+    	console.log(postData);
+        fetch(configuration.baseURL+"round/round", {
+            method: "post",
+            headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+            },
+            body:JSON.stringify(postData)
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            if(data.code === 200){
+            	this.setState({openModelRoundAdd:false});
+            	this.getList(contest_id);
+				this.setState({selectedType:[],gameTypeArr:this.state.gameTypeArr});      
+            }
+            else
+            {
+                return toast.error(data.message);
+            }
+        });  
 
 	}
 

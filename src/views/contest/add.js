@@ -42,6 +42,7 @@ class AddContest extends Component {
 			openModelBrand:false,
             image:'avatars/placeholder-user.png',
             localArr:[],
+            saveToList:[]
 		};
 		this.searchUpdated = this.searchUpdated.bind(this)
 		this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this)
@@ -74,6 +75,20 @@ class AddContest extends Component {
 	   		this.setState({categoryList:categoryList,filterCategoryList:categoryList});
 		});	
 
+		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+
+	    fetch(configuration.baseURL+"user/saveTo?userId="+userId, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	   		this.setState({saveToList:data.data});
+		});	
 
 
 
@@ -820,11 +835,13 @@ class AddContest extends Component {
 			                                <div className="cus_input input_wrap">
 			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> 
 			                                    <select className="floating-select" onChange={this.handleChange.bind(this,'saveToId')} value={this.state.fields.saveToId} required>
+							                      	
 							                      	<option value=""></option>
-							                      	<option value="Personal">Personal</option>
-							                      	<option value="Favourite">Favourite</option>
-							                      	<option value="Important">Important</option>
-							                      	<option value="Education">Education</option>
+							                      	{
+		                                                this.state.saveToList.map((e, key) => {
+		                                                    return <option value={e.saveToId}>{e.saveToTitle} </option>;
+		                                                })
+		                                            }
 			                                    </select>
 			                                    <label>Save To</label>
 			                                </div>

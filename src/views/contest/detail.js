@@ -134,7 +134,7 @@ class Detail extends Component {
 					<main id="main">
 		            <section id="hero" className="d-flex align-items-center">
 		                <div className="hero-img" style={{width:'100%'}}>
-		                    <img src={(this.state.contestData.image !== '') ? this.state.contestData.image : "./murabbo/img/candy.png"} className="img-fluid animated" alt="" />
+		                    <img src={(this.state.contestData.image !== '') ? this.state.contestData.image : "./avatars/placeholder.png"} className="img-fluid animated" alt="" />
 		                </div>
 		            </section>
 		            

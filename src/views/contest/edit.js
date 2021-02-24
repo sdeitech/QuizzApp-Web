@@ -45,7 +45,8 @@ class EditContest extends Component {
             image:'avatars/placeholder-user.png',
             localArr:[],
             delete_id:'',
-            publish_id:''
+            publish_id:'',
+            saveToList:[]
 		};
 		this.searchUpdated = this.searchUpdated.bind(this)
 		this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this)
@@ -66,6 +67,21 @@ class EditContest extends Component {
 		fields.language = 'English';
 		this.setState({fields})
 
+
+		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+
+	    fetch(configuration.baseURL+"user/saveTo?userId="+userId, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	   		this.setState({saveToList:data.data});
+		});	
 
 		fetch(configuration.baseURL+"category/categoryList", {
                 method: "GET",
@@ -976,10 +992,11 @@ class EditContest extends Component {
 			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> 
 			                                    <select className="floating-select" onChange={this.handleChange.bind(this,'saveToId')} value={this.state.fields.saveToId} required>
 							                      	<option value=""></option>
-							                      	<option value="Personal">Personal</option>
-							                      	<option value="Favourite">Favourite</option>
-							                      	<option value="Important">Important</option>
-							                      	<option value="Education">Education</option>
+							                      	{
+		                                                this.state.saveToList.map((e, key) => {
+		                                                    return <option value={e.saveToId}>{e.saveToTitle} </option>;
+		                                                })
+		                                            }
 			                                    </select>
 			                                    <label>Save To</label>
 			                                </div>

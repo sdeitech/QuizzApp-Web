@@ -3001,7 +3001,7 @@ img.position_right {
     position: absolute !important;
     right: 20px;
     top: -6px;
-    min-width: 70px;
+    min-width: 50px;
     text-align: center;
 }
 
@@ -3154,4 +3154,28 @@ select:-webkit-autofill:focus {
     padding: 8px;
     border-radius: 3px;
     color: #9CA3A5;
+}
+
+
+.main_title h6 {
+    margin-bottom: 0;
+    color: #ADBAC1;
+    font-weight: 500;
+    font: normal normal normal 14px Montserrat;
+}
+
+.trending .contest-box h3 {
+    padding-bottom: 20px;
+}
+
+
+.cate-box2 .banner {
+    width: 100%;
+    border-radius: 20px 20px 0 0px;
+    min-height: 300px;
+    max-height: 300px;
+}
+
+.banner-div .cate-box2{
+    border: none;
 }

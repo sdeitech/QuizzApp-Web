@@ -14,56 +14,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery';
 var jwt = require('jsonwebtoken');
 
-class MyAccount extends Component {
+class MyGroups extends Component {
 	constructor(props) {
         super(props);
         this.state = { 
-        	profile_picture:'avatars/placeholder-user.png',
-            name:'',
-            editModel:false,
-            changePasswordModel:false,
-            fields:{availabilityStatus:1},
-            errors:{},
-            changePasswordFields:{userId:'',oldPassword:'',password:'',confirm_password:''},
-            changePasswordErrors:{},
-            tosterMsg:''
-
 		};
 	}
 
 	componentDidMount(){
-        let that = this;
-        var token = reactLocalStorage.get('token');
-        jwt.verify(token, configuration.appName , function (err, decoded){
-            if (err){
-                decoded = null;
-                reactLocalStorage.set('token', '');
-                reactLocalStorage.set('userData', '');
-                reactLocalStorage.set('is_login', 'false');
-                window.location.href = '/#/'
-            }
-            if(decoded){
-                that.setState({profilePic: (JSON.parse(reactLocalStorage.get('userData')).profilePic === '' ? 'avatars/placeholder-user.png' : JSON.parse(reactLocalStorage.get('userData')).profilePic), name:JSON.parse(reactLocalStorage.get('userData')).name})
-            }
-        });
-
-        var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
-        fetch(configuration.baseURL+"user/userProfile?userId="+userId, {
-                method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-                }
-            }).then((response) =>{
-            return response.json();
-        }).then((data)=> {
-            var data = data.data;
-            this.setState({fields:data});
-            if (data.image === '') {
-                this.setState({image: 'avatars/placeholder-user.png'})
-            }
-        });
+        
 
     }
 
@@ -531,4 +490,4 @@ class MyAccount extends Component {
 	}
 }
 
-export default MyAccount
+export default MyGroups

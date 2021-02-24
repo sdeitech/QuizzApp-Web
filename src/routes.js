@@ -13,6 +13,9 @@ const EditContest = React.lazy(() => import('./views/contest/edit'))
 
 // Manage Rounds
 const Tray = React.lazy(() => import('./views/tray/view'))
+
+const RoundDetail = React.lazy(() => import('./views/tray/detail'))
+
 const Round = React.lazy(() => import('./views/round/view'))
 const AddRound = React.lazy(() => import('./views/round/add'))
 
@@ -27,9 +30,15 @@ const Invite = React.lazy(() => import('./views/startGame/view'))
 const StartGame = React.lazy(() => import('./views/startGame/start'))
 const MyAccount = React.lazy(() => import('./views/my_account/view'))
 
+const MyGroups = React.lazy(() => import('./views/my_groups/view'))
+
+const Dashboard = React.lazy(() => import('./views/dashboard/view'))
+
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
+
+    { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/contest', name: 'Contest', component: Contest },
     { path: '/games_history', name: 'GamesHistory', component: GamesHistory },
     
@@ -42,6 +51,7 @@ const routes = [
     { path: '/edit_round_question', name: 'EditRoundQuestion', component: EditRoundQuestion },
 
     { path: '/round', name: 'Round', component: Round },
+    { path: '/detail-round', name: 'RoundDetail', component: RoundDetail },
     { path: '/add_round', name: 'AddRound', component: AddRound },
     { path: '/choose_category', name: 'Category', component: Category },
     { path: '/choose_brand', name: 'Brand', component: Brand },
@@ -51,6 +61,10 @@ const routes = [
 
     
     { path: '/my_account', name: 'MyAccount', component: MyAccount },
+
+    { path: '/my_groups', name: 'MyGroups', component: MyGroups },
+
+    
 
     
 ]
