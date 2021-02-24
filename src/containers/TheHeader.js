@@ -235,6 +235,7 @@ class TheHeader extends Component {
     }
 
     handleResetPasswordSubmit(){
+        this.setState({tosterMsg:''});
         let fields = this.state.resetFields;
         let errors = {};
         let formIsValid = true;
@@ -316,6 +317,7 @@ class TheHeader extends Component {
     }
 
     handleForgotPasswordSubmit(){
+        this.setState({tosterMsg:''});
         let fields = this.state.forgotFields;
         let errors = {};
         let formIsValid = true;
@@ -364,6 +366,7 @@ class TheHeader extends Component {
 
 
     handleLoginSubmit(){
+        this.setState({tosterMsg:''});
         let fields = this.state.loginFields;
         let errors = {};
         let formIsValid = true;
@@ -422,6 +425,7 @@ class TheHeader extends Component {
 
 
     handleRegisterSubmit(){
+        this.setState({tosterMsg:''});
         let fields = this.state.fields;
         let errors = {};
         let formIsValid = true;
