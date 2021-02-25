@@ -3181,3 +3181,10 @@ select:-webkit-autofill:focus {
 .banner-div .cate-box2{
     border: none;
 }
+
+.box_yellow{
+    padding: 10px;
+    border: 1px solid #FCD274;
+    cursor: pointer;
+    margin: 0px 0px 20px;
+}

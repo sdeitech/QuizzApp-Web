@@ -35,7 +35,8 @@ class Contest extends Component {
 			playerTypeList: [],
 			gameTypeArr : ['HangMan','Match It', 'Unscramble',  'Guess & Go', 'Giberish','Bingo', 'Quizz',  'Taboo'],
 			brandList: [],
-            delete_id:''
+            delete_id:'',
+            saveToId:''
 		};
 	}
 
@@ -164,9 +165,9 @@ class Contest extends Component {
 		  str.push((p) + "=" + (this.state.fields[p]));
 		}
 		var queryStr = (str.join("&") === '') ? '' : '&'+str.join("&");
-		console.log(queryStr);
+		// console.log(queryStr);
         var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
-		fetch(configuration.baseURL+"contest/contest?userId="+userId+queryStr, {
+		fetch(configuration.baseURL+"contest/contest?userId="+userId+queryStr+"&saveToId="+this.state.saveToId, {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -186,10 +187,31 @@ class Contest extends Component {
 		    { label: "Single Player", value: "1" },
 		    { label: "Multi Player ", value: "2" }
 		 ];
-
 	  	this.setState({ playerTypeList:playerTypeList});
+
+
+		const queryString = window.location.search;
+		console.log(queryString);
+		const urlParams = new URLSearchParams(queryString);
+
+		var saveToId = urlParams.get("saveToId");
+
+		var url = window.location.href;
+        saveToId =url.substring(url.lastIndexOf('/') + 1);
+        saveToId = saveToId.split('?');
+
+        var searchSaveToId = '';
+        if (saveToId[1]) {
+        	searchSaveToId = saveToId[1];
+        	if (searchSaveToId !== '') {
+	        	this.setState({saveToId:searchSaveToId});
+	        }
+        }
+
+
+
 		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
-		fetch(configuration.baseURL+"contest/contest?userId="+userId, {
+		fetch(configuration.baseURL+"contest/contest?userId="+userId+"&saveToId="+searchSaveToId, {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',

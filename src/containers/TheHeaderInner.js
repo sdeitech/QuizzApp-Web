@@ -106,8 +106,8 @@ class TheHeaderInner extends Component {
                                         <a href="#/contest"><li><i class='bx bx-detail'></i> My Games</li></a>
                                         <a href="#/contest"><li><i class='bx bx-detail'></i> Games History</li></a>
                                         <span style={{ cursor:'pointer'}}><li><i class='bx bx-bookmark'></i> Leaderboard</li></span>
-                                        <li><i class='bx bx-game'></i> My Groups</li>
-                                        <span style={{ cursor:'pointer'}}><li><i class='bx bx-bell'></i> Notifications</li></span>
+                                        <a href="#/my_groups"><li><i class='bx bx-game'></i> My Groups</li></a>
+                                        <a href="#/notification"><li><i class='bx bx-bell'></i> Notifications</li></a>
                                         <span style={{ cursor:'pointer'}}><li><i class='bx bx-user'></i> Online Friend</li></span>
 
                                         <span style={{ cursor:'pointer'}} onClick={this.handleLogout.bind(this,false)}><li><i class='bx bx-log-in' ></i> Logout</li></span>

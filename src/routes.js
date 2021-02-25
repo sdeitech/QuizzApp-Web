@@ -34,11 +34,14 @@ const MyGroups = React.lazy(() => import('./views/my_groups/view'))
 
 const Dashboard = React.lazy(() => import('./views/dashboard/view'))
 
+const Notification = React.lazy(() => import('./views/notification/view'))
+
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
 
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+    { path: '/notification', name: 'Notification', component: Notification },
     { path: '/contest', name: 'Contest', component: Contest },
     { path: '/games_history', name: 'GamesHistory', component: GamesHistory },
     
