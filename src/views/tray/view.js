@@ -13,6 +13,8 @@ import {
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery';
+import RLDD from 'react-list-drag-and-drop/lib/RLDD';
+
 let contest_id;
 
 class RoundTray extends Component {
@@ -43,6 +45,29 @@ class RoundTray extends Component {
 		this.getList(contest_id);
 	}
 
+	handleRLDDChange(newItems) {
+	    this.setState({ listArr: newItems });
+	    var sortingList = [];
+	    for (var i = 0; i < newItems.length; i++) {
+	    	sortingList.push({roundId:newItems[i]['_id'],displayOrder:i});	    	
+	    }
+
+	    var postData = JSON.stringify({sortingList:sortingList});
+	    fetch(configuration.baseURL+"round/sorting", {
+                method: "PUT",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                },
+                body:postData
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {				
+			this.getList(contest_id);
+		});	
+	}
+
 	getList(contest_id1)
 	{
 		if (contest_id) {
@@ -58,6 +83,9 @@ class RoundTray extends Component {
 		    }).then((data)=> {				
 				if (data.data.length > 0) {
 	   				var data = data.data;
+	   				for (var i = 0; i < data.length; i++) {
+	   					data[i]['id'] = i;
+	   				}
 		   			this.setState({listArr:data});
 	   			}
 	   			else
@@ -357,13 +385,14 @@ class RoundTray extends Component {
     
     saveExitHandler(check,e)
     {
-        if (check) {
+    	this.props.history.push('/contest');
+        /*if (check) {
 			this.props.history.push('/contest');
         }
         else
         {
             this.setState({saveEndConfirmationModel:true});
-        }
+        }*/
     }
 
     className(type,returnVal)
@@ -429,7 +458,7 @@ class RoundTray extends Component {
 			                        </div>
 			                    </div>
 			                    <div className="contest-info">
-			                        <div className="row">
+			                        {/*<div className="row">
 			                            <div className="col-md-8 offset-md-2">
 			                                <div className="progressbar">
 			                                    <div className="inner-progress">
@@ -440,21 +469,27 @@ class RoundTray extends Component {
 			                                    </div>
 			                                </div>
 			                            </div>
-		                            </div>
+		                            </div>*/}
 		                            <div className="row round-box">
 			                                { 
 			                                	(this.state.listArr.length > 0) ?
-				                                	this.state.listArr.map((val, ckey) => {
-							                            return <div className="col-lg-2 col-md-3 col-sm-6 ">
-										                    <div className={this.className(val.gameType,'class')}>
-										                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}/>
-										                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
-										                        <img className="ico" src={this.className(val.gameType,'src')} alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
-										                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
-										                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}></p>
-										                    </div>
-										                </div>
-						                            })
+				                                	<RLDD
+													  items={this.state.listArr}
+													  itemRenderer={(val,index) => {
+													    return (
+													      <div className="custom-round-list">
+											                    <div className={this.className(val.gameType,'class')}>
+											                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}/>
+											                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
+											                        <img className="ico" src={this.className(val.gameType,'src')} alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
+											                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
+											                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}></p>
+											                    </div>
+											                </div>
+													    );
+													  }}
+													  onChange={this.handleRLDDChange.bind(this)}
+													/>
 					                            : 
 										        (
 										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"85px",marginBottom:"85px"}} className="flex"><p className="item-author text-color">No have any round</p></div>

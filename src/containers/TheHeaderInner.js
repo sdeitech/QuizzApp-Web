@@ -78,7 +78,7 @@ class TheHeaderInner extends Component {
             <div class="container align-items-center">
                 <nav class="navbar navbar-expand-lg navbar-dark">
                     <h1 class="logo mr-auto">
-                        <a href="#/contest">
+                        <a href="#/dashboard">
                             <img src="./murabbo/img/logo.png" alt="logo"/>
                         </a>
                     </h1>

@@ -618,127 +618,6 @@ class AddContest extends Component {
 					<main id="main">
 					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
 
-					<div className={(this.state.openModelCategory) ? 'stopScorll' : ''}>
-						<CModal className="model" size="lg" show={this.state.openModelCategory} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>
-	                    	<CModalBody className="model-bg">
-
-		                    <div>
-		                        <div className="modal-body">
-		                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
-		                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-		                        </button>
-		                            <div className="model_data">
-		                                <div className="model-title">
-			                                <h3>Choose Category</h3>
-		                                </div>
-		                                <div className="contest">
-
-		                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
-				                                <input type="text" placeholder="Search Category"  value={this.state.searchCategoryTerm} onChange={this.searchUpdatedCategory.bind(this)}  /><i className='bx bx-search' ></i>
-			                                </div>
-									        {
-
-						                    	(this.state.filterCategoryList.length > 0) ? 
-									        	this.state.filterCategoryList.map((e, key) => {
-															
-														return  <div className="row">
-								                            <div className="col-8">
-								                                <div className="cate-title">
-								                                    <p>{e.title}</p>
-								                                </div>
-								                            </div>
-								                            <div className="col-4">
-								                                {/*<div className="seeall">
-								                                    <p>See All</p>
-								                                </div>*/}
-								                            </div>
-
-								                            { e.categories.map((cat, ckey) => {
-								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
-										                        <input type="checkbox" className='categoryCheckbox' id={cat._id}    onChange={this.handleChangeCategory.bind(this,cat,e)} />
-										                        <label for={cat._id}>
-										                            <div style={{ marginBottom: '0' }} className="cate-box">
-										                                <img src={cat.image} />
-										                            </div>
-										                        </label>
-										                        <div className="cat_title checked_title">
-								                                    <h3 style={{fontSize: '11px'}}>{cat.name}</h3>
-								                                </div>
-										                    </div>
-								                            })
-								                        }
-								                        </div>
-						                        	})
-									        	: 
-										        (
-										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No category available</p></div>
-										        )
-						                    }
-
-
-						                    
-						                    <div style={{ textAlign: 'center' }} class="">
-							                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
-							                </div>
-								        </div>
-		                            </div>
-		                        </div>
-		                        </div>
-		                    </CModalBody>
-		                </CModal>
-	                </div>
-	                <div className={(this.state.openModelBrand) ? 'stopScorll' : ''}>
-		                <CModal size="lg" show={this.state.openModelBrand} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  aria-hidden="true" color="danger"  centered>
-	                    	<CModalBody className="model-bg">
-
-		                    <div>
-		                        <div className="modal-body">
-		                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
-		                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-		                        </button>
-		                            <div className="model_data">
-		                                <div className="model-title">
-			                                <h3>Choose Brand</h3>
-		                                </div>
-		                                <div className="contest">
-		                                	<div className="row">
-		                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
-				                                <input type="text" value={this.state.searchTerm} placeholder="Search Brand" onChange={this.searchUpdated.bind(this)} /><i className='bx bx-search' ></i>
-			                                </div>
-
-						                    {
-						                    	(this.state.filterBrandList.length > 0) ? 
-						                    	this.state.filterBrandList.map((brand, key) => {
-								                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
-										                        <input className="brandCheckbox" type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
-										                        <label for={brand._id}>
-										                            <div style={{ marginBottom: '0' }} className=" cate-box">
-										                                <img src={brand.image} />
-										                                
-										                            </div>
-										                        </label>
-										                        <div className="cat_title checked_title">
-								                                    <h3>{brand.name}</h3>
-								                                </div>
-										                    </div>
-										                })
-						                    	: 
-										        (
-										        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"100px",marginBottom:"100px"}} className="flex"><p className="item-author text-color">No brand available</p></div>
-										        )
-						                    }
-								        	</div>
-
-						                    <div style={{ marginTop:"25px",textAlign: 'center' }} class="">
-							                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
-							                </div>
-								        </div>
-		                            </div>
-		                        </div>
-		                        </div>
-		                    </CModalBody>
-		                </CModal>
-	                </div>
 					
 			            <section id="contest" className="d-flex align-items-center">
 			                <div className="container">
@@ -762,14 +641,14 @@ class AddContest extends Component {
 			                    </div>
 			                    <div className="contest-info">
 			                        <div className="row">
-			                            <div className="col-md-8 offset-md-2">
+			                            {/*<div className="col-md-8 offset-md-2">
 			                                <div className="progressbar">
 			                                    <div className="inner-progress">
 			                                        <p>Contest Info</p>
 			                                    </div>
 			                                </div>
-			                            </div>
-			                            <div className="col-lg-4 col-md-6 col-sm-12">
+			                            </div>*/}
+			                            <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
 			                                <div className="profile-img">
 			                                    <form id="file-upload-form" className="uploader">
 			                                      <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
@@ -790,7 +669,7 @@ class AddContest extends Component {
 			                                </div>
 			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["image"]}</span>
 			                            </div>
-			                            <div className="col-lg-4 col-md-6 col-sm-12">
+			                            <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
 										
 											<div className="cus_input input_wrap">
 												<img src="./murabbo/img/title.svg" /> 
@@ -837,7 +716,7 @@ class AddContest extends Component {
 			                                </div>
 			                                <span className="error-msg">{this.state.errors["language"]}</span>
 			                            </div>
-			                            <div className="col-lg-4 col-md-6 col-sm-12">
+			                            <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
 			                                <div className="cus_input input_wrap">
 			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> 
 			                                    <select className="floating-select" onChange={this.handleChange.bind(this,'saveToId')} value={this.state.fields.saveToId} required>
@@ -925,6 +804,128 @@ class AddContest extends Component {
 			                    </div>
 			                </div>
 			            </section>
+
+						<div className={(this.state.openModelCategory) ? 'stopScorll' : ''}>
+							<CModal className="model" size="lg" show={this.state.openModelCategory} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>
+		                    	<CModalBody className="model-bg">
+
+			                    <div>
+			                        <div className="modal-body">
+			                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
+			                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+			                        </button>
+			                            <div className="model_data">
+			                                <div className="model-title">
+				                                <h3>Choose Category</h3>
+			                                </div>
+			                                <div className="contest">
+
+			                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
+					                                <input type="text" placeholder="Search Category"  value={this.state.searchCategoryTerm} onChange={this.searchUpdatedCategory.bind(this)}  /><i className='bx bx-search' ></i>
+				                                </div>
+										        {
+
+							                    	(this.state.filterCategoryList.length > 0) ? 
+										        	this.state.filterCategoryList.map((e, key) => {
+																
+															return  <div className="row">
+									                            <div className="col-8">
+									                                <div className="cate-title">
+									                                    <p>{e.title}</p>
+									                                </div>
+									                            </div>
+									                            <div className="col-4">
+									                                {/*<div className="seeall">
+									                                    <p>See All</p>
+									                                </div>*/}
+									                            </div>
+
+									                            { e.categories.map((cat, ckey) => {
+									                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
+											                        <input type="checkbox" className='categoryCheckbox' id={cat._id}    onChange={this.handleChangeCategory.bind(this,cat,e)} />
+											                        <label for={cat._id}>
+											                            <div style={{ marginBottom: '0' }} className="cate-box">
+											                                <img src={cat.image} />
+											                            </div>
+											                        </label>
+											                        <div className="cat_title checked_title">
+									                                    <h3 style={{fontSize: '11px'}}>{cat.name}</h3>
+									                                </div>
+											                    </div>
+									                            })
+									                        }
+									                        </div>
+							                        	})
+										        	: 
+											        (
+											        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No category available</p></div>
+											        )
+							                    }
+
+
+							                    
+							                    <div style={{ textAlign: 'center' }} class="">
+								                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
+								                </div>
+									        </div>
+			                            </div>
+			                        </div>
+			                        </div>
+			                    </CModalBody>
+			                </CModal>
+		                </div>
+		                <div className={(this.state.openModelBrand) ? 'stopScorll' : ''}>
+			                <CModal size="lg" show={this.state.openModelBrand} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  aria-hidden="true" color="danger"  centered>
+		                    	<CModalBody className="model-bg">
+
+			                    <div>
+			                        <div className="modal-body">
+			                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
+			                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+			                        </button>
+			                            <div className="model_data">
+			                                <div className="model-title">
+				                                <h3>Choose Brand</h3>
+			                                </div>
+			                                <div className="contest">
+			                                	<div className="row">
+			                                	<div class="col-12 search search-brand-cat" style={{marginBottom:'20px'}}>
+					                                <input type="text" value={this.state.searchTerm} placeholder="Search Brand" onChange={this.searchUpdated.bind(this)} /><i className='bx bx-search' ></i>
+				                                </div>
+
+							                    {
+							                    	(this.state.filterBrandList.length > 0) ? 
+							                    	this.state.filterBrandList.map((brand, key) => {
+									                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
+											                        <input className="brandCheckbox" type="checkbox" id={brand._id} onChange={this.handleChangeBrand.bind(this,brand)} />
+											                        <label for={brand._id}>
+											                            <div style={{ marginBottom: '0' }} className=" cate-box">
+											                                <img src={brand.image} />
+											                                
+											                            </div>
+											                        </label>
+											                        <div className="cat_title checked_title">
+									                                    <h3>{brand.name}</h3>
+									                                </div>
+											                    </div>
+											                })
+							                    	: 
+											        (
+											        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"100px",marginBottom:"100px"}} className="flex"><p className="item-author text-color">No brand available</p></div>
+											        )
+							                    }
+									        	</div>
+
+							                    <div style={{ marginTop:"25px",textAlign: 'center' }} class="">
+								                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitBrand.bind(this)} >Done</button>
+								                </div>
+									        </div>
+			                            </div>
+			                        </div>
+			                        </div>
+			                    </CModalBody>
+			                </CModal>
+		                </div>
 			        </main>
 		        <TheFooter />
 		    </>

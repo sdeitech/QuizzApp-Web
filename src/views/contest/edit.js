@@ -775,7 +775,195 @@ class EditContest extends Component {
 				<TheHeaderInner />				
 					<main id="main">
 					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
+					<section id="contest" className="d-flex align-items-center">
+			                <div className="container">
+			                    <div className="create-contest">
+			                        <div className="contest-title">
+			                            <div className="row">
+			                                <div className="col-md-4">
+			                                    <div className="main_title">
+			                                        <h3>Contest Details</h3>  
+			                                    </div> 
+			                                </div>
+			                                <div className="col-md-8">
+			                                    <ul className="title-link">
+			                                        {/*<li onClick={() => {this.props.history.push('/detail-contest');}} style={{ cursor:'pointer'}}><img src="./murabbo/img/play.svg" alt="Murabbo" /> Play</li>*/}
+			                                        <li onClick={this.removeContestHandler.bind(this)} style={{ cursor:'pointer'}}><img src="./murabbo/img/close2.svg" alt="Murabbo" /> Remove</li>
+			                                        <li onClick={this.publishContestHandler.bind(this)} style={{ cursor:'pointer'}}><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="Murabbo" /> Publish</li>
+			                                    </ul>  
+			                                </div>
+			                            </div>
+			                        </div>
+			                    </div>
+			                    <div className="contest-info">
+			                        <div className="row">
+			                            {/*<div className="col-md-8 offset-md-2">
+			                                <div className="progressbar">
+			                                    <div className="inner-progress">
+			                                        <p>Contest Info</p>
+			                                    </div>
+			                                </div>
+			                            </div>*/}
+			                            <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
+			                                <div className="profile-img">
+			                                    <form id="file-upload-form" className="uploader">
+			                                      <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
 
+			                                      <label for="file-upload" id="file-drag">
+			                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
+			                                        
+			                                        <img className="display-profile-pic" src={(this.state.fields['image'] !== '') ? this.state.fields['image'] : 'avatars/placeholder.png'} alt=""/>	
+			                                        
+			                                        <div id="response" className="hidden">
+			                                          <div id="messages"></div>
+			                                          
+			                                        </div>
+			                                      </label>
+			                                    </form>
+			                                </div>
+			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["image"]}</span>
+			                            </div>
+			                            <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
+										
+											<div className="cus_input input_wrap">
+												<img src="./murabbo/img/title.svg" /> 
+												<input required type="text"  onChange={this.handleChange.bind(this, "title")} value={this.state.fields["title"]}/>
+												<label>Title</label>
+											</div> 
+											<span className="error-msg">{this.state.errors["title"]}</span>
+
+			                                <div className="cus_input input_wrap">
+			                                    <img src="./murabbo/img/des.svg" alt="Murabbo"/> <input required type="text"  onChange={this.handleChange.bind(this, "description")} value={this.state.fields["description"]}/>
+			                                    <label>Description</label>
+			                                </div>
+											<span className="error-msg">{this.state.errors["description"]}</span>
+
+			                                <div className="cus_input input_wrap">
+												<img src="./murabbo/img/hashtag.svg" alt="Murabbo"/>
+												<input type="text" required value={this.state.input} onChange={this.handleInputChange} onKeyDown={this.handleInputKeyDown}  />
+												<label>Hashtag</label>
+			                                </div>
+											<div className="add-category" >
+												{this.state.items.map((item, i) => 
+
+													<div className="category" style={{ 
+														marginRight: '5px',marginTop: '-15px'
+													}}>
+														<p>{item} <img src="./murabbo/img/closewhite.svg" onClick={this.handleRemoveItem(i)} alt="Murabbo"/></p>
+													</div>
+												)}
+											</div>
+											<span className="error-msg">{this.state.errors["hashtag"]}</span>
+			                                <div className="cus_input input_wrap floating-label" >
+			                                    <img src="./murabbo/img/global.svg" alt="Murabbo"/> 
+			                                    
+												<select className="floating-select" onChange={this.handleChange.bind(this,'language')} value={this.state.fields.language} required>
+							                      	{
+		                                                languages.languages.map((e, key) => {
+		                                                    return <option value={e.name}>{e.name} </option>;
+		                                                })
+		                                            }
+			                                    </select>
+			                                    <span className="highlight"></span>
+			                                    <label>Language</label>
+			                                </div>
+			                                <span className="error-msg">{this.state.errors["language"]}</span>
+			                            </div>
+			                            <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
+			                                <div className="cus_input input_wrap">
+			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> 
+			                                    <select className="floating-select" onChange={this.handleChange.bind(this,'saveToId')} value={this.state.fields.saveToId} required>
+							                      	<option value=""></option>
+							                      	{
+		                                                this.state.saveToList.map((e, key) => {
+		                                                    return <option value={e.saveToId}>{e.saveToTitle} </option>;
+		                                                })
+		                                            }
+			                                    </select>
+			                                    <label>Save To</label>
+			                                </div>
+											<span className="error-msg">{this.state.errors["saveToId"]}</span>
+
+											<div style={{margin: '0px 0 5px 0'}} className="cus_input ">
+			                                    <img src="./murabbo/img/enable.svg" alt="Murabbo"/> <label className="cus_label">Player Type</label>
+			                                </div>
+			                                <label className="control control--radio">Single
+
+			                                {(this.state.fields.playerType === 1 ? <input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} checked /> : <input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} />)}
+
+												
+			                                  <div className="control__indicator"></div>
+			                                </label>
+			                                <label className="control control--radio">Multiplayer
+			                                {(this.state.fields.playerType === 2 ?  <input type="radio" name="radio1" value="2"  onChange={this.handleChange.bind(this, "playerType")} checked /> :  <input type="radio" name="radio1" value="2"  onChange={this.handleChange.bind(this, "playerType")} />)}
+			                                 
+			                                  <div className="control__indicator"></div>
+			                                </label>
+			                                <label>
+											<span className="error-msg">{this.state.errors["playerType"]}</span>
+											</label>
+
+			                                <div style={{margin: '0px 0 5px 0'}} className="cus_input ">
+			                                    <img src="./murabbo/img/enable.svg" alt="Murabbo"/> <label className="cus_label">Visibility</label>
+			                                </div>
+			                                <label className="control control--radio">All
+
+			                                {(this.state.fields.visibility === 2 ? <input type="radio" name="radio" value="2"  onChange={this.handleChange.bind(this, "visibility")} checked /> : <input type="radio" name="radio" value="2"  onChange={this.handleChange.bind(this, "visibility")} />)}
+												
+			                                  <div className="control__indicator"></div>
+			                                </label>
+			                                <label className="control control--radio">Only Me
+
+			                                {(this.state.fields.visibility === 1 ? <input type="radio" name="radio" value="1"  onChange={this.handleChange.bind(this, "visibility")} checked /> : <input type="radio" name="radio" value="1"  onChange={this.handleChange.bind(this, "visibility")} />)}
+			                                  
+			                                  <div className="control__indicator"></div>
+			                                </label>
+			                                <label>
+											<span className="error-msg">{this.state.errors["visibility"]}</span>
+											</label>
+			                                <div className="add-category">
+			                                    <label>Choose Category <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={this.handleOpenCategoryModel.bind(this)} /></label><br />
+
+			                                    { this.state.categoryListObjDisplaySelected.map((e, key) => {
+				                                		return <div className="category" style={{ 
+														marginRight: '5px'
+													}}>
+					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo" onClick={this.handleRemoveCategory.bind(this,e)}/></p>
+					                                    </div>
+				                                    })
+				                                }
+			                                    	
+			                                </div>
+			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["categoryIds"]}</span>
+			                                <div className="add-category">
+			                                    <label>Choose Brand <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={this.handleOpenBrandModel.bind(this)}  /></label><br />
+
+			                                    { this.state.brandListObjDisplaySelected.map((e, key) => {
+				                                		return <div className="category" style={{ 
+														marginRight: '5px'
+													}}>
+					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo" onClick={this.handleRemoveBrand.bind(this,e)}/></p>
+					                                    </div>
+				                                    })
+				                                }
+			                                </div>
+			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["brandIds"]}</span>
+			                            </div>
+			                        </div>
+			                    </div>
+			                    <div className="contest-info">
+			                        <div className="contest-title">
+			                            <div className="row">
+			                                <div className="col-md-12">
+			                                    <div className="footer-btn">
+			                                        <button className="blue_btn light_blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Save & Next</button>
+			                                    </div> 
+			                                </div>
+			                            </div>
+			                        </div>
+			                    </div>
+			                </div>
+			            </section>
 					<div className={(this.state.openModelCategory) ? 'stopScorll' : ''}>
 						<CModal className="model" size="lg" show={this.state.openModelCategory} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>
 	                    	<CModalBody className="model-bg">
@@ -899,261 +1087,73 @@ class EditContest extends Component {
 		                </CModal>
 	                </div>
 					
-			            <section id="contest" className="d-flex align-items-center">
-			                <div className="container">
-			                    <div className="create-contest">
-			                        <div className="contest-title">
-			                            <div className="row">
-			                                <div className="col-md-4">
-			                                    <div className="main_title">
-			                                        <h3>Contest Details</h3>  
-			                                    </div> 
-			                                </div>
-			                                <div className="col-md-8">
-			                                    <ul className="title-link">
-			                                        {/*<li onClick={() => {this.props.history.push('/detail-contest');}} style={{ cursor:'pointer'}}><img src="./murabbo/img/play.svg" alt="Murabbo" /> Play</li>*/}
-			                                        <li onClick={this.removeContestHandler.bind(this)} style={{ cursor:'pointer'}}><img src="./murabbo/img/close2.svg" alt="Murabbo" /> Remove</li>
-			                                        <li onClick={this.publishContestHandler.bind(this)} style={{ cursor:'pointer'}}><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="Murabbo" /> Publish</li>
-			                                    </ul>  
-			                                </div>
-			                            </div>
-			                        </div>
-			                    </div>
-			                    <div className="contest-info">
-			                        <div className="row">
-			                            <div className="col-md-8 offset-md-2">
-			                                <div className="progressbar">
-			                                    <div className="inner-progress">
-			                                        <p>Contest Info</p>
-			                                    </div>
-			                                </div>
-			                            </div>
-			                            <div className="col-lg-4 col-md-6 col-sm-12">
-			                                <div className="profile-img">
-			                                    <form id="file-upload-form" className="uploader">
-			                                      <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
+			            
+		            <CModal show={this.state.confirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({confirmationModel:false})}
+	                color="danger" 
+	                centered>
+	                    <CModalBody className="model-bg">
 
-			                                      <label for="file-upload" id="file-drag">
-			                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
-			                                        
-			                                        <img className="display-profile-pic" src={(this.state.fields['image'] !== '') ? this.state.fields['image'] : 'avatars/placeholder.png'} alt=""/>	
-			                                        
-			                                        <div id="response" className="hidden">
-			                                          <div id="messages"></div>
-			                                          
-			                                        </div>
-			                                      </label>
-			                                    </form>
-			                                </div>
-			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["image"]}</span>
-			                            </div>
-			                            <div className="col-lg-4 col-md-6 col-sm-12">
-										
-											<div className="cus_input input_wrap">
-												<img src="./murabbo/img/title.svg" /> 
-												<input required type="text"  onChange={this.handleChange.bind(this, "title")} value={this.state.fields["title"]}/>
-												<label>Title</label>
-											</div> 
-											<span className="error-msg">{this.state.errors["title"]}</span>
-
-			                                <div className="cus_input input_wrap">
-			                                    <img src="./murabbo/img/des.svg" alt="Murabbo"/> <input required type="text"  onChange={this.handleChange.bind(this, "description")} value={this.state.fields["description"]}/>
-			                                    <label>Description</label>
-			                                </div>
-											<span className="error-msg">{this.state.errors["description"]}</span>
-
-			                                <div className="cus_input input_wrap">
-												<img src="./murabbo/img/hashtag.svg" alt="Murabbo"/>
-												<input type="text" required value={this.state.input} onChange={this.handleInputChange} onKeyDown={this.handleInputKeyDown}  />
-												<label>Hashtag</label>
-			                                </div>
-											<div className="add-category" >
-												{this.state.items.map((item, i) => 
-
-													<div className="category" style={{ 
-														marginRight: '5px',marginTop: '-15px'
-													}}>
-														<p>{item} <img src="./murabbo/img/closewhite.svg" onClick={this.handleRemoveItem(i)} alt="Murabbo"/></p>
-													</div>
-												)}
-											</div>
-											<span className="error-msg">{this.state.errors["hashtag"]}</span>
-			                                <div className="cus_input input_wrap floating-label" >
-			                                    <img src="./murabbo/img/global.svg" alt="Murabbo"/> 
-			                                    
-												<select className="floating-select" onChange={this.handleChange.bind(this,'language')} value={this.state.fields.language} required>
-							                      	{
-		                                                languages.languages.map((e, key) => {
-		                                                    return <option value={e.name}>{e.name} </option>;
-		                                                })
-		                                            }
-			                                    </select>
-			                                    <span className="highlight"></span>
-			                                    <label>Language</label>
-			                                </div>
-			                                <span className="error-msg">{this.state.errors["language"]}</span>
-			                            </div>
-			                            <div className="col-lg-4 col-md-6 col-sm-12">
-			                                <div className="cus_input input_wrap">
-			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> 
-			                                    <select className="floating-select" onChange={this.handleChange.bind(this,'saveToId')} value={this.state.fields.saveToId} required>
-							                      	<option value=""></option>
-							                      	{
-		                                                this.state.saveToList.map((e, key) => {
-		                                                    return <option value={e.saveToId}>{e.saveToTitle} </option>;
-		                                                })
-		                                            }
-			                                    </select>
-			                                    <label>Save To</label>
-			                                </div>
-											<span className="error-msg">{this.state.errors["saveToId"]}</span>
-
-											<div style={{margin: '0px 0 5px 0'}} className="cus_input ">
-			                                    <img src="./murabbo/img/enable.svg" alt="Murabbo"/> <label className="cus_label">Player Type</label>
-			                                </div>
-			                                <label className="control control--radio">Single
-
-			                                {(this.state.fields.playerType === 1 ? <input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} checked /> : <input type="radio" name="radio1" value="1"  onChange={this.handleChange.bind(this, "playerType")} />)}
-
-												
-			                                  <div className="control__indicator"></div>
-			                                </label>
-			                                <label className="control control--radio">Multiplayer
-			                                {(this.state.fields.playerType === 2 ?  <input type="radio" name="radio1" value="2"  onChange={this.handleChange.bind(this, "playerType")} checked /> :  <input type="radio" name="radio1" value="2"  onChange={this.handleChange.bind(this, "playerType")} />)}
-			                                 
-			                                  <div className="control__indicator"></div>
-			                                </label>
-			                                <label>
-											<span className="error-msg">{this.state.errors["playerType"]}</span>
-											</label>
-
-			                                <div style={{margin: '0px 0 5px 0'}} className="cus_input ">
-			                                    <img src="./murabbo/img/enable.svg" alt="Murabbo"/> <label className="cus_label">Visibility</label>
-			                                </div>
-			                                <label className="control control--radio">All
-
-			                                {(this.state.fields.visibility === 2 ? <input type="radio" name="radio" value="2"  onChange={this.handleChange.bind(this, "visibility")} checked /> : <input type="radio" name="radio" value="2"  onChange={this.handleChange.bind(this, "visibility")} />)}
-												
-			                                  <div className="control__indicator"></div>
-			                                </label>
-			                                <label className="control control--radio">Only Me
-
-			                                {(this.state.fields.visibility === 1 ? <input type="radio" name="radio" value="1"  onChange={this.handleChange.bind(this, "visibility")} checked /> : <input type="radio" name="radio" value="1"  onChange={this.handleChange.bind(this, "visibility")} />)}
-			                                  
-			                                  <div className="control__indicator"></div>
-			                                </label>
-			                                <label>
-											<span className="error-msg">{this.state.errors["visibility"]}</span>
-											</label>
-			                                <div className="add-category">
-			                                    <label>Choose Category <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={this.handleOpenCategoryModel.bind(this)} /></label><br />
-
-			                                    { this.state.categoryListObjDisplaySelected.map((e, key) => {
-				                                		return <div className="category" style={{ 
-														marginRight: '5px'
-													}}>
-					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo" onClick={this.handleRemoveCategory.bind(this,e)}/></p>
-					                                    </div>
-				                                    })
-				                                }
-			                                    	
-			                                </div>
-			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["categoryIds"]}</span>
-			                                <div className="add-category">
-			                                    <label>Choose Brand <img src="./murabbo/img/add.svg" alt="Murabbo" onClick={this.handleOpenBrandModel.bind(this)}  /></label><br />
-
-			                                    { this.state.brandListObjDisplaySelected.map((e, key) => {
-				                                		return <div className="category" style={{ 
-														marginRight: '5px'
-													}}>
-					                                        <p>{e.name}<img src="./murabbo/img/closewhite.svg" alt="Murabbo" onClick={this.handleRemoveBrand.bind(this,e)}/></p>
-					                                    </div>
-				                                    })
-				                                }
-			                                </div>
-			                                <span style={{top:'0'}} className="error-msg">{this.state.errors["brandIds"]}</span>
-			                            </div>
-			                        </div>
-			                    </div>
-			                    <div className="contest-info">
-			                        <div className="contest-title">
-			                            <div className="row">
-			                                <div className="col-md-12">
-			                                    <div className="footer-btn">
-			                                        <button className="blue_btn light_blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Save & Next</button>
-			                                    </div> 
-			                                </div>
-			                            </div>
-			                        </div>
-			                    </div>
-			                </div>
-			            </section>
-			            <CModal show={this.state.confirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({confirmationModel:false})}
-                    color="danger" 
-                    centered>
-                        <CModalBody className="model-bg">
-
-                        <div>
-                            <div className="modal-body">
-                                <button type="button" className="close"   onClick={()=> this.setState({confirmationModel:false})}>
-                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                            </button>
-                                <div className="model_data">
-                                    <div className="model-title">
-                                    	<img src='./murabbo/img/close_pink.png' alt=""  />
-                                    	<h3>Are you sure you want to delete?</h3>
-                                    </div>
-                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
-                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
-                                    <div className="row">
-                                        <div className="col-md-10 offset-md-1">
+	                    <div>
+	                        <div className="modal-body">
+	                            <button type="button" className="close"   onClick={()=> this.setState({confirmationModel:false})}>
+	                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+	                        </button>
+	                            <div className="model_data">
+	                                <div className="model-title">
+	                                	<img src='./murabbo/img/close_pink.png' alt=""  />
+	                                	<h3>Are you sure you want to delete?</h3>
+	                                </div>
+	                                <img className="shape2" src="./murabbo/img/shape2.svg"/>
+	                                <img className="shape3" src="./murabbo/img/shape3.svg"/>
+	                                <div className="row">
+	                                    <div className="col-md-10 offset-md-1">
 
 							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
 							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
 							                </div>
-                                			<div style={{ textAlign: 'center' , float:'left' }} className="">
+	                            			<div style={{ textAlign: 'center' , float:'left' }} className="">
 							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.removeContestHandler.bind(this,'delete')} >Yes</button>
 							                </div>
-                                        </div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        </div>
+	                    </CModalBody>
+	                </CModal>
+
+	                <CModal show={this.state.publishConfirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({publishConfirmationModel:false})}
+	                color="danger" 
+	                centered>
+                    <CModalBody className="model-bg">
+
+                    <div>
+                        <div className="modal-body">
+                            <button type="button" className="close"   onClick={()=> this.setState({publishConfirmationModel:false})}>
+                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                        </button>
+                            <div className="model_data">
+                                <div className="model-title">
+                                	<h3>Are you sure you want to publish?</h3>
+                                </div>
+                                <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                <div className="row">
+                                    <div className="col-md-10 offset-md-1">
+
+						                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+						                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({publishConfirmationModel:false,publish_id:''})} >No</button>
+						                </div>
+                            			<div style={{ textAlign: 'center' , float:'left' }} className="">
+						                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.publishContestHandler.bind(this,'publish')} >Yes</button>
+						                </div>
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                        </CModalBody>
-                    </CModal>
-
-                    <CModal show={this.state.publishConfirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({publishConfirmationModel:false})}
-                    color="danger" 
-                    centered>
-                        <CModalBody className="model-bg">
-
-                        <div>
-                            <div className="modal-body">
-                                <button type="button" className="close"   onClick={()=> this.setState({publishConfirmationModel:false})}>
-                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                            </button>
-                                <div className="model_data">
-                                    <div className="model-title">
-                                    	<h3>Are you sure you want to publish?</h3>
-                                    </div>
-                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
-                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
-                                    <div className="row">
-                                        <div className="col-md-10 offset-md-1">
-
-							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({publishConfirmationModel:false,publish_id:''})} >No</button>
-							                </div>
-                                			<div style={{ textAlign: 'center' , float:'left' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.publishContestHandler.bind(this,'publish')} >Yes</button>
-							                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                        </CModalBody>
-                    </CModal>
+                        </div>
+                        </div>
+                    </CModalBody>
+                </CModal>
 			        </main>
 		        <TheFooter />
 		    </>

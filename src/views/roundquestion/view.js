@@ -12,6 +12,7 @@ import {
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery';
+import RLDD from 'react-list-drag-and-drop/lib/RLDD';
 let round_id;
 
 class RoundQuestion extends Component {
@@ -28,8 +29,29 @@ class RoundQuestion extends Component {
 		var url = window.location.href;
         round_id =url.substring(url.lastIndexOf('/') + 1);
 		this.getList(round_id);
+	}
+	handleRLDDChange(newItems) {
+	    this.setState({ listArr: newItems });
 
+	    var sortingList = [];
+	    for (var i = 0; i < newItems.length; i++) {
+	    	sortingList.push({questionId:newItems[i]['_id'],displayOrder:i});	    	
+	    }
 
+	    var postData = JSON.stringify({sortingList:sortingList});
+	    fetch(configuration.baseURL+"roundQuestion/sorting", {
+                method: "PUT",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                },
+                body:postData
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {				
+			this.getList(round_id);
+		});
 	}
 
 	getList(round_id)
@@ -46,6 +68,9 @@ class RoundQuestion extends Component {
 		    	return response.json();
 		    }).then((data)=> {
 				var data = data.data;
+   				for (var i = 0; i < data.length; i++) {
+   					data[i]['id'] = i;
+   				}
 		   		this.setState({listArr:data});
 			});	
 		}
@@ -149,70 +174,72 @@ class RoundQuestion extends Component {
 			                            </div>
 			                        </div>
 			                    </div>
-			                    
-
-			                        {
-			                        	(this.state.listArr.length > 0) ? 
-			                         this.state.listArr.map((val, ckey) => {
-			                         	var className = (val.active) ? 'acc-head p-3 rounded-0 active' : 'acc-head p-3 rounded-0';
-			                         	var style = (val.active) ? {display: "block"} :{display: "none"};
-			                            return <div style={{ paddingTop:'20px',paddingBottom:'20px'}} className="contest-info"> <div className="row"><div className="col-lg-12 col-md-12 col-sm-12">
-			                                <div className="accordion-wrapper">
-			                                    <div class={className} onClick={this.toggleHandler.bind(this,ckey)}>
-			                                        <div className="row">
-			                                            <div className="col-md-2">
-			                                                <div className="acc_img">
-			                                                    <img src={(val.file !== '') ? val.file : 'avatars/question.png'} />
-			                                                </div>
-			                                            </div>
-			                                            <div className="col-md-10">
-			                                                <div className="acc_title" style={{cursor:'pointer'}}  >
-			                                                    <h4>{val.question}</h4>
-			                                                </div>
-			                                            </div>
-			                                        </div>
-			                                    </div>
-			                                    <div class="acc-body rounded-0" style={style}>
-			                                        <div className="row">
-			                                            <div className="col-md-2">
-			                                               
-			                                            </div>
-			                                            <div className="col-md-10 ">
-			                                                <div className="acc_detail" style={{marginBottom:'20px'}}>
-			                                                    <button type="button" className="remove_btn"  onClick={this.deleteHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/close2.svg" /> Remove</button>
-			                                                    <button type="button" className="remove_btn" onClick={this.editHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/edit.svg"   /> Edit</button>
-			                                                </div>
-			                                                <div className="answer">
-			                                                	{val.answers.map((val1, ckey1) => {
-				                                                	return <div className="answer-box list-answer-box">
-			                                                        <p className="fancy">
-			                                                            <label >
-			                                                            {(val1.correctAnswer === true) ? 
-			                                                              <i className="fa fa-check-circle" style={{cursor:'auto'}} /> : <span className="fancy-circle no-border" style={{cursor:'auto'}}></span> }
-			                                                              <span for={ckey1}>{this.truncate(val1.answer,450)}</span>
-			                                                            </label>
-			                                                        </p>
-			                                                    </div>
-				                                                	})
-				                                                }
-			                                                </div>
-			                                            </div>
-			                                        </div>
-			                                    </div>
-			                                </div>
-			                            </div>
+                    			{ 
+                                	(this.state.listArr.length > 0) ?
+	                                	<RLDD
+										  items={this.state.listArr}
+										  itemRenderer={(val,ckey) => {
+										  	var className = (val.active) ? 'acc-head p-3 rounded-0 active' : 'acc-head p-3 rounded-0';
+                         					var style = (val.active) ? {display: "block"} :{display: "none"};
+										    return (
+										    <div style={{ paddingTop:'20px',paddingBottom:'20px'}} className="contest-info"> <div className="row"><div className="col-lg-12 col-md-12 col-sm-12">
+				                                <div className="accordion-wrapper">
+				                                    <div class={className} onClick={this.toggleHandler.bind(this,ckey)}>
+				                                        <div className="row">
+				                                            <div className="col-md-2">
+				                                                <div className="acc_img">
+				                                                    <img src={(val.file !== '') ? val.file : 'avatars/question.png'} />
+				                                                </div>
+				                                            </div>
+				                                            <div className="col-md-10">
+				                                                <div className="acc_title" style={{cursor:'pointer'}}  >
+				                                                    <h4>{val.question}</h4>
+				                                                </div>
+				                                            </div>
+				                                        </div>
+				                                    </div>
+				                                    <div class="acc-body rounded-0" style={style}>
+				                                        <div className="row">
+				                                            <div className="col-md-2">
+				                                               
+				                                            </div>
+				                                            <div className="col-md-10 ">
+				                                                <div className="acc_detail" style={{marginBottom:'20px'}}>
+				                                                    <button type="button" className="remove_btn"  onClick={this.deleteHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/close2.svg" /> Remove</button>
+				                                                    <button type="button" className="remove_btn" onClick={this.editHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/edit.svg"   /> Edit</button>
+				                                                </div>
+				                                                <div className="answer">
+				                                                	{val.answers.map((val1, ckey1) => {
+					                                                	return <div className="answer-box list-answer-box">
+				                                                        <p className="fancy">
+				                                                            <label >
+				                                                            {(val1.correctAnswer === true) ? 
+				                                                              <i className="fa fa-check-circle" style={{cursor:'auto'}} /> : <span className="fancy-circle no-border" style={{cursor:'auto'}}></span> }
+				                                                              <span for={ckey1}>{this.truncate(val1.answer,450)}</span>
+				                                                            </label>
+				                                                        </p>
+				                                                    </div>
+					                                                	})
+					                                                }
+				                                                </div>
+				                                            </div>
+				                                        </div>
+				                                    </div>
+				                                </div>
+					                            </div>
+					                            </div>
+				                    		</div>
+										    );
+										  }}
+										  onChange={this.handleRLDDChange.bind(this)}
+										/>
+		                            : 
+							        (
+							        	<div style={{ paddingTop:'20px',paddingBottom:'20px'}} className="contest-info"> <div className="row"><div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No data found</p></div>
 			                            </div>
 			                    		</div>
-			                            }) : 
-								        (
-								        	<div style={{ paddingTop:'20px',paddingBottom:'20px'}} className="contest-info"> <div className="row"><div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No data found</p></div>
-			                            </div>
-			                    		</div>
-								        )
-                    				}
-			                            
-			                        
-
+							        )
+                				}
 			                    <div className="contest-info">
 			                        <div className="contest-title">
 			                            <div className="row">
