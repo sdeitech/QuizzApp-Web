@@ -206,7 +206,8 @@ li.nav-item {
     color: #fff;
 }
 .drop_menu {
-    background-color: #0A0F13;
+    background-color: #1d2d35;
+    box-shadow: 2px 2px 10px black;
 }
 .drop_menu li {
     padding-left: 10px;

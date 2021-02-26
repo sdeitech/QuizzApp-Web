@@ -469,11 +469,17 @@ class AddContest extends Component {
 	handleInputKeyDown(evt) {
 		if ( evt.keyCode === 13 && evt.target.value.trim() !== '' ) {
 		  const {value} = evt.target;
-		  
-		  this.setState(state => ({
-			items: [...state.items, value],
-			input: ''
-		  }));
+		  	var array = value.split(',');	
+		  	var itemsArr = this.state.items;	  
+		  	for (var i = 0; i < array.length; i++) {
+		  		if (array[i].trim() !== '') {
+		  			itemsArr.push(array[i]);
+		  		}
+		  	}
+		  	this.setState({
+				items: itemsArr,
+				input: ''
+			});
 	}
 
 	if ( this.state.items.length && evt.keyCode === 8 && !this.state.input.length ) {
