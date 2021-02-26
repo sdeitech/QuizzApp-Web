@@ -19,6 +19,7 @@ class MyAccount extends Component {
         super(props);
         this.state = { 
         	profile_picture:'avatars/placeholder-user.png',
+            availabilityStatusImg:'img/online.png',
             name:'',
             editModel:false,
             changePasswordModel:false,
@@ -58,15 +59,32 @@ class MyAccount extends Component {
             }).then((response) =>{
             return response.json();
         }).then((data)=> {
-            var data = data.data;
-            this.setState({fields:data});
-            if (data.image === '') {
-                this.setState({image: 'avatars/placeholder-user.png'})
-            }
-            else
-            {
-                this.setState({profile_picture: data.image})
-            }
+                var data = data.data;
+                this.setState({fields:data});
+                if (data.image === '') {
+                    this.setState({image: 'avatars/placeholder-user.png'})
+                }
+                else
+                {
+                    this.setState({profile_picture: data.image})
+                }
+
+                if (data.availabilityStatus === 1) {
+                    this.setState({availabilityStatusImg: 'img/online.png'})
+                }
+                else if (data.availabilityStatus === 2) {
+                    this.setState({availabilityStatusImg: 'img/away.png'})
+                }
+                else if (data.availabilityStatus === 3) {
+                    this.setState({availabilityStatusImg: 'img/donot-disturb.png'})
+                }
+                else if (data.availabilityStatus === 4) {
+                    this.setState({availabilityStatusImg: 'img/invisible.png'})
+                }
+                else{
+                    this.setState({availabilityStatusImg: 'img/online.png'})
+                }
+            
         });
 
     }
@@ -157,6 +175,7 @@ class MyAccount extends Component {
             }).then((data) => {
                 if(data.code === 200){
                     this.setState({editModel:!this.state.editModel});
+                    this.componentDidMount();
                 }
                 else
                 {
@@ -292,244 +311,247 @@ class MyAccount extends Component {
 				<TheHeaderInner />				
 					<main id="main">
                     <ToastContainer position="top-right" autoClose={25000} style={{top:'80px'}}/>
-            <section id="contest" class="d-flex align-items-center">
-                <div class="container">
-                    <div style={{ marginTop: '30px'}} class="contest-info">
-                        <div class="row">
-                            <div style={{ padding: '0'}} class="col-lg-3 col-md-4">
-                                <div class="sidebar-dashboard">
-                                    <ul>
-                                        <a href="javascript:void(0)"><li onClick={() => this.props.history.push('/my_account')} class="active_side"><img src="./murabbo/img/username.svg"/>  My Profile</li></a>
-                                        <a href="javascript:void(0)l"><li onClick={() => this.props.history.push('/contest')}><img src="./murabbo/img/console.svg"/> My Games</li></a>
-                                        <a href="javascript:void(0)"><li onClick={() => this.props.history.push('/contest')}><img src="./murabbo/img/calendar.svg"/> Game History</li></a>
-                                        <a href="javascript:void(0)"><li><img src="./murabbo/img/leaderboard.svg"/> Leaderboard</li></a>
-                                        <a href="javascript:void(0)"><li><img src="./murabbo/img/union.svg"/> Online Friend</li></a>
-                                        <a href="javascript:void(0)"><li><img src="./murabbo/img/invitation.svg"/> Invite Friend</li></a>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-lg-9 col-md-8">
-                                <div class="main_title_">
-                                    <h3>My Profile</h3>  
-                                </div>   
-
-                                <div class="profile_info">
+                        <section id="contest" class="d-flex align-items-center">
+                            <div class="container">
+                                <div style={{ marginTop: '30px'}} class="contest-info">
                                     <div class="row">
-                                        <div style={{ marginTop: '20px'}} class="col-lg-8 col-md-6">
-                                            <div class="inline">
-                                                <img src={ this.state.profile_picture }/> 
-                                            </div>
-                                            <div class="inline social-info">
-                                                <h3>{ this.state.fields['name'] }</h3>
-                                                <span>{ this.state.fields['userStatus'] }</span><br />
-                                                <img src="./murabbo/img/diamond.svg" style={{height: 'auto'}} /> <span>Best performer</span>
+                                        <div style={{ padding: '0'}} class="col-lg-3 col-md-4">
+                                            <div class="sidebar-dashboard">
+                                                <ul>
+                                                    <a href="javascript:void(0)"><li onClick={() => this.props.history.push('/my_account')} class="active_side"><img src="./murabbo/img/username.svg"/>  My Profile</li></a>
+                                                    <a href="javascript:void(0)l"><li onClick={() => this.props.history.push('/contest')}><img src="./murabbo/img/console.svg"/> My Games</li></a>
+                                                    <a href="javascript:void(0)"><li onClick={() => this.props.history.push('/contest')}><img src="./murabbo/img/calendar.svg"/> Game History</li></a>
+                                                    <a href="javascript:void(0)"><li><img src="./murabbo/img/leaderboard.svg"/> Leaderboard</li></a>
+                                                    <a href="javascript:void(0)"><li><img src="./murabbo/img/union.svg"/> Online Friend</li></a>
+                                                    <a href="javascript:void(0)"><li><img src="./murabbo/img/invitation.svg"/> Invite Friend</li></a>
+                                                </ul>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <div class="scrore">
-                                                <img src="./murabbo/img/tropy.svg"/>
-                                                <p>Current Score</p>
-                                                <h2>5,587 <span>pt</span></h2>
-                                            </div>    
-                                        </div>
-                                    </div>
+                                        <div class="col-lg-9 col-md-8">
+                                            <div class="main_title_">
+                                                <h3>My Profile</h3>  
+                                            </div>   
 
-                                    <div class="row">
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)"><div class="profile-setting">
-                                                <img src="./murabbo/img/member-card.svg"/>
-                                                <h3>Membership <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
-                                                
-                                                <img class="position_right" src="./murabbo/img/member-card2.svg"/>
-                                            </div></a>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)"><div class="profile-setting">
-                                                <img src="./murabbo/img/account.svg"/>
-                                                <h3>Social Accounts <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
-                                                
-                                                <img class="position_right" src="./murabbo/img/account2.svg"/>
-                                            </div></a>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)"><div class="profile-setting">
-                                                <img src="./murabbo/img/security.svg"/>
-                                                <h3>Privacy & Security <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
-                                                
-                                                <img class="position_right" src="./murabbo/img/security2.svg"/>
-                                            </div></a>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)"><div class="profile-setting">
-                                                <img src="./murabbo/img/pref.svg"/>
-                                                <h3>Preferences <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
-                                                
-                                                <img class="position_right" src="./murabbo/img/pref2.svg"/>
-                                            </div></a>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)" onClick={() => {this.setState({changePasswordModel:!this.state.changePasswordModel})}}><div class="profile-setting">
-                                                <img src="./murabbo/img/password_.svg"/>
-                                                <h3>Change Password <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
-                                                
-                                                <img class="position_right" src="./murabbo/img/password_2.svg"/>
-                                            </div></a>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <a href="javascript:void(0)" onClick={() => {this.setState({editModel:!this.state.editModel})}}><div class="profile-setting">
-                                                <img src="./murabbo/img/resume.svg"/>
-                                                <h3>Edit Profile <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
-                                                
-                                                <img class="position_right" src="./murabbo/img/resume2.svg"/>
-                                            </div></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <CModal size="lg" show={this.state.editModel} onClose={() => this.setState({editModel:!this.state.editModel})} color="danger"  centered>
-                <CModalBody className="model-bg">
+                                            <div class="profile_info">
+                                                <div class="row">
+                                                    <div style={{ marginTop: '20px'}} class="col-lg-8 col-md-6">
 
-                <div>
-                    <div className="modal-body">
-                        <button type="button" className="close"  onClick={()=> this.setState({editModel:false})}>
-                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                    </button>
-                        <div className="model_data">
-                            <div className="model-title">
-                                <h3>Edit Profile</h3>
-                            </div>
-                            <div className="contest editprofile">
-                                <div className="row">
-                                    <div className="col-lg-12 col-md-12 col-sm-12">
-                                        <div className="profile-img">
-                                            <form id="file-upload-form" className="uploader">
-                                              <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
-
-                                              <label for="file-upload" id="file-drag">
-                                                <img id="file-image"   src="#" alt="Preview" className="hidden"/>
-                                                <div className="edit-pencil">
-                                                    <img src="/img/pen.svg" />
+                                                        <div class="inline">
+                                                            <img class="profile" src={ this.state.profile_picture }/> 
+                                                            <img class="onlinetick" src={ this.state.availabilityStatusImg } />
+                                                        </div>
+                                                        <div class="inline social-info">
+                                                            <h3>{ this.state.fields['name'] }</h3>
+                                                            <span>{ this.state.fields['userStatus'] }</span><br />
+                                                            <img src="./murabbo/img/diamond.svg" style={{height: 'auto'}} /> <span>Best performer</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <div class="scrore">
+                                                            <img src="./murabbo/img/tropy.svg"/>
+                                                            <p>Current Score</p>
+                                                            <h2>5,587 <span>pt</span></h2>
+                                                        </div>    
+                                                    </div>
                                                 </div>
-                                                <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
-                                                <div id="start">
-                                                    {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
-                                                  
-                                                  <div id="add_image">Add Image</div></div> : null}
-                                                  
+
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <a href="javascript:void(0)"><div class="profile-setting">
+                                                            <img src="./murabbo/img/member-card.svg"/>
+                                                            <h3>Membership <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
+                                                            
+                                                            <img class="position_right" src="./murabbo/img/member-card2.svg"/>
+                                                        </div></a>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <a href="javascript:void(0)"><div class="profile-setting">
+                                                            <img src="./murabbo/img/account.svg"/>
+                                                            <h3>Social Accounts <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
+                                                            
+                                                            <img class="position_right" src="./murabbo/img/account2.svg"/>
+                                                        </div></a>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <a href="javascript:void(0)"><div class="profile-setting">
+                                                            <img src="./murabbo/img/security.svg"/>
+                                                            <h3>Privacy & Security <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
+                                                            
+                                                            <img class="position_right" src="./murabbo/img/security2.svg"/>
+                                                        </div></a>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <a href="javascript:void(0)"><div class="profile-setting">
+                                                            <img src="./murabbo/img/pref.svg"/>
+                                                            <h3>Preferences <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
+                                                            
+                                                            <img class="position_right" src="./murabbo/img/pref2.svg"/>
+                                                        </div></a>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <a href="javascript:void(0)" onClick={() => {this.setState({changePasswordModel:!this.state.changePasswordModel})}}><div class="profile-setting">
+                                                            <img src="./murabbo/img/password_.svg"/>
+                                                            <h3>Change Password <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
+                                                            
+                                                            <img class="position_right" src="./murabbo/img/password_2.svg"/>
+                                                        </div></a>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <a href="javascript:void(0)" onClick={() => {this.setState({editModel:!this.state.editModel})}}><div class="profile-setting">
+                                                            <img src="./murabbo/img/resume.svg"/>
+                                                            <h3>Edit Profile <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
+                                                            
+                                                            <img class="position_right" src="./murabbo/img/resume2.svg"/>
+                                                        </div></a>
+                                                    </div>
                                                 </div>
-                                                <div id="response" className="hidden">
-                                                  <div id="messages"></div>
-                                                  
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <CModal size="lg" show={this.state.editModel} onClose={() => this.setState({editModel:!this.state.editModel})} color="danger"  centered>
+                            <CModalBody className="model-bg">
+
+                            <div>
+                                <div className="modal-body">
+                                    <button type="button" className="close"  onClick={()=> this.setState({editModel:false})}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                    <div className="model_data">
+                                        <div className="model-title">
+                                            <h3>Edit Profile</h3>
+                                        </div>
+                                        <div className="contest editprofile">
+                                            <div className="row">
+                                                <div className="col-lg-12 col-md-12 col-sm-12">
+                                                    <div className="profile-img">
+                                                        <form id="file-upload-form" className="uploader">
+                                                          <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
+
+                                                          <label for="file-upload" id="file-drag">
+                                                            <img id="file-image"   src="#" alt="Preview" className="hidden"/>
+                                                            <div className="edit-pencil">
+                                                                <img src="/img/pen.svg" />
+                                                            </div>
+                                                            <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
+                                                            <div id="start">
+                                                                {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
+                                                              
+                                                              <div id="add_image">Add Image</div></div> : null}
+                                                              
+                                                            </div>
+                                                            <div id="response" className="hidden">
+                                                              <div id="messages"></div>
+                                                              
+                                                            </div>
+                                                          </label>
+                                                        </form>
+                                                    </div>
+
+                                                    <span  className="error-msg">{this.state.errors["image"]}</span>
+
+                                                    
                                                 </div>
-                                              </label>
-                                            </form>
+                                            </div>
+                                            <div className="cus_input status_input input_wrap">
+                                                <select className="floating-select" onChange={this.handleChange.bind(this,'availabilityStatus')} value={this.state.fields['availabilityStatus']} required>
+                                                    <option value="1">Online</option>
+                                                    <option value="2">Away</option>
+                                                    <option value="3">Do not disturb</option>
+                                                    <option value="4">Invisible</option>
+                                                </select>
+                                            </div>
+                                            <span  className="error-msg">{this.state.errors["availabilityStatus"]}</span>
+                                            <div className="row">
+                                                <div className="col-lg-12 col-md-12 col-sm-12">
+                                                    
+                                                    <div className="cus_input input_wrap">
+                                                        <img src="./murabbo/img/username.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'name')} value={this.state.fields['name']} />
+                                                        <label>Name</label>
+                                                    </div>
+                                                    <span  className="error-msg">{this.state.errors["name"]}</span>
+                                                    <div className="cus_input input_wrap">
+                                                        <img src="./murabbo/img/email.svg" alt="Upload"/> <input type="text" required name="" value={this.state.fields['email']} readonly />
+                                                        <label>Email</label>
+                                                    </div>
+
+                                                    <div className="cus_input input_wrap">
+                                                        <img src="./murabbo/img/title.svg" alt="Upload"/> <input type="text" required onChange={this.handleChange.bind(this,'userStatus')} name="" value={this.state.fields['userStatus']} />
+                                                        <label>Status</label>
+                                                    </div>
+                                                    <span  className="error-msg">{this.state.errors["userStatus"]}</span>
+                                                    
+                                                   
+                                                </div>
+                                            </div>
+                                            <div style={{ textAlign: 'center' , float:'left'}} className="col-md-12 footer-btn">
+                                                <button className="yellow_btn" type="button" onClick={()=> this.setState({editModel:false})} >Cancel</button>
+                                            
+                                                <button className="pink_btn" type="button"  onClick={this.updateHandler.bind(this) } >Submit</button>
+                                            </div>
                                         </div>
-
-                                        <span  className="error-msg">{this.state.errors["image"]}</span>
-
-                                        
                                     </div>
                                 </div>
-                                <div className="cus_input status_input input_wrap">
-                                    <select className="floating-select" onChange={this.handleChange.bind(this,'availabilityStatus')} value={this.state.fields['availabilityStatus']} required>
-                                        <option value="1">Online</option>
-                                        <option value="2">Away</option>
-                                        <option value="3">Do not disturb</option>
-                                        <option value="4">Invisible</option>
-                                    </select>
                                 </div>
-                                <span  className="error-msg">{this.state.errors["availabilityStatus"]}</span>
-                                <div className="row">
-                                    <div className="col-lg-12 col-md-12 col-sm-12">
-                                        
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/username.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'name')} value={this.state.fields['name']} />
-                                            <label>Name</label>
-                                        </div>
-                                        <span  className="error-msg">{this.state.errors["name"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/email.svg" alt="Upload"/> <input type="text" required name="" value={this.state.fields['email']} readonly />
-                                            <label>Email</label>
-                                        </div>
+                            </CModalBody>
+                        </CModal>
 
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/title.svg" alt="Upload"/> <input type="text" required onChange={this.handleChange.bind(this,'userStatus')} name="" value={this.state.fields['userStatus']} />
-                                            <label>Status</label>
+                        <CModal size="lg" show={this.state.changePasswordModel} onClose={() => this.setState({changePasswordModel:!this.state.changePasswordModel})} color="danger"  centered>
+                            <CModalBody className="model-bg">
+
+                            <div>
+                                <div className="modal-body">
+                                    <button type="button" className="close"  onClick={()=> this.setState({changePasswordModel:false})}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                    <div className="model_data">
+                                        <div className="model-title">
+                                            <h3>ChangePassword</h3>
                                         </div>
-                                        <span  className="error-msg">{this.state.errors["userStatus"]}</span>
-                                        
-                                       
+                                        <div className="contest editprofile">
+                                            <div className="row">
+                                                <div className="col-lg-12 col-md-12 col-sm-12">
+                                                    {(this.state.tosterMsg != '') ? (
+                                                        <div className="tosterMsg">
+                                                            <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
+                                                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                                            </button>
+                                                            <span>{this.state.tosterMsg}</span>
+                                                        </div>) : null
+                                                    }
+                                                    <div className="cus_input input_wrap">
+                                                        <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "oldPassword")} value={this.state.changePasswordFields["oldPassword"]}/>
+                                                        <label>Old Password</label>
+                                                    </div>
+                                                    <span className="error-msg">{this.state.changePasswordErrors["oldPassword"]}</span>
+                                                    <div className="cus_input input_wrap">
+                                                        <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "password")} value={this.state.changePasswordFields["password"]}/>
+                                                        <label>New Password</label>
+                                                    </div> 
+                                                    <span className="error-msg">{this.state.changePasswordErrors["password"]}</span>
+                                                    <div className="cus_input input_wrap">
+                                                        <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "confirm_password")} value={this.state.changePasswordFields["confirm_password"]}/>
+                                                        <label>Confirm Password</label>
+                                                    </div>
+                                                    <span className="error-msg">{this.state.changePasswordErrors["confirm_password"]}</span>
+                                                   
+                                                </div>
+                                            </div>
+                                            <div style={{ textAlign: 'center' , float:'left'}} className="col-md-12 footer-btn">
+                                                <button className="yellow_btn" type="button" onClick={()=> this.setState({changePasswordModel:false})} >Cancel</button>
+                                            
+                                                <button className="blue_btn light_blue_btn" type="button"  onClick={this.changePasswordHandler.bind(this) } >Change</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div style={{ textAlign: 'center' , float:'left'}} className="col-md-12 footer-btn">
-                                    <button className="yellow_btn" type="button" onClick={()=> this.setState({editModel:false})} >Cancel</button>
-                                
-                                    <button className="pink_btn" type="button"  onClick={this.updateHandler.bind(this) } >Submit</button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                </CModalBody>
-            </CModal>
-
-            <CModal size="lg" show={this.state.changePasswordModel} onClose={() => this.setState({changePasswordModel:!this.state.changePasswordModel})} color="danger"  centered>
-                <CModalBody className="model-bg">
-
-                <div>
-                    <div className="modal-body">
-                        <button type="button" className="close"  onClick={()=> this.setState({changePasswordModel:false})}>
-                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                    </button>
-                        <div className="model_data">
-                            <div className="model-title">
-                                <h3>ChangePassword</h3>
-                            </div>
-                            <div className="contest editprofile">
-                                <div className="row">
-                                    <div className="col-lg-12 col-md-12 col-sm-12">
-                                        {(this.state.tosterMsg != '') ? (
-                                            <div className="tosterMsg">
-                                                <button type="button" className="close"  onClick={() => { this.setState({tosterMsg:''})}}>
-                                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                                                </button>
-                                                <span>{this.state.tosterMsg}</span>
-                                            </div>) : null
-                                        }
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "oldPassword")} value={this.state.changePasswordFields["oldPassword"]}/>
-                                            <label>Old Password</label>
-                                        </div>
-                                        <span className="error-msg">{this.state.changePasswordErrors["oldPassword"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "password")} value={this.state.changePasswordFields["password"]}/>
-                                            <label>New Password</label>
-                                        </div> 
-                                        <span className="error-msg">{this.state.changePasswordErrors["password"]}</span>
-                                        <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/password.svg" /> <input required type="password"  onChange={this.handleChangeChangePassword.bind(this, "confirm_password")} value={this.state.changePasswordFields["confirm_password"]}/>
-                                            <label>Confirm Password</label>
-                                        </div>
-                                        <span className="error-msg">{this.state.changePasswordErrors["confirm_password"]}</span>
-                                       
-                                    </div>
-                                </div>
-                                <div style={{ textAlign: 'center' , float:'left'}} className="col-md-12 footer-btn">
-                                    <button className="yellow_btn" type="button" onClick={()=> this.setState({changePasswordModel:false})} >Cancel</button>
-                                
-                                    <button className="blue_btn light_blue_btn" type="button"  onClick={this.changePasswordHandler.bind(this) } >Change</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                </CModalBody>
-            </CModal>
-        </main>
+                            </CModalBody>
+                        </CModal>
+                    </main>
+                <TheFooter />
 		    </>
 		)
 	}

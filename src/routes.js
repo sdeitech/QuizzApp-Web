@@ -36,23 +36,23 @@ const Dashboard = React.lazy(() => import('./views/dashboard/view'))
 
 const Notification = React.lazy(() => import('./views/notification/view'))
 
+const PrivacyPolicy = React.lazy(() => import('./views/cms/privacy_policy'))
+
+const TermsConditions = React.lazy(() => import('./views/cms/terms_conditions'))
+
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
-
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/notification', name: 'Notification', component: Notification },
     { path: '/contest', name: 'Contest', component: Contest },
-    { path: '/games_history', name: 'GamesHistory', component: GamesHistory },
-    
+    { path: '/games_history', name: 'GamesHistory', component: GamesHistory },    
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
     { path: '/tray', name: 'Tray', component: Tray },
-
     { path: '/roundquestion', name: 'RoundQuestion', component: RoundQuestion },
     { path: '/add_round_question', name: 'AddRoundQuestion', component: AddRoundQuestion },
     { path: '/edit_round_question', name: 'EditRoundQuestion', component: EditRoundQuestion },
-
     { path: '/round', name: 'Round', component: Round },
     { path: '/detail-round', name: 'RoundDetail', component: RoundDetail },
     { path: '/add_round', name: 'AddRound', component: AddRound },
@@ -60,11 +60,10 @@ const routes = [
     { path: '/choose_brand', name: 'Brand', component: Brand },
     { path: '/detail-contest', name: 'DetailContest', component: DetailContest },
     { path: '/start-game', name: 'Invite', component: Invite },
-    { path: '/play-game', name: 'StartGame', component: StartGame },
-
-    
+    { path: '/play-game', name: 'StartGame', component: StartGame },    
     { path: '/my_account', name: 'MyAccount', component: MyAccount },
-
+    { path: '/privacy_policy', name: 'PrivacyPolicy', component: PrivacyPolicy },
+    { path: '/terms_conditions', name: 'TermsConditions', component: TermsConditions },
     { path: '/my_groups', name: 'MyGroups', component: MyGroups },
 
     

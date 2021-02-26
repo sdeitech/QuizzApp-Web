@@ -496,13 +496,15 @@ class AddRoundQuestion extends Component {
 	                            {
 	                            	(this.state.answers.length > 0) ? <div className="col-lg-12 col-md-12 col-sm-12">
 		                            	<div className="answer">
-		                                    <label>Select Answer</label>
+		                                    <label>Select Answer {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
+		                                   (this.state.answers.length > 5) ? '( You can not add more than 6 answer )' : null }</label>
 		                                </div>
 		                            </div> : null
 	                            }
 	                            
 	                            {
 	                            	this.state.answers.map((val, key) => {
+
 	                            		return  <div className="col-lg-4 col-md-4 col-sm-12">
 			                            	<div className="answer">
 
