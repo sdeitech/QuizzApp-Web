@@ -314,6 +314,11 @@ class EditRoundQuestion extends Component {
             if(this.state.fields.image === 'image'){
                 data.append('file', this.uploadInput.files[0]);
             } 
+            else
+            {
+            	data.append('file', '');
+            }
+            
             data.append('fileType',this.state.fields.fileType);
             data.append('fileUrl',this.state.fields.fileUrl);
             
