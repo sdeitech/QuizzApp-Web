@@ -21,14 +21,19 @@ class EditRoundQuestion extends Component {
         super(props);
         this.state = {
         	answers:[],
-        	fields:{question:'',timeLimit:1,basePoints:0,negativeBasePoints:0,execution_mode:0, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:''},
+        	fields:{question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
 			errors:{},
 			fieldsAnswer:{},
 			errorsAnswer:{},
 			openModel:false,
 			confirmationModel:false,
 			delete_id:'',
-			tosterMsg:''
+			tosterMsg:'',
+			imageList:[],
+            videoList:[],
+            audioList:[],
+            typeOption:'',
+            profilePic:''
 		};
 	}
 
@@ -65,7 +70,18 @@ class EditRoundQuestion extends Component {
 			   		this.setState({fields});
 			   		this.setState({answers:data.data[0].answers})
 			   		if (data.data[0].file !== '') {
-			   			$('.display-profile-pic').attr('src', data.data[0].file);
+			   			if (data.data[0].fileType === 'image') {
+			   				$('.display-profile-pic').attr('src', data.data[0].file);
+			   			}
+			   			else
+			   			{
+			   				if (data.data[0].fileType === 'video') {
+					        	this.setState({profilePic:'avatars/play.svg'});
+					        }
+					        else if (data.data[0].fileType === 'audio') {
+					        	this.setState({profilePic:'avatars/5.png'});
+					        }
+			   			}
 						$('.display-profile-pic').show();
 						$('#start').hide();
 			   		}
@@ -86,6 +102,46 @@ class EditRoundQuestion extends Component {
 		    		var that = this;
 					setTimeout(function () {
 						let fields = that.state.fields;
+
+						if (!fields['timeLimit']) {
+							fields['timeLimit'] = '00:30';
+							fields['timeLimitSeconds'] = 30;
+						}
+						else
+						{
+							var currentTime = parseInt(fields['timeLimit']),
+							seconds = (currentTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
+							minute = (Math.floor(currentTime / 60)).toString();// get the hours and convert to a string
+
+							//make sure we've got the right length for the seconds string
+							if (seconds.length === 0){
+								seconds = "00";
+							}
+							else if(seconds.length === 1){
+								seconds = "0" + seconds;
+							}
+
+							if (minute.length === 0){
+								minute = "00";
+							}
+							else if (minute.length === 1){
+								minute = "0" + minute;
+							}
+
+							if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+								minute = '05';
+								seconds = '00';
+							}
+							else if (parseInt(minute) === 0 && parseInt(seconds) === 0 || parseInt(seconds) < 30) {
+								minute = '00';
+								seconds = '30';
+							}
+
+							fields['timeLimit'] = minute + ":" + seconds;
+							fields['timeLimitSeconds'] = currentTime;
+						}
+						console.log(fields);
+
 						fields['execution_mode']=data.data[0].execution_mode;
 				   		that.setState({fields});
 					}, 1000);
@@ -93,23 +149,68 @@ class EditRoundQuestion extends Component {
 		    	}
 			});	
 		}
+
+		fetch(configuration.APIbaseURL+"image/image", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	    	if (data.data.length > 0) {	
+				var data = data.data;		   		
+				this.setState({imageList:data});
+	    	}
+		});	
+
+		fetch(configuration.baseURL+"audioVideo/audioVideo?type=video", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	    	if (data.data.length > 0) {	
+				var data = data.data;		   		
+				this.setState({videoList:data});
+	    	}
+		});	
+
+		fetch(configuration.baseURL+"audioVideo/audioVideo?type=audio", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	    	if (data.data.length > 0) {	
+				var data = data.data;		   		
+				this.setState({audioList:data});
+	    	}
+		});	
+
+
 	}
 
 
 
 	btnClickHandler(type,e){
 		if(type === "minus")
-		{
-			var fields = this.state.fields;
-			fields['timeLimit'] = (fields['timeLimit'] === 0) ? 0 : (fields['timeLimit'] - 1);
-			this.setState({fields});
+		{	
+			this.changeTime(-1);
 		}
 		else
 		{
-
-			var fields = this.state.fields;
-			fields['timeLimit'] = (fields['timeLimit'] === 300) ? 300 : (fields['timeLimit'] + 1);
-			this.setState({fields});
+			this.changeTime(1);
 		}
 	}
 
@@ -188,7 +289,7 @@ class EditRoundQuestion extends Component {
         	data.append('answers',JSON.stringify(this.state.answers));
         	if (this.state.fields.execution_mode === 2 || this.state.fields.execution_mode === '2') {
         		data.append('basePoints',this.state.fields.basePoints);
-	        	data.append('timeLimit',this.state.fields.timeLimit);
+	        	data.append('timeLimit',this.state.fields.timeLimitSeconds);
 	        	data.append('negativeScoring',this.state.fields.negativeScoring);
 	        	data.append('negativeBasePoints',this.state.fields.negativeBasePoints);
 	        	data.append('hint',this.state.fields.hint);
@@ -213,6 +314,8 @@ class EditRoundQuestion extends Component {
             if(this.state.fields.image === 'image'){
                 data.append('file', this.uploadInput.files[0]);
             } 
+            data.append('fileType',this.state.fields.fileType);
+            data.append('fileUrl',this.state.fields.fileUrl);
             
             fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
                 method: "PUT",
@@ -237,13 +340,23 @@ class EditRoundQuestion extends Component {
         }
     }
 
+    
     handleUploadProfile(type, ev) {
+    	var type = this.uploadInput.files[0].type.split('/');
         let fields = this.state.fields;
         fields['image'] = 'image';
+        fields['fileType'] = type[0];
         this.setState({fields});
-        // console.log(this.uploadInput.files)
-    }
-    			
+        this.setState({optionsModel:false,optionsValuesModel:false});
+        if (type[0] === 'video') {
+        	this.setState({profilePic:'avatars/play.svg'});
+        }
+        else if (type[0] === 'audio') {
+        	this.setState({profilePic:'avatars/5.png'});
+        }
+       
+        
+    }		
 
     deleteHandler(key = '',e)
 	{	
@@ -345,6 +458,66 @@ class EditRoundQuestion extends Component {
 	  return (str.length > n) ? str.substr(0, n-1) + '...' : str;
 	}
 
+	selectImage(data){
+		var fields = this.state.fields;
+		fields['fileType'] = 'image';
+		fields['fileUrl'] = data.image;
+		this.setState({fields});
+		this.setState({optionsValuesModel:false,profilePic:data.image});
+	}
+
+	selectVideo(data){
+		var fields = this.state.fields;
+		fields['fileType'] = 'video';
+		fields['fileUrl'] = data.url;
+		this.setState({fields});
+		this.setState({optionsValuesModel:false,profilePic:'avatars/play.svg'});
+	}
+
+	selectAudio(data){
+		var fields = this.state.fields;
+		fields['fileType'] = 'audio';
+		fields['fileUrl'] = data.url;
+		this.setState({fields});
+		this.setState({optionsValuesModel:false,profilePic:'avatars/5.png'});
+	}
+
+	changeTime(sec){
+    	var fields = this.state.fields;
+      	var currentTime = parseInt(fields.timeLimitSeconds),
+          newTime = currentTime + sec, //calculate the new time
+          seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
+          minute = (Math.floor(newTime / 60)).toString();// get the hours and convert to a string
+
+	      //make sure we've got the right length for the seconds string
+	      if (seconds.length === 0){
+	        seconds = "00";
+	      }
+	      else if(seconds.length === 1){
+	        seconds = "0" + seconds;
+	      }
+
+	      if (minute.length === 0){
+	        minute = "00";
+	      }
+	      else if (minute.length === 1){
+	        minute = "0" + minute;
+	      }
+
+	      if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+	      	minute = '05';
+	      	seconds = '00';
+	      }
+	      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 10)) {
+	      	minute = '00';
+	      	seconds = '10';
+	      }
+
+					
+		fields['timeLimit'] = minute + ":" + seconds;
+		fields['timeLimitSeconds'] = newTime;
+		this.setState({fields});
+    }
 
 	render() {
 		$(document).ready(function() {
@@ -352,8 +525,11 @@ class EditRoundQuestion extends Component {
 				if (input.files && input.files[0]) {
 					var reader = new FileReader();
 					reader.onload = function (e) {
-						// console.log(e.target.result);
-						$('.display-profile-pic').attr('src', e.target.result);
+						var type = input.files[0].type.split('/');
+						if (type[0] === 'image') {							
+							$('.display-profile-pic').attr('src', e.target.result);
+							
+						}
 						$('.display-profile-pic').show();
 						$('#start').hide();
 					}
@@ -399,16 +575,14 @@ class EditRoundQuestion extends Component {
 	                        </div>
 	                        <div className="row">
 	                            <div className="col-lg-4 col-md-6 col-sm-12">
-	                                <div className="profile-img">
-	                                    <form id="file-upload-form" className="uploader">
-	                                      <input id="file-upload" type="file" name="fileUpload" className="file-upload" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
-
-	                                      <label for="file-upload" id="file-drag">
+	                                <div className="profile-img" onClick={() => {this.setState({optionsModel:true})}}>
+	                                    <form id="file-upload-form" className="uploader question-add-edit">
+	                                      <label id="file-drag">
 	                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
-	                                        <img className="display-profile-pic" src="" alt=""  />
+	                                        <img className="display-profile-pic" src={this.state.profilePic} alt=""  />
 	                                        <div id="start">
 		                                        <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
-		                                          <div id="add_image">Add Image</div></div>
+		                                        </div>
 	                                        </div>
 	                                        <div id="response" className="hidden">
 	                                          <div id="messages"></div>
@@ -657,6 +831,151 @@ class EditRoundQuestion extends Component {
                             </div>
                         </CModalBody>
                     </CModal>
+
+
+
+                 <CModal show={this.state.optionsModel}  closeOnBackdrop={false}  onClose={()=> this.setState({optionsModel:false})}
+                    color="danger" 
+                    centered>
+                    <CModalBody className="model-bg">
+
+                    <div>
+                        <div className="modal-body">
+                            
+                    		<button type="button" className="close" onClick={()=> this.setState({optionsModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                            <div className="model_data questionOptionModel">
+
+                            	<div className="profile-img" style={{ marginTop: '15px' }}>
+                                    <form id="file-upload-form" className="uploader">
+                                      <input id="file-upload" type="file" name="fileUpload" className="file-upload" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
+
+                                      	<label for="file-upload" id="file-drag">
+                                      		Gallery
+                                        	<img id="file-image"   src="#" alt="Preview" className="hidden"/>                                        
+											<div id="response" className="hidden">
+                                          	<div id="messages"></div>
+                                          
+                                        </div>
+                                      </label>
+                                    </form>
+                                </div>
+
+				                <div className="full_btn">
+				                    <button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"  onClick={() => {this.setState({optionsModel:false,optionsValuesModel:true,typeOption:'image'})}} >Murabbo Image</button>
+				                </div>
+
+				                <div className="full_btn">
+				                    <button style={{marginBottom: '15px'}}  className="blue_btn" type="button"  onClick={() => {this.setState({optionsModel:false,optionsValuesModel:true,typeOption:'video'})}} >Murabbo Video</button>
+				                </div>
+
+				                <div className="full_btn">
+				                    <button style={{marginBottom: '15px'}}  className="blue_btn light_blue_btn" type="button"  onClick={() => {this.setState({optionsModel:false,optionsValuesModel:true,typeOption:'audio'})}} >Murabbo Audio</button>
+				                </div>
+				               
+				                
+                            </div>
+                        </div>
+                        </div>
+                    </CModalBody>
+                </CModal>
+
+                <CModal show={this.state.optionsValuesModel}  closeOnBackdrop={false}  onClose={()=> this.setState({optionsValuesModel:false})}
+                    color="danger" 
+                    centered>
+                    <CModalBody className="model-bg">
+
+                    <div>
+                        <div className="modal-body optionsValuesModel">
+                            
+                    		<button type="button" className="close" onClick={()=> this.setState({optionsValuesModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                            
+                            	<div className="">
+                           		{
+                           			(this.state.typeOption === 'image') ? 
+                           			 	<div className="model_data row questionimage">
+                           			 	{
+		                                	(this.state.imageList.length > 0) ? 
+				                        	this.state.imageList.map((e, key) => {
+	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
+				                                	<div class="cate-box2"  onClick={this.selectImage.bind(this,e)}  style={{ cursor:'pointer'}} >
+				                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+				                                        <div class="cat_title2">
+				                                            <p>{e.title}</p>
+				                                        </div>
+				                                    </div>
+					                            </div>
+	                                        }) : 
+									        (
+									        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+									        )
+									    }
+									    </div>
+                        			
+                           			: null
+                           		}
+
+                           		{
+                           			(this.state.typeOption === 'video') ? 
+                           			 	<div className="model_data row questionvideo">
+                           			 	{
+
+		                                	(this.state.videoList.length > 0) ? 
+				                        	this.state.videoList.map((e, key) => {
+	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
+				                                	<div class="cate-box2"  onClick={this.selectVideo.bind(this,e)}  style={{ cursor:'pointer'}} >
+				                                		<video width="400" className="main" controls>
+														  <source src={e.url} type="video/mp4"/>
+														  <source src={e.url} type="video/ogg"/>
+														</video>
+				                                        <div class="cat_title2">
+				                                            <p>{e.name}</p>
+				                                        </div>
+				                                    </div>
+					                            </div>
+	                                        }) : 
+									        (
+									        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+									        )}
+                        				</div>
+                           			: null
+                           		}
+
+
+                           		{
+                           			(this.state.typeOption === 'audio') ? 
+                           			 	<div className="model_data row questionaudio"> 
+                           			 	{
+		                                	(this.state.audioList.length > 0) ? 
+				                        	this.state.audioList.map((e, key) => {
+	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
+				                                	<div class="cate-box2"  onClick={this.selectAudio.bind(this,e)}  style={{ cursor:'pointer'}} >
+				                                        <audio className="main"  controls>
+														  <source src={e.url} type="audio/ogg"/>
+														  <source src={e.url} type="audio/mpeg"/>
+														</audio>
+				                                        <div class="cat_title2">
+				                                            <p>{e.name}</p>
+				                                        </div>
+				                                    </div>
+					                            </div>
+	                                        }) : 
+									        (
+									        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+									        )}
+                        				</div>
+                           			: null
+                           		}
+                                					               
+				                
+                            </div>
+                        </div>
+                        </div>
+                    </CModalBody>
+                </CModal>
 	        </main>
 		        <TheFooter />
 		    </>

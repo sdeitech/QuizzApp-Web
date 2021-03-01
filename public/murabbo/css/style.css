@@ -3265,3 +3265,49 @@ select:-webkit-autofill:focus {
     margin-left: 20px;
     margin-right: 20px;
 }
+
+
+.questionaudio .cate-box2
+{
+    cursor: pointer;
+    padding: 10px
+}
+
+.questionaudio .cate-box2 .main {
+    width: 100%;
+    border-radius: 20px 20px 0 0px;
+    min-height: 65px;
+    max-height: 65px;
+}
+
+
+.questionOptionModel .uploader label
+{
+    background: transparent linear-gradient( 270deg , #FF5485 0%, #E3234A 100%) 0% 0% no-repeat padding-box;
+    border-radius: 4px;
+    margin-top: 3px;
+    color: #000000 !important;
+    font-weight: 600;
+    font-size: 15px !important;
+    outline: none;
+    border: none;
+    padding: 10px 20px;
+    min-height: auto;
+    max-height: unset;
+    cursor: pointer;
+}
+
+.question-add-edit .display-profile-pic , .cus-acc_img img{
+    width: 100%;
+    position: relative;
+    max-width: 100px;
+}
+
+.optionsValuesModel .cat_title2 p {
+    font: normal normal 300 14px Montserrat;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    padding: 7px 20px;
+    position: relative;
+    margin: 0;
+}

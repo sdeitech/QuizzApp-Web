@@ -21,7 +21,7 @@ class RoundTray extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-			fields:{timeLimit:1,execution_mode:1,onDemandNegativePoints:0,hint:''},
+			fields:{timeLimitSeconds:30,timeLimit:'00:30',execution_mode:1,onDemandNegativePoints:0,hint:''},
 			errors:{},
 			openModelRoundAdd:false,
 			confirmationModel:false,
@@ -29,7 +29,7 @@ class RoundTray extends Component {
 			openModel:false,
 			qtyAdd:false,
 			qty:1,
-			timeLimit:1,
+			timeLimit:'00:00',
 			delete_id:'',
 			contest_id: "",
 			listArr:[],
@@ -123,17 +123,12 @@ class RoundTray extends Component {
 
 	btnClickHandler(type,e){
 		if(type === "minus")
-		{
-			var fields = this.state.fields;
-			fields['timeLimit'] = (fields['timeLimit'] === 0) ? 0 : (fields['timeLimit'] - 1);
-			this.setState({fields});
+		{	
+			this.changeTime(-1);
 		}
 		else
 		{
-
-			var fields = this.state.fields;
-			fields['timeLimit'] = (fields['timeLimit'] === 300) ? 300 : (fields['timeLimit'] + 1);
-			this.setState({fields});
+			this.changeTime(1);
 		}
 	}
 
@@ -177,7 +172,7 @@ class RoundTray extends Component {
     	var postData = {};
     	postData.contestId=this.state.contest_id;
     	postData.multipleRounds=postRoundArr;
-    	console.log(postData);
+    	// console.log(postData);
         fetch(configuration.baseURL+"round/round", {
             method: "post",
             headers: {
@@ -234,8 +229,43 @@ class RoundTray extends Component {
 
 	editHandler(data,e)
 	{
+
 		if (!data.timeLimit) {
-			data.timeLimit = 0;
+			data.timeLimit = '00:30';
+			data.timeLimitSeconds = 30;
+		}
+		else
+		{
+			var currentTime = parseInt(data.timeLimit),
+			seconds = (currentTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
+			minute = (Math.floor(currentTime / 60)).toString();// get the hours and convert to a string
+
+			//make sure we've got the right length for the seconds string
+			if (seconds.length === 0){
+				seconds = "00";
+			}
+			else if(seconds.length === 1){
+				seconds = "0" + seconds;
+			}
+
+			if (minute.length === 0){
+				minute = "00";
+			}
+			else if (minute.length === 1){
+				minute = "0" + minute;
+			}
+
+			if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+				minute = '05';
+				seconds = '00';
+			}
+			else if (parseInt(minute) === 0 && parseInt(seconds) === 0 || parseInt(seconds) < 30) {
+				minute = '00';
+				seconds = '30';
+			}
+
+			data.timeLimit = minute + ":" + seconds;
+			data.timeLimitSeconds = currentTime;
 		}
 
 		if (!data.basePoints) {
@@ -245,6 +275,9 @@ class RoundTray extends Component {
 		if (!data.negativeBasePoints) {
 			data.negativeBasePoints = 0;
 		}
+		
+
+
 		this.setState({openModel:!this.state.openModel,fields:data})
 
 	}
@@ -326,7 +359,7 @@ class RoundTray extends Component {
         	data.append('renderingMode',this.state.fields.renderingMode);
         	data.append('scoring',this.state.fields.scoring);
         	data.append('negativeScoring',this.state.fields.negativeScoring);
-        	data.append('timeLimit',this.state.fields.timeLimit);
+        	data.append('timeLimit',this.state.fields.timeLimitSeconds);
         	data.append('basePoints',this.state.fields.basePoints);
         	data.append('negativeBasePoints',this.state.fields.negativeBasePoints);
         	if (this.state.fields.execution_mode === 1 || this.state.fields.execution_mode === '1') {
@@ -410,6 +443,43 @@ class RoundTray extends Component {
     	}
     }
 
+    changeTime(sec){
+    	var fields = this.state.fields;
+      	var currentTime = parseInt(fields.timeLimitSeconds),
+          newTime = currentTime + sec, //calculate the new time
+          seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
+          minute = (Math.floor(newTime / 60)).toString();// get the hours and convert to a string
+
+	      //make sure we've got the right length for the seconds string
+	      if (seconds.length === 0){
+	        seconds = "00";
+	      }
+	      else if(seconds.length === 1){
+	        seconds = "0" + seconds;
+	      }
+
+	      if (minute.length === 0){
+	        minute = "00";
+	      }
+	      else if (minute.length === 1){
+	        minute = "0" + minute;
+	      }
+
+	      if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+	      	minute = '05';
+	      	seconds = '00';
+	      }
+	      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 10)) {
+	      	minute = '00';
+	      	seconds = '10';
+	      }
+
+					
+		fields['timeLimit'] = minute + ":" + seconds;
+		fields['timeLimitSeconds'] = newTime;
+		this.setState({fields});
+    }
+
 	render() {
 		$(document).ready(function() {
             var readURL = function(input) {
@@ -431,6 +501,8 @@ class RoundTray extends Component {
             	$(".file-upload").click();
             });
         });
+
+       
 
 		return (
 			<>
@@ -482,7 +554,7 @@ class RoundTray extends Component {
 											                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}/>
 											                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
 											                        <img className="ico" src={this.className(val.gameType,'src')} alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
-											                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
+											                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{(val.title !== '') ? val.title : val.gameType}</h3>
 											                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}></p>
 											                    </div>
 											                </div>
@@ -575,10 +647,9 @@ class RoundTray extends Component {
 					                                			<div style={{margin: '0px 0 5px 0'}} className="cus_input ">
 								                                    <img src="./murabbo/img/clock.svg" alt="Upload"/> <label className="cus_label">Time Limit</label>
 								                                </div>
-
 								                                <div className="number">
 								                                    <span className="minus" style={{cursor:'pointer'}}><img src="./murabbo/img/minus.svg" onClick={this.btnClickHandler.bind(this,"minus")}/></span>
-								                                    <input type="text" value={this.state.fields['timeLimit']} />
+								                                    <input type="text" value={this.state.fields['timeLimit']}  />
 								                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus")}/></span>
 								                                </div>
 								                                <div style={{margin: '0px 0 5px 0'}} className="cus_input ">

@@ -187,8 +187,20 @@ class RoundQuestion extends Component {
 				                                    <div class={className} onClick={this.toggleHandler.bind(this,ckey)}>
 				                                        <div className="row">
 				                                            <div className="col-md-2">
-				                                                <div className="acc_img">
-				                                                    <img src={(val.file !== '') ? val.file : 'avatars/question.png'} />
+				                                                <div className="acc_img cus-acc_img">
+				                                                	{
+				                                                		(val.fileType === 'audio') ? 
+				                                                		<img src="avatars/5.png"/> : null
+				                                                	}
+				                                                	{
+				                                                		(val.fileType === 'video') ? 
+				                                                		<img src='avatars/play.svg' /> : null
+				                                                	}
+				                                                	{
+				                                                		(val.fileType === 'gallery' || val.fileType === 'image') ? 
+				                                                		<img src={(val.file !== '') ? val.file : 'avatars/question.png'} /> : null
+
+				                                                	}
 				                                                </div>
 				                                            </div>
 				                                            <div className="col-md-10">
