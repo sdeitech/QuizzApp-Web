@@ -3311,3 +3311,13 @@ select:-webkit-autofill:focus {
     position: relative;
     margin: 0;
 }
+
+
+.detailContestWithRoundList .mathsqua .active {
+    background-color: #f8c747;
+    color: black;
+}
+
+.detailContestWithRoundList .mathsqua .active span {
+    color: black;
+}

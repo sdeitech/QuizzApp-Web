@@ -10,6 +10,8 @@ const GamesHistory = React.lazy(() => import('./views/games_history/view'))
 
 const AddContest = React.lazy(() => import('./views/contest/add'))
 const EditContest = React.lazy(() => import('./views/contest/edit'))
+const DetailContestWithRoundList = React.lazy(() => import('./views/contest/detail_with_round_list'))
+const DetailContestWithQuestionList = React.lazy(() => import('./views/contest/detail_with_question_list'))
 
 // Manage Rounds
 const Tray = React.lazy(() => import('./views/tray/view'))
@@ -49,6 +51,8 @@ const routes = [
     { path: '/games_history', name: 'GamesHistory', component: GamesHistory },    
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
+    { path: '/contests/detail', name: 'DetailContestWithRoundList', component: DetailContestWithRoundList },
+    { path: '/contests/game/start', name: 'DetailContestWithRoundList', component: DetailContestWithQuestionList },
     { path: '/tray', name: 'Tray', component: Tray },
     { path: '/roundquestion', name: 'RoundQuestion', component: RoundQuestion },
     { path: '/add_round_question', name: 'AddRoundQuestion', component: AddRoundQuestion },
