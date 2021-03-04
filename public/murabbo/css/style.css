@@ -2147,10 +2147,10 @@ p.fancy2 {
     letter-spacing: 0.16px;
     color: #274552;
 }
-.fancy2 label input[type=checkbox]:checked::after {
+/*.fancy2 label input[type=checkbox]:checked::after {
   content: "";
       font-size: 26px;
-}
+}*/
 .fancy2 label input[type=radio]:checked::after {
   content: "";
   font-size: 29px;
@@ -3321,3 +3321,105 @@ select:-webkit-autofill:focus {
 .detailContestWithRoundList .mathsqua .active span {
     color: black;
 }
+
+.pink_
+{
+    background-color: #FF5485;
+}
+
+.pinkhighlight {
+    background: #e82b54 !important;
+}
+
+p.fancy2  ._a
+{
+    background: #FCD274 0% 0% no-repeat padding-box !important;
+}
+
+p.fancy2 ._b
+{
+    background: #93DEC0  0% 0% no-repeat padding-box !important;
+}
+
+p.fancy2 ._c
+{
+    background: #68C1D2 0% 0% no-repeat padding-box !important;
+}
+
+p.fancy2 ._d
+{
+    background: #F9B17F 0% 0% no-repeat padding-box !important;
+}
+
+p.fancy2  ._e
+{
+    background: #FF5485 0% 0% no-repeat padding-box !important;
+}
+
+p.fancy2 ._f
+{
+    background: #EFB3FE 0% 0% no-repeat padding-box !important;
+}
+
+
+.fancy2_0
+{
+    background: #FCD274 0% 0% no-repeat padding-box !important;
+}
+
+.fancy2_1
+{
+    background: #93DEC0  0% 0% no-repeat padding-box !important;
+}
+
+.fancy2_2
+{
+    background: #68C1D2 0% 0% no-repeat padding-box !important;
+}
+
+.fancy2_3
+{
+    background: #F9B17F 0% 0% no-repeat padding-box !important;
+}
+
+.fancy2_4
+{
+    background: #FF5485 0% 0% no-repeat padding-box !important;
+}
+
+.fancy2_5
+{
+    background: #EFB3FE 0% 0% no-repeat padding-box !important;
+}
+
+
+/*
+.input_0
+{
+    background: #FCD274 0% 0% no-repeat padding-box !important;
+}
+
+.input_1
+{
+    background: #93DEC0  0% 0% no-repeat padding-box !important;
+}
+
+.input_2
+{
+    background: #68C1D2 0% 0% no-repeat padding-box !important;
+}
+
+.input_3
+{
+    background: #F9B17F 0% 0% no-repeat padding-box !important;
+}
+
+.input_4
+{
+    background: #FF5485 0% 0% no-repeat padding-box !important;
+}
+
+.input_5
+{
+    background: #EFB3FE 0% 0% no-repeat padding-box !important;
+}*/

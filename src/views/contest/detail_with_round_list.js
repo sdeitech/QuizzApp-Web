@@ -180,7 +180,7 @@ class DetailContestWithRoundList extends Component {
 					<main id="main">
 		            <section id="hero" className="d-flex align-items-center">
 		                <div className="hero-img" style={{width:'100%'}}>
-		                    <img src={(this.state.contestData.image !== '') ? this.state.contestData.image : "./avatars/placeholder.png"} className="img-fluid animated" alt="" />
+		                    <img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png' } className="img-fluid animated" alt="" />
 		                </div>
 		            </section>
 		            
@@ -205,7 +205,7 @@ class DetailContestWithRoundList extends Component {
 					                                	(this.state.listArr.length > 0) ?
 						                                	
 								                        	this.state.listArr.map((e, key) => {
-					                                            return 	<button type="button" className={(this.state.selectedRoundId === e._id) ? 'active' : ''} onClick={this.selectedRoundId.bind(this,e)}>{(e.title !== '') ? e.title : e.gameType} <span>({e.totalQuestions} {(e.totalQuestions > 1) ? 'Questions' : 'Question'})</span></button>
+					                                            return (e.totalQuestions > 1) ? (<button type="button" className={(this.state.selectedRoundId === e._id) ? 'active' : ''} onClick={this.selectedRoundId.bind(this,e)}>{(e.title !== '') ? e.title : e.gameType} <span>({e.totalQuestions} {(e.totalQuestions > 1) ? 'Questions' : 'Question'})</span></button>) : null
 				                                        	})
 								                            : 
 													        (
