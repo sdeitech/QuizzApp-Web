@@ -23,7 +23,8 @@ class DetailContestWithQuestionList extends Component {
         	listArr:[],
         	selectedAnswer:[],
         	indexQuestion:0,
-			gameId:''
+			gameId:'',
+			saveExitAnswer:false
 		};
 	}
 
@@ -109,26 +110,39 @@ class DetailContestWithQuestionList extends Component {
 	}
 
 	saveExitAnswer(){
-
+		this.setState({saveExitAnswer:true});
 	}
+
+
+	
 
 	saveIndexAnswer(){
 		var temp = false;
 		let fields = this.state.listArr;
-		fields[this.state.indexQuestion]['readonly'] = true;
-		for (var i = 0; i < this.state.listArr[this.state.indexQuestion]['answers'].length; i++) {
-			//console.log(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(this.state.listArr[this.state.indexQuestion]['answers'][i].answer) && this.state.listArr[this.state.indexQuestion]['answers'][i].correctAnswer === true);
-			if(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(this.state.listArr[this.state.indexQuestion]['answers'][i].answer) && this.state.listArr[this.state.indexQuestion]['answers'][i].correctAnswer === true){
-				temp = true;
-				break;
+
+			fields[this.state.indexQuestion]['readonly'] = true;
+
+		if (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === undefined) {
+			fields[this.state.indexQuestion]['selectAnswer'] = "";
+			fields[this.state.indexQuestion]['isAnswerTrue'] = false;
+		}
+		else
+		{
+			for (var i = 0; i < this.state.listArr[this.state.indexQuestion]['answers'].length; i++) {
+				if(this.state.listArr[this.state.indexQuestion]['selectAnswer'] !== undefined && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(this.state.listArr[this.state.indexQuestion]['answers'][i]._id) && this.state.listArr[this.state.indexQuestion]['answers'][i].correctAnswer === true){
+					temp = true;
+					break;
+				}
 			}
 		}
+		
 
 		if (temp) {
 			fields[this.state.indexQuestion]['isAnswerTrue'] = true; 
 		}
 		this.setState({listArr:fields});
 
+		this.countScore(this.state.indexQuestion);
 		var that = this;
 		setTimeout(function () {
 			if (that.state.indexQuestion < that.state.listArr.length && that.state.listArr[that.state.indexQuestion]['answerType'] === 2) {
@@ -143,11 +157,11 @@ class DetailContestWithQuestionList extends Component {
 
 	handleSingleSelectChange(index,e){
 		let fields = this.state.listArr;
-		fields[index]['selectAnswer'] = e.answer; 
+		fields[index]['selectAnswer'] = e._id; 
     	fields[index]['isAnswerTrue'] = e.correctAnswer; 
     	fields[index]['readonly'] = true; 
     	this.setState({listArr:fields});
-
+    	this.countScore(this.state.indexQuestion);
     	var that = this;
     	setTimeout(function () {
             if (index < that.state.listArr.length) {
@@ -161,27 +175,25 @@ class DetailContestWithQuestionList extends Component {
        
 	}
 
-
-
 	handleMultiSelectChange(index,e){
 		let fields = this.state.listArr;
 
 		if(Array.isArray(fields[index]['selectAnswer'])) {
-			if (fields[index]['selectAnswer'].includes(e.answer)) {
-				var arrindex = fields[index]['selectAnswer'].indexOf(e.answer);
+			if (fields[index]['selectAnswer'].includes(e._id)) {
+				var arrindex = fields[index]['selectAnswer'].indexOf(e._id);
 			    if (arrindex > -1) {
 			        fields[index]['selectAnswer'].splice(arrindex, 1);
 			    }
 			}
 			else
 			{
-				fields[index]['selectAnswer'].push(e.answer);
+				fields[index]['selectAnswer'].push(e._id);
 			}
 		}
 		else
 		{
 			fields[index]['selectAnswer'] = [];
-			fields[index]['selectAnswer'].push(e.answer);
+			fields[index]['selectAnswer'].push(e._id);
 		}
 
     	this.setState({listArr:fields});
@@ -196,6 +208,7 @@ class DetailContestWithQuestionList extends Component {
     	fields[index]['isAnswerTrue'] = (this.state.listArr[index]['answerTypeBoolean'] === isTrue) ? true : false; 
     	fields[index]['readonly'] = true; 
     	this.setState({listArr:fields});
+    	this.countScore(this.state.indexQuestion);
     	var that = this;
     	setTimeout(function () {
             if (index < that.state.listArr.length) {
@@ -206,9 +219,6 @@ class DetailContestWithQuestionList extends Component {
 	    		that.saveExitAnswer();	
 	    	}
 	    }, 2000);
-
-    	
-
 	}
 
 	getList(roundId1)
@@ -231,49 +241,58 @@ class DetailContestWithQuestionList extends Component {
 
 	startTimer(){
     	let fields = this.state.listArr;
-    	if (this.state.listArr.length > 0) {
-    		var that = this;
+    	var that = this;
+    	if (this.state.listArr.length > 0 && fields[that.state.indexQuestion] !== undefined) {    		
 	    	setTimeout(function () {
 
-	    		fields = fields[that.state.indexQuestion];
-	    		// console.log(fields);
+	    		
+	    		var newTime = 0;
+	    		if(fields[that.state.indexQuestion] !== undefined && fields[that.state.indexQuestion]['timeLimit'] !== undefined)
+	    		{
+	    			var currentTime = parseInt(fields[that.state.indexQuestion]['timeLimit']);
 
-		      	var currentTime = parseInt(fields['timeLimit']),
-		          newTime = currentTime - 1, //calculate the new time
-		          seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
-		          minute = (Math.floor(newTime / 60)).toString();// get the hours and convert to a string
+	    			if(fields[that.state.indexQuestion]['timeAlloted'] === undefined)
+		    		{
+		    			fields[that.state.indexQuestion]['timeAlloted'] = currentTime;
+		    		}
+	    			// console.log('timeLimit--->',fields[that.state.indexQuestion]['timeLimit']);
+		      		
+					newTime = currentTime - 1;
+					var seconds = (newTime % 60).toString();
+					var minute = (Math.floor(newTime / 60)).toString();
 
-			      //make sure we've got the right length for the seconds string
-			      if (seconds.length === 0){
-			        seconds = "00";
-			      }
-			      else if(seconds.length === 1){
-			        seconds = "0" + seconds;
-			      }
+					
+					if (seconds.length === 0){
+					seconds = "00";
+					}
+					else if(seconds.length === 1){
+					seconds = "0" + seconds;
+					}
 
-			      if (minute.length === 0){
-			        minute = "00";
-			      }
-			      else if (minute.length === 1){
-			        minute = "0" + minute;
-			      }
+					if (minute.length === 0){
+					minute = "00";
+					}
+					else if (minute.length === 1){
+					minute = "0" + minute;
+					}
 
-			      if (parseInt(minute) === 5 || parseInt(minute) > 5) {
-			      	minute = '05';
-			      	seconds = '00';
-			      }
-			      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 10)) {
-			      	minute = '00';
-			      	seconds = '10';
-			      }
+					fields[that.state.indexQuestion]['displaytimeLimit'] = minute + ":" + seconds;
+					fields[that.state.indexQuestion]['timeLimit'] = newTime;
+					that.setState({listArr:fields});
+					
+				}
 
 						
-			fields['displaytimeLimit'] = minute + ":" + seconds;
-			fields['timeLimit'] = newTime;
-			that.setState({fields:fields});
+			
 			if (newTime === 0) {
+
 				if (that.state.indexQuestion < that.state.listArr.length) {
+					fields[that.state.indexQuestion]['selectAnswer'] = "";
+					fields[that.state.indexQuestion]['isAnswerTrue'] = false;
+					that.setState({listArr:fields});
+					that.countScore(that.state.indexQuestion);
 		    		that.setState({indexQuestion:that.state.indexQuestion+1})
+		    		that.startTimer();	
 		    	}
 		    	else
 		    	{
@@ -287,6 +306,58 @@ class DetailContestWithQuestionList extends Component {
 			}
 			}, 1000);
 	    }
+	    else{
+	    	that.saveExitAnswer();	
+	    }
+    }
+
+    countScore(index)
+	{
+		if (this.state.listArr.length > 0 && this.state.listArr[index] !== undefined) {  
+			var score = 0;
+			if(this.state.listArr[index]['isAnswerTrue']){
+				score += this.state.listArr[index]['basePoints'];
+			}
+			else
+			{
+				if (this.state.listArr[index]['negativeScoring']) {
+					score = score - this.state.listArr[index]['negativeBasePoints'];			
+				}
+			}
+			if(this.state.listArr[index]['hint'] === 3 && this.state.listArr[index]['hintTextStyle'] !== undefined){
+				score = score - this.state.listArr[index]['onDemandNegativePoints'];		
+			}
+
+			var postData = {};
+	    	postData.gameId=this.state.gameId;
+	    	postData.roundQuestionId=this.state.listArr[index]['_id'];
+	    	postData.selectedAnswer= (this.state.listArr[index]['selectAnswer'].toString() !== '') ? this.state.listArr[index]['selectAnswer'].toString() : 'false'; 
+	    	postData.isCorrect=(this.state.listArr[index]['isAnswerTrue'] !== undefined) ? this.state.listArr[index]['isAnswerTrue'] : false;
+	    	postData.score=score;
+	    	postData.timeAlloted=this.state.listArr[index]['timeAlloted'];
+	    	postData.timeUsed=this.state.listArr[index]['timeLimit'];
+	    	// console.log(postData);
+	        fetch(configuration.APIbaseURL+"game/submitQuestion", {
+	            method: "post",
+	            headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+	                'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+	            },
+	            body:JSON.stringify(postData)
+	        }).then((response) => {
+	            return response.json();
+	        }).then((data) => {
+	            
+	        });
+		}
+	}
+
+    changeOnDemand()
+    {
+    	let fields = this.state.listArr;
+    	fields[this.state.indexQuestion]['hintTextStyle'] = true;
+		this.setState({listArr:fields});
     }
 	render() {
 		return (
@@ -294,101 +365,96 @@ class DetailContestWithQuestionList extends Component {
 				<TheHeaderInner />		
 				<ToastContainer position="top-right" autoClose={10000} style={{top:'80px'}}/>		
 					<main id="main">
-		            <section id="hero" class="d-flex align-items-center width75">
-		                <div class="quizz-game">
-		                    <h3>{this.state.contestData.title}</h3>
-		                    <p>{this.state.roundData.gameType}</p>
-		                    <div class="quizz-quas">
-		                    { (this.state.listArr[this.state.indexQuestion]) ?
-		                        <h4>Question {this.state.indexQuestion+1}/{this.state.listArr.length}</h4>
-		                        :
-		                        <h4>Question {this.state.listArr.length}/{this.state.listArr.length}</h4>
-		                    }
+
+					{(this.state.saveExitAnswer === false) ? 
+			            <section id="hero" class="d-flex align-items-center">
+			                <div class="quizz-game"  style={{marginTop:'35px'}}>
+			                    <h3>{this.state.contestData.title}</h3>
+			                    <p>{this.state.roundData.gameType}</p>
+			                    <div class="quizz-quas">
+			                    { (this.state.listArr[this.state.indexQuestion]) ?
+			                        <h4>Question {this.state.indexQuestion+1}/{this.state.listArr.length}</h4>
+			                        :
+			                        <h4>Question {this.state.listArr.length}/{this.state.listArr.length}</h4>
+			                    }
 
 
-		                        {
-		                        	this.state.listArr.map((e, key) => {
-		                        		let classname = (key === this.state.indexQuestion) ? "step_progress yellow_" : 
-		                        		(typeof e.selectAnswer !== 'undefined') ? ((e.isAnswerTrue) ? "step_progress blue_" : "step_progress pink_") : "step_progress";
-                                        return <div className={classname}></div>
-                                    })
-		                        }		                        
-		                        <div id="app">
-				                    <div class="base-timer">
-		                              <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-		                                <g class="base-timer__circle">
-		                                  <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
-		                                  <path id="base-timer-path-remaining" stroke-dasharray="-2 283" class="base-timer__path-remaining red" d="
-		                                      M 50, 50
-		                                      m -45, 0
-		                                      a 45,45 0 1,0 90,0
-		                                      a 45,45 0 1,0 -90,0
-		                                    "></path>
-		                                </g>
-		                              </svg>
-		                              	{ (this.state.listArr[this.state.indexQuestion]) ?
-					                        <span id="base-timer-label" class="base-timer__label">{(this.state.listArr[this.state.indexQuestion]['displaytimeLimit']) ? this.state.listArr[this.state.indexQuestion]['displaytimeLimit'] : '00:00'}</span>
-					                        :
-					                        <span id="base-timer-label" class="base-timer__label">00:00</span>
-					                    }
-		                              
-		                            </div>
-		                        </div>
-		                    </div>   
-		                    { (this.state.listArr[this.state.indexQuestion]) ? 
-			                    <div class="qus">
-			                        <h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
+			                        {
+			                        	this.state.listArr.map((e, key) => {
+			                        		let classname = (key === this.state.indexQuestion) ? "step_progress yellow_" : 
+			                        		(typeof e.selectAnswer !== 'undefined') ? ((e.isAnswerTrue) ? "step_progress blue_" : "step_progress pink_") : "step_progress";
+	                                        return <div className={classname}></div>
+	                                    })
+			                        }		                        
+			                        <div id="app">
+					                    <div class="base-timer">
+			                              <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			                                <g class="base-timer__circle">
+			                                  <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+			                                  <span id="base-timer-label" class="base-timer__label"></span>
+			                                  { /*(this.state.listArr[this.state.indexQuestion]) ?
+			                                  	var dasharray = this.state.listArr[this.state.indexQuestion]['timeLimit'] + ' 283';					                        
+						                        <path id="base-timer-path-remaining" stroke-dasharray={dasharray} class="base-timer__path-remaining red" d="
+			                                      M 50, 50
+			                                      m -45, 0
+			                                      a 45,45 0 1,0 90,0
+			                                      a 45,45 0 1,0 -90,0
+			                                    "></path>
+						                        :
+						                        <path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
+			                                      M 50, 50
+			                                      m -45, 0
+			                                      a 45,45 0 1,0 90,0
+			                                      a 45,45 0 1,0 -90,0
+			                                    "></path>*/
+						                    	}
+						                    	<path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
+			                                      M 50, 50
+			                                      m -45, 0
+			                                      a 45,45 0 1,0 90,0
+			                                      a 45,45 0 1,0 -90,0
+			                                    "></path>
+			                                  
+			                                </g>
+			                              </svg>
+			                              	{ (this.state.listArr[this.state.indexQuestion]) ?
+						                        <span id="base-timer-label" class="base-timer__label">{(this.state.listArr[this.state.indexQuestion]['displaytimeLimit']) ? this.state.listArr[this.state.indexQuestion]['displaytimeLimit'] : '00:00'}</span>
+						                        :
+						                        <span id="base-timer-label" class="base-timer__label">00:00</span>
+						                    }
+			                              
+			                            </div>
+			                        </div>
+			                    </div>   
+			                    { (this.state.listArr[this.state.indexQuestion]) ? 
+				                    <div>
+					                    <div class="qus" style={{marginBottom: "30px"}}>
+					                        <h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
 
-			                        <div class="answer-option">
+					                        {
+				                        		(this.state.listArr[this.state.indexQuestion]['hint'] === 2) ? 
+				                        		<p className="hintText"><span>Hint - </span>{this.state.listArr[this.state.indexQuestion]['hintText']}</p> : 
+				                        		(this.state.listArr[this.state.indexQuestion]['hint'] === 3) ? 
+				                        		<p className="hintText">{(this.state.listArr[this.state.indexQuestion]['hintTextStyle'] !== undefined && this.state.listArr[this.state.indexQuestion]['hintTextStyle'] === true) ? this.state.listArr[this.state.indexQuestion]['hintText'] : <button class="blue_btn" onClick={this.changeOnDemand.bind(this)}>Show Hint</button> }</p> :  null
 
-			                        	{
-			                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 1) ? 
+				                        	}
 
-			                        			this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
-			                        				var forclass=e._id+key;
-		                                            return <p class={
-		                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-		                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e.answer && e.correctAnswer === true) ? 
-		                                            			'fancy2 highlight' : 
-	                                            				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e.answer && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
-	                                            				: 'fancy2'
-	                                            			}>
-							                                <label >
-							                                    
-					                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
-					                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
-					                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
-					                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
-					                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
-					                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
-							                                    
-							                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e.answer && e.correctAnswer === true) ? 
-							                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled':''} /> : 
-							                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer}  disabled={(e.readonly) ? 'disabled':''} />
-							                                    }							                                    
-							                                    <span for={forclass}>{e.answer}</span>
-							                                </label>
-							                            </p>
-	                                        	})
+					                        <div class="answer-option">
 
-			                        		: null
-			                        	}
+					                        	
 
-			                        	{
-			                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 2) ? 
-			                        		<div>
-				                        		{
-					                        		this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+					                        	{
+					                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 1) ? 
+
+					                        			this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
 					                        				var forclass=e._id+key;
-					                        				// var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-							                             //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
-							                             //                			'fancy2 highlight' : 
-						                              //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
-						                              //               				: 'fancy2';
-						                              	var innnerpclass ="fancy2 fancy2_"+key;
-							                            var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer)) ? innnerpclass : "fancy2";
-						                           		var inputclass = "input_"+key;
-				                                            return <p class={pcalss}>
+				                                            return <p class={
+				                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+				                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+				                                            			'fancy2 highlight' : 
+			                                            				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
+			                                            				: 'fancy2'
+			                                            			}>
 									                                <label>
 									                                    
 							                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
@@ -397,66 +463,179 @@ class DetailContestWithQuestionList extends Component {
 							                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
 							                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
 							                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
-								                                    
-									                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
-									                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked"   disabled={(e.readonly) ? 'disabled':''} /> : 
-									                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} disabled={(e.readonly) ? 'disabled':''}  />
+									                                    
+									                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+									                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled':''} /> : 
+									                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer}  disabled={(e.readonly) ? 'disabled':''} />
 									                                    }							                                    
 									                                    <span for={forclass}>{e.answer}</span>
 									                                </label>
 									                            </p>
 			                                        	})
+
+					                        		: null
 					                        	}
-				                        		<div class="align-self-center">
-				                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveIndexAnswer.bind(this)}>Save</button>
-				                                </div>
-			                                </div>
 
-			                        		: null
-			                        	}
+					                        	{
+					                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 2) ? 
+					                        		<div className="row">
+					                        			<div className="col-12" style={{marginBottom: "30px"}}>
+						                        		{
+							                        		this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+							                        				var forclass=e._id+key;
+							                        				// var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+									                             //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
+									                             //                			'fancy2 highlight' : 
+								                              //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
+								                              //               				: 'fancy2';
+								                              	var innnerpclass ="fancy2 fancy2_"+key;
+									                            var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
+								                           		var inputclass = "input_"+key;
+						                                            return <p class={pcalss}>
+											                                <label>
+											                                    
+									                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
+									                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
+									                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
+									                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
+									                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
+									                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
+										                                    
+											                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id) && e.correctAnswer === true) ? 
+											                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked"   disabled={(e.readonly) ? 'disabled':''} /> : 
+											                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} disabled={(e.readonly) ? 'disabled':''}  />
+											                                    }							                                    
+											                                    <span for={forclass}>{e.answer}</span>
+											                                </label>
+											                            </p>
+					                                        	})
+							                        	}
+							                        	</div>
+						                        		<div class="col-12 align-self-center" style={{ textAlign: 'center' }}>
+						                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveIndexAnswer.bind(this)}>Save</button>
+						                                </div>
+					                                </div>
 
-			                        	{
-			                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 5) ? 
-			                        			
-			                        			<div>
-		                        					<p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-		                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 
-		                                            			'fancy2 highlight' : 
-	                                            				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
-	                                            				: 'fancy2' }>
-						                                <label >
-						                                    <b class="option_ _a">A</b>
-						                                    <input id="trueFalse" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}   />
-						                                    <span for="trueFalse">True</span>
-						                                </label>
-						                            </p>
-						                            <p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-		                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 
-		                                            			'fancy2 highlight' : 
-	                                            				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 pinkhighlight' : 'fancy2' 
-	                                            				: 'fancy2' }>
-						                                <label >
-						                                    <b class="option_ _b">B</b>
-						                                    <input id="trueFalse" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,false)} value='false' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}  />
-						                                    <span for="trueFalse">False</span>
-						                                </label>
-						                            </p>
-			                        			</div>
-			                        			
-			                        		: null
-			                        	}			                            
+					                        		: null
+					                        	}
 
-			                        </div>
+					                        	{
+					                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 5) ? 
+					                        			
+					                        			<div>
+				                        					<p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+				                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 
+				                                            			'fancy2 highlight' : 
+			                                            				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
+			                                            				: 'fancy2' }>
+								                                <label >
+								                                    <b class="option_ _a">A</b>
+								                                    <input id="trueFalse" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}   />
+								                                    <span for="trueFalse">True</span>
+								                                </label>
+								                            </p>
+								                            <p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+				                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 
+				                                            			'fancy2 highlight' : 
+			                                            				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 pinkhighlight' : 'fancy2' 
+			                                            				: 'fancy2' }>
+								                                <label >
+								                                    <b class="option_ _b">B</b>
+								                                    <input id="trueFalse" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,false)} value='false' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}  />
+								                                    <span for="trueFalse">False</span>
+								                                </label>
+								                            </p>
+					                        			</div>
+					                        			
+					                        		: null
+					                        	}			                            
 
-			                        <div class="align-self-center">
-	                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
+					                        </div>
+
+					                        
+					                    </div>
+					                    <div class="align-self-center" style={{ textAlign: 'center' }}>
+		                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
+		                                </div>
 	                                </div>
-			                    </div> :
-			                    null 
-		                	}
-		                </div>
-		            </section>
-		            
+	                                 :
+				                    null 
+			                	}
+			                </div>
+			            </section>
+		            :
+			            <section id="hero" class="d-flex align-items-center">
+			                <div class="quizz-game width40">
+			                    <div class="quizz-quas">
+			                        <img src="./murabbo/img/star.svg"/>
+			                    </div>   
+			                    <div class="leaderimg">
+			                        <img class="second" src="./murabbo/img/6.png"/>
+			                        <p>2</p>
+			                    </div>
+			                    <div class="leaderimg">
+			                        <img  src="./murabbo/img/7.png" />
+			                        <p style={{background: '#FFC542 0% 0% no-repeat padding-box'}}>1</p>
+			                    </div>
+			                    <div class="leaderimg">
+			                        <img class="third" src="./murabbo/img/8.png" />
+			                        <p>3</p>
+			                    </div>
+
+			                    <div class="firstthree">
+			                        <div class="_1st">
+			                            <div class="_1stimg">
+			                                <div class="leaderimg2">
+			                                    <img  src="./murabbo/img/7.png" />
+			                                    <p style={{background: '#FFC542 0% 0% no-repeat padding-box'}}>1</p>
+			                                </div>
+			                                <div class="user-detail">
+			                                    <h3>James Pati</h3>
+			                                    <p>JamesP</p>
+			                                </div>
+			                                <div class="point">
+			                                    <h5>10,586 pt</h5>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <div class="_1st two_no">
+			                            <div class="_1stimg">
+			                                <div class="leaderimg2">
+			                                    <img  src="./murabbo/img/6.png" />
+			                                    <p>2</p>
+			                                </div>
+			                                <div class="user-detail">
+			                                    <h3 style={{color: '#56D8F1'}}>James Pati</h3>
+			                                    <p style={{color: '#56D8F1'}}>JamesP</p>
+			                                </div>
+			                                <div class="point">
+			                                    <h5>10,586 pt</h5>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <div class="_1st three_no">
+			                            <div class="_1stimg">
+			                                <div class="leaderimg2">
+			                                    <img  src="./murabbo/img/8.png" />
+			                                    <p>3</p>
+			                                </div>
+			                                <div class="user-detail">
+			                                    <h3 style={{color: '#88D8B8'}}>James Pati</h3>
+			                                    <p style={{color: '#88D8B8'}}>JamesP</p>
+			                                </div>
+			                                <div class="point">
+			                                    <h5>10,586 pt </h5>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <div class="full_btn">
+			                            <a href="#/contest"><button class="blue_btn" type="button" >Go To Leader Board</button></a>
+			                        </div>
+			                    </div>
+			                </div>
+			                
+			            </section>
+		            }
 		  
 
 		        </main>

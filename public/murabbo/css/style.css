@@ -2436,7 +2436,7 @@ img.second {
     margin: 0 auto;
     background: transparent;
     border: none;
-    border-bottom: 2px solid lightgrey;
+    /*border-bottom: 2px solid lightgrey;*/
     outline: none;
     text-align: center;
     margin-bottom: 30px;
@@ -3423,3 +3423,12 @@ p.fancy2 ._f
 {
     background: #EFB3FE 0% 0% no-repeat padding-box !important;
 }*/
+
+
+.hintText
+{
+    text-align: right !important;
+    font: normal normal bold 20px/30px Montserrat;
+    letter-spacing: 0.4px;    
+    margin-right: 25px;
+}
