@@ -80,7 +80,7 @@ class EditContest extends Component {
             }).then((response) =>{
 	    	return response.json();
 	    }).then((data)=> {
-	   		this.setState({saveToList:data.data});
+	   		this.setState({saveToList:data.data.saveTo});
 		});	
 
 		fetch(configuration.baseURL+"category/categoryList", {
