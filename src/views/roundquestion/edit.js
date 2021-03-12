@@ -33,7 +33,8 @@ class EditRoundQuestion extends Component {
             videoList:[],
             audioList:[],
             typeOption:'',
-            profilePic:''
+            profilePic:'',
+            edit_id:''
 		};
 	}
 
@@ -201,21 +202,16 @@ class EditRoundQuestion extends Component {
 
 	}
 
-
-
 	btnClickHandler(type,e){
 		if(type === "minus")
 		{	
-			this.changeTime(-1);
+			this.changeTime(-5);
 		}
 		else
 		{
-			this.changeTime(1);
+			this.changeTime(5);
 		}
 	}
-
-
-
 
 	handleChange(field, e){   
 
@@ -382,9 +378,14 @@ class EditRoundQuestion extends Component {
 	    }
 	}
 
+	editHandler(val,key,e)
+	{	
+		this.setState({fieldsAnswer:{answer:val.answer,correctAnswer:val.correctAnswer},errorsAnswer:{answer:''},openModel:true,edit_id:key});	
+	}
+
 	openModel()
 	{
-        this.setState({fieldsAnswer:{answer:'',correctAnswer:false},errorsAnswer:{answer:''},openModel:true});
+        this.setState({fieldsAnswer:{answer:'',correctAnswer:false},errorsAnswer:{answer:''},openModel:true,edit_id:''});
 	}
 
 
@@ -417,16 +418,25 @@ class EditRoundQuestion extends Component {
     	if(formIsValid){
     		let answers = this.state.answers;
     		
-    		if(parseInt(this.state.fields['answerType']) !== 1 && parseInt(this.state.fields['answerType']) !== 2)
-    		{
-				fields.correctAnswer = true;
-    		}
-    		else
-    		{
-    			fields.correctAnswer = false;
+    		if (this.state.edit_id !== '') {
+				answers[this.state.edit_id] = fields;
+			}
+			else
+			{
+
+	    		if(parseInt(this.state.fields['answerType']) !== 1 && parseInt(this.state.fields['answerType']) !== 2)
+	    		{
+					fields.correctAnswer = true;
+	    		}
+	    		else
+	    		{
+	    			fields.correctAnswer = false;
+	    		}
+
+	    		answers.push(fields);
     		}
 
-    		answers.push(fields);
+
     		this.setState({answers: answers,tosterMsg:''});
     		this.setState({fieldsAnswer:{answer:''},errorsAnswer:{answer:''},openModel:false});
     	}
@@ -735,6 +745,7 @@ class EditRoundQuestion extends Component {
 			                                            </label>
 			                                        </p>
 			                                        <button style={{backgroundColor: '#17252B',marginLeft: '45px'}} type="button" className="remove_btn" onClick={this.deleteHandler.bind(this,key)}><img src="./murabbo/img/close2.svg" /></button>
+			                                        <button style={{backgroundColor: '#17252B',marginLeft: '45px'}} type="button" className="edit_btn" onClick={this.editHandler.bind(this,val,key)}><img src="./murabbo/img/pen.svg" /></button>
 			                                    </div>
 			                                </div>
 			                            </div>

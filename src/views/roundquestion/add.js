@@ -34,7 +34,8 @@ class AddRoundQuestion extends Component {
             videoList:[],
             audioList:[],
             typeOption:'',
-            profilePic:''
+            profilePic:'',
+            edit_id:''
 		};
 	}
 
@@ -119,22 +120,17 @@ class AddRoundQuestion extends Component {
 
 	}
 
-
-
 	btnClickHandler(type,e){
 		if(type === "minus")
 		{	
-			this.changeTime(-1);
+			this.changeTime(-5);
 		}
 		else
 		{
-			this.changeTime(1);
+			this.changeTime(5);
 		}
 	}
-
-
-
-
+	
 	handleChange(field, e){   
 
         let fields = this.state.fields;
@@ -332,9 +328,15 @@ class AddRoundQuestion extends Component {
 	    }
 	}
 
+	editHandler(val,key,e)
+	{	
+		this.setState({fieldsAnswer:{answer:val.answer,correctAnswer:val.correctAnswer},errorsAnswer:{answer:''},openModel:true,edit_id:key});	
+	}
+
+
 	openModel()
 	{
-        this.setState({fieldsAnswer:{answer:'',correctAnswer:false},errorsAnswer:{answer:''},openModel:true});
+        this.setState({fieldsAnswer:{answer:'',correctAnswer:false},errorsAnswer:{answer:''},openModel:true,edit_id:''});
 	}
 
 
@@ -367,16 +369,25 @@ class AddRoundQuestion extends Component {
     	if(formIsValid){
     		let answers = this.state.answers;
     		
-    		if(parseInt(this.state.fields['answerType']) !== 1 && parseInt(this.state.fields['answerType']) !== 2)
-    		{
-				fields.correctAnswer = true;
-    		}
-    		else
-    		{
-    			fields.correctAnswer = false;
-    		}
 
-    		answers.push(fields);
+    		if (this.state.edit_id !== '') {
+				answers[this.state.edit_id] = fields;
+			}
+			else
+				{
+	    		if(parseInt(this.state.fields['answerType']) !== 1 && parseInt(this.state.fields['answerType']) !== 2)
+	    		{
+					fields.correctAnswer = true;
+	    		}
+	    		else
+	    		{
+	    			fields.correctAnswer = false;
+	    		}
+
+	    		answers.push(fields);
+			}
+
+    		console.log(answers);
     		this.setState({answers: answers,tosterMsg:''});
     		this.setState({fieldsAnswer:{answer:''},errorsAnswer:{answer:''},openModel:false});
     	}
@@ -659,6 +670,7 @@ class AddRoundQuestion extends Component {
 			                                            </label>
 			                                        </p>
 			                                        <button style={{backgroundColor: '#17252B',marginLeft: '45px'}} type="button" className="remove_btn" onClick={this.deleteHandler.bind(this,key)}><img src="./murabbo/img/close2.svg" /></button>
+			                                        <button style={{backgroundColor: '#17252B',marginLeft: '45px'}} type="button" className="edit_btn" onClick={this.editHandler.bind(this,val,key)}><img src="./murabbo/img/pen.svg" /></button>
 			                                    </div>
 			                                </div>
 			                            </div>
@@ -721,7 +733,7 @@ class AddRoundQuestion extends Component {
 					                </div>*/}
 					               
 					                <div className="full_btn">
-					                    <button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"  onClick={this.saveAnswerModel.bind(this)} >Done</button>
+					                    <button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"  onClick={this.saveAnswerModel.bind(this)} >{(this.state.edit_id !== '') ? 'Update' : 'Done'}</button>
 					                </div>
                                 </div>
                             </div>

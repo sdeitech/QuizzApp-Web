@@ -24,6 +24,7 @@ class DetailContestWithQuestionList extends Component {
         	selectedAnswer:[],
         	indexQuestion:0,
 			gameId:'',
+			freeTextAnswer:'',
 			saveExitAnswer:false
 		};
 	}
@@ -353,6 +354,42 @@ class DetailContestWithQuestionList extends Component {
 		}
 	}
 
+	handleFreeTextChange(e) {		
+		this.setState({ freeTextAnswer:  e.target.value});
+	}
+
+	submitFreeText() {
+		var  listArr = this.state.listArr;
+		listArr[this.state.indexQuestion]['selectAnswer'] =  this.state.freeTextAnswer;
+		this.setState({listArr: listArr,freeTextAnswer: ''});
+
+		let fields = this.state.listArr;
+
+		var istrue = false;
+
+		for (var i = 0; i < this.state.listArr[this.state.indexQuestion]['answers'].length; i++) {
+			if (this.state.listArr[this.state.indexQuestion]['answers'][i]['answer'] === this.state.listArr[this.state.indexQuestion]['selectAnswer']) {
+				istrue = true;
+			}				
+		}
+
+    	fields[this.state.indexQuestion]['isAnswerTrue'] = istrue; 
+    	fields[this.state.indexQuestion]['readonly'] = true; 
+    	this.setState({listArr:fields});
+    	this.countScore(this.state.indexQuestion);
+    	var that = this;
+    	setTimeout(function () {
+            if (that.state.indexQuestion < that.state.listArr.length) {
+	    		that.setState({indexQuestion:that.state.indexQuestion+1})
+	    	}
+	    	else
+	    	{
+	    		that.saveExitAnswer();	
+	    	}
+	    }, 2000);
+
+	}
+
     changeOnDemand()
     {
     	let fields = this.state.listArr;
@@ -513,6 +550,55 @@ class DetailContestWithQuestionList extends Component {
 							                        	</div>
 						                        		<div class="col-12 align-self-center" style={{ textAlign: 'center' }}>
 						                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveIndexAnswer.bind(this)}>Save</button>
+						                                </div>
+					                                </div>
+
+					                        		: null
+					                        	}
+
+					                        	{
+					                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 3) ? 
+					                        		<div className="row">
+					                        			<div className="col-12" style={{marginBottom: "30px",textAlign: 'center'}}>
+					                        				<div className="cus_input input_wrap">
+																<input type="text" required value={this.state.freeTextAnswer} onChange={this.handleFreeTextChange.bind(this)} style={{textAlign: 'center'}}  />
+							                                </div>
+					                        			</div>
+					                        			<div className="col-12" style={{ marginBottom: "30px",display:(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? "block":"none"}}> 		                        			
+						                        		{
+							                        		this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+							                        				var forclass=e._id+key;
+							                        				// var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+									                             //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
+									                             //                			'fancy2 highlight' : 
+								                              //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
+								                              //               				: 'fancy2';
+								                              	var innnerpclass ="fancy2 fancy2_"+key;
+									                            var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
+								                           		var inputclass = "input_"+key;
+						                                            return <p class={pcalss}>
+											                                <label>
+											                                    
+									                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
+									                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
+									                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
+									                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
+									                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
+									                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
+										                                    
+											                                    {	(e.correctAnswer === true) ? 
+											                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" value={e.answer} checked="checked" disabled='disabled' /> : 
+											                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" value={e.answer}  disabled='disabled'  />
+											                                    }							                                    
+											                                    <span for={forclass}>{e.answer}</span>
+											                                </label>
+											                            </p>
+					                                        	})
+							                        	}
+
+							                        	</div>
+						                        		<div class="col-12 align-self-center" style={{ textAlign: 'center' }}>
+						                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.submitFreeText.bind(this)}>Save</button>
 						                                </div>
 					                                </div>
 

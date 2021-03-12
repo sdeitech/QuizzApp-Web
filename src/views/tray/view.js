@@ -124,11 +124,11 @@ class RoundTray extends Component {
 	btnClickHandler(type,e){
 		if(type === "minus")
 		{	
-			this.changeTime(-1);
+			this.changeTime(-5);
 		}
 		else
 		{
-			this.changeTime(1);
+			this.changeTime(5);
 		}
 	}
 

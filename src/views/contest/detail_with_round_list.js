@@ -45,6 +45,7 @@ class DetailContestWithRoundList extends Component {
 	    	return response.json();
 	    }).then((data)=> {
 	    	if (data.data.length > 0) {
+	    		console.log(data.data[0]);
 		   		this.setState({contestData:data.data[0]});
 		   	}
 		});	

@@ -3432,3 +3432,20 @@ p.fancy2 ._f
     letter-spacing: 0.4px;    
     margin-right: 25px;
 }
+
+.edit_btn{
+    padding-right: -10px;
+    padding-top: 0px;
+    float: right;
+    position: absolute;
+    right: 60px;
+    top: 5px;
+    border-radius: 50px;
+    width: 30px !important;
+    height: 30px !important;
+    border: none;
+}
+
+.edit_btn img{
+    width: 15px;
+}
