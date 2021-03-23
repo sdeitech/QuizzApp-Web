@@ -42,6 +42,8 @@ const PrivacyPolicy = React.lazy(() => import('./views/cms/privacy_policy'))
 
 const TermsConditions = React.lazy(() => import('./views/cms/terms_conditions'))
 
+const Leaderboard = React.lazy(() => import('./views/leaderboard/view'))
+
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
@@ -69,7 +71,7 @@ const routes = [
     { path: '/privacy_policy', name: 'PrivacyPolicy', component: PrivacyPolicy },
     { path: '/terms_conditions', name: 'TermsConditions', component: TermsConditions },
     { path: '/my_groups', name: 'MyGroups', component: MyGroups },
-
+    { path: '/leaderboard', name: 'Leaderboard', component: Leaderboard },
     
 
     

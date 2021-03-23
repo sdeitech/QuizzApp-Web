@@ -2770,13 +2770,16 @@ img.position_right {
     float: left;
     position: relative;
     text-align: center;
-    bottom: -13px;
-    left: -31px;
+    bottom: -15px;
+    left: -35px;
 }
 .leaderimg2_ img {
-    width: 82px;
+    width: 75px;
     position: relative;
     right: 0px;
+    height: 75px;
+    border-radius: 50px;
+    border: 3px solid #56d8f1;
 }
 .leaderimg2_ p {
     background: #56D8F1 0% 0% no-repeat padding-box;
@@ -2793,12 +2796,14 @@ img.position_right {
 }
 .user-detail_ {
     display: inline-block;
+    position: relative;
+    right: 15px;
 }
 .user-detail_ h3 {
     text-align: left;
     letter-spacing: 0px;
     color: #56D8F1;
-    font-size: 16px;
+    font-size: 14px;
     padding-top: 20px;
     margin: 0;
 }
@@ -2808,6 +2813,8 @@ img.position_right {
     color: #FFFFFF;
     font-size: 14px;
     padding-right: 40px;
+    position: relative;
+    right: 15px;
 }
 .user-detail_ p {
     margin: 5px 0;
@@ -3448,4 +3455,11 @@ p.fancy2 ._f
 
 .edit_btn img{
     width: 15px;
+}
+
+.leaderloading
+{
+    text-align: center;
+    width: 100%;
+    color: #fec952;
 }

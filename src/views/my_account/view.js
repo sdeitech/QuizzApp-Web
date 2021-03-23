@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {
     TheFooter,
+    TheSidebarInner,
     TheHeaderInner
 } from '../../containers/index'
 import {reactLocalStorage} from 'reactjs-localstorage';
@@ -317,14 +318,7 @@ class MyAccount extends Component {
                                     <div class="row">
                                         <div style={{ padding: '0'}} class="col-lg-3 col-md-4">
                                             <div class="sidebar-dashboard">
-                                                <ul>
-                                                    <a href="javascript:void(0)"><li onClick={() => this.props.history.push('/my_account')} class="active_side"><img src="./murabbo/img/username.svg"/>  My Profile</li></a>
-                                                    <a href="javascript:void(0)l"><li onClick={() => this.props.history.push('/contest')}><img src="./murabbo/img/console.svg"/> My Games</li></a>
-                                                    <a href="javascript:void(0)"><li onClick={() => this.props.history.push('/contest')}><img src="./murabbo/img/calendar.svg"/> Game History</li></a>
-                                                    <a href="javascript:void(0)"><li><img src="./murabbo/img/leaderboard.svg"/> Leaderboard</li></a>
-                                                    <a href="javascript:void(0)"><li><img src="./murabbo/img/union.svg"/> Online Friend</li></a>
-                                                    <a href="javascript:void(0)"><li><img src="./murabbo/img/invitation.svg"/> Invite Friend</li></a>
-                                                </ul>
+                                                <TheSidebarInner/>
                                             </div>
                                         </div>
                                         <div class="col-lg-9 col-md-8">
@@ -350,7 +344,7 @@ class MyAccount extends Component {
                                                         <div class="scrore">
                                                             <img src="./murabbo/img/tropy.svg"/>
                                                             <p>Current Score</p>
-                                                            <h2>5,587 <span>pt</span></h2>
+                                                            <h2>{this.state.fields['currentScore']} <span>pt</span></h2>
                                                         </div>    
                                                     </div>
                                                 </div>

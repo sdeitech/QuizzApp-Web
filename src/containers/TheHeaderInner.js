@@ -105,7 +105,7 @@ class TheHeaderInner extends Component {
                                         <a href="#/dashboard"><li><i class='bx bx-detail'></i> Dashboard</li></a>
                                         <a href="#/contest"><li><i class='bx bx-detail'></i> My Games</li></a>
                                         <a href="#/contest"><li><i class='bx bx-detail'></i> Games History</li></a>
-                                        <span style={{ cursor:'pointer'}}><li><i class='bx bx-bookmark'></i> Leaderboard</li></span>
+                                        <a href="#/leaderboard"><li><i class='bx bx-bookmark'></i> Leaderboard</li></a>
                                         <a href="#/my_groups"><li><i class='bx bx-game'></i> My Groups</li></a>
                                         <a href="#/notification"><li><i class='bx bx-bell'></i> Notifications</li></a>
                                         <span style={{ cursor:'pointer'}}><li><i class='bx bx-user'></i> Online Friend</li></span>

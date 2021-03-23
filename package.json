@@ -42,6 +42,7 @@
     "react-dom": "^16.13.1",
     "react-facebook-login": "^4.1.1",
     "react-google-login": "^5.1.25",
+    "react-infinite-scroll-component": "^6.0.0",
     "react-linkedin-login-oauth2": "^1.0.8",
     "react-list-drag-and-drop": "^0.9.2",
     "react-multi-select-component": "^3.1.2",
