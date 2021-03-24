@@ -17,6 +17,7 @@ const DetailContestWithQuestionList = React.lazy(() => import('./views/contest/d
 const Tray = React.lazy(() => import('./views/tray/view'))
 
 const RoundDetail = React.lazy(() => import('./views/tray/detail'))
+const matchitDetail = React.lazy(() => import('./views/tray/matchit'))
 
 const Round = React.lazy(() => import('./views/round/view'))
 const AddRound = React.lazy(() => import('./views/round/add'))
@@ -56,6 +57,7 @@ const routes = [
     { path: '/contests/detail', name: 'DetailContestWithRoundList', component: DetailContestWithRoundList },
     { path: '/contests/game/start', name: 'DetailContestWithRoundList', component: DetailContestWithQuestionList },
     { path: '/tray', name: 'Tray', component: Tray },
+    { path: '/matchit', name: 'matchitDetail', component: matchitDetail },
     { path: '/roundquestion', name: 'RoundQuestion', component: RoundQuestion },
     { path: '/add_round_question', name: 'AddRoundQuestion', component: AddRoundQuestion },
     { path: '/edit_round_question', name: 'EditRoundQuestion', component: EditRoundQuestion },

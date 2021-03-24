@@ -28,6 +28,7 @@ class RoundTray extends Component {
 			saveEndConfirmationModel:false,
 			openModel:false,
 			qtyAdd:false,
+			wordModel:false,
 			qty:1,
 			timeLimit:'00:00',
 			delete_id:'',
@@ -410,9 +411,24 @@ class RoundTray extends Component {
         // console.log(this.uploadInput.files)
     }
 
-    saveNextHandler(id,e)
+    saveNextHandler(id,data,e)
     {
-    	this.updateRoundHandler('roundquestion',id);
+    	if (data.gameType === 'Hangman' || data.gameType === 'Unscramble' || data.gameType === 'Gibberish') {
+			this.setState({wordModel:true,openModel:false});
+		}
+		else if (data.gameType === 'Bingo' || data.gameType === 'GuessAndGo' || data.gameType === 'Taboo') {
+			return false;
+		}
+		else if (data.gameType === 'Quiz' )
+		{
+			this.updateRoundHandler('roundquestion',id);
+		}
+		else if (data.gameType === 'MatchIt' )
+		{
+			this.props.history.push('/matchit/'+contest_id);
+		}
+
+    	
     }
 
     
@@ -732,7 +748,7 @@ class RoundTray extends Component {
 
 
 					                        <div style={{ textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveNextHandler.bind(this,this.state.fields['_id'])} >Save & Next</button>
+							                    <button  style={{minWidth: '150px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveNextHandler.bind(this,this.state.fields['_id'],this.state.fields)} >Save & Next</button>
 							                </div>
 					                        <div style={{ textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" >Generate Question</button>
@@ -881,6 +897,44 @@ class RoundTray extends Component {
                             </div>
                         </CModalBody>
                     </CModal>
+
+                    <CModal show={this.state.wordModel}  closeOnBackdrop={false}  onClose={()=> this.setState({wordModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                           <div className="modal-body">
+                            <button type="button" className="close"   onClick={()=> this.setState({wordModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+						        <div className="model_data">
+						            <div className="model-title">
+						                <h3 style={{textAlign: 'left',color: '#FFC542'}}>Round Words</h3>
+						            </div>
+						   
+						                <ul className="round-word">
+						                    <li>Animal</li>
+						                    <li>Entertainment</li>
+						                    <li>Business</li>
+						                    <li>Sports</li>
+						                    <li>Food</li>
+						                    <li>Art& Design</li>
+						                    <li>Latest in Murabbo</li>
+						                    <li>International</li>
+						                    <li>History</li>
+						                </ul>
+						               
+						                <div className="full_btn">
+						                    <button style={{marginBottom: '15px'}} className="blue_btn" type="button">Add More Words</button>
+						                    <button style={{marginBottom: '15px'}} className="yellow_btn" type="button" onClick={()=> this.setState({wordModel:false})}>Save</button>
+						                </div>
+						        </div>
+						      </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
 
 			        </main>
 		        <TheFooter />

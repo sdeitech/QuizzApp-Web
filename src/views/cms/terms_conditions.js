@@ -23,7 +23,7 @@ class TermsConditions extends Component {
 
 	componentDidMount(){
 
-		fetch(configuration.baseURL+"cms/cms?cmsCode=TERM_AND_CONDITION", {
+		fetch(configuration.baseURL+"cms/cms?cmsCode=TERMS_CONDITION", {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
