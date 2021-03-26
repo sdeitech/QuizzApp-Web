@@ -43,7 +43,6 @@ const Room = (props) => {
     // const roomId = props.match.params.roomId;
     const roomId = "room123";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
-    const peers = [];
 
     useEffect(() => {
         socketRef.current = io("https://socketherokutest.herokuapp.com");
