@@ -106,7 +106,7 @@ const Room = (props) => {
         });
 
         peer.on("signal", (signal) => {
-            socketRef.current.emit("sending signal", {
+            socketRef.current.emit("sending_signal", {
                 userToSignal,
                 callerID,
                 signal,
@@ -124,7 +124,7 @@ const Room = (props) => {
         });
 
         peer.on("signal", (signal) => {
-            socketRef.current.emit("returning signal", { signal, callerID });
+            socketRef.current.emit("returning_signal", { signal, callerID });
         });
 
         peer.signal(incomingSignal);
