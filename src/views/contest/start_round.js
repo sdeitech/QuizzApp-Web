@@ -294,18 +294,28 @@ class StartRound extends Component {
 		fields[index]['selectAnswer'] = isTrue; 
     	fields[index]['isAnswerTrue'] = (this.state.listArr[index]['answerTypeBoolean'] === isTrue) ? true : false; 
     	fields[index]['readonly'] = true; 
+    	// console.log(fields);
     	this.setState({listArr:fields});
     	this.countScore(this.state.indexQuestion);
     	var that = this;
+
     	setTimeout(function () {
             if (index < that.state.listArr.length) {
-	    		that.setState({indexQuestion:index+1})
+	    		that.setState({indexQuestion:index+1});
+	    		$('input[type="radio"]').each(function () {
+					$(this).removeAttr('checked');
+					$('input[type="radio"]').prop('checked', false);
+				});
 	    	}
 	    	else
 	    	{
 	    		that.saveExitAnswer();	
 	    	}
 	    }, 2000);
+
+
+
+
 	}
 
 	getQuestionList(roundId1)
