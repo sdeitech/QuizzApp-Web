@@ -14,7 +14,7 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
-let round_id;
+let round_id,contest_id;
 
 class AddRoundQuestion extends Component {
 	constructor(props) {
@@ -58,6 +58,7 @@ class AddRoundQuestion extends Component {
 		    }).then((data)=> {
 		    	if (data.data.length > 0) {	
 					var data = data.data[0];
+					contest_id = data.contestId;
 					let fields = this.state.fields;
 					fields['execution_mode']=data.execution_mode;
 					fields['negativeScoring']=data.negativeScoring;
@@ -240,7 +241,7 @@ class AddRoundQuestion extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
-					this.props.history.push('/roundquestion/'+round_id);
+					this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
                 }
                 else
                 {

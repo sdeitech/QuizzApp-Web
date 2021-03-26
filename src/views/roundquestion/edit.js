@@ -14,7 +14,7 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
-let round_id;
+let round_id,contest_id;
 let question_id;
 class EditRoundQuestion extends Component {
 	constructor(props) {
@@ -141,8 +141,9 @@ class EditRoundQuestion extends Component {
 							fields['timeLimit'] = minute + ":" + seconds;
 							fields['timeLimitSeconds'] = currentTime;
 						}
-						console.log(fields);
+						// console.log(fields);
 
+						contest_id = data.data[0].contestId;
 						fields['execution_mode']=data.data[0].execution_mode;
 				   		that.setState({fields});
 					}, 1000);
@@ -329,7 +330,7 @@ class EditRoundQuestion extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
-					this.props.history.push('/roundquestion/'+round_id);
+					this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
                 }
                 else
                 {

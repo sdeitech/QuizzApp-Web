@@ -308,7 +308,14 @@ class Contest extends Component {
 
 	roundsListHandler(data,e)
 	{
-		this.props.history.push('/contests/detail/'+data._id);
+		if (data.isPublish) {
+			this.props.history.push('/contests/start_round/'+data._id);
+		}
+		else
+		{
+	        return toast.error('Contest is not publish,you can not play yet!');
+		}
+		
 	}
 
 	playContest(data){
@@ -329,7 +336,7 @@ class Contest extends Component {
 			                                <div class="col-md-8">
 			                                    <div class="main_title">
 			                                        <h3>My Games</h3>  
-			                                    </div> 
+			                                    </div>
 			                                </div>
 			                                <div class="col-md-4">
 				                                <div className="search">

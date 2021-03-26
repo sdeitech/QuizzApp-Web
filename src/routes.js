@@ -6,6 +6,9 @@ const Brand = React.lazy(() => import('./views/brand/view'))
 
 // Manage Contests
 const Contest = React.lazy(() => import('./views/contest/view'))
+const StartRound = React.lazy(() => import('./views/contest/start_round'))
+
+
 const GamesHistory = React.lazy(() => import('./views/games_history/view'))
 
 const AddContest = React.lazy(() => import('./views/contest/add'))
@@ -45,12 +48,16 @@ const TermsConditions = React.lazy(() => import('./views/cms/terms_conditions'))
 
 const Leaderboard = React.lazy(() => import('./views/leaderboard/view'))
 
+const videoChat = React.lazy(() => import("./views/chat/view"));
+
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/notification', name: 'Notification', component: Notification },
     { path: '/contest', name: 'Contest', component: Contest },
+    { path: '/contests/start_round', name: 'StartRound', component: StartRound },
+    
     { path: '/games_history', name: 'GamesHistory', component: GamesHistory },    
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
@@ -74,7 +81,7 @@ const routes = [
     { path: '/terms_conditions', name: 'TermsConditions', component: TermsConditions },
     { path: '/my_groups', name: 'MyGroups', component: MyGroups },
     { path: '/leaderboard', name: 'Leaderboard', component: Leaderboard },
-    
+    { path: "/videoChat", name: "videoChat", component: videoChat },
 
     
 ]
