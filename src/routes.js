@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
-const Home = React.lazy(() => import('./views/home/view'))
-const Category = React.lazy(() => import('./views/category/view'))
-const Brand = React.lazy(() => import('./views/brand/view'))
+const Home = React.lazy(() => import("./views/home/view"));
+const Category = React.lazy(() => import("./views/category/view"));
+const Brand = React.lazy(() => import("./views/brand/view"));
 
 // Manage Contests
 const Contest = React.lazy(() => import('./views/contest/view'))
@@ -16,39 +16,43 @@ const EditContest = React.lazy(() => import('./views/contest/edit'))
 const DetailContestWithRoundList = React.lazy(() => import('./views/contest/detail_with_round_list'))
 const DetailContestWithQuestionList = React.lazy(() => import('./views/contest/detail_with_question_list'))
 
+
 // Manage Rounds
-const Tray = React.lazy(() => import('./views/tray/view'))
+const Tray = React.lazy(() => import("./views/tray/view"));
 
-const RoundDetail = React.lazy(() => import('./views/tray/detail'))
-const matchitDetail = React.lazy(() => import('./views/tray/matchit'))
+const RoundDetail = React.lazy(() => import("./views/tray/detail"));
+const matchitDetail = React.lazy(() => import("./views/tray/matchit"));
 
-const Round = React.lazy(() => import('./views/round/view'))
-const AddRound = React.lazy(() => import('./views/round/add'))
+const Round = React.lazy(() => import("./views/round/view"));
+const AddRound = React.lazy(() => import("./views/round/add"));
 
+const RoundQuestion = React.lazy(() => import("./views/roundquestion/view"));
+const AddRoundQuestion = React.lazy(() => import("./views/roundquestion/add"));
+const EditRoundQuestion = React.lazy(() =>
+    import("./views/roundquestion/edit")
+);
 
+const DetailContest = React.lazy(() => import("./views/contest/detail"));
+const Invite = React.lazy(() => import("./views/startGame/view"));
+const StartGame = React.lazy(() => import("./views/startGame/start"));
+const MyAccount = React.lazy(() => import("./views/my_account/view"));
 
-const RoundQuestion = React.lazy(() => import('./views/roundquestion/view'))
-const AddRoundQuestion = React.lazy(() => import('./views/roundquestion/add'))
-const EditRoundQuestion = React.lazy(() => import('./views/roundquestion/edit'))
+const MyGroups = React.lazy(() => import("./views/my_groups/view"));
 
-const DetailContest = React.lazy(() => import('./views/contest/detail'))
-const Invite = React.lazy(() => import('./views/startGame/view'))
-const StartGame = React.lazy(() => import('./views/startGame/start'))
-const MyAccount = React.lazy(() => import('./views/my_account/view'))
+const Dashboard = React.lazy(() => import("./views/dashboard/view"));
 
-const MyGroups = React.lazy(() => import('./views/my_groups/view'))
+const Notification = React.lazy(() => import("./views/notification/view"));
 
-const Dashboard = React.lazy(() => import('./views/dashboard/view'))
+const PrivacyPolicy = React.lazy(() => import("./views/cms/privacy_policy"));
 
-const Notification = React.lazy(() => import('./views/notification/view'))
+const TermsConditions = React.lazy(() =>
+    import("./views/cms/terms_conditions")
+);
 
-const PrivacyPolicy = React.lazy(() => import('./views/cms/privacy_policy'))
-
-const TermsConditions = React.lazy(() => import('./views/cms/terms_conditions'))
-
-const Leaderboard = React.lazy(() => import('./views/leaderboard/view'))
+const Leaderboard = React.lazy(() => import("./views/leaderboard/view"));
 
 const videoChat = React.lazy(() => import("./views/chat/view"));
+
 
 
 const routes = [
@@ -86,4 +90,4 @@ const routes = [
     
 ]
 
-export default routes
+export default routes;
