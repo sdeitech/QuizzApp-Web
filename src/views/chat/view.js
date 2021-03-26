@@ -53,18 +53,22 @@ const Room = (props) => {
                 .then((stream) => {
                     userVideo.current.srcObject = stream;
                     socketRef.current.emit("join-room", { roomId, userId });
-                    const peer = createPeer(
-                        userId,
-                        socketRef.current.id,
-                        stream
-                    );
-                    peersRef.current.push({
-                        peerID: userId,
-                        peer,
+                    socketRef.current.on("all_users", (users) => {
+                        const peers = [];
+                        users.forEach((userID) => {
+                            const peer = createPeer(
+                                userID,
+                                socketRef.current.id,
+                                stream
+                            );
+                            peersRef.current.push({
+                                peerID: userID,
+                                peer,
+                            });
+                            peers.push(peer);
+                        });
+                        setPeers(peers);
                     });
-                    peers.push(peer);
-                    console.log("PEERS ::", peers);
-                    setPeers(peers);
 
                     socketRef.current.on("user_joined", (payload) => {
                         console.log("STREAM ::", payload);
