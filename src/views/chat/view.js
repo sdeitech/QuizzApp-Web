@@ -40,18 +40,19 @@ const Room = (props) => {
     const socketRef = useRef();
     const userVideo = useRef();
     const peersRef = useRef([]);
-    const roomID = props.match.params.roomID;
+    // const roomId = props.match.params.roomId;
+    const roomId = "room123";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
 
     useEffect(() => {
-        socketRef.current = io("http://socketherokutest.herokuapp.com");
+        socketRef.current = io("https://socketherokutest.herokuapp.com");
         // socketRef.current = io("http://localhost:8000");
         try {
             navigator.mediaDevices
                 .getUserMedia({ video: videoConstraints, audio: true })
                 .then((stream) => {
                     userVideo.current.srcObject = stream;
-                    socketRef.current.emit("join-room", roomID, userId);
+                    socketRef.current.emit("join-room", { roomId, userId });
                     socketRef.current.on("all users", (users) => {
                         const peers = [];
                         users.forEach((userID) => {
@@ -70,6 +71,7 @@ const Room = (props) => {
                     });
 
                     socketRef.current.on("user_joined", (payload) => {
+                        console.log("STREAM ::", payload);
                         const peer = addPeer(
                             payload.signal,
                             payload.callerID,
