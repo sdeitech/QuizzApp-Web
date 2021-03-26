@@ -43,6 +43,7 @@ const Room = (props) => {
     // const roomId = props.match.params.roomId;
     const roomId = "room123";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
+    const peers = [];
 
     useEffect(() => {
         socketRef.current = io("https://socketherokutest.herokuapp.com");
@@ -54,7 +55,6 @@ const Room = (props) => {
                     userVideo.current.srcObject = stream;
                     socketRef.current.emit("join-room", { roomId, userId });
                     socketRef.current.on("all_users", (users) => {
-                        const peers = [];
                         const peer = createPeer(
                             users,
                             socketRef.current.id,
