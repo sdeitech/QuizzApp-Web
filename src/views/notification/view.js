@@ -61,7 +61,7 @@ class Notification extends Component {
             .then((data) => {
                 if (data.code === 200) {
                     this.componentDidMount();
-                    this.props.history.push(`/videoChat/room123/${userId}`);
+                    this.props.history.push(`/videoChat/roomTest/${userId}`);
                     // return toast.success(data.message);
                 } else {
                     return toast.error(data.message);

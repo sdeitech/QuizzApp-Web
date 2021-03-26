@@ -111,7 +111,7 @@ class Detail extends Component {
     goToVideoChat(data) {
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
         this.componentDidMount();
-        this.props.history.push(`/videoChat/room123/${userId}`);
+        this.props.history.push(`/videoChat/roomTest/${userId}`);
     }
 
     handleChange(e) {

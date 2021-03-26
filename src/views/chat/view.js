@@ -66,6 +66,7 @@ const Room = (props) => {
                                 peer,
                             });
                             peers.push(peer);
+                            console.log("PEER ::", peers);
                         });
                         setPeers(peers);
                     });
@@ -86,7 +87,7 @@ const Room = (props) => {
                     });
 
                     socketRef.current.on(
-                        "receiving returned signal",
+                        "receiving_returned_signal",
                         (payload) => {
                             const item = peersRef.current.find(
                                 (p) => p.peerID === payload.id
