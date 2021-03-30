@@ -54,6 +54,7 @@ const Room = (props) => {
                     userVideo.current.srcObject = stream;
                     socketRef.current.emit("join-room", { roomId, userId });
                     socketRef.current.on("all_users", (users) => {
+                        console.log("all_users ::", users);
                         const peers = [];
                         users.forEach((userID) => {
                             const peer = createPeer(
@@ -109,6 +110,7 @@ const Room = (props) => {
         });
 
         peer.on("signal", (signal) => {
+            console.log("peer signal ::", signal);
             socketRef.current.emit("sending_signal", {
                 userToSignal,
                 callerID,
