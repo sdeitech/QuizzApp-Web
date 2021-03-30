@@ -2,6 +2,7 @@
   "name": "Murabbo",
   "version": "3.0.0",
   "description": "Murabbo - Quiz App",
+  "proxy": "https://socketherokutest.herokuapp.com",
   "author": {
     "name": "CoreUI",
     "url": "https://coreui.io",

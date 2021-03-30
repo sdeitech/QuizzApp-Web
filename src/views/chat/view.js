@@ -56,8 +56,8 @@ const Room = (props) => {
                     socketRef.current.on("all_users", (users) => {
                         console.log("all_users ::", users);
                         const peers = [];
-                        users.forEach((userID) => {
-                            const peer = createPeer(
+                        users.forEach(async (userID) => {
+                            const peer = await createPeer(
                                 userID,
                                 socketRef.current.id,
                                 stream
