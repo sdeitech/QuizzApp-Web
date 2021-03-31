@@ -40,8 +40,9 @@ const Room = (props) => {
     const socketRef = useRef();
     const userVideo = useRef();
     const peersRef = useRef([]);
-    // const roomId = props.match.params.roomId;
-    const roomId = "room123";
+    let roomUrl = window.location.href;
+    const roomId = roomUrl.substring(roomUrl.lastIndexOf("/") + 1);
+    // const roomId = "roomtestingsocket";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
 
     useEffect(() => {
@@ -56,8 +57,8 @@ const Room = (props) => {
                     socketRef.current.on("all_users", (users) => {
                         console.log("all_users ::", users);
                         const peers = [];
-                        users.forEach(async (userID) => {
-                            const peer = await createPeer(
+                        users.forEach((userID) => {
+                            const peer = createPeer(
                                 userID,
                                 socketRef.current.id,
                                 stream
@@ -67,13 +68,12 @@ const Room = (props) => {
                                 peer,
                             });
                             peers.push(peer);
-                            console.log("PEER ::", peers);
                         });
                         setPeers(peers);
                     });
 
                     socketRef.current.on("user_joined", (payload) => {
-                        console.log("STREAM ::", payload);
+                        console.log("inside user_joined", payload.callerID);
                         const peer = addPeer(
                             payload.signal,
                             payload.callerID,
@@ -90,6 +90,7 @@ const Room = (props) => {
                     socketRef.current.on(
                         "receiving_returned_signal",
                         (payload) => {
+                            console.log("HERE ::", payload.id);
                             const item = peersRef.current.find(
                                 (p) => p.peerID === payload.id
                             );
@@ -103,6 +104,7 @@ const Room = (props) => {
     }, []);
 
     function createPeer(userToSignal, callerID, stream) {
+        console.log("Create peer :", userToSignal, callerID);
         const peer = new Peer({
             initiator: true,
             trickle: false,
@@ -110,7 +112,6 @@ const Room = (props) => {
         });
 
         peer.on("signal", (signal) => {
-            console.log("peer signal ::", signal);
             socketRef.current.emit("sending_signal", {
                 userToSignal,
                 callerID,
@@ -122,6 +123,7 @@ const Room = (props) => {
     }
 
     function addPeer(incomingSignal, callerID, stream) {
+        console.log("addPeer", callerID);
         const peer = new Peer({
             initiator: false,
             trickle: false,

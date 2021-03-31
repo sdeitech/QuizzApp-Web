@@ -98,8 +98,6 @@ class Detail extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.componentDidMount();
-                        // this.props.history.push(`/videoChat/room123/${userId}`);
-
                         return toast.success("Invite successfully");
                     } else {
                         return toast.error(data.message);
@@ -109,9 +107,9 @@ class Detail extends Component {
     }
 
     goToVideoChat(data) {
-        var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
-        this.componentDidMount();
-        this.props.history.push(`/videoChat/roomTest/${userId}`);
+        // var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
+        // this.componentDidMount();
+        this.props.history.push(`/videoChat/room1234`);
     }
 
     handleChange(e) {
