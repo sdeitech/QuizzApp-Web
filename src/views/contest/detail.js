@@ -109,7 +109,11 @@ class Detail extends Component {
     goToVideoChat(data) {
         // var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
         // this.componentDidMount();
-        this.props.history.push(`/videoChat/room1234`);
+        var url = window.location.href;
+
+        var urlParts = url.substring(url.lastIndexOf("/") + 1);
+        urlParts = urlParts.split("?");
+        this.props.history.push(`/videoChat/${urlParts[1]}`);
     }
 
     handleChange(e) {

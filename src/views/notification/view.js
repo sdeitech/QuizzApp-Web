@@ -62,7 +62,9 @@ class Notification extends Component {
                 if (data.code === 200) {
                     this.componentDidMount();
                     if (type === "accept") {
-                        this.props.history.push(`/videoChat/room1234`);
+                        this.props.history.push(
+                            `/videoChat/${postdata.inviteRoomId}`
+                        );
                     } else {
                         return toast.success(data.message);
                     }
