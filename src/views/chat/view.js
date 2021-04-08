@@ -57,13 +57,9 @@ const Room = props => {
         if (isAudioMuted) {
             setAudioMute(false);
             console.log("Enable audio");
-            // console.log(socketRef.current.unmuteAudio());
-            // localStream.unmuteAudio();
         } else {
             setAudioMute(true);
             console.log("Disable audio");
-            // console.log(socketRef.current.muteAudio());
-            // localStream.muteAudio();
         }
     };
 
@@ -78,10 +74,10 @@ const Room = props => {
     };
     useEffect(() => {
         socketRef.current = io("https://socketherokutest.herokuapp.com", {
+            forceNew: true,
             transports: ["polling"]
         });
         console.log(socketRef.current);
-        // socketRef.current = io("http://localhost:8000");
         try {
             peerServer = new Peer(undefined, {
                 secure: false,
