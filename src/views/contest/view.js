@@ -324,7 +324,7 @@ class Contest extends Component {
 
 	joinRoomContest(data)
 	{
-		this.props.history.push('/videoChat/'+data.contestId);
+		this.props.history.push('/videoChat/'+data._id);
 	}
 
 	titleSmall(name){

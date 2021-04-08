@@ -52,7 +52,10 @@ class MyGroups extends Component {
             }).then((response) =>{
             return response.json();
         }).then((data)=> {
-            this.setState({ listData:data.data.saveTo});
+            if (data.data.saveTo) {
+                this.setState({ listData:data.data.saveTo});    
+            }
+            
         }); 
     }
 

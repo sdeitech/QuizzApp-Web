@@ -35,6 +35,10 @@ h6 {
     font-family: 'Montserrat', sans-serif;
 }
 
+[type=button], [type=reset], [type=submit], button {
+-webkit-appearance: none !important;
+}
+
 
 /*--------------------------------------------------------------
 # Back to top button
