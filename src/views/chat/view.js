@@ -108,10 +108,6 @@ const Room = props => {
                     if (peerServer) {
                         console.log("peer connection => ", peerServer);
 
-                        peerServer.on("open", data => {
-                            console.log("peer open => ", data);
-                        });
-
                         peerServer.on("connection", data => {
                             console.log("peer connect with data => ", data);
                         });
@@ -158,7 +154,31 @@ const Room = props => {
                         });
 
                         call.on("close", () => {
+                            console.log(
+                                "peer close for this id => outside => "
+                            );
                             if (resStreamId) {
+                                console.log(
+                                    "peer close for this id => inside => ",
+                                    resStreamId
+                                );
+                                let streams = [...otherStreams];
+                                streams = streams.filter(
+                                    x => x.id !== resStreamId
+                                );
+                                setotherStreams(streams);
+                            }
+                        });
+
+                        call.on("error", () => {
+                            console.log(
+                                "peer error for this id => outside => "
+                            );
+                            if (resStreamId) {
+                                console.log(
+                                    "peer error for this id => inside => ",
+                                    resStreamId
+                                );
                                 let streams = [...otherStreams];
                                 streams = streams.filter(
                                     x => x.id !== resStreamId
@@ -185,9 +205,31 @@ const Room = props => {
                         });
 
                         call.on("close", () => {
-                            console.log("close outside => ");
+                            console.log(
+                                "peer close for this id => outside => "
+                            );
                             if (resStreamId) {
-                                console.log("close outside => ", resStreamId);
+                                console.log(
+                                    "peer close for this id => inside => ",
+                                    resStreamId
+                                );
+                                let streams = [...otherStreams];
+                                streams = streams.filter(
+                                    x => x.id !== resStreamId
+                                );
+                                setotherStreams(streams);
+                            }
+                        });
+
+                        call.on("error", () => {
+                            console.log(
+                                "peer error for this id => outside => "
+                            );
+                            if (resStreamId) {
+                                console.log(
+                                    "peer error for this id => inside => ",
+                                    resStreamId
+                                );
                                 let streams = [...otherStreams];
                                 streams = streams.filter(
                                     x => x.id !== resStreamId
@@ -215,10 +257,45 @@ const Room = props => {
                         }
                     );
                 });
+
+            window.addEventListener("beforeunload", event => {
+                // Cancel the event as stated by the standard.
+                event.preventDefault();
+                // Chrome requires returnValue to be set.
+                event.returnValue = "";
+
+                console.log("close page");
+                const streamUserId = userVideoPeerId.current;
+                const myStream = userVideoStream.current;
+
+                console.log("leaving room for => ", streamUserId);
+                socketRef.current.emit("leave-room", {
+                    userId: streamUserId,
+                    roomId,
+                    streamId: myStream.id
+                });
+            });
         } catch (error) {
             console.log(error);
         }
         return () => {
+            window.removeEventListener("beforeunload", event => {
+                // Cancel the event as stated by the standard.
+                event.preventDefault();
+                // Chrome requires returnValue to be set.
+                event.returnValue = "";
+
+                console.log("close page");
+                const streamUserId = userVideoPeerId.current;
+                const myStream = userVideoStream.current;
+
+                console.log("leaving room for => ", streamUserId);
+                socketRef.current.emit("leave-room", {
+                    userId: streamUserId,
+                    roomId,
+                    streamId: myStream.id
+                });
+            });
             console.log("close page");
             const streamUserId = userVideoPeerId.current;
             const myStream = userVideoStream.current;
@@ -256,7 +333,6 @@ const Room = props => {
             <button onClick={logout}>Logout</button>
             {otherStreams.map((item, index) => {
                 console.log("other streams => ", item);
-                // return null
                 return <Video key={index.toString()} item={item} />;
             })}
         </Container>
