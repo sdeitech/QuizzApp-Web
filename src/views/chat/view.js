@@ -327,10 +327,15 @@ const Room = props => {
     return (
         <Container>
             <StyledVideo muted ref={userVideo} autoPlay playsInline />
-            <button onClick={muteAudio}>
+            <button
+                style={{ width: "100px", height: "35px" }}
+                onClick={muteAudio}
+            >
                 {isAudioMuted === true ? "Unmute" : "Mute"}
             </button>
-            <button onClick={logout}>Logout</button>
+            <button style={{ width: "100px", height: "35px" }} onClick={logout}>
+                Logout
+            </button>
             {otherStreams.map((item, index) => {
                 console.log("other streams => ", item);
                 return <Video key={index.toString()} item={item} />;
