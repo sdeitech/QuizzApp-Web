@@ -44,9 +44,10 @@ const Room = props => {
     const userVideoPeerId = useRef();
     const userVideoStream = useRef();
     const userVideo = useRef();
-    const peersRef = useRef([]);
+    const otherStreamRef = useRef([]);
 
     const [otherStreams, setotherStreams] = useState([]);
+    otherStreamRef.current = otherStreams;
 
     const [isAudioMuted, setAudioMute] = useState(false);
     let roomUrl = window.location.href;
@@ -57,9 +58,13 @@ const Room = props => {
         if (isAudioMuted) {
             setAudioMute(false);
             console.log("Enable audio");
+            // console.log(socketRef.current.unmuteAudio());
+            // localStream.unmuteAudio();
         } else {
             setAudioMute(true);
             console.log("Disable audio");
+            // console.log(socketRef.current.muteAudio());
+            // localStream.muteAudio();
         }
     };
 
@@ -73,11 +78,15 @@ const Room = props => {
         // connectionRef.current.destroy()
     };
     useEffect(() => {
-        socketRef.current = io("https://socketherokutest.herokuapp.com", {
-            forceNew: true,
-            transports: ["polling"]
-        });
+        console.log("my room Id => ", roomId);
+        if (!socketRef.current) {
+            socketRef.current = io("https://socketherokutest.herokuapp.com", {
+                forceNew: true,
+                transports: ["polling"]
+            });
+        }
         console.log(socketRef.current);
+        // socketRef.current = io("http://localhost:8000");
         try {
             peerServer = new Peer(undefined, {
                 secure: false,
@@ -138,10 +147,7 @@ const Room = props => {
                             if (remoteVideoStream) {
                                 resStreamId = remoteVideoStream?.id;
                                 setTimeout(() => {
-                                    setotherStreams(prev => [
-                                        ...prev,
-                                        remoteVideoStream
-                                    ]);
+                                    _addStream(remoteVideoStream);
                                     // dispatch({ type: actionTypes.ADD_STREAM, payload: remoteVideoStream });
                                 }, 400);
                             }
@@ -170,7 +176,7 @@ const Room = props => {
                         call.on("stream", resstream => {
                             resStreamId = resstream?.id;
 
-                            setotherStreams(prev => [...prev, resstream]);
+                            _addStream(resstream);
                             // dispatch({ type: actionTypes.ADD_STREAM, payload: resstream });
                         });
 
@@ -227,6 +233,15 @@ const Room = props => {
             }, 2000);
         };
     }, []);
+
+    const _addStream = stream => {
+        const otherStreams = otherStreamRef.current;
+        if (otherStreams.findIndex(x => x.id === stream.id) === -1) {
+            setotherStreams(prev => [...prev, stream]);
+        }
+    };
+
+    console.log("my totle streams => ", otherStreams);
 
     return (
         <Container>
