@@ -88,39 +88,43 @@ const Room = props => {
         console.log(socketRef.current);
         // socketRef.current = io("http://localhost:8000");
         try {
-            peerServer = new Peer(undefined, {
-                secure: false,
-                config: {
-                    iceServers: [
-                        {
-                            urls: [
-                                "stun:stun1.l.google.com:19302",
-                                "stun:stun2.l.google.com:19302"
-                            ]
-                        }
-                    ]
-                }
-            });
-
-            if (peerServer) {
-                console.log("peer connection => ", peerServer);
-
-                peerServer.on("connection", data => {
-                    console.log("peer connect with data => ", data);
-                });
-
-                peerServer.on("disconnected", data => {
-                    console.log("peer disconnect with data => ", data);
-                });
-            }
-
-            peerServer.on("error", error =>
-                console.log("peer error => ", error)
-            );
-
             navigator.mediaDevices
                 .getUserMedia({ video: videoConstraints, audio: true })
                 .then(stream => {
+                    peerServer = new Peer(undefined, {
+                        secure: false,
+                        config: {
+                            iceServers: [
+                                {
+                                    urls: [
+                                        "stun:stun1.l.google.com:19302",
+                                        "stun:stun2.l.google.com:19302"
+                                    ]
+                                }
+                            ]
+                        }
+                    });
+
+                    if (peerServer) {
+                        console.log("peer connection => ", peerServer);
+
+                        peerServer.on("open", data => {
+                            console.log("peer open => ", data);
+                        });
+
+                        peerServer.on("connection", data => {
+                            console.log("peer connect with data => ", data);
+                        });
+
+                        peerServer.on("disconnected", data => {
+                            console.log("peer disconnect with data => ", data);
+                        });
+                    }
+
+                    peerServer.on("error", error =>
+                        console.log("peer error => ", error)
+                    );
+
                     userVideo.current.srcObject = stream;
                     userVideoStream.current = stream;
                     currentStream.current = stream;
