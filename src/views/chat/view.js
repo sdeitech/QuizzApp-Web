@@ -78,7 +78,7 @@ const Room = props => {
     };
     useEffect(() => {
         socketRef.current = io("https://socketherokutest.herokuapp.com", {
-            forceNew: true
+            transports: ["polling"]
         });
         console.log(socketRef.current);
         // socketRef.current = io("http://localhost:8000");
