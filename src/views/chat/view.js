@@ -23,15 +23,13 @@ let peerServer;
 let peers = {};
 
 const Video = props => {
-    // const ref = useRef();
+    const ref = useRef();
 
     useEffect(() => {
-        // props.item.on("stream", stream => {
-        //     ref.current.srcObject = stream;
-        // });
+        ref.current.srcObject = props.item;
     }, []);
 
-    return <StyledVideo playsInline autoPlay ref={props.item} />;
+    return <StyledVideo playsInline autoPlay ref={ref} />;
 };
 
 const videoConstraints = {
@@ -43,6 +41,8 @@ const Room = props => {
     // const [peers, setPeers] = useState([]);
     const socketRef = useRef();
     const currentStream = useRef();
+    const userVideoPeerId = useRef();
+    const userVideoStream = useRef();
     const userVideo = useRef();
     const peersRef = useRef([]);
 
@@ -77,7 +77,9 @@ const Room = props => {
         // connectionRef.current.destroy()
     };
     useEffect(() => {
-        socketRef.current = io("https://socketherokutest.herokuapp.com");
+        socketRef.current = io("https://socketherokutest.herokuapp.com", {
+            forceNew: true
+        });
         console.log(socketRef.current);
         // socketRef.current = io("http://localhost:8000");
         try {
@@ -115,10 +117,12 @@ const Room = props => {
                 .getUserMedia({ video: videoConstraints, audio: true })
                 .then(stream => {
                     userVideo.current.srcObject = stream;
+                    userVideoStream.current = stream;
                     currentStream.current = stream;
                     console.log("USERID ::", userId, stream);
 
                     peerServer.on("open", peerUserId => {
+                        userVideoPeerId.current = peerUserId;
                         console.log("open join room", roomId);
                         socketRef.current.emit("join-room", {
                             userId: peerUserId,
@@ -175,7 +179,9 @@ const Room = props => {
                         });
 
                         call.on("close", () => {
+                            console.log("close outside => ");
                             if (resStreamId) {
+                                console.log("close outside => ", resStreamId);
                                 let streams = [...otherStreams];
                                 streams = streams.filter(
                                     x => x.id !== resStreamId
@@ -184,10 +190,46 @@ const Room = props => {
                             }
                         });
                     });
+
+                    socketRef.current.on(
+                        "user-disconnected",
+                        ({ userId, streamId }) => {
+                            try {
+                                let streams = [...otherStreams];
+                                console.log("all removed streams => ", streams);
+                                streams = streams.filter(
+                                    x => x.id !== streamId
+                                );
+                                setotherStreams(streams);
+
+                                if (peers[userId]) peers[userId].close();
+                            } catch (error) {
+                                console.log("disconnected error => ", error);
+                            }
+                        }
+                    );
                 });
         } catch (error) {
             console.log(error);
         }
+        return () => {
+            console.log("close page");
+            const streamUserId = userVideoPeerId.current;
+            const myStream = userVideoStream.current;
+
+            console.log("leaving room for => ", streamUserId);
+            setTimeout(() => {
+                socketRef.current.emit("leave-room", {
+                    userId: streamUserId,
+                    roomId,
+                    streamId: myStream.id
+                });
+
+                if (myStream) {
+                    myStream.getTracks().forEach(track => track.stop());
+                }
+            }, 2000);
+        };
     }, []);
 
     return (
