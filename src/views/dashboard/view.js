@@ -83,7 +83,10 @@ class Dashboard extends Component {
         this.setState({errorsPlay: errors});
 
     }
-
+    joinRoomContest(data)
+	{
+		this.props.history.push('/videoChat/'+data.contestId);
+	}
 
     handleNext(){
     	let fields = this.state.fieldsPlay;
@@ -174,6 +177,7 @@ class Dashboard extends Component {
 			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
 			                                            <p style={{cursor: 'context-menu',width:'160px'}}>{e.title} </p>
 			                                            <p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>
+			                                        	<p className="join_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
 			                                        </div>
 			                                    </div>
 				                            </div>

@@ -3463,3 +3463,19 @@ p.fancy2 ._f
     width: 100%;
     color: #fec952;
 }
+
+.join_btn_contest
+{
+    background: #FFC542 0% 0% no-repeat padding-box;
+    font: normal normal normal 12px/25px Montserrat !important;
+    border-radius: 3px;
+    padding: 0px 10px;
+    font-size: 10px !important;
+    margin-top: 10px;
+    float: right;
+    position: absolute !important;
+    right: 20px;
+    top: 113px;
+    min-width: 50px;
+    text-align: center;
+}
