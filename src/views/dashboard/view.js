@@ -132,6 +132,30 @@ class Dashboard extends Component {
 
 		}
 	}
+
+	titleSmall(name){
+		if (name.length > 12) {
+		    var shortname = name.substring(0, 12) + "...";
+		    return shortname;
+		}
+		else
+		{
+			return name;
+		}
+	}
+
+	roundsListHandler(data,e)
+	{
+		if (data.isPublish) {
+			this.props.history.push('/contests/start_round/'+data._id);
+		}
+		else
+		{
+	        return toast.error('Contest is not publish,you can not play yet!');
+		}
+		
+	}
+
 	render() {
 		return (
 			<>
@@ -141,7 +165,7 @@ class Dashboard extends Component {
 			            <section id="contest" class="d-flex align-items-center">
 			                <div class="container">
 
-			                	<div style={{paddingBottom: '30px'}} class="contest-info banner-div">
+			                	{/*<div style={{paddingBottom: '30px'}} class="contest-info banner-div">
 			                        <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12" >
 		                                	<div class="cate-box2">
@@ -150,7 +174,7 @@ class Dashboard extends Component {
 			                            </div>
                                        
 			                        </div>
-			                    </div>
+			                    </div>*/}
 
 			                    <div class="create-contest">
 			                        <div class="contest-title">
@@ -175,9 +199,9 @@ class Dashboard extends Component {
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
 			                                        <div class="cat_title2">
 			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
-			                                            <p style={{cursor: 'context-menu',width:'160px'}}>{e.title} </p>
-			                                            <p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>
-			                                        	<p className="join_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
+			                                            <p style={{cursor: 'context-menu',width:'160px'}} onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)} </p>
+			                                            {/*<p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>*/}
+			                                        	<p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
 			                                        </div>
 			                                    </div>
 				                            </div>

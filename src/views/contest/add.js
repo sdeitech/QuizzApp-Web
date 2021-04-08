@@ -40,6 +40,7 @@ class AddContest extends Component {
 			input: '',
 			openModelCategory:false,
 			openModelBrand:false,
+			openSaveToModel:false,
             image:'avatars/placeholder-user.png',
             localArr:[],
             saveToList:[]
@@ -120,6 +121,12 @@ class AddContest extends Component {
         this.searchUpdatedCategory('');
         this.searchUpdated('');
     }
+
+    handleOpenSaveToModel()
+	{
+		$('body').addClass('modal-open');
+		this.setState({openSaveToModel:true});	
+	}
 
 	handleOpenCategoryModel()
 	{
@@ -379,6 +386,14 @@ class AddContest extends Component {
 
     }
 
+    handleChangeSaveTo(e)
+    {
+    	let fields = this.state.fields;
+        fields['saveToTitle'] = e.saveToTitle;
+        fields['saveToId'] = e.saveToId;        
+        this.setState({fields});
+        console.log(this.state.fields);
+    }
 	
 	handleSubmit(){
 		let fields = this.state.fields;
@@ -526,13 +541,13 @@ class AddContest extends Component {
 	}
 
 	searchUpdatedCategory(term = '') {
+		// console.log(term.target.value);
 		if (term !== '') {
     		term = term.target.value;
     	}
 
     	let filterCategoryList = [];
     	if (term) {  
-
     		fetch(configuration.baseURL+"category/categoryList", {
 	                method: "GET",
 	                headers: {
@@ -804,6 +819,48 @@ class AddContest extends Component {
 			                    </div>
 			                </div>
 			            </section>
+
+			            <div className={(this.state.openSaveToModel) ? 'stopScorll' : ''}>	
+							<CModal className="model" size="lg" show={this.state.openSaveToModel} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>
+		                    	<CModalBody className="model-bg">
+
+			                    <div>
+			                        <div className="modal-body">
+			                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
+			                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+			                        </button>
+			                            <div className="model_data">
+			                                <div className="model-title">
+				                                <h3>Choose Category</h3>
+			                                </div>
+			                                <div className="contest">				                                
+										        {
+							                    	(this.state.saveToList.length > 0) ? 
+							                    	this.state.saveToList.map((saveTo, key) => {
+									                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
+									                            	<input type="radio" name="radio" id={saveTo.saveToId}  value={saveTo.saveToId} onChange={this.handleChangeSaveTo.bind(this,saveTo)} checked={(this.state.fields.saveToId === saveTo.saveToId ? 'checked' : '')}/>
+											                        <label for={saveTo.saveToId}>
+												                        <div className="cat_title checked_title">
+										                                    <h3>{saveTo.saveToTitle}</h3>
+										                                </div>
+									                                </label>
+											                    </div>
+											                })
+							                    	: 
+											        (
+											        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"100px",marginBottom:"100px"}} className="flex"><p className="item-author text-color">No save to available</p></div>
+											        )
+							                    }
+							                    <div style={{ textAlign: 'center' }} class="">
+								                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
+								                </div>
+									        </div>
+			                            </div>
+			                        </div>
+			                        </div>
+			                    </CModalBody>
+			                </CModal>
+		                </div>
 
 						<div className={(this.state.openModelCategory) ? 'stopScorll' : ''}>
 							<CModal className="model" size="lg" show={this.state.openModelCategory} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>

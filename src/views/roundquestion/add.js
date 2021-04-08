@@ -21,7 +21,7 @@ class AddRoundQuestion extends Component {
         super(props);
         this.state = {
         	answers:[],
-        	fields:{question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
+        	fields:{image:'',question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0,scoring:1, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
 			errors:{},
 			fieldsAnswer:{},
 			errorsAnswer:{},
@@ -62,6 +62,7 @@ class AddRoundQuestion extends Component {
 					let fields = this.state.fields;
 					fields['execution_mode']=data.execution_mode;
 					fields['negativeScoring']=data.negativeScoring;
+					fields['scoring']=data.scoring;
 			   		this.setState({fields});
 		    	}
 			});	
@@ -143,6 +144,9 @@ class AddRoundQuestion extends Component {
 		if (field === 'negativeScoring') {
         	fields[field] = e.target.checked; 
 		}
+		else if (field === 'answerTypeBoolean') {
+			fields[field] = (e.target.value == 'true') ? true :false;
+		}
 		else
 		{
         	fields[field] = e.target.value; 
@@ -169,6 +173,14 @@ class AddRoundQuestion extends Component {
     	let errors = {};
         if(fields["question"].trim() === ''){
             errors["question"] = "Please enter question";formIsValid=false;
+        }
+
+        if (this.state.fields.negativeScoring === true || this.state.fields.negativeScoring === 'true')
+        {
+        	if(fields["hintText"].trim() === ''){
+	            errors["hintText"] = "Please enter hint";formIsValid=false;
+	        }
+
         }
 
         this.setState({errors: errors,tosterMsg:''});
@@ -218,7 +230,7 @@ class AddRoundQuestion extends Component {
         		data.append('hint',1);
 	        	data.append('onDemandNegativePoints',0);
         	}
-            if(this.state.fields.image === 'image'){
+            if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){
                 data.append('file', this.uploadInput.files[0]);
             } 
             else
@@ -240,14 +252,15 @@ class AddRoundQuestion extends Component {
             }).then((response) => {
                 return response.json();
             }).then((data) => {
-                if(data.code === 200){
-					this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
-                }
-                else
-                {
-                	this.setState({tosterMsg:data.message});
-                 	return false;
-                }
+                 // if(data.code === 200){
+					
+                // }
+                // else
+                // {
+                // 	this.setState({tosterMsg:data.message});
+                //  	return false;
+                // }
+                this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
                 
             });
         }
@@ -611,7 +624,10 @@ class AddRoundQuestion extends Component {
 					                      	<option value="1">Single Select</option>
 					                      	<option value="2">Multi Select</option>
 					                      	<option value="3">Free Text</option>
-					                      	<option value="4">Flashcard</option>
+					                      	{
+							                	(this.state.fields['scoring'] !== 2) ? (
+					                      		<option value="4">Flashcard</option> ) : null
+							           		}
 					                      	<option value="5">True or False</option>
 	                                    </select>
 	                                    <label>Select Question Type</label>
@@ -626,16 +642,25 @@ class AddRoundQuestion extends Component {
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["hintText"]}</span>
 	                                
-                            			{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+                            			{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? 
+	                            		<div>
+		                        			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
 
-		                            	<img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
-	                                    <label className="cus_label">Select Answer </label>
-	                                    <div className="button-switch">
-	                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['answerTypeBoolean']} onChange={this.handleChange.bind(this,'answerTypeBoolean')} />
-	                                      <label for="switch-orange" className="lbl-off"></label>
-	                                      <label for="switch-orange" className="lbl-on"></label>
-	                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
-	                                </div> : null}
+				                            	<img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
+			                                    <label className="cus_label">Select Answer </label>
+
+			                                </div>
+		                                    <label className="control control--radio">True
+												<input type="radio" name="radio" value={true}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === true ? 'checked' : '')}/>
+			                                  <div className="control__indicator"></div>
+			                                </label>
+			                                <label className="control control--radio">False
+			                                  <input type="radio" name="radio" value={false}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === false ? 'checked' : '')}/>
+			                                  <div className="control__indicator"></div>
+			                                </label>
+		                                </div>
+		                                : 
+		                                null}
                             		
 	                               
 	                            </div>

@@ -114,7 +114,7 @@ class TheHeaderInner extends Component {
                                     </div>
                                 </div>
                                 <li class="nav-item">
-                                    <button class="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Set Pin</button>
+                                    <button class="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Enter Pin</button>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link " href="#/add_contest">

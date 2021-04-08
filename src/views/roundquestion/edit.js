@@ -21,7 +21,7 @@ class EditRoundQuestion extends Component {
         super(props);
         this.state = {
         	answers:[],
-        	fields:{question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
+        	fields:{image:'',question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0,scoring:1, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
 			errors:{},
 			fieldsAnswer:{},
 			errorsAnswer:{},
@@ -68,6 +68,7 @@ class EditRoundQuestion extends Component {
 		    	if (data.data.length > 0) {	
 					let fields = this.state.fields;
 					fields = data.data[0];
+					fields['image'] = '';
 			   		this.setState({fields});
 			   		this.setState({answers:data.data[0].answers})
 			   		if (data.data[0].file !== '') {
@@ -145,6 +146,7 @@ class EditRoundQuestion extends Component {
 
 						contest_id = data.data[0].contestId;
 						fields['execution_mode']=data.data[0].execution_mode;
+						fields['scoring']=data.data[0].scoring;
 				   		that.setState({fields});
 					}, 1000);
 					
@@ -223,7 +225,10 @@ class EditRoundQuestion extends Component {
         }
 
 		if (field === 'negativeScoring') {
-        	fields[field] = e.target.checked; 
+        	fields[field] = e.target.checked;	
+        }
+		else if (field === 'answerTypeBoolean') {
+			fields[field] = (e.target.value == 'true') ? true :false;
 		}
 		else
 		{
@@ -253,6 +258,14 @@ class EditRoundQuestion extends Component {
             errors["question"] = "Please enter question";formIsValid=false;
         }
 
+        if (this.state.fields.negativeScoring === true || this.state.fields.negativeScoring === 'true')
+        {
+        	if(fields["hintText"].trim() === ''){
+	            errors["hintText"] = "Please enter hint";formIsValid=false;
+	        }
+
+        }
+
         this.setState({errors: errors,tosterMsg:''});
 
     	if(formIsValid){
@@ -278,7 +291,6 @@ class EditRoundQuestion extends Component {
 
 			}
 			
-        	// console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
         	const data = new FormData();
         	data.append('question',this.state.fields.question);
         	data.append('hintText',this.state.fields.hintText);
@@ -308,17 +320,12 @@ class EditRoundQuestion extends Component {
 
 	        data.append('questionType',2);
 
-            if(this.state.fields.image === 'image'){
+            if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){;
                 data.append('file', this.uploadInput.files[0]);
-            } 
-            else
-            {
-            	data.append('file', '');
+	            data.append('fileType',this.state.fields.fileType);
+	            data.append('fileUrl',this.state.fields.fileUrl);
             }
-            
-            data.append('fileType',this.state.fields.fileType);
-            data.append('fileUrl',this.state.fields.fileUrl);
-            
+
             fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
                 method: "PUT",
                 headers: {
@@ -329,14 +336,15 @@ class EditRoundQuestion extends Component {
             }).then((response) => {
                 return response.json();
             }).then((data) => {
-                if(data.code === 200){
-					this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
-                }
-                else
-                {
-                    this.setState({tosterMsg:data.message});
-                 	return false;
-                }
+                 // if(data.code === 200){
+					
+                // }
+                // else
+                // {
+                // 	this.setState({tosterMsg:data.message});
+                //  	return false;
+                // }
+                this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
                 
             });
         }
@@ -670,7 +678,10 @@ class EditRoundQuestion extends Component {
 					                      	<option value="1">Single Select</option>
 					                      	<option value="2">Multi Select</option>
 					                      	<option value="3">Free Text</option>
-					                      	<option value="4">Flashcard</option>
+					                      	{
+							                	(this.state.fields['scoring'] !== 2) ? (
+					                      		<option value="4">Flashcard</option> ) : null
+							           		}
 					                      	<option value="5">True or False</option>
 	                                    </select>
 	                                    <label>Question Type</label>
@@ -704,15 +715,25 @@ class EditRoundQuestion extends Component {
 		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
 		                                </div>
                             		</div> : null }
-                            		{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-	                                    <img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
-	                                    <label className="cus_label">Select Answer </label>
-	                                    <div className="button-switch">
-	                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['answerTypeBoolean']} onChange={this.handleChange.bind(this,'answerTypeBoolean')} />
-	                                      <label for="switch-orange" className="lbl-off"></label>
-	                                      <label for="switch-orange" className="lbl-on"></label>
-	                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
-	                                </div> : null}
+                            		{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? 
+                            		<div>
+	                        			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+
+			                            	<img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
+		                                    <label className="cus_label">Select Answer </label>
+
+		                                </div>
+	                                    <label className="control control--radio">True
+											<input type="radio" name="radio" value={true}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === true ? 'checked' : '')}/>
+		                                  <div className="control__indicator"></div>
+		                                </label>
+		                                <label className="control control--radio">False
+		                                  <input type="radio" name="radio" value={false}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === false ? 'checked' : '')}/>
+		                                  <div className="control__indicator"></div>
+		                                </label>
+	                                </div>
+	                                : 
+	                                null}
                             		
 	                               
 	                            </div>

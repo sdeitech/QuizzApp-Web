@@ -198,8 +198,7 @@ class RoundQuestion extends Component {
 				                                                	}
 				                                                	{
 				                                                		(val.fileType === 'gallery' || val.fileType === 'image') ? 
-				                                                		<img src={(val.file !== '') ? val.file : 'avatars/question.png'} /> : null
-
+				                                                		<img src={(val.file !== '') ? val.file : 'avatars/question.png'} /> : <img src={(val.file !== '') ? val.file : 'avatars/question.png'} />
 				                                                	}
 				                                                </div>
 				                                            </div>

@@ -304,6 +304,17 @@ class Detail extends Component {
                                     Invite Friends Here
                                 </button>
                             </div>
+                            <div className="full_btn">
+                                <button
+                                    className="blue_btn"
+                                    type="button"
+                                    onClick={this.goToVideoChat.bind(
+                                        this
+                                    )}
+                                >
+                                    Let's Play
+                                </button>
+                            </div>
                         </div>
                     </div>
 

@@ -676,15 +676,6 @@ class RoundTray extends Component {
 							                                      <output className="bubble">{this.state.fields['basePoints']}</output>
 							                                    </div>
 					                                		
-									                            <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-								                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Scoring </label>
-								                                    <div className="button-switch">
-								                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this,'negativeScoring')} />
-								                                      <label for="switch-orange" className="lbl-off"></label>
-								                                      <label for="switch-orange" className="lbl-on"></label>
-								                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
-								                                </div>
-
 								                                <div className="cus_input input_wrap">
 								                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
 								                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
@@ -694,6 +685,16 @@ class RoundTray extends Component {
 								                                    <label>Show Hint</label>
 								                                </div>
 								                                <span  className="error-msg">{this.state.errors["hint"]}</span>
+
+
+									                            <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+								                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Scoring </label>
+								                                    <div className="button-switch">
+								                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this,'negativeScoring')} />
+								                                      <label for="switch-orange" className="lbl-off"></label>
+								                                      <label for="switch-orange" className="lbl-on"></label>
+								                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
+								                                </div>
 
 								                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
 								                                <div>
@@ -725,7 +726,6 @@ class RoundTray extends Component {
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/score.svg" alt="Upload"/> 
 					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'scoring')} value={this.state.fields['scoring']} required>
-									                      	<option value=""></option>
 									                      	<option value="1">Moderator Driven</option>
 									                      	<option value="2">Automatic</option>
 					                                    </select>
@@ -735,7 +735,6 @@ class RoundTray extends Component {
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/3d.svg" alt="Upload"/> 
 					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'renderingMode')} value={this.state.fields['renderingMode']} required>
-									                      	<option value=""></option>
 									                      	<option value="1">Automatic</option>
 									                      	<option value="2">onClick</option>
 					                                    </select>
@@ -747,13 +746,13 @@ class RoundTray extends Component {
 					                        </div>
 
 
-					                        <div style={{ textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
+					                        <div style={{ marginTop: '50px', textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveNextHandler.bind(this,this.state.fields['_id'],this.state.fields)} >Save & Next</button>
 							                </div>
-					                        <div style={{ textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
+					                        <div style={{ marginTop: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" >Generate Question</button>
 							                </div>
-						                    <div style={{ textAlign: 'center', float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
+						                    <div style={{ marginTop: '50px', textAlign: 'center', float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button className="pink_btn" type="button"  onClick={this.updateRoundHandler.bind(this) } >Save & Exit</button>
 							                </div>
 								        </div>
