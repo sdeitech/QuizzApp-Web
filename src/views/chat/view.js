@@ -87,7 +87,7 @@ const Room = props => {
     useEffect(() => {
         console.log("my room Id => ", roomId);
         if (!socketRef.current) {
-            socketRef.current = io("https://socketherokutest.herokuapp.com", {
+            socketRef.current = io("https://socketvideocalling.herokuapp.com", {
                 forceNew: true,
                 transports: ["polling"]
             });
