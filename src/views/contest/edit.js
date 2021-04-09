@@ -27,10 +27,12 @@ class EditContest extends Component {
 			categoryList: [],
 			categoryListObj:[],
 			categoryListSelected:[],
+			categoryListTempSelected:[],	
 			categoryListObjDisplaySelected:[],
 			brandList: [],
 			brandListObj:[],
 			brandListSelected:[],
+			brandListTempSelected:[],
 			brandListObjDisplaySelected:[],
 			fields:{title:'',image:'',description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
 			errors:{},
@@ -221,13 +223,11 @@ class EditContest extends Component {
 
 	handleCloseClick(e) {
         $('body').removeClass('modal-open');
-
         this.setState({
             openModelCategory:false,
             openModelBrand:false,
             searchTerm: '',
-        	searchCategoryTerm: ''
-        });
+        	searchCategoryTerm: ''        });
         this.searchUpdatedCategory('');
         this.searchUpdated('');
     }
@@ -235,12 +235,12 @@ class EditContest extends Component {
 	handleOpenCategoryModel()
 	{
 		$('body').addClass('modal-open');
-		let categoryListSelecte = this.state.categoryListSelected;
+		let categoryListSelected = this.state.categoryListSelected;
 		$('.categoryCheckbox').each(function() {
-		    $(this).prop( "checked", categoryListSelecte.includes($(this).attr('id')) );
+		    $(this).prop( "checked", categoryListSelected.includes($(this).attr('id')) );
 		});
 
-		this.setState({openModelCategory:true});	
+		this.setState({openModelCategory:true,categoryListTempSelected:categoryListSelected});	
 	}
 
 	handleOpenBrandModel()
@@ -250,12 +250,11 @@ class EditContest extends Component {
 		$('.brandCheckbox').each(function() {
 		    $(this).prop( "checked", brandListSelected.includes($(this).attr('id')) );
 		});
-
-		this.setState({openModelBrand:true});
+		this.setState({openModelBrand:true,brandListTempSelected:brandListSelected});
 	}
 
 	handleChangeCategory(catdata,maindata, e){  
-
+    	let categoryListTempSelected = this.state.categoryListTempSelected;
 		let categoryListObj = this.state.categoryListObj;
 		if (e.target.checked) {
 			categoryListObj = categoryListObj.filter(function(value, index, arr){ 
@@ -266,6 +265,7 @@ class EditContest extends Component {
 			});
 
 			categoryListObj.push({'categoryId':catdata._id,'mainLabelId':maindata.id,'name':catdata.name});
+			categoryListTempSelected.push(catdata._id);
 		}
 		else
 		{
@@ -275,8 +275,19 @@ class EditContest extends Component {
 					return value;
 				}
 			});
+
+			categoryListTempSelected = categoryListTempSelected.filter(function(value, index, arr){ 
+				if(value !== catdata._id)
+				{
+					return value;
+				}
+			});
 		}
-		this.setState({categoryListObj:categoryListObj});
+		this.setState({categoryListObj:categoryListObj,categoryListTempSelected:categoryListTempSelected});
+
+		$('.categoryCheckbox').each(function() {
+		    $(this).prop( "checked", categoryListTempSelected.includes($(this).attr('id')) );
+		});
     }
 
     handleSubmitCategory(e)
@@ -321,7 +332,8 @@ class EditContest extends Component {
     }
 
     handleChangeBrand(maindata, e){   
-
+    	
+    	let brandListTempSelected = this.state.brandListTempSelected;
     	let brandListObj = this.state.brandListObj;
 		if (e.target.checked) {
 			brandListObj = brandListObj.filter(function(value, index, arr){ 
@@ -332,6 +344,7 @@ class EditContest extends Component {
 			});
 
 			brandListObj.push({id:maindata._id,name:maindata.name});
+			brandListTempSelected.push(maindata._id);
 		}
 		else
 		{
@@ -341,9 +354,20 @@ class EditContest extends Component {
 					return value;
 				}
 			});
-		}
-		this.setState({brandListObj:brandListObj});
 
+			brandListTempSelected = brandListTempSelected.filter(function(value, index, arr){ 
+				if(value !== maindata._id)
+				{
+					return value;
+				}
+			});
+		}
+		this.setState({brandListObj:brandListObj,brandListTempSelected:brandListTempSelected});
+
+		
+		$('.brandCheckbox').each(function() {
+		    $(this).prop( "checked", brandListTempSelected.includes($(this).attr('id')) );
+		});
     }
 
 	handleSubmitBrand(e)
@@ -611,7 +635,9 @@ class EditContest extends Component {
         fields['image'] = 'image';
         this.setState({fields});
     }
-    searchUpdated (term = '') {
+   	
+
+   	searchUpdated (term = '') {
     	if (term !== '') {
     		term = term.target.value;
     	}
@@ -629,16 +655,27 @@ class EditContest extends Component {
     		filterBrandList = brandList;
     	}
 	    this.setState({searchTerm: term,filterBrandList:filterBrandList});
+
+	    let that = this;
+	    setTimeout(function(){
+		    let brandListSelected = that.state.brandListSelected;
+			$('.brandCheckbox').each(function() {
+			    $(this).prop( "checked", brandListSelected.includes($(this).attr('id')) );
+			});
+		}, 1000);
 	}
 
-	searchUpdatedCategory(term = '') {
+	searchUpdatedCategory(term) {
+    	
+
 		if (term !== '') {
     		term = term.target.value;
+    		this.setState({searchCategoryTerm: term});
     	}
+
 
     	let filterCategoryList = [];
     	if (term) {  
-
     		fetch(configuration.baseURL+"category/categoryList", {
 	                method: "GET",
 	                headers: {
@@ -650,6 +687,7 @@ class EditContest extends Component {
 		    	return response.json();
 		    }).then((data)=> {
 				var categoryList1 = data.data;
+	    		// console.log(categoryList1);
 		    	for (var i = 0; i < categoryList1.length; i++) {
 		    		var innerArr = []
 		    		for (var k = 0; k < categoryList1[i].categories.length; k++) {
@@ -666,10 +704,12 @@ class EditContest extends Component {
 		    			filterCategoryList.push(obj);
 		    		}    	
 		    	} 
-		    	this.setState({searchCategoryTerm: term,filterCategoryList:filterCategoryList});
+		    	// console.log(filterCategoryList);
+		    	this.setState({filterCategoryList:filterCategoryList});
+
+
 			});	
 
-    		
 	    }
 	    else
 	    {
@@ -684,12 +724,18 @@ class EditContest extends Component {
 		    	return response.json();
 		    }).then((data)=> {
 				var category = data.data;
-				this.setState({searchCategoryTerm: term,filterCategoryList:category});
+				this.setState({filterCategoryList:category});
 			});	
 	    	
 	    }
 
-	    
+	    let that = this;
+	    setTimeout(function(){
+		    let categoryListSelected = that.state.categoryListSelected;
+			$('.categoryCheckbox').each(function() {
+			    $(this).prop( "checked", categoryListSelected.includes($(this).attr('id')) );
+			});
+		}, 1000);
 	}
 
 
