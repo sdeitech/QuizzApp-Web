@@ -57,11 +57,21 @@ const Room = props => {
     const muteAudio = () => {
         if (isAudioMuted) {
             setAudioMute(false);
+            socketRef.current.emit("unmute-user", {
+                roomId,
+                userId: userVideoPeerId.current,
+                streamId: userVideoStream.current.id
+            });
             console.log("Enable audio");
             // console.log(socketRef.current.unmuteAudio());
             // localStream.unmuteAudio();
         } else {
             setAudioMute(true);
+            socketRef.current.emit("mute-user", {
+                roomId,
+                userId: userVideoPeerId.current,
+                streamId: userVideoStream.current.id
+            });
             console.log("Disable audio");
             // console.log(socketRef.current.muteAudio());
             // localStream.muteAudio();
@@ -73,14 +83,11 @@ const Room = props => {
         console.log(roomId, userId);
 
         socketRef.current.emit("leave-room", { roomId, userId });
-        console.log(currentStream.current.getTracks());
-        currentStream.current.getTracks().forEach(track => track.stop());
-        // connectionRef.current.destroy()
     };
     useEffect(() => {
         console.log("my room Id => ", roomId);
         if (!socketRef.current) {
-            socketRef.current = io("https://socketherokutest.herokuapp.com", {
+            socketRef.current = io("https://socketvideocalling.herokuapp.com", {
                 forceNew: true,
                 transports: ["polling"]
             });
@@ -256,6 +263,58 @@ const Room = props => {
                             }
                         }
                     );
+
+                    socketRef.current.on(
+                        "user-muted",
+                        ({ userId, streamId }) => {
+                            console.log("user-muted => ", userId, streamId);
+
+                            const streamsData = [...otherStreams];
+
+                            const muteUserIndex = streamsData.findIndex(
+                                x => x.id === streamId
+                            );
+                            console.log(
+                                "toggleMuteVoice streamId index => ",
+                                muteUserIndex
+                            );
+
+                            // get mute status
+                            streamsData[muteUserIndex]
+                                .getAudioTracks()
+                                .forEach(track => {
+                                    track.enabled = false;
+                                });
+
+                            setotherStreams(streamsData);
+                        }
+                    );
+
+                    socketRef.current.on(
+                        "user-unmuted",
+                        ({ userId, streamId }) => {
+                            console.log("user-unmuted => ", userId, streamId);
+
+                            const streamsData = [...otherStreams];
+
+                            const unmuteUserIndex = streamsData.findIndex(
+                                x => x.id === streamId
+                            );
+                            console.log(
+                                "toggleMuteVoice streamId index => ",
+                                unmuteUserIndex
+                            );
+
+                            // get mute status
+                            streamsData[unmuteUserIndex]
+                                .getAudioTracks()
+                                .forEach(track => {
+                                    track.enabled = true;
+                                });
+
+                            setotherStreams(streamsData);
+                        }
+                    );
                 });
 
             window.addEventListener("beforeunload", event => {
@@ -328,13 +387,28 @@ const Room = props => {
         <Container>
             <StyledVideo muted ref={userVideo} autoPlay playsInline />
 
-            <button onClick={muteAudio} style={{ width: '100px',height: '35px'}}>
+            <button
+                onClick={muteAudio}
+                style={{ width: "100px", height: "35px" }}
+            >
                 {isAudioMuted === true ? "Unmute" : "Mute"}
             </button>
-            <button onClick={logout} style={{ width: '100px',height: '35px'}}>Logout</button>
+            <button onClick={logout} style={{ width: "100px", height: "35px" }}>
+                Logout
+            </button>
             {otherStreams.map((item, index) => {
                 console.log("other streams => ", item);
-                return <Video key={index.toString()} item={item} />;
+                return (
+                    <div>
+                        <Video key={index.toString()} item={item} />
+                        <button
+                            style={{ width: "100px", height: "35px" }}
+                            onClick={muteAudio}
+                        >
+                            {isAudioMuted === true ? "Unmute" : "Mute"}
+                        </button>
+                    </div>
+                );
             })}
         </Container>
     );
