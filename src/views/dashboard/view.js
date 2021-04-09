@@ -264,8 +264,8 @@ class Dashboard extends Component {
 			                                	<div class="cate-box2">
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
 			                                        <div class="cat_title2">
-			                                            <h3>{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span>{e.userName}</span></h3>
-			                                            <p style={{cursor: 'context-menu',width:'160px'}} onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)} </p>
+			                                            <h3 onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)} <span>{e.userName}</span></h3>
+			                                            <p style={{cursor: 'context-menu',width:'160px'}}>  {e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} </p>
 			                                            {/*<p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>*/}
 			                                        	<p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
 			                                        </div>
