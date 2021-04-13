@@ -385,31 +385,61 @@ const Room = props => {
 
     return (
         <Container>
-            <StyledVideo muted ref={userVideo} autoPlay playsInline />
+            <div class="app-container">
+                <div class="app-main">
+                    <div class="video-call-wrapper">
+                        <div class="video-participant">
+                            <div class="participant-actions">
+                                <button
+                                    class={
+                                        isAudioMuted === true
+                                            ? "btn-mute"
+                                            : "btn-mute"
+                                    }
+                                    onClick={muteAudio}
+                                ></button>
+                                <button class="btn-camera"></button>
+                            </div>
+                            <a href="#" class="name-tag">
+                                Andy Will
+                            </a>
 
-            <button
-                onClick={muteAudio}
-                style={{ width: "100px", height: "35px" }}
-            >
-                {isAudioMuted === true ? "Unmute" : "Mute"}
-            </button>
-            <button onClick={logout} style={{ width: "100px", height: "35px" }}>
-                Logout
-            </button>
-            {otherStreams.map((item, index) => {
-                console.log("other streams => ", item);
-                return (
-                    <div>
-                        <Video key={index.toString()} item={item} />
-                        <button
-                            style={{ width: "100px", height: "35px" }}
-                            onClick={muteAudio}
-                        >
-                            {isAudioMuted === true ? "Unmute" : "Mute"}
+                            <StyledVideo
+                                muted
+                                ref={userVideo}
+                                autoPlay
+                                playsInline
+                            />
+                        </div>
+                        
+                        {otherStreams.map((item, index) => {
+                            console.log("other streams => ", item);
+                            return (
+                                <div class="video-participant">
+                                    <div class="participant-actions">
+                                        <button
+                                            class="btn-mute"
+                                            onClick={muteAudio}
+                                        ></button>
+                                        <button class="btn-camera"></button>
+                                    </div>
+                                    <a href="#" class="name-tag">
+                                        Tina Cate
+                                    </a>
+                                    <Video key={index.toString()} item={item} />
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div class="video-call-actions ">
+                        <button class="video-action-button mic"></button>
+                        <button class="video-action-button camera"></button>
+                        <button class="video-action-button endcall">
+                            Leave
                         </button>
                     </div>
-                );
-            })}
+                </div>
+            </div>
         </Container>
     );
 };
