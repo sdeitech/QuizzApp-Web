@@ -443,9 +443,10 @@ class Contest extends Component {
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main" style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}/>
 			                                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" style={{ cursor:'pointer'}} onClick={this.removeContestHandler.bind(this,'no',e)} />
 			                                        <div class="cat_title2" style={{ cursor:'pointer'}} >
-			                                            <h3 style={{ cursor:'pointer'}} onClick={this.roundsListHandler.bind(this,e)} >{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <span style={{ cursor:'context-menu'}} className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</span></h3>
-			                                            <p style={{cursor: 'pointer'}} onClick={this.editHandler.bind(this,e)}>{this.titleSmall(e.title)} <p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p> </p>
-			                                            <p className="join_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
+			                                            <h3 style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>{this.titleSmall(e.title)} <span style={{ cursor:'context-menu'}} className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</span></h3>
+			                                            <p style={{cursor: 'pointer'}}  onClick={this.roundsListHandler.bind(this,e)} >{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
+			                                         </p>
+			                                            {/* <p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>*/}
 			                                        </div>
 			                                    </div>
 				                            </div>
