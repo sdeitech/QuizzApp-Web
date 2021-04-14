@@ -13,7 +13,7 @@ import {
     CModal,
     CModalBody,
   } from '@coreui/react';
-
+let isTrending='';
 class Contest extends Component {
 	constructor(props) {
         super(props);
@@ -167,7 +167,18 @@ class Contest extends Component {
 		var queryStr = (str.join("&") === '') ? '' : '&'+str.join("&");
 		// console.log(queryStr);
         var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
-		fetch(configuration.baseURL+"contest/contest?userId="+userId+queryStr+"&saveToId="+this.state.saveToId, {
+
+         var str = '';
+        if (isTrending === 'yes') {
+        	str = "isTrending=yes";
+        }
+        else
+        {
+        	str = "userId="+userId;
+        }
+
+
+		fetch(configuration.baseURL+"contest/contest?"+str+queryStr+"&saveToId="+this.state.saveToId, {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -182,7 +193,7 @@ class Contest extends Component {
     }
 
 
-	componentDidMount(){
+	componentDidMount(){ 
 		var playerTypeList = [
 		    { label: "Single Player", value: "1" },
 		    { label: "Multi Player ", value: "2" }
@@ -191,7 +202,7 @@ class Contest extends Component {
 
 
 		const queryString = window.location.search;
-		console.log(queryString);
+		// console.log(queryString);
 		const urlParams = new URLSearchParams(queryString);
 
 		var saveToId = urlParams.get("saveToId");
@@ -200,6 +211,7 @@ class Contest extends Component {
         saveToId =url.substring(url.lastIndexOf('/') + 1);
         saveToId = saveToId.split('?');
 
+        // isTrending
         var searchSaveToId = '';
         if (saveToId[1]) {
         	searchSaveToId = saveToId[1];
@@ -208,10 +220,21 @@ class Contest extends Component {
 	        }
         }
 
-
-
 		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
-		fetch(configuration.baseURL+"contest/contest?userId="+userId+"&saveToId="+searchSaveToId, {
+        var str = '';
+        if (saveToId[0] === 'trending') {
+        	isTrending = 'yes';
+        	str = "isTrending=yes";
+        }
+        else
+        {
+        	str = "userId="+userId;
+        }
+
+
+
+		var paramIsTrending = (isTrending !== '') ? 'yes' : 'no';
+		fetch(configuration.baseURL+"contest/contest?"+str+"&saveToId="+searchSaveToId, {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -351,7 +374,7 @@ class Contest extends Component {
 			                            <div class="row">
 			                                <div class="col-md-8">
 			                                    <div class="main_title">
-			                                        <h3>My Games</h3>  
+			                                        <h3>{ (isTrending === '') ? "My Games" : "All Contest"}</h3>  
 			                                    </div>
 			                                </div>
 			                                <div class="col-md-4">
@@ -432,7 +455,7 @@ class Contest extends Component {
 			                            </div>
 			                        </div>
 			                    </div>
-			                    <div style={{paddingBottom: '30px'}} class="contest-info">
+			                    <div style={{paddingBottom: '30px'}} class="contest-info dashboard-contest">
 			                        <div class="row">
 			                        {
 
@@ -443,9 +466,11 @@ class Contest extends Component {
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main" style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}/>
 			                                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" style={{ cursor:'pointer'}} onClick={this.removeContestHandler.bind(this,'no',e)} />
 			                                        <div class="cat_title2" style={{ cursor:'pointer'}} >
-			                                            <h3 style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>{this.titleSmall(e.title)} <span style={{ cursor:'context-menu'}} className={(e.isPublish) ? 'published':'draft'}>{(e.isPublish) ? 'Published':'Draft'}</span></h3>
-			                                            <p style={{cursor: 'pointer'}}  onClick={this.roundsListHandler.bind(this,e)} >{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} <p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
-			                                         </p>
+			                                            <h3 style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>{this.titleSmall(e.title)}</h3>
+			                                            <p style={{cursor: 'pointer'}}  onClick={this.roundsListHandler.bind(this,e)} >{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} 
+			                                       	<p style={{ cursor:'context-menu'}} className={(e.isPublish) ? 'published ':'draft '}>{(e.isPublish) ? 'Published':'Draft'}</p></p>
+			                                         <p className="play_btn_contest username" onClick={this.joinRoomContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
+
 			                                            {/* <p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{ cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>*/}
 			                                        </div>
 			                                    </div>
