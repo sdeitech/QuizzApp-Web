@@ -34,7 +34,7 @@ class AddContest extends Component {
 			brandListSelected:[],
 			brandListTempSelected:[],
 			brandListObjDisplaySelected:[],
-			fields:{title:'',description:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
+			fields:{title:'',description:'',saveToTitle:'',saveToId:'',brandIds:'',playerType:'1',visibility:'2'},
 			errors:{},
 			openModel:false,
 			items: [],
@@ -43,9 +43,12 @@ class AddContest extends Component {
 			openModelCategory:false,
 			openModelBrand:false,
 			openSaveToModel:false,
+			openLanguageModel:false,
             image:'avatars/placeholder-user.png',
             localArr:[],
-            saveToList:[]
+            saveToList:[],
+            tempSelectedSaveTo:{},
+            tempSelectedLanguage:{},
 		};
 		this.searchUpdated = this.searchUpdated.bind(this)
 		this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this)
@@ -113,17 +116,26 @@ class AddContest extends Component {
 
 	handleCloseClick(e) {
         $('body').removeClass('modal-open');
-
         this.setState({
             openModelCategory:false,
             openModelBrand:false,
+            openSaveToModel:false,
+            openLanguageModel:false,
             searchTerm: '',
         	searchCategoryTerm: '',
         	brandListTempSelected:[],
-        	categoryListTempSelected:[]
+        	categoryListTempSelected:[],
         });
         this.searchUpdatedCategory('');
         this.searchUpdated('');
+
+        this.setState({tempSelectedSaveTo: {},tempSelectedLanguage:{}});
+		$('.saveToRadio').each(function() {
+		    $(this).prop( "checked", false );
+		});
+		$('.languageRadio').each(function() {
+		    $(this).prop( "checked", false );
+		});
     }
 
     handleOpenSaveToModel()
@@ -131,6 +143,63 @@ class AddContest extends Component {
 		$('body').addClass('modal-open');
 		this.setState({openSaveToModel:true});	
 	}
+
+	handleOpenLanguageModel()
+	{
+		for (var i = 0; i < languages.languages.length; i++) {
+			if (this.state.fields.language  === languages.languages[i].name) {
+				var tempSelectedLanguage = {};
+				tempSelectedLanguage.name = languages.languages[i].name;
+				this.setState({tempSelectedLanguage:tempSelectedLanguage});
+				var that = this;
+				$('.languageRadio').each(function() {
+					var trueOrFalse = ($(this).attr('id') === that.state.fields.language) ? true : false;
+				    $(this).prop( "checked", trueOrFalse );
+				});
+			}
+		}
+
+		$('body').addClass('modal-open');
+		this.setState({openLanguageModel:true});	
+	}
+
+
+	handleChangeLanguage(data,e)
+    {
+		if (e.target.checked) {
+			this.setState({tempSelectedLanguage: data});
+			$('.languageRadio').each(function() {
+				var trueOrFalse = ($(this).attr('id') === data.name) ? true : false;
+			    $(this).prop( "checked", trueOrFalse );
+			});
+		}
+		else
+		{
+			this.setState({tempSelectedLanguage: {name:"English"}});
+			$('.languageRadio').each(function() {
+				var trueOrFalse = ($(this).attr('id') === "English") ? true : false;
+			    $(this).prop( "checked", trueOrFalse );
+			});
+		}		
+    }
+	
+    handleSubmitLanguage(e)
+    {
+    	if (this.state.tempSelectedLanguage.name !== undefined) {
+	    	let fields = this.state.fields;
+			fields.language = this.state.tempSelectedLanguage.name;
+			this.setState({fields})
+		}
+		else
+		{
+			let fields = this.state.fields;
+			fields.language = '';
+			this.setState({fields})
+		}
+		this.setState({openLanguageModel:false});
+		$('body').removeClass('modal-open');
+    }
+
 
 	handleOpenCategoryModel()
 	{
@@ -412,15 +481,43 @@ class AddContest extends Component {
 
     }
 
-    handleChangeSaveTo(e)
+    handleChangeSaveTo(data,e)
     {
-    	let fields = this.state.fields;
-        fields['saveToTitle'] = e.saveToTitle;
-        fields['saveToId'] = e.saveToId;        
-        this.setState({fields});
-        console.log(this.state.fields);
+		if (e.target.checked) {
+			this.setState({tempSelectedSaveTo: data});
+			$('.saveToRadio').each(function() {
+				var trueOrFalse = ($(this).attr('id') === data.saveToId) ? true : false;
+			    $(this).prop( "checked", trueOrFalse );
+			});
+		}
+		else
+		{
+			this.setState({tempSelectedSaveTo: {}});
+			$('.saveToRadio').each(function() {
+			    $(this).prop( "checked", false );
+			});
+		}		
     }
 	
+    handleSubmitSaveTo(e)
+    {
+    	if (this.state.tempSelectedSaveTo.saveToId !== undefined) {
+	    	let fields = this.state.fields;
+			fields.saveToId = this.state.tempSelectedSaveTo.saveToId;
+			fields.saveToTitle = this.state.tempSelectedSaveTo.saveToTitle;
+			this.setState({fields})
+		}
+		else
+		{
+			let fields = this.state.fields;
+			fields.saveToId = '';
+			fields.saveToTitle = '';
+			this.setState({fields})
+		}
+		this.setState({openSaveToModel:false});
+		$('body').removeClass('modal-open');
+    }
+
 	handleSubmit(){
 		let fields = this.state.fields;
         let errors = {};
@@ -468,6 +565,7 @@ class AddContest extends Component {
         	data.append('createdBy',JSON.parse(reactLocalStorage.get('userData')).userId);
         	data.append('playerType',this.state.fields.playerType);
         	data.append('saveToId',this.state.fields.saveToId);
+        	data.append('saveToTitle',this.state.fields.saveToTitle);
         	data.append('categoryIds',this.state.fields.categoryIds);
         	data.append('brandIds',this.state.fields.brandIds);
             if(this.state.fields.image === 'image'){
@@ -763,16 +861,7 @@ class AddContest extends Component {
 											<span className="error-msg">{this.state.errors["hashtag"]}</span>
 			                                <div className="cus_input input_wrap floating-label" >
 			                                    <img src="./murabbo/img/global.svg" alt="Murabbo"/> 
-			                                    
-												<select className="floating-select" onChange={this.handleChange.bind(this,'language')} value={this.state.fields.language} required>
-							                      	<option value=""></option>
-							                      	{
-		                                                languages.languages.map((e, key) => {
-		                                                    return <option value={e.name}>{e.name} </option>;
-		                                                })
-		                                            }
-			                                    </select>
-			                                    <span className="highlight"></span>
+			                                    <input type="text" required onClick={this.handleOpenLanguageModel.bind(this)} value={this.state.fields.language} />
 			                                    <label>Language</label>
 			                                </div>
 			                                <span className="error-msg">{this.state.errors["language"]}</span>
@@ -780,15 +869,7 @@ class AddContest extends Component {
 			                            <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
 			                                <div className="cus_input input_wrap">
 			                                    <img src="./murabbo/img/saveto.svg" alt="Murabbo"/> 
-			                                    <select className="floating-select" onChange={this.handleChange.bind(this,'saveToId')} value={this.state.fields.saveToId} required>
-							                      	
-							                      	<option value=""></option>
-							                      	{
-		                                                this.state.saveToList.map((e, key) => {
-		                                                    return <option value={e.saveToId}>{e.saveToTitle} </option>;
-		                                                })
-		                                            }
-			                                    </select>
+			                                    <input type="text" required onClick={this.handleOpenSaveToModel.bind(this)} value={this.state.fields.saveToTitle} />
 			                                    <label>Save To</label>
 			                                </div>
 											<span className="error-msg">{this.state.errors["saveToId"]}</span>
@@ -877,14 +958,14 @@ class AddContest extends Component {
 			                        </button>
 			                            <div className="model_data">
 			                                <div className="model-title">
-				                                <h3>Choose Category</h3>
+				                                <h3>Select SaveTo </h3>
 			                                </div>
-			                                <div className="contest">				                                
+			                                <div className="contest saveToIdDiv row">				                                
 										        {
 							                    	(this.state.saveToList.length > 0) ? 
 							                    	this.state.saveToList.map((saveTo, key) => {
-									                            return <div className="col-lg-2 col-md-3 col-sm-3 checkbox-buttons-container">
-									                            	<input type="radio" name="radio" id={saveTo.saveToId}  value={saveTo.saveToId} onChange={this.handleChangeSaveTo.bind(this,saveTo)} checked={(this.state.fields.saveToId === saveTo.saveToId ? 'checked' : '')}/>
+									                            return <div className="col-lg-3 col-md-3 col-sm-3 checkbox-buttons-container">
+									                            	<input type="checkbox" name="saveToRadio" class="saveToRadio" id={saveTo.saveToId}  value={saveTo.saveToId} onChange={this.handleChangeSaveTo.bind(this,saveTo)}/>
 											                        <label for={saveTo.saveToId}>
 												                        <div className="cat_title checked_title">
 										                                    <h3>{saveTo.saveToTitle}</h3>
@@ -897,8 +978,51 @@ class AddContest extends Component {
 											        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"100px",marginBottom:"100px"}} className="flex"><p className="item-author text-color">No save to available</p></div>
 											        )
 							                    }
-							                    <div style={{ textAlign: 'center' }} class="">
-								                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitCategory.bind(this)} >Done</button>
+							                    <div style={{ marginTop:"25px",textAlign: 'center' }} class="col-lg-12 col-md-12 col-sm-12">
+								                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitSaveTo.bind(this)} >Done</button>
+								                </div>
+									        </div>
+			                            </div>
+			                        </div>
+			                        </div>
+			                    </CModalBody>
+			                </CModal>
+		                </div>
+
+
+		                <div className={(this.state.openLanguageModel) ? 'stopScorll' : ''}>	
+							<CModal className="model" size="lg" show={this.state.openLanguageModel} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>
+		                    	<CModalBody className="model-bg">
+
+			                    <div>
+			                        <div className="modal-body">
+			                            <button type="button" className="close"  onClick={this.handleCloseClick.bind(this) } >
+			                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+			                        </button>
+			                            <div className="model_data">
+			                                <div className="model-title">
+				                                <h3>Select Language </h3>
+			                                </div>
+			                                <div className="contest saveToIdDiv row">				                                
+										        {
+							                    	(languages.languages.length > 0) ? 
+							                    	languages.languages.map((language, key) => {
+									                            return <div className="col-lg-3 col-md-3 col-sm-3 checkbox-buttons-container">
+									                            	<input type="checkbox" name="languageRadio" class="languageRadio" id={language.name}  value={language.name} onChange={this.handleChangeLanguage.bind(this,language)}/>
+											                        <label for={language.name}>
+												                        <div className="cat_title checked_title">
+										                                    <h3>{language.name}</h3>
+										                                </div>
+									                                </label>
+											                    </div>
+											                })
+							                    	: 
+											        (
+											        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"100px",marginBottom:"100px"}} className="flex"><p className="item-author text-color">No language to available</p></div>
+											        )
+							                    }
+							                    <div style={{ marginTop:"25px",textAlign: 'center' }} class="col-lg-12 col-md-12 col-sm-12">
+								                    <button class="blue_btn light_blue_btn" type="button"  onClick={this.handleSubmitLanguage.bind(this)} >Done</button>
 								                </div>
 									        </div>
 			                            </div>

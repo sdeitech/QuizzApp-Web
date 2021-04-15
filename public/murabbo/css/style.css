@@ -3706,3 +3706,21 @@ video {
 .dashboard-contest .play_btn_contest{
     top: auto !important;
 }
+
+
+.saveToIdDiv .checkbox-buttons-container {
+    float: left;
+    margin: 10px;
+    text-align: center;
+}
+
+.saveToIdDiv .checkbox-buttons-container label {
+    border: 1px solid #f8c74a;
+    padding: 10px 10px;
+}
+
+.saveToIdDiv .checkbox-buttons-container input:checked + label {
+    color: #fff;
+    border: 3px solid #f8c748;
+    border-radius: 10px;
+}
