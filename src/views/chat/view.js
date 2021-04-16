@@ -49,7 +49,7 @@ const Room = props => {
     const [otherStreams, setotherStreams] = useState([]);
     otherStreamRef.current = otherStreams;
 
-    const [isAudioMuted, setAudioMute] = useState(false);
+    const [isAudioMuted, setAudioMute] = useState(true);
     let roomUrl = window.location.href;
     const roomId = roomUrl.substring(roomUrl.lastIndexOf("/") + 1);
     // const roomId = "roomtestingsocket";
