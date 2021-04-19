@@ -231,8 +231,6 @@ class Contest extends Component {
         	str = "userId="+userId;
         }
 
-
-
 		var paramIsTrending = (isTrending !== '') ? 'yes' : 'no';
 		fetch(configuration.baseURL+"contest/contest?"+str+"&saveToId="+searchSaveToId, {
                 method: "GET",
@@ -332,7 +330,7 @@ class Contest extends Component {
 	roundsListHandler(data,e)
 	{
 		if (data.isPublish) {
-			this.props.history.push('/contests/start_round/'+data._id);
+			this.props.history.push('/contests/detail/'+data._id);
 		}
 		else
 		{
@@ -365,7 +363,7 @@ class Contest extends Component {
 		return (
 			<>
 				<TheHeaderInner />				
-					<main id="main">
+					<main id="main"  className="filter-with-contest">
 					<ToastContainer position="top-right" autoClose={20000} style={{top:'80px'}}/>
 			            <section id="contest" class="d-flex align-items-center">
 			                <div class="container">

@@ -3,8 +3,8 @@ var jwt = require('jsonwebtoken');
 
 const config = {
     appName: 'Murabbo',
-    baseURL: 'http://54.201.160.69:3051/api/app/',
-    APIbaseURL: 'http://54.201.160.69:3051/api/',
+    baseURL: 'https://dev-api.murabbo.com/api/app/',
+    APIbaseURL: 'https://dev-api.murabbo.com/api/',
 
     saveTokenData(data,done) {
         var token = this.generateToken(data);

@@ -213,7 +213,7 @@ class Dashboard extends Component {
 	roundsListHandler(data,e)
 	{
 		if (data.isPublish) {
-			this.props.history.push('/contests/start_round/'+data._id);
+			this.props.history.push('/contests/detail/'+data._id);
 		}
 		else
 		{
@@ -223,14 +223,14 @@ class Dashboard extends Component {
 	}
 
     viewAllTrending(){
-        this.props.history.push('/contest/trending');
+        this.props.history.push('/trending_contest');
     }
 
 	render() {
 		return (
 			<>
 				<TheHeaderInner />				
-					<main id="main">
+					<main id="main" className="dashboard-page">
 					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
 			            <section id="contest" class="d-flex align-items-center">
 			                <div class="container">
@@ -261,22 +261,22 @@ class Dashboard extends Component {
 			                            </div>
 			                        </div>
 			                    </div>
-			                    <div style={{paddingBottom: '30px'}} class="contest-info dashboard-contest">
+			                    <div class="contest-info dashboard-contest fix-box">
 			                        <div class="row">
 			                        {
 
 			                        	(this.state.listData.length > 0) ? 
 			                        	this.state.listData.map((e, key) => {
-                                            return <div class="col-lg-3 col-md-4 col-sm-6" >
+                                            return <div class="col-lg-2 col-md-4 col-sm-6" >
 			                                	<div class="cate-box2">
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
 			                                        <div class="cat_title2">
 			                                            <h3 style={{cursor: 'pointer'}} onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)}</h3>
 			                                            <p style={{cursor: 'context-menu',width:'160px'}}>  {e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} </p>
                                                         
-			                                            {/*<p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>*/}
-			                                        	<p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>
-			                                             <p className="username">{e.userName}</p>
+			                                            {/*<p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>
+			                                        	<p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>*/}
+			                                         <p className="username">{e.userName}</p>
                                                     </div>
 			                                    </div>
 				                            </div>
@@ -289,7 +289,7 @@ class Dashboard extends Component {
 			                    </div>
 
 
-			                    <div class="create-contest">
+			                    <div class="create-contest round-dashboard">
 			                        <div class="contest-title">
 			                            <div class="row">
 			                                <div class="col-md-8">
@@ -300,18 +300,19 @@ class Dashboard extends Component {
 			                            </div>
 			                        </div>
 			                    </div>
-			                    <div style={{paddingBottom: '30px'}} class="contest-info">
+			                    <div style={{paddingBottom: '30px'}} class="contest-info dashboard-contest fix-box">
 			                        <div class="row">
 			                        {
 
 			                        	(this.state.roundListData.length > 0) ? 
 			                        	this.state.roundListData.map((e, key) => {
-                                            return <div class="col-lg-3 col-md-4 col-sm-6">
+                                            return <div class="col-lg-2 col-md-4 col-sm-6">
 			                                	<div class="cate-box2"  onClick={() => {this.props.history.push('/detail-round/'+e._id)}}  style={{ cursor:'pointer'}} >
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
 			                                        <div class="cat_title2">
-			                                            <h3>{e.numberOfQuestions} {(e.numberOfQuestions > 1) ? 'Questions' : 'Question'} <span>{e.createdBy}</span></h3>
+			                                            <h3>{e.numberOfQuestions} {(e.numberOfQuestions > 1) ? 'Questions' : 'Question'}</h3>
 			                                            <p>{e.title}</p>
+                                                        <p className="username">{e.createdBy}</p>
 			                                        </div>
 			                                    </div>
 				                            </div>

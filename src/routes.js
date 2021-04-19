@@ -53,6 +53,7 @@ const Leaderboard = React.lazy(() => import("./views/leaderboard/view"));
 
 const videoChat = React.lazy(() => import("./views/chat/view"));
 
+const Dashboard_Trending_Contest = React.lazy(() => import("./views/dashboard_trending_contest/view"));
 
 
 const routes = [
@@ -60,13 +61,14 @@ const routes = [
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/notification', name: 'Notification', component: Notification },
     { path: '/contest', name: 'Contest', component: Contest },
+    { path: '/trending_contest', name: 'Dashboard_Trending_Contest', component: Dashboard_Trending_Contest },
     { path: '/contests/start_round', name: 'StartRound', component: StartRound },
     
     { path: '/games_history', name: 'GamesHistory', component: GamesHistory },    
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
     { path: '/contests/detail', name: 'DetailContestWithRoundList', component: DetailContestWithRoundList },
-    { path: '/contests/game/start', name: 'DetailContestWithRoundList', component: DetailContestWithQuestionList },
+    { path: '/contests/game/start', name: 'DetailContestWithQuestionList', component: DetailContestWithQuestionList },
     { path: '/tray', name: 'Tray', component: Tray },
     { path: '/matchit', name: 'matchitDetail', component: matchitDetail },
     { path: '/roundquestion', name: 'RoundQuestion', component: RoundQuestion },

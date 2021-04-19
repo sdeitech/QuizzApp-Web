@@ -22,11 +22,13 @@ class DetailContestWithRoundList extends Component {
         	contestData:{},
         	show:true,
         	listArr:[],
+        	RoomListArr:[],
         	selectedRoundId:'',
         	errorsPlay:{},
 			fieldsPlay:{display_name:'',password:''},
 			playNewContestModel:false,
 			playContestModel:false,
+			playOldContestModel:false
 		};
 	}
 
@@ -48,7 +50,25 @@ class DetailContestWithRoundList extends Component {
 	    		console.log(data.data[0]);
 		   		this.setState({contestData:data.data[0]});
 		   	}
-		});	
+		});
+		
+		
+		fetch(configuration.baseURL+"room/room?contestId="+contestId, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) =>{
+			return response.json();
+		}).then((data)=> {
+			if (data.data.length > 0) {
+				this.setState({RoomListArr:data.data});
+			}
+		});
+
+		
 		this.getList(contestId);
 	}
 
@@ -219,9 +239,9 @@ class DetailContestWithRoundList extends Component {
 		                                    
 		                                </div>
 		                            </div>
-		                            {(this.state.selectedRoundId) ? <div class="col-lg-2 col-md-4 align-self-center">
+		                            <div class="col-lg-2 col-md-4 align-self-center">
 	                                	<button style={{minWidth: '150px'}} class="blue_btn" type="button" onClick={this.playContest.bind(this)}>Play</button>
-	                            	</div> : null }		                            
+	                            	</div>                           
 		                        </div>
 		                    </div>
 		                </div>
@@ -246,7 +266,7 @@ class DetailContestWithRoundList extends Component {
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
                                 			<div style={{ textAlign: 'center'}} className="">
-							                    <button  style={{minWidth: '250px',marginBottom: '10px'}}  className="blue_btn light_blue_btn" type="button" >Pick a Room</button>
+							                    <button  style={{minWidth: '250px',marginBottom: '10px'}}  className="blue_btn light_blue_btn" type="button" onClick={()=> this.setState({playContestModel:false,playOldContestModel:true})}>Pick a Room</button>
 							                </div>
 							                <div style={{ textAlign: 'center'}} className="">
 							                   	<button  style={{minWidth: '250px',marginBottom: '10px'}}  className="yellow_btn" type="button"  onClick={()=> this.setState({playContestModel:false,playNewContestModel:true})}>Play New</button>
@@ -262,7 +282,43 @@ class DetailContestWithRoundList extends Component {
                             </div>
                         </CModalBody>
                     </CModal>
+					
+					<CModal show={this.state.playOldContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playOldContestModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
 
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({playOldContestModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    	<h3>Rooms</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">                                      	
+										{ 
+											(this.state.RoomListArr.length > 0) ?
+												
+												this.state.RoomListArr.map((e, key) => {
+													return <p className="col-md-10" style={{color:"#FFC542"}}>{e.displayName}<button type="button" className="yellow_btn" style={{float: 'right'}}>Join</button></p>
+												})
+												: 
+												(
+													<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"85px",marginBottom:"85px"}} className="flex"><p className="item-author text-color">No have any room</p></div>
+												)
+										}
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
+		        
                     <CModal show={this.state.playNewContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playNewContestModel:false})}
                     color="danger" 
                     centered>

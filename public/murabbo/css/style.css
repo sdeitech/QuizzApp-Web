@@ -3528,7 +3528,7 @@ p.fancy2 ._f
 }
 
 .video-participant {
-  width: 30%;
+  width: 33%;
   height: 100%;
   position: relative;
 }
@@ -3723,4 +3723,47 @@ video {
     color: #fff;
     border: 3px solid #f8c748;
     border-radius: 10px;
+}
+
+.fix-box .cate-box2 .main
+{
+    min-height: 100px;
+    max-height: 100px;
+    border-radius: 10px 10px 0 0px;
+}
+
+.fix-box .cate-box2
+{
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.fix-box .cat_title2 h3
+{
+    font-size: 13px;
+}
+
+.dashboard-page .main_title h6
+{
+    font: normal normal normal 18px Montserrat;
+}
+
+.fix-box .cat_title2 h3, .fix-box .cat_title2 p
+{
+    text-align: center;
+}
+
+.dashboard-page .create-contest , .dashboard-page  .contest-info
+{
+    background-color: transparent;
+}
+
+.round-dashboard
+{
+    margin-top: 15px;
+}
+
+.filter-with-contest .dashboard-contest .row .cate-box2 
+{
+    margin-top:30px;
 }
