@@ -18,7 +18,7 @@ class Contest extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-			fields:{},
+			fields:{playerType:""},
 			errors:{},
 			errorsPlay:{},
 			fieldsPlay:{display_name:'',password:''},
@@ -47,10 +47,9 @@ class Contest extends Component {
         else if (field === "language") {
         	this.setState({languageSelected:e});
         }   
-        else if (field === "playerType") {
-        	let fields = this.state.fields;
-        	fields['playerType'] = e.target.value;
-        	this.setState({fields});
+        else if (field === "playerType") {		
+			// var lastItem = e[e.length - 1];
+			this.setState({playerTypeSelected:e});
         }     
         else if (field === "searchKey") {
         	let fields = this.state.fields;
@@ -157,7 +156,7 @@ class Contest extends Component {
     	// 	playerTypeArr.push(playerTypeSelected[i].value);
     	// }
     	// fields['playerType'] = playerTypeArr.join();
-    	// this.setState({fields});
+    	this.setState({fields});
 
         var str = [];
 		for (var p in this.state.fields)
@@ -289,6 +288,12 @@ class Contest extends Component {
 
 	}
 
+	handlePlayerTypeChange(data, e){  
+		let fields = this.state.fields;
+		fields['playerType'] = data;
+		this.setState({fields});
+    }
+
 	editHandler(data,e){
 		if (data.isPublish === false) {
 			this.props.history.push('/edit_contest/'+data._id);
@@ -401,19 +406,28 @@ class Contest extends Component {
 			                                        </div>
 			                                        <div class="lanfilter">
 			                                            
-			                                            <p>Player Type:</p>
-			                                            <select className="single-select" value={this.state.fields['playerType']} onChange={this.handleChange.bind(this, "playerType")} >
-			                                                <option value="">All</option>
-			                                                <option value="1">Single Player</option>
-			                                                <option value="2">Multi Player</option>
-			                                            </select>
-
-			                                            {/*<MultiSelect
+			                                        <p>Player Type:</p>
+													<ul class="player_menu">
+														<div class="dropdown">
+															<div class="dropdown-toggle cus_img single-select" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															
+															{(this.state.fields['playerType'] === "") ?  "Select" : (this.state.fields['playerType'] === "1") ?  "Single Player" : "Multi Player"} 
+															</div>
+															<div class="dropdown-menu drop_menu player_drop_down " aria-labelledby="dropdownMenu3">
+																<li onClick={this.handlePlayerTypeChange.bind(this, "")}>All</li>
+																<li onClick={this.handlePlayerTypeChange.bind(this, "1")}>Single Player</li>
+																<li onClick={this.handlePlayerTypeChange.bind(this, "2")}>Multi Player</li>
+															</div>
+														</div>
+													</ul>
+														
+			                                        {/* <MultiSelect
 												        options={this.state.playerTypeList}
 												        onChange={this.handleChange.bind(this, "playerType")}
 												        value={this.state.playerTypeSelected}
-												        
-												      /> */}
+												        disableSearch={true}
+														hasSelectAll={false}
+												      />  */}
 
 			                                        </div>
 			                                        <div class="lanfilter">

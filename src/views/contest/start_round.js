@@ -23,10 +23,9 @@ class StartRound extends Component {
         	profile_picture:'avatars/placeholder-user.png',
             name:'',
         	data:{},
-        	contestData:{},
+        	contestData:{image:''},
         	roundListArr:[],
         	currentIndexRound:0,
-        	contestData:{},
         	roundData:{},
         	listArr:[],
         	selectedAnswer:[],
@@ -93,6 +92,7 @@ class StartRound extends Component {
 		    }).then((data)=> {				
 				if (data.data.length > 0) {
 	   				var data = data.data;
+					//    console.log(data);
 		   			this.setState({roundListArr:data});
 		   			this.plusCount();
 		   			// console.log(this.state.roundListArr[this.state.currentIndexRound]);
@@ -128,7 +128,7 @@ class StartRound extends Component {
 	}
 
 	playContest(){
-		if (this.state.contestData.playerType === 1) {
+		// if (this.state.contestData.playerType === 1) {
 			// console.log(this.state.roundListArr[this.state.currentIndexRound]);
 			if (this.state.roundListArr[this.state.currentIndexRound] !== undefined) {
 				roundId = this.state.roundListArr[this.state.currentIndexRound]._id;
@@ -166,7 +166,11 @@ class StartRound extends Component {
 			}
 
 			// this.props.history.push('/contests/game/start/'+contestId+"?"+this.state.selectedRoundId);
-		}
+		// }
+		// else
+		// {
+		// 	return toast.error('Only single player play game!');	
+		// }
 	}
 
 	saveExitAnswer(isLast= 0){
@@ -195,7 +199,7 @@ class StartRound extends Component {
 	plusCount(){
 		var roundListArr = [];
 		for (var i = 0; i < this.state.roundListArr.length; i++) {
-			if (this.state.roundListArr[i].totalQuestions > 1) {
+			if (this.state.roundListArr[i].totalQuestions > 0) {
 				roundListArr.push(this.state.roundListArr[i]);
 			}
 		}	
@@ -287,18 +291,37 @@ class StartRound extends Component {
        
 	}
 
+	handleFlashcardSelectChange(index,e){
+		let fields = this.state.listArr;
+		fields[index]['selectAnswer'] = e._id; 
+    	fields[index]['isAnswerTrue'] = true; 
+    	fields[index]['readonly'] = true; 
+		console.log(fields[index]);
+    	this.setState({listArr:fields});
+    	this.countScore(this.state.indexQuestion);
+    	var that = this;
+    	setTimeout(function () {
+            if (index < that.state.listArr.length) {
+	    		that.setState({indexQuestion:index+1})
+	    	}
+	    	else
+	    	{
+	    		that.saveExitAnswer();	
+	    	}
+	    }, 2000);
+       
+	}
+
 	handleTrueFalseSelectChange(index,isTrue)
 	{
-
 		let fields = this.state.listArr;
 		fields[index]['selectAnswer'] = isTrue; 
     	fields[index]['isAnswerTrue'] = (this.state.listArr[index]['answerTypeBoolean'] === isTrue) ? true : false; 
     	fields[index]['readonly'] = true; 
-    	// console.log(fields);
     	this.setState({listArr:fields});
     	this.countScore(this.state.indexQuestion);
     	var that = this;
-
+		console.log(fields[index]);
     	setTimeout(function () {
             if (index < that.state.listArr.length) {
 	    		that.setState({indexQuestion:index+1});
@@ -312,10 +335,6 @@ class StartRound extends Component {
 	    		that.saveExitAnswer();	
 	    	}
 	    }, 2000);
-
-
-
-
 	}
 
 	getQuestionList(roundId1)
@@ -377,6 +396,7 @@ class StartRound extends Component {
 					fields[that.state.indexQuestion]['displaytimeLimit'] = minute + ":" + seconds;
 					fields[that.state.indexQuestion]['timeLimit'] = newTime;
 					that.setState({listArr:fields});
+					// console.log(fields[that.state.indexQuestion]['displaytimeLimit'])
 					
 				}
 
@@ -658,7 +678,7 @@ class StartRound extends Component {
 					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
 					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
 					                                            			'fancy2 highlight' : 
-				                                            				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
+				                                            				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight': 'fancy2 pinkhighlight' 
 				                                            				: 'fancy2'
 				                                            			}>
 										                                <label>
@@ -689,13 +709,16 @@ class StartRound extends Component {
 							                        		{
 								                        		this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
 								                        				var forclass=e._id+key;
-								                        				// var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-										                             //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
-										                             //                			'fancy2 highlight' : 
-									                              //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
-									                              //               				: 'fancy2';
-									                              	var innnerpclass ="fancy2 fancy2_"+key;
-										                            var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
+																		var innnerpclass =  "fancy2 fancy2_"+key;
+																		var tempcls = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
+
+																		
+								                        				var pcalss = (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] !== undefined) ? 
+																						(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
+																							'fancy2 highlight' : 
+																							(e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2 highlight' 
+																							: tempcls;
+										                            // var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
 									                           		var inputclass = "input_"+key;
 							                                            return <p class={pcalss}>
 												                                <label>
@@ -737,13 +760,9 @@ class StartRound extends Component {
 							                        		{
 								                        		this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
 								                        				var forclass=e._id+key;
-								                        				// var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-										                             //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
-										                             //                			'fancy2 highlight' : 
-									                              //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
-									                              //               				: 'fancy2';
-									                              	var innnerpclass ="fancy2 fancy2_"+key;
-										                            var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
+								                        			
+									                              	var innnerpclass ="fancy2 highlight fancy2_"+key;
+										                            var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2 highlight";
 									                           		var inputclass = "input_"+key;
 							                                            return <p class={pcalss}>
 												                                <label>
@@ -774,30 +793,58 @@ class StartRound extends Component {
 						                        		: null
 						                        	}
 
+
+													{
+						                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ? 
+
+						                        			this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+						                        				var forclass=e._id+key;
+					                                            return <p class={
+					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+					                                            			'fancy2 highlight' : 
+				                                            				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight': 'fancy2 pinkhighlight' 
+				                                            				: 'fancy2'
+				                                            			}>
+										                                <label>
+										                                    
+								                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
+								                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
+								                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
+								                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
+								                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
+								                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
+										                                    
+										                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+										                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled':''} /> : 
+										                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer}  disabled={(e.readonly) ? 'disabled':''} />
+										                                    }							                                    
+										                                    <span for={forclass}>{e.answer}</span>
+										                                </label>
+										                            </p>
+				                                        	})
+
+						                        		: null
+						                        	}
+
 						                        	{
 						                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 5) ? 
 						                        			
 						                        			<div>
-					                        					<p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-					                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 
-					                                            			'fancy2 highlight' : 
-				                                            				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 pinkhighlight' : 'fancy2' 
-				                                            				: 'fancy2' }>
+					                        					<p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ? 
+					                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' :  (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' : (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ? 'fancy2 pinkhighlight' : 'fancy2' }>
 									                                <label >
 									                                    <b class="option_ _a">A</b>
-									                                    <input id="trueFalse" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}   />
-									                                    <span for="trueFalse">True</span>
+									                                    <input id="trueFalse1" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}   />
+									                                    <span for="trueFalse1">True</span>
 									                                </label>
 									                            </p>
-									                            <p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-					                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 
-					                                            			'fancy2 highlight' : 
-				                                            				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 pinkhighlight' : 'fancy2' 
-				                                            				: 'fancy2' }>
+									                            <p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ? 
+					                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' :  (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' :  (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ? 'fancy2 pinkhighlight' : 'fancy2' }>
 									                                <label >
 									                                    <b class="option_ _b">B</b>
-									                                    <input id="trueFalse" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,false)} value='false' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}  />
-									                                    <span for="trueFalse">False</span>
+									                                    <input id="trueFalse2" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,false)} value='false' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}  />
+									                                    <span for="trueFalse2">False</span>
 									                                </label>
 									                            </p>
 						                        			</div>
@@ -854,56 +901,66 @@ class StartRound extends Component {
 				            </section> : null
 			            
 		            :
-		            <div>
-			            <section id="hero" className="d-flex align-items-center">
-			                <div className="hero-img" style={{width:'100%'}}>
-			                    <img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png' } className="img-fluid animated" alt="" />
-			                </div>
-			            </section>
+		            <div className="container contest-detail-with-round">
+						<div class="row">
+						
+							<div class="col-lg-12 col-md-1 col-12">
+								<div class="cate-box2" >
+									<img src='img/undo.svg' className="undo_btn" onClick={() => {this.props.history.push('/dashboard')}}/>
+									<img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+									<div class="cat_title2">
+										<div className="detailContestWithRoundList">
+										<div className="row">
+											<div class="cat_title2 col-lg-12 col-md-12">
+
+												<h3 style={{paddingLeft: '0px'}}>{this.state.contestData.title}</h3>
+												<p>{this.state.contestData.description}</p> 													
+											</div>
+											<div class="col-lg-12 col-md-12 align-self-center mb-3">
+												<div className="accordion-wrapper" >
+													<div className='acc-title'>
+													Round Detail
+													</div>
+													{ 
+														<div style={{padding:'10px 0'}} className="rounded-0">
+															<div className="">
+															{ 
+																(this.state.roundListArr.length > 0) ?
+																		<div>
+																		{								                        	
+																			(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 0) ? 
+																			(<div>
+																				<p>{(this.state.roundListArr[this.state.currentIndexRound].title !== '') ? 
+																					this.state.roundListArr[this.state.currentIndexRound].title : 
+																					this.state.roundListArr[this.state.currentIndexRound].gameType} 
+																					<span>({this.state.roundListArr[this.state.currentIndexRound].totalQuestions} 
+																					{(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 1) ? 'Questions' : 'Question'})</span>
+																				</p>
+																				<p> {this.state.roundListArr[this.state.currentIndexRound].description}</p>
+
+																				<button style={{minWidth: '150px'}} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
+
+																				</div>) : null
+																		}
+																		</div>
+																	: 
+																	(
+																		<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"85px",marginBottom:"85px"}} className="flex"><p className="item-author text-color">No have any round</p></div>
+																	)
+															}
+															</div>
+														</div> 
+													}
+													
+												</div>
+											</div>                           
+										</div>
+									</div>
+									</div>
+								</div>
+							</div>
+						</div>
 			            
-			            <section className="main">
-			                <div className="">
-			                    <div className="startgame detailContestWithRoundList">
-			                        <div className="row">
-			                            <div class="col-lg-10 col-md-8">
-			                                <div className="inline">
-			                                    <h5 style={{paddingLeft: '0px'}}>{this.state.contestData.title}</h5>
-			                                </div>
-			                                <p>{this.state.contestData.description}</p> 
-			                                <div className="accordion-wrapper" >
-			                                    <div className='acc-title'>
-			                                      Round Detail
-			                                    </div>
-			                                    { 
-			                                    	<div style={{padding:'10px 0'}} className="rounded-0">
-				                                        <div className="">
-				                                        { 
-						                                	(this.state.roundListArr.length > 0) ?
-						                                			<div>
-						                                			{								                        	
-					                        					 		(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 1) ? (<div><p>{(this.state.roundListArr[this.state.currentIndexRound].title !== '') ? this.state.roundListArr[this.state.currentIndexRound].title : this.state.roundListArr[this.state.currentIndexRound].gameType} <span>({this.state.roundListArr[this.state.currentIndexRound].totalQuestions} {(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 1) ? 'Questions' : 'Question'})</span></p><p> {this.state.roundListArr[this.state.currentIndexRound].description}</p>
-
-					                        					 			<button style={{minWidth: '150px'}} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
-
-
-					                        					 			</div>) : null
-					                        					 	}
-				                        					 		</div>
-									                            : 
-														        (
-														        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"85px",marginBottom:"85px"}} className="flex"><p className="item-author text-color">No have any round</p></div>
-														        )
-				                        				}
-				                                        </div>
-			                                    	</div> 
-			                                    }
-			                                    
-			                                </div>
-			                            </div>                            
-			                        </div>
-			                    </div>
-			                </div>
-			            </section>
 
 		            </div>
 		            }

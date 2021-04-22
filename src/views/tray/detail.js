@@ -17,12 +17,7 @@ class Detail extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-        	data:{},
-        	userListInvite:[],
-        	userListInviteSearch:'',
-        	inviteFriendsModel:true,
-        	inviteModel:false,
-        	inviteUsersModel:false
+        	data:{image:''},
 		};
 	}
 
@@ -60,26 +55,30 @@ class Detail extends Component {
 				<TheHeaderInner />		
 				<ToastContainer position="top-right" autoClose={25000} style={{top:'80px'}}/>		
 					<main id="main">
-		            <section id="hero" className="d-flex align-items-center">
-		                <div className="hero-img" style={{width:'100%'}}>
-		                    <img src={(this.state.data.image !== '') ? this.state.data.image : "./avatars/placeholder.png"} className="img-fluid animated" alt="" />
-		                </div>
-		            </section>
-		            
-		            <section className="main">
-		                <div className="">
-		                    <div className="startgame pr-300">
-		                        <div className="row">
-		                            <div className="col-lg-12 col-md-12">
-		                                <div className="inline">
-		                                    <h5 style={{paddingTop: '30px'}}>{this.state.data.title}</h5>
-		                                    <p style={{paddingTop: '30px'}}>{this.state.data.description}</p>
-		                                </div>
-		                            </div>
-		                        </div>
-		                    </div>
-		                </div>
-		            </section>
+		            <div className="container">
+						<div className="contest-detail-with-round">
+
+						<div class="row">
+						
+							<div class="col-lg-12 col-md-1 col-12">
+								<div class="cate-box2" >
+									<img src={(this.state.data.image !== '') ? this.state.data.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+									<div class="cat_title2">
+										<div className="detailContestWithRoundList">
+										<div className="row">
+											<div class="cat_title2 col-lg-12 col-md-12">
+
+												<h3 style={{paddingLeft: '0px'}}>{this.state.data.title}</h3>
+												<p>{this.state.data.description}</p> 													
+											</div>                    
+										</div>
+									</div>
+									</div>
+								</div>
+							</div>
+						</div>
+		            </div>
+					</div>
 		        </main>
 		    </>
 		)

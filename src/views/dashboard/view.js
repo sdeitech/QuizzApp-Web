@@ -83,13 +83,15 @@ class Dashboard extends Component {
             errorsPlay: {},
             fieldsPlay: { display_name: "", password: "" },
             playNewContestModel: false,
-            playContestModel: false
+            playContestModel: false,
+            size:6,
+            page:0
         };
     }
 
     componentDidMount() {
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
-        fetch(configuration.baseURL + "contest/contest?isTrending=yes", {
+        fetch(configuration.baseURL + "contest/contest?isTrending=yes&page="+this.state.page+"&size="+this.state.size, {
             method: "GET",
             headers: {
                 Accept: "application/json",
@@ -104,7 +106,7 @@ class Dashboard extends Component {
                 this.setState({ listData: data.data });
             });
 
-        fetch(configuration.baseURL + "individual/getTrending", {
+        fetch(configuration.baseURL + "individual/getTrending?page="+this.state.page+"&size="+this.state.size, {
             method: "GET",
             headers: {
                 Accept: "application/json",
@@ -226,14 +228,18 @@ class Dashboard extends Component {
         this.props.history.push('/trending_contest');
     }
 
+    viewAllTrendingRounds(){
+        this.props.history.push('/trending_rounds');   
+    }
+
 	render() {
 		return (
 			<>
 				<TheHeaderInner />				
 					<main id="main" className="dashboard-page">
 					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
-			            <section id="contest" class="d-flex align-items-center">
-			                <div class="container">
+			            <section id="contest" class="">
+			                
 
 			                	{/*<div style={{paddingBottom: '30px'}} class="contest-info banner-div">
 			                        <div class="row">
@@ -245,116 +251,132 @@ class Dashboard extends Component {
                                        
 			                        </div>
 			                    </div>*/}
-
+                                <div class="trending-contest-dashboard">
 			                    <div class="create-contest">
-			                        <div class="contest-title">
-			                            <div class="row">
-			                                <div class="col-md-8">
-			                                    <div class="main_title">
-			                                        <h3 style={{color:'#F2BE47',marginBottom:'5px'}}>Trending </h3>  
-			                                        <h6>Contest</h6>    
-			                                    </div> 
-			                                </div>
-                                            <div class="col-md-4" style={{ cursor:'pointer',display: (this.state.listData.length > 0) ? 'block' : 'none'}}>
-                                                <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrending.bind(this)}>See All</h6>
+                                    <div class="container">
+                                        <div class="contest-title">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="main_title">
+                                                        <h3 style={{color:'#F2BE47',marginBottom:'5px'}}>Trending </h3>  
+                                                        <h6>Contest</h6>    
+                                                    </div> 
+                                                </div>
+                                                <div class="col-md-4" style={{ cursor:'pointer',display: (this.state.listData.length > 0) ? 'block' : 'none'}}>
+                                                    <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrending.bind(this)}>See All</h6>
+                                                </div>
                                             </div>
-			                            </div>
-			                        </div>
+                                        </div>
+                                    </div>
 			                    </div>
 			                    <div class="contest-info dashboard-contest fix-box">
-			                        <div class="row">
-			                        {
+                                    <div class="container">
+                                        <div class="row">
+                                        {
 
-			                        	(this.state.listData.length > 0) ? 
-			                        	this.state.listData.map((e, key) => {
-                                            return <div class="col-lg-2 col-md-4 col-sm-6" >
-			                                	<div class="cate-box2">
-			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
-			                                        <div class="cat_title2">
-			                                            <h3 style={{cursor: 'pointer'}} onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)}</h3>
-			                                            <p style={{cursor: 'context-menu',width:'160px'}}>  {e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} </p>
-                                                        
-			                                            {/*<p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>
-			                                        	<p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>*/}
-			                                         <p className="username">{e.userName}</p>
+                                            (this.state.listData.length > 0) ? 
+                                            this.state.listData.map((e, key) => {
+                                                return <div class="col-lg-2 col-md-4 col-sm-6 col-6" >
+                                                    <div class="cate-box2">
+                                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+                                                        <div class="cat_title2">
+                                                            <h3 style={{cursor: 'pointer'}} onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)}</h3>
+                                                            <p>  {e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} </p>
+                                                            
+                                                            {/*<p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>
+                                                            <p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>*/}
+                                                        <p className="username">{e.userName}</p>
+                                                        </div>
                                                     </div>
-			                                    </div>
-				                            </div>
-                                        }) : 
-								        (
-								        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
-								        )
-			                        }
-			                        </div>
+                                                </div>
+                                            }) : 
+                                            (
+                                                <div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+                                            )
+                                        }
+                                        </div>
+                                    </div>
 			                    </div>
 
 
 			                    <div class="create-contest round-dashboard">
-			                        <div class="contest-title">
-			                            <div class="row">
-			                                <div class="col-md-8">
-			                                    <div class="main_title">
-			                                        <h6>Rounds</h6>  
-			                                    </div> 
-			                                </div>
-			                            </div>
-			                        </div>
+                                    <div class="container">
+                                        <div class="contest-title">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="main_title">
+                                                        <h6>Rounds</h6>  
+                                                    </div> 
+                                                </div>
+                                                <div class="col-md-4" style={{ cursor:'pointer',display: (this.state.listData.length > 0) ? 'block' : 'none'}}>
+                                                    <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrendingRounds.bind(this)}>See All</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 			                    </div>
-			                    <div style={{paddingBottom: '30px'}} class="contest-info dashboard-contest fix-box">
-			                        <div class="row">
-			                        {
-
-			                        	(this.state.roundListData.length > 0) ? 
-			                        	this.state.roundListData.map((e, key) => {
-                                            return <div class="col-lg-2 col-md-4 col-sm-6">
-			                                	<div class="cate-box2"  onClick={() => {this.props.history.push('/detail-round/'+e._id)}}  style={{ cursor:'pointer'}} >
-			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
-			                                        <div class="cat_title2">
-			                                            <h3>{e.numberOfQuestions} {(e.numberOfQuestions > 1) ? 'Questions' : 'Question'}</h3>
-			                                            <p>{e.title}</p>
-                                                        <p className="username">{e.createdBy}</p>
-			                                        </div>
-			                                    </div>
-				                            </div>
-                                        }) : 
-								        (
-								        	<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
-								        )
-			                        }
-			                        </div>
-			                    </div>
-                                
-                                <div class="create-contest">
-                                    <div class="contest-title">
+			                    <div class="contest-info dashboard-contest fix-box">
+                                    <div class="container">
                                         <div class="row">
-                                            <div class="col-md-8">
-                                                <div class="main_title">
-                                                    <h3 style={{color:'#F2BE47',marginBottom:'5px'}}>Games </h3>   
-                                                </div> 
+                                        {
+
+                                            (this.state.roundListData.length > 0) ? 
+                                            this.state.roundListData.map((e, key) => {
+                                                return <div class="col-lg-2 col-md-4 col-6">
+                                                    <div class="cate-box2"  onClick={() => {this.props.history.push('/detail-round/'+e._id)}}  style={{ cursor:'pointer'}} >
+                                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+                                                        <div class="cat_title2">
+                                                            <h3>{e.numberOfQuestions} {(e.numberOfQuestions > 1) ? 'Questions' : 'Question'}</h3>
+                                                            <p>{e.title}</p>
+                                                            <p className="username">{e.createdBy}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }) : 
+                                            (
+                                                <div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+                                            )
+                                        }
+			                            </div>
+                                    </div>
+			                    </div>
+                                </div>
+                                <div class="games-dashboard">
+                                    <div class="create-contest">
+                                        <div class="container">
+                                            <div class="contest-title">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="main_title">
+                                                            <h3 style={{color:'#F2BE47',marginBottom:'5px'}}>Games </h3>   
+                                                        </div> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="contest-info trending">
+                                        <div class="container">
+                                        <div className="row round-box" style={{paddingTop: '30px'}}>
+                                                {
+                                                    this.state.gameTypeArr.map((e, key) => {
+                                                        return 	<div className="col-lg-3 col-md-4 col-sm-6">
+                                                                    <div>
+                                                                        <div className={e.class}>
+                                                                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
+                                                                            <img className="ico" src={e.src} alt="" />
+                                                                            <h3>{e.name}</h3>
+                                                                            <p></p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                    })
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-			                    <div class="contest-info trending">
-			                        <div className="row round-box" style={{paddingTop: '30px'}}>
-											{
-					                        	this.state.gameTypeArr.map((e, key) => {
-    	                                            return 	<div className="col-lg-3 col-md-4 col-sm-6">
-    										                    <div>
-    										                        <div className={e.class}>
-    										                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-    										                            <img className="ico" src={e.src} alt="" />
-    										                            <h3>{e.name}</h3>
-    										                            <p></p>
-    										                        </div>
-    										                    </div>
-    										                </div>
-	                                        	})
-					                        }
-								        </div>
-			                    </div>
-
-			                </div>
+			                
 			            </section>
 			           
 

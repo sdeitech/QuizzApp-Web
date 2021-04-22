@@ -199,12 +199,16 @@ class DetailContestWithRoundList extends Component {
 				<TheHeaderInner />		
 				<ToastContainer position="top-right" autoClose={10000} style={{top:'80px'}}/>		
 					<main id="main">
+						<div className="row contest-detail-with-round">
+						<div className="col-md-6">
 		            <section id="hero" className="d-flex align-items-center">
 		                <div className="hero-img" style={{width:'100%'}}>
 		                    <img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png' } className="img-fluid animated" alt="" />
 		                </div>
 		            </section>
-		            
+
+					</div>
+					<div className="col-md-6"> 
 		            <section className="main">
 		                <div className="">
 		                    <div className="startgame detailContestWithRoundList">
@@ -247,7 +251,10 @@ class DetailContestWithRoundList extends Component {
 		                </div>
 		            </section>
 
-		            <CModal show={this.state.playContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playContestModel:false})}
+		            </div>
+					</div>
+					
+					<CModal show={this.state.playContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playContestModel:false})}
                     color="danger" 
                     centered>
                         <CModalBody className="model-bg">

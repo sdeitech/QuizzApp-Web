@@ -12,10 +12,10 @@ class Detail extends Component {
         super(props);
         this.state = {
             data: { invitedUserDetails: [], acceptedUserDetails: [] },
-            contestData:{image:''},
+            contestData: {},
             userListInvite: [],
             userListInviteSearch: "",
-            inviteFriendsModel: false,
+            inviteFriendsModel: true,
             inviteModel: false,
             inviteUsersModel: false,
         };
@@ -149,11 +149,6 @@ class Detail extends Component {
                 }
             });
     }
-
-    playWithoutVideo()
-    {
-        this.props.history.push('/contests/start_round/'+contestId);
-    }
     render() {
         return (
             <>
@@ -164,73 +159,166 @@ class Detail extends Component {
                     style={{ top: "80px" }}
                 />
                 <main id="main">
+                    <section id="hero" className="d-flex align-items-center">
+                        <div className="hero-img" style={{ width: "100%" }}>
+                            <img
+                                src={
+                                    this.state.contestData.image !== ""
+                                        ? this.state.contestData.image
+                                        : "./avatars/placeholder.png"
+                                }
+                                className="img-fluid animated"
+                                alt=""
+                            />
+                        </div>
+                    </section>
 
-                <div className="container">
-						<div className="contest-detail-with-round">
+                    <section className="main">
+                        <div className="">
+                            <div className="startgame pr-300">
+                                <div className="row">
+                                    <div className="col-lg-12 col-md-12">
+                                        <div className="inline">
+                                            <h5 style={{ paddingTop: "30px" }}>
+                                                You need to be with a friend to
+                                                play.
+                                            </h5>
+                                        </div>
+                                        <div
+                                            style={{ float: "right" }}
+                                            className="inline "
+                                        >
+                                            <div className="abc-detail">
+                                                <p>Game PIN</p>
+                                                <h3>
+                                                    {this.state.data.gamePin}
+                                                </h3>
+                                            </div>
+                                            <div className="abc-detail">
+                                                <p>Game Password</p>
+                                                <h3>
+                                                    {this.state.data.password
+                                                        ? this.state.data
+                                                              .password
+                                                        : "-"}
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div className="sidenav">
+                        <div className="participate">
+                            <h3 style={{ color: "#FCD274", textAlign: "left" }}>
+                                In This Room
+                            </h3>
 
-						<div class="row">
-						
-							<div class="col-lg-12 col-md-1 col-12">
-								<div class="cate-box2" >
-                                    <img src='img/undo.svg' className="undo_btn" onClick={() => {this.props.history.push('/dashboard')}}/>
-									<img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
-									<div class="cat_title2">
-										<div className="detailContestWithRoundList">
-										<div className="row">
-											<div class="cat_title2 col-lg-12 col-md-12">
-
-												<h3 style={{paddingLeft: '0px'}}>{this.state.contestData.title}</h3>
-												<p>{this.state.contestData.description}</p> 													
-											</div>
-                                            <div className="col-lg-12 col-md-12">
+                            {this.state.data.acceptedUserDetails.length > 0 ? (
+                                this.state.data.acceptedUserDetails.map(
+                                    (e, key) => {
+                                        return (
+                                            <div className="participate-list">
                                                 <div className="inline">
-                                                    <h5 style={{ paddingTop: "30px", color: '#fff' }}>
-                                                        You need to be with a friend to
-                                                        play.
-                                                    </h5>
+                                                    <img
+                                                        src={
+                                                            e.image
+                                                                ? e.image
+                                                                : "./avatars/placeholder-user.png"
+                                                        }
+                                                    />
                                                 </div>
-                                                <div
-                                                    style={{ float: "right" }}
-                                                    className="inline "
-                                                >
-                                                    <div className="abc-detail">
-                                                        <p>Game PIN</p>
-                                                        <h3>
-                                                            {this.state.data.gamePin}
-                                                        </h3>
-                                                    </div>
-                                                    <div className="abc-detail">
-                                                        <p>Game Password</p>
-                                                        <h3>
-                                                            {this.state.data.password
-                                                                ? this.state.data
-                                                                        .password
-                                                                : "-NA-"}
-                                                        </h3>
-                                                    </div>
+                                                <div className="inline">
+                                                    <h5>{e.name}</h5>
                                                 </div>
                                             </div>
-                                            
-											<div style={{ marginBottom: '50px', textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button">Play</button>
-							                </div>
-					                        <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play without video</button>
-							                </div>
-						                    <div style={{ marginBottom: '50px', textAlign: 'center', float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button className="yellow_btn" type="button">Play in-person</button>
-							                </div>  
-                                                                     
-										</div>
-									</div>
-									</div>
-								</div>
-							</div>
-						</div>
-		            </div>
-					</div>
+                                        );
+                                    }
+                                )
+                            ) : (
+                                <div
+                                    style={{
+                                        color: "white",
+                                        width: "100%",
+                                        textAlign: "center",
+                                        marginTop: "25px",
+                                        marginBottom: "25px",
+                                    }}
+                                    className="flex"
+                                >
+                                    <p className="item-author text-color">
+                                        No users available
+                                    </p>
+                                </div>
+                            )}
+                            <h3 style={{ color: "#FCD274", textAlign: "left" }}>
+                                Invite Sent To
+                            </h3>
+                            {this.state.data.invitedUserDetails.length > 0 ? (
+                                this.state.data.invitedUserDetails.map(
+                                    (e, key) => {
+                                        return (
+                                            <div className="participate-list">
+                                                <div className="inline">
+                                                    <img
+                                                        src={
+                                                            e.image
+                                                                ? e.image
+                                                                : "./avatars/placeholder-user.png"
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className="inline">
+                                                    <h5>{e.name}</h5>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                )
+                            ) : (
+                                <div
+                                    style={{
+                                        color: "white",
+                                        width: "100%",
+                                        textAlign: "center",
+                                        marginTop: "25px",
+                                        marginBottom: "25px",
+                                    }}
+                                    className="flex"
+                                >
+                                    <p className="item-author text-color">
+                                        No users available
+                                    </p>
+                                </div>
+                            )}
 
-                   <CModal
+                            <div className="full_btn mt50">
+                                <button
+                                    onClick={() =>
+                                        this.setState({ inviteModel: true })
+                                    }
+                                    className="blue_btn"
+                                    type="button"
+                                >
+                                    Invite Friends Here
+                                </button>
+                            </div>
+                            <div className="full_btn">
+                                <button
+                                    className="blue_btn"
+                                    type="button"
+                                    onClick={this.goToVideoChat.bind(
+                                        this
+                                    )}
+                                >
+                                    Let's Play
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <CModal
                         show={this.state.inviteModel}
                         closeOnBackdrop={false}
                         onClose={() => this.setState({ inviteModel: false })}

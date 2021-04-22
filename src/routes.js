@@ -13,7 +13,7 @@ const GamesHistory = React.lazy(() => import('./views/games_history/view'))
 
 const AddContest = React.lazy(() => import('./views/contest/add'))
 const EditContest = React.lazy(() => import('./views/contest/edit'))
-const DetailContestWithRoundList = React.lazy(() => import('./views/contest/detail_with_round_list'))
+const DetailContestWithPlay = React.lazy(() => import('./views/contest/contest_detail'))
 const DetailContestWithQuestionList = React.lazy(() => import('./views/contest/detail_with_question_list'))
 
 
@@ -54,7 +54,7 @@ const Leaderboard = React.lazy(() => import("./views/leaderboard/view"));
 const videoChat = React.lazy(() => import("./views/chat/view"));
 
 const Dashboard_Trending_Contest = React.lazy(() => import("./views/dashboard_trending_contest/view"));
-
+const Dashboard_Trending_Rounds = React.lazy(() => import("./views/dashboard_trending_round/view"));
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
@@ -62,12 +62,13 @@ const routes = [
     { path: '/notification', name: 'Notification', component: Notification },
     { path: '/contest', name: 'Contest', component: Contest },
     { path: '/trending_contest', name: 'Dashboard_Trending_Contest', component: Dashboard_Trending_Contest },
+    { path: '/trending_rounds', name: 'Dashboard_Trending_Rounds', component: Dashboard_Trending_Rounds },
     { path: '/contests/start_round', name: 'StartRound', component: StartRound },
     
     { path: '/games_history', name: 'GamesHistory', component: GamesHistory },    
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
-    { path: '/contests/detail', name: 'DetailContestWithRoundList', component: DetailContestWithRoundList },
+    { path: '/contests/detail', name: 'DetailContestWithPlay', component: DetailContestWithPlay },
     { path: '/contests/game/start', name: 'DetailContestWithQuestionList', component: DetailContestWithQuestionList },
     { path: '/tray', name: 'Tray', component: Tray },
     { path: '/matchit', name: 'matchitDetail', component: matchitDetail },

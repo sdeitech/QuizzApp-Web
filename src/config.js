@@ -3,6 +3,9 @@ var jwt = require('jsonwebtoken');
 
 const config = {
     appName: 'Murabbo',
+    // baseURL: 'http://localhost:3019/api/app/',
+    // APIbaseURL: 'http://localhost:3019/api/',
+
     baseURL: 'https://dev-api.murabbo.com/api/app/',
     APIbaseURL: 'https://dev-api.murabbo.com/api/',
 
