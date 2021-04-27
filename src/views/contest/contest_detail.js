@@ -31,7 +31,7 @@ class DetailContest extends Component {
 			playOldContestModel:false,
 			searchTerm:'',
 			page:0,
-			size:1
+			size:2
 		};
 	}
 
@@ -156,6 +156,11 @@ class DetailContest extends Component {
 		this.props.history.push('/detail-contest/'+contestId+'?'+data._id);	
 	}
 
+	joinRoomContest(data)
+	{
+		this.props.history.push('/videoChat/'+data.gamePin);
+	}
+
     handleNext(){
     	let fields = this.state.fieldsPlay;
 		let errors = {};   
@@ -249,7 +254,7 @@ class DetailContest extends Component {
 											</div>
 											<div class="col-lg-12 col-md-12 align-self-center mb-3">
 												<button style={{minWidth: '150px'}} class="blue_btn" type="button" onClick={this.playContest.bind(this)}>Play</button>
-											</div>                         
+											</div>                        
 										</div>
 									</div>
 									</div>
@@ -318,9 +323,13 @@ class DetailContest extends Component {
 											(this.state.RoomListArr.length > 0) ?
 												
 												this.state.RoomListArr.map((e, key) => {
-													return <div className="row" style={{marginTop:'10px',paddingBottom: '10px',borderBottom: '1px solid #fff'}}><div className="col-md-8"><p style={{color:"#FFC542"}}>{e.displayName}
+													return <div className="row" style={{marginTop:'10px',paddingBottom: '10px',borderBottom: '1px solid #fff'}}><div className="col-md-6"><p style={{color:"#FFC542"}}>{e.displayName}
 														<span style={{width: "100%",float: "right", font: 'normal normal 300 14px Montserrat',letterSpacing: '0px',color: '#FFFFFF'}}>{e.createdByName}</span></p>
-														</div> <div className="col-md-4">
+														</div>		
+														<div class="col-md-2">
+															<button class="blue_btn" type="button" onClick={this.joinRoomContest.bind(this,e)}>Video</button>
+														</div> 
+														<div className="col-md-4">
 															<button type="button" className="yellow_btn" style={{float: 'right'}} onClick={this.joinRoomHandler.bind(this,e)}>Join</button>
 														</div></div>
 												})
