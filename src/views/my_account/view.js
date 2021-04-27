@@ -351,7 +351,7 @@ class MyAccount extends Component {
 
                                                 <div class="row">
                                                     <div class="col-lg-4 col-md-6">
-                                                        <a href="javascript:void(0)"><div class="profile-setting">
+                                                        <a href="javascript:void(0)" onClick={() => {this.props.history.push('/plans')}}><div class="profile-setting">
                                                             <img src="./murabbo/img/member-card.svg"/>
                                                             <h3>Membership <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
                                                             

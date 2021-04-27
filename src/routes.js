@@ -55,6 +55,7 @@ const videoChat = React.lazy(() => import("./views/chat/view"));
 
 const Dashboard_Trending_Contest = React.lazy(() => import("./views/dashboard_trending_contest/view"));
 const Dashboard_Trending_Rounds = React.lazy(() => import("./views/dashboard_trending_round/view"));
+const plans = React.lazy(() => import("./views/plans/view"));
 
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
@@ -89,7 +90,8 @@ const routes = [
     { path: '/my_groups', name: 'MyGroups', component: MyGroups },
     { path: '/leaderboard', name: 'Leaderboard', component: Leaderboard },
     { path: "/videoChat", name: "videoChat", component: videoChat },
-
+    { path: "/plans", name: "plans", component: plans },
+    
     
 ]
 

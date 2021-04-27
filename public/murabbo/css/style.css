@@ -3909,3 +3909,132 @@ img.undo_btn {
 .video-participant video{
     object-fit: cover;
 }
+
+
+/* css */
+
+.plan-detail {
+    padding: 30px 0;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+}
+.plan-detail h6 {
+    font-size: 13px;
+    padding-top: 5px;
+}
+.plan-detail h3 {
+    color: #FCD274;
+    font-weight: 500;
+}
+
+
+.plan-detail2 {
+    padding: 20px 0;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+}
+.plan-detail2 p {
+    margin-bottom: 5px;
+}
+
+.main_plan.basic {
+    border: 1px solid #68c1d3;
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 0px 0px 3px #616161;
+}
+.main_plan.basic h3 {
+    color: #68c1d3;
+    font-size: 21px;
+    text-transform: uppercase;
+}
+.main_plan.basic h5 {
+    font-size: 17px;
+}
+.main_plan.basic p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+.main_plan.basic button {
+    position: absolute;
+    background-color: #68c1d3;
+    border: none;
+    padding: 7px 10px;
+    bottom: 2px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 5px;
+}
+
+
+
+.main_plan.premium  {
+    border: 1px solid #fdd274;
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 0px 0px 3px #616161;
+}
+.main_plan.premium h3 {
+    color: #fdd274;
+    font-size: 21px;
+    text-transform: uppercase;
+}
+.main_plan.premium h5 {
+    font-size: 17px;
+}
+.main_plan.premium p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+.main_plan.premium button {
+    position: absolute;
+    background-color: #fdd274;
+    border: none;
+    padding: 7px 10px;
+    bottom: 2px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 5px;
+}
+
+
+.main_plan.pro {
+    border: 1px solid #31deb1;
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 0px 0px 3px #616161;
+}
+.main_plan.pro h3 {
+    color: #31deb1;
+    font-size: 21px;
+    text-transform: uppercase;
+}
+.main_plan.pro h5 {
+    font-size: 17px;
+}
+.main_plan.pro p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+.main_plan.pro button {
+    position: absolute;
+    background-color: #31deb1;
+    border: none;
+    padding: 7px 10px;
+    bottom: 2px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    border-radius: 5px;
+}
+/* end css */
