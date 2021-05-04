@@ -136,7 +136,7 @@ class View extends Component {
                                             </div>
                                             <div class="col-md-4">
                                                 <div className="search">
-                                                    <button className="blue_btn light_blue_btn" type="button" onClick={this.add.bind(this)} style={{float: 'right'}}>Add Card</button>
+                                                    <button className="yellow_btn" type="button" onClick={this.add.bind(this)} style={{float: 'right'}}>Add Card</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -147,7 +147,8 @@ class View extends Component {
                                         <div class="upcoming">
                                             <div style={{marginBottom: '0'}} class="row main">
                                                 
-                                                <div class="col-md-12" style={{paddingTop: '10px'}}>
+                                                <div class="col-md-12" style={{paddingTop: '20px'}}>
+                                                    
                                                     <ul class="clearfix ">
                                                         {
 
@@ -159,10 +160,12 @@ class View extends Component {
                                                                         <span class="checkmark"></span>
                                                                     </label>
                                                                     <span aria-hidden="true"><img src="./murabbo/img/close_black.svg" className="delete_img" onClick={this.deleteClickHandle.bind(this,e.id)} /></span>    
-                                                                    <img src="./murabbo/img/visa.png" class="icon_visa" />
+                                                                    <img src={'./murabbo/img/'+(e.brand.toLowerCase()).replace(/\s/g, '-')+'.png'} class="icon_visa" />
                                                                 </li>
                                                         }) : 
-                                                        null
+                                                        <li class="payment_select edit-delivery-address">
+                                                            <label>No data found</label>
+                                                        </li>
                                                         }  
                                                         
                                                     </ul>
