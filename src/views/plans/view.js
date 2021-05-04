@@ -67,6 +67,10 @@ class Plans extends Component {
     }
 
     handlePurcaseClick(subscriptionId){
+        if(this.state.listData.length === 0)
+        {
+            this.props.history.push('/add_card')  
+        }
         let fields = this.state.fields;
         fields['subscriptionId'] = subscriptionId;
         
@@ -157,9 +161,15 @@ class Plans extends Component {
                                             <div class="row">
                                                 <div style={{backgroundColor: '#324B55'}} class="col-md-12">
                                                     <div  class="plan-detail">
-                                                        <p>Your Current Plan is</p>
-                                                        <h3>{this.state.data.subscriptionCode}</h3>
-                                                        { (this.state.data.subscriptionCode !== 'BASIC') ? <h6>Your plan expires on: {this.state.data.expired}</h6> : null }
+                                                        
+                                                        <p>Your Current Plan is</p> 
+                                                        {
+                                                            (Object.keys(this.state.data).length !== 0) ? 
+                                                            <h3>{this.state.data.subscriptionCode}</h3>
+                                                            : 
+                                                            <h3>BASIC</h3>
+                                                        }
+                                                        { (Object.keys(this.state.data).length !== 0 && this.state.data.subscriptionCode !== 'BASIC') ? <h6>Your plan expires on: {this.state.data.expired}</h6> : null }
                                                     </div>
                                                 </div>
                                             </div>
