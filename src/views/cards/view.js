@@ -98,6 +98,7 @@ class View extends Component {
             }).then((response) =>{
             return response.json();
         }).then((data)=> {
+            
             let displayArr = [];
 
             for (var i = 0; i < this.state.listData.length; i++) {
@@ -113,7 +114,12 @@ class View extends Component {
                     obj.is_default = this.state.listData[i].is_default;
                     displayArr.push(obj);
                 }
-            }    
+            }   
+            if(displayArr.length > 0)
+            {
+                displayArr[displayArr.length - 1].is_default = true;
+            } 
+            console.log(displayArr);
             this.setState({listData:displayArr});         
         });
     }
