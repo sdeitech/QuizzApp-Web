@@ -14,7 +14,7 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
-let round_id,contest_id;
+let round_id,contest_id,gameType;
 
 class AddRoundQuestion extends Component {
 	constructor(props) {
@@ -59,6 +59,7 @@ class AddRoundQuestion extends Component {
 		    	if (data.data.length > 0) {	
 					var data = data.data[0];
 					contest_id = data.contestId;
+					gameType = data.gameType;
 					let fields = this.state.fields;
 					fields['execution_mode']=data.execution_mode;
 					fields['negativeScoring']=data.negativeScoring;
@@ -85,7 +86,7 @@ class AddRoundQuestion extends Component {
 	    	}
 		});	
 
-		fetch(configuration.baseURL+"audioVideo/audioVideo?type=video", {
+		fetch(configuration.baseURL+"media?type=video", {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -101,7 +102,7 @@ class AddRoundQuestion extends Component {
 	    	}
 		});	
 
-		fetch(configuration.baseURL+"audioVideo/audioVideo?type=audio", {
+		fetch(configuration.baseURL+"media?type=audio", {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -240,6 +241,7 @@ class AddRoundQuestion extends Component {
             data.append('fileType',this.state.fields.fileType);
             data.append('fileUrl',this.state.fields.fileUrl);
             data.append('questionType',2);
+			data.append('gameType',gameType);
             
 
             fetch(configuration.baseURL+"roundQuestion/roundQuestion", {
@@ -446,6 +448,8 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.image;
 		this.setState({fields});
 		this.setState({optionsValuesModel:false,profilePic:data.image});
+		$('.display-profile-pic').show();
+		$('#start').hide();
 	}
 
 	selectVideo(data){
@@ -454,6 +458,8 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({fields});
 		this.setState({optionsValuesModel:false,profilePic:'avatars/play.svg'});
+		$('.display-profile-pic').show();
+		$('#start').hide();
 	}
 
 	selectAudio(data){
@@ -462,6 +468,8 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({fields});
 		this.setState({optionsValuesModel:false,profilePic:'avatars/5.png'});
+		$('.display-profile-pic').show();
+		$('#start').hide();
 	}
 
 	render() {
@@ -501,7 +509,7 @@ class AddRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="main_title">
-	                                        <h3>Create Quiz Question</h3>  
+	                                        <h3>Create {gameType} Question</h3>  
 	                                    </div> 
 	                                </div>
 	                            </div>

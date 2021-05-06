@@ -393,6 +393,10 @@ class RoundTray extends Component {
 			            					
 			            			// }
                 	}
+					else if (type === 'Hangman' || type === 'Unscramble' || type === 'Gibberish') 
+					{
+						this.props.history.push('/round_words/'+contest_id+'/'+e);
+					}
                 	this.setState({openModel:!this.state.openModel});
                 }
                 else
@@ -414,12 +418,12 @@ class RoundTray extends Component {
     saveNextHandler(id,data,e)
     {
     	if (data.gameType === 'Hangman' || data.gameType === 'Unscramble' || data.gameType === 'Gibberish') {
-			this.setState({wordModel:true,openModel:false});
+			this.updateRoundHandler('Hangman',id);
 		}
-		else if (data.gameType === 'Bingo' || data.gameType === 'GuessAndGo' || data.gameType === 'Taboo') {
+		else if (data.gameType === 'Bingo') {
 			return false;
 		}
-		else if (data.gameType === 'Quiz' )
+		else if (data.gameType === 'Quiz' || data.gameType === 'GuessAndGo'  || data.gameType === 'Taboo')
 		{
 			this.updateRoundHandler('roundquestion',id);
 		}
@@ -570,8 +574,8 @@ class RoundTray extends Component {
 											                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}/>
 											                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
 											                        <img className="ico" src={this.className(val.gameType,'src')} alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
-											                        <h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{(val.title !== '') ? val.title : val.gameType}</h3>
-											                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}></p>
+																	<h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
+											                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer",color:"#000",font: 'normal normal 14px Montserrat'}}>{(val.title !== '') ? val.title : ''}</p>
 											                    </div>
 											                </div>
 													    );

@@ -59,6 +59,10 @@ const plans = React.lazy(() => import("./views/plans/view"));
 const cards = React.lazy(() => import("./views/cards/view"));
 const add_card = React.lazy(() => import("./views/cards/add"));
 
+const RoundWords = React.lazy(() => import("./views/words/view"));
+const AddRoundWords = React.lazy(() => import("./views/words/add"));
+const EditRoundWords = React.lazy(() => import("./views/words/edit"));
+
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
@@ -96,6 +100,9 @@ const routes = [
     { path: "/cards", name: "cards", component: cards },
     { path: "/add_card", name: "add_card", component: add_card },
     
+    { path: '/round_words', name: 'RoundWords', component: RoundWords },
+    { path: '/add_round_word', name: 'AddRoundWords', component: AddRoundWords },
+    { path: '/edit_round_word', name: 'EditRoundWords', component: EditRoundWords },
     
 ]
 
