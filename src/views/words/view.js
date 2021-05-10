@@ -15,7 +15,7 @@ import $ from 'jquery';
 import RLDD from 'react-list-drag-and-drop/lib/RLDD';
 let round_id,gameType;
 
-class RoundQuestion extends Component {
+class RoundWords extends Component {
 	constructor(props) {
         super(props);
         this.state = {
@@ -28,26 +28,28 @@ class RoundQuestion extends Component {
 	componentDidMount(){
 		var url = window.location.href;
         round_id =url.substring(url.lastIndexOf('/') + 1);
+
 		fetch(configuration.baseURL+"round/round?roundId="+round_id, {
-				method: "GET",
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-					'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-				}
-			}).then((response) =>{
-			return response.json();
-		}).then((data)=> {
-			if (data.data.length > 0) {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	   		if (data.data.length > 0) {
 				gameType = data.data[0].gameType;
 				this.getList(round_id);
-			}
-			else
-			{
-				this.props.history.push('/dashboard');
-			}
+		   	}
+		   	else
+		   	{
+		   		this.props.history.push('/dashboard');
+		   	}
 		});
-
+		
+		
 	}
 	handleRLDDChange(newItems) {
 	    this.setState({ listArr: newItems });
@@ -75,7 +77,7 @@ class RoundQuestion extends Component {
 
 	getList(round_id)
 	{
-		if (round_id) {
+		if (round_id && gameType) {
 			fetch(configuration.baseURL+"roundQuestion/roundQuestion?roundId="+round_id+"&gameType="+gameType, {
 	                method: "GET",
 	                headers: {
@@ -99,7 +101,9 @@ class RoundQuestion extends Component {
     deleteHandler(id = '',e)
 	{
 		if (this.state.delete_id) {
-			fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+this.state.delete_id+"?roundId="+round_id +"&gameType="+gameType, {
+
+			
+			fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+this.state.delete_id+"?roundId="+round_id+"&gameType="+gameType, {
 				method:"DELETE",
 	            headers: {
 					'contentType': "application/json",
@@ -128,12 +132,12 @@ class RoundQuestion extends Component {
 
 	addQuestion()
 	{
-		this.props.history.push('/add_round_question/'+round_id);
+		this.props.history.push('/add_round_word/'+round_id);
 	}
 
 	editHandler(id)
 	{
-		this.props.history.push('/edit_round_question/'+round_id +'?'+id);
+		this.props.history.push('/edit_round_word/'+round_id +'?'+id);
 	}
 
 	backToRound(){
@@ -187,7 +191,7 @@ class RoundQuestion extends Component {
 			                            <div className="row">
 			                                <div className="col-md-12">
 			                                    <div className="main_title">
-			                                        <h3>{gameType} Round Questions</h3>  
+			                                        <h3>{gameType} Round Words</h3>  
 			                                    </div> 
 			                                </div>
 			                            </div>
@@ -205,23 +209,7 @@ class RoundQuestion extends Component {
 				                                <div className="accordion-wrapper">
 				                                    <div class={className} onClick={this.toggleHandler.bind(this,ckey)}>
 				                                        <div className="row">
-				                                            <div className="col-md-2">
-				                                                <div className="acc_img cus-acc_img">
-				                                                	{
-				                                                		(val.fileType === 'audio') ? 
-				                                                		<img src="avatars/5.png"/> : null
-				                                                	}
-				                                                	{
-				                                                		(val.fileType === 'video') ? 
-				                                                		<img src='avatars/play.svg' /> : null
-				                                                	}
-				                                                	{
-				                                                		(val.fileType === 'gallery' || val.fileType === 'image') ? 
-				                                                		<img src={(val.file !== '') ? val.file : 'avatars/question.png'} /> : (val.fileType === '') ? <img src={(val.file !== '') ? val.file : 'avatars/question.png'} /> : null
-				                                                	}
-				                                                </div>
-				                                            </div>
-				                                            <div className="col-md-10">
+				                                            <div className="col-md-12">
 				                                                <div className="acc_title" style={{cursor:'pointer'}}  >
 				                                                    <h4>{val.question}</h4>
 				                                                </div>
@@ -230,27 +218,10 @@ class RoundQuestion extends Component {
 				                                    </div>
 				                                    <div class="acc-body rounded-0" style={style}>
 				                                        <div className="row">
-				                                            <div className="col-md-2">
-				                                               
-				                                            </div>
-				                                            <div className="col-md-10 ">
+				                                            <div className="col-md-12">
 				                                                <div className="acc_detail" style={{marginBottom:'20px'}}>
 				                                                    <button type="button" className="remove_btn"  onClick={this.deleteHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/close2.svg" /> Remove</button>
 				                                                    <button type="button" className="remove_btn" onClick={this.editHandler.bind(this,val._id)} style={{cursor:'pointer'}}><img src="./murabbo/img/edit.svg"   /> Edit</button>
-				                                                </div>
-				                                                <div className="answer">
-				                                                	{val.answers.map((val1, ckey1) => {
-					                                                	return <div className="answer-box list-answer-box">
-				                                                        <p className="fancy">
-				                                                            <label >
-				                                                            {(val1.correctAnswer === true) ? 
-				                                                              <i className="fa fa-check-circle" style={{cursor:'auto'}} /> : <span className="fancy-circle no-border" style={{cursor:'auto'}}></span> }
-				                                                              <span for={ckey1}>{this.truncate(val1.answer,450)}</span>
-				                                                            </label>
-				                                                        </p>
-				                                                    </div>
-					                                                	})
-					                                                }
 				                                                </div>
 				                                            </div>
 				                                        </div>
@@ -276,9 +247,8 @@ class RoundQuestion extends Component {
 			                                <div className="col-md-12">
 			                                    <div className="footer-btn">
 			                                    	<button className="yellow_btn" type="button" onClick={ this.backToRound.bind(this) }>Back To Round</button>
-			                                        <button className="blue_btn light_blue_btn" type="button" onClick={ this.addQuestion.bind(this) }>Add {(this.state.listArr.length > 0) ? 'More ' : '' }Question</button>
+			                                        <button className="blue_btn light_blue_btn" type="button" onClick={ this.addQuestion.bind(this) }>Add {(this.state.listArr.length > 0) ? 'More ' : '' }Word</button>
 			                                        <button className="pink_btn" type="button" onClick={this.saveNextHandler.bind(this)} >Save & Exit</button>
-			                                        {/*<button className="yellow_btn" type="button">Save</button>*/}
 			                                    </div> 
 			                                </div>
 			                            </div>
@@ -328,4 +298,4 @@ class RoundQuestion extends Component {
 }
 
 
-export default RoundQuestion
+export default RoundWords

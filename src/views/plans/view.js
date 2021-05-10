@@ -185,7 +185,7 @@ class Plans extends Component {
                                                     <h3>{val1.title}</h3>
                                                     <h5>{(val1.price > 0) ? '$'+val1.price : 'Free' }</h5>
                                                     <p>{val1.description}</p>
-                                                    {(val1.isActive === false && val1.subscriptionCode !== 'BASIC') ? <button type="button" onClick={this.handlePurcaseClick.bind(this,val1._id)}>Purchase</button> : null}
+                                                    {(val1.subscriptionCode !== 'BASIC') ? <button type="button" onClick={this.handlePurcaseClick.bind(this,val1._id)}>Purchase</button> : null}
                                                     {(val1.subscriptionCode === 'BASIC') ? <button type="button">Free</button> : null}
                                                 </div>
                                             </div>

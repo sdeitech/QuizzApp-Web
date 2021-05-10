@@ -151,6 +151,7 @@ class Add extends Component {
                                         <div class="col-md-12">
                                             <div class="footer-btn">
                                                 <button class="blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Submit</button>
+                                                <button class="yellow_btn" type="button" style={{marginLeft:'10px'}} onClick={() => {this.props.history.push('/cards') }}>Cancel</button>
                                             </div> 
                                         </div>
                                         <div style={{textAlign: 'center'}} class="col-md-12 mt-3">

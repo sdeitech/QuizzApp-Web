@@ -15,7 +15,7 @@ import {
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
 let round_id,contest_id;
-let question_id;
+let question_id,gameType;
 class EditRoundQuestion extends Component {
 	constructor(props) {
         super(props);
@@ -54,42 +54,7 @@ class EditRoundQuestion extends Component {
 
         if (round_id && question_id) {
 
-        	
-			fetch(configuration.baseURL+"roundQuestion/roundQuestion?roundId="+round_id +"&questionId="+question_id, {
-	                method: "GET",
-	                headers: {
-	                    'Accept': 'application/json',
-	                    'Content-Type': 'application/json',
-	                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-	                }
-	            }).then((response) =>{
-		    	return response.json();
-		    }).then((data)=> {
-		    	if (data.data.length > 0) {	
-					let fields = this.state.fields;
-					fields = data.data[0];
-					fields['image'] = '';
-			   		this.setState({fields});
-			   		this.setState({answers:data.data[0].answers})
-			   		if (data.data[0].file !== '') {
-			   			if (data.data[0].fileType === 'image') {
-			   				$('.display-profile-pic').attr('src', data.data[0].file);
-			   			}
-			   			else
-			   			{
-			   				if (data.data[0].fileType === 'video') {
-					        	this.setState({profilePic:'avatars/play.svg'});
-					        }
-					        else if (data.data[0].fileType === 'audio') {
-					        	this.setState({profilePic:'avatars/5.png'});
-					        }
-			   			}
-						$('.display-profile-pic').show();
-						$('#start').hide();
-			   		}
-		    	}
-			});	
-
+        
 			fetch(configuration.baseURL+"round/round?roundId="+round_id, {
 	                method: "GET",
 	                headers: {
@@ -99,56 +64,55 @@ class EditRoundQuestion extends Component {
 	                }
 	            }).then((response) =>{
 		    	return response.json();
-		    }).then((data)=> {
-		    	if (data.data.length > 0) {	
+		    }).then((newdata)=> {
+		    	if (newdata.data.length > 0) {	
 		    		var that = this;
-					setTimeout(function () {
-						let fields = that.state.fields;
-
-						if (!fields['timeLimit']) {
-							fields['timeLimit'] = '00:30';
-							fields['timeLimitSeconds'] = 30;
+					var newdata = newdata.data[0];
+					gameType = newdata.gameType;
+					contest_id = newdata.contestId;
+						
+					fetch(configuration.baseURL+"roundQuestion/roundQuestion?roundId="+round_id +"&questionId="+question_id+"&gameType="+gameType, {
+							method: "GET",
+							headers: {
+								'Accept': 'application/json',
+								'Content-Type': 'application/json',
+								'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+							}
+						}).then((response) =>{
+						return response.json();
+					}).then((data)=> {
+						if (data.data.length > 0) {	
+							let fields = that.state.fields;
+							fields = data.data[0];
+							
+							fields['timeLimitSeconds'] = fields['timeLimit'];
+							fields['execution_mode']=newdata.execution_mode;
+							fields['scoring']=newdata.scoring;
+							fields['image'] = '';
+							console.log(fields);
+							that.setState({fields});
+							that.setState({answers:data.data[0].answers})
+							if (data.data[0].file !== '') {
+								if (data.data[0].fileType === 'image') {
+									$('.display-profile-pic').attr('src', data.data[0].file);
+								}
+								else
+								{
+									if (data.data[0].fileType === 'video') {
+										that.setState({profilePic:'avatars/play.svg'});
+									}
+									else if (data.data[0].fileType === 'audio') {
+										that.setState({profilePic:'avatars/5.png'});
+									}
+								}
+								$('.display-profile-pic').show();
+								$('#start').hide();
+							}																	
+							setTimeout(function () {
+								that.changeTime(0);
+							}, 1000);
 						}
-						else
-						{
-							var currentTime = parseInt(fields['timeLimit']),
-							seconds = (currentTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
-							minute = (Math.floor(currentTime / 60)).toString();// get the hours and convert to a string
-
-							//make sure we've got the right length for the seconds string
-							if (seconds.length === 0){
-								seconds = "00";
-							}
-							else if(seconds.length === 1){
-								seconds = "0" + seconds;
-							}
-
-							if (minute.length === 0){
-								minute = "00";
-							}
-							else if (minute.length === 1){
-								minute = "0" + minute;
-							}
-
-							if (parseInt(minute) === 5 || parseInt(minute) > 5) {
-								minute = '05';
-								seconds = '00';
-							}
-							else if (parseInt(minute) === 0 && parseInt(seconds) === 0 || parseInt(seconds) < 30) {
-								minute = '00';
-								seconds = '30';
-							}
-
-							fields['timeLimit'] = minute + ":" + seconds;
-							fields['timeLimitSeconds'] = currentTime;
-						}
-						// console.log(fields);
-
-						contest_id = data.data[0].contestId;
-						fields['execution_mode']=data.data[0].execution_mode;
-						fields['scoring']=data.data[0].scoring;
-				   		that.setState({fields});
-					}, 1000);
+					});	
 					
 		    	}
 			});	
@@ -170,7 +134,7 @@ class EditRoundQuestion extends Component {
 	    	}
 		});	
 
-		fetch(configuration.baseURL+"audioVideo/audioVideo?type=video", {
+		fetch(configuration.baseURL+"media?type=video", {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -186,7 +150,7 @@ class EditRoundQuestion extends Component {
 	    	}
 		});	
 
-		fetch(configuration.baseURL+"audioVideo/audioVideo?type=audio", {
+		fetch(configuration.baseURL+"media?type=audio", {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -318,13 +282,18 @@ class EditRoundQuestion extends Component {
         		data.append('answerTypeBoolean',this.state.fields.answerTypeBoolean);
 	        }
 
-	        data.append('questionType',2);
+	        data.append('questionType',2);	
+			data.append('gameType',gameType);
 
-            if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){;
+            if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){
                 data.append('file', this.uploadInput.files[0]);
-	            data.append('fileType',this.state.fields.fileType);
-	            data.append('fileUrl',this.state.fields.fileUrl);
+            } 
+            else
+            {
+            	data.append('file', '');
             }
+            data.append('fileType',this.state.fields.fileType);
+            data.append('fileUrl',this.state.fields.fileUrl);
 
             fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
                 method: "PUT",
@@ -488,6 +457,8 @@ class EditRoundQuestion extends Component {
 		fields['fileUrl'] = data.image;
 		this.setState({fields});
 		this.setState({optionsValuesModel:false,profilePic:data.image});
+		$('.display-profile-pic').show();
+		$('#start').hide();
 	}
 
 	selectVideo(data){
@@ -496,6 +467,8 @@ class EditRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({fields});
 		this.setState({optionsValuesModel:false,profilePic:'avatars/play.svg'});
+		$('.display-profile-pic').show();
+		$('#start').hide();
 	}
 
 	selectAudio(data){
@@ -504,6 +477,8 @@ class EditRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({fields});
 		this.setState({optionsValuesModel:false,profilePic:'avatars/5.png'});
+		$('.display-profile-pic').show();
+		$('#start').hide();
 	}
 
 	changeTime(sec){
@@ -580,7 +555,7 @@ class EditRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="main_title">
-	                                        <h3>Edit Quiz Question</h3>  
+	                                        <h3>Edit {gameType} Question</h3>  
 	                                    </div> 
 	                                </div>
 	                            </div>
@@ -642,7 +617,14 @@ class EditRoundQuestion extends Component {
 					                            <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
 				                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Scoring </label>
 				                                    <div className="button-switch">
-				                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this,'negativeScoring')} />
+													{
+									                (this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? 
+													<input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} checked="checked"  onChange={this.handleChange.bind(this,'negativeScoring')} />
+				                                    :
+													<input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this,'negativeScoring')} />
+				                                      
+													}
+				                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} checked={(this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? 'checked':''}  onChange={this.handleChange.bind(this,'negativeScoring')} />
 				                                      <label for="switch-orange" className="lbl-off"></label>
 				                                      <label for="switch-orange" className="lbl-on"></label>
 				                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
