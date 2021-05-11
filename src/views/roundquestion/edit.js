@@ -85,6 +85,8 @@ class EditRoundQuestion extends Component {
 							let fields = that.state.fields;
 							fields = data.data[0];
 							
+							fields['gameType']=gameType;
+							fields['answerType']=(gameType !== 'Taboo') ? 1 : 4;
 							fields['timeLimitSeconds'] = fields['timeLimit'];
 							fields['execution_mode']=newdata.execution_mode;
 							fields['scoring']=newdata.scoring;
@@ -222,7 +224,7 @@ class EditRoundQuestion extends Component {
             errors["question"] = "Please enter question";formIsValid=false;
         }
 
-        if (this.state.fields.negativeScoring === true || this.state.fields.negativeScoring === 'true')
+        if (this.state.fields['gameType'] !== 'Taboo' && this.state.fields.negativeScoring === true || this.state.fields.negativeScoring === 'true')
         {
         	if(fields["hintText"].trim() === ''){
 	            errors["hintText"] = "Please enter hint";formIsValid=false;
@@ -234,7 +236,7 @@ class EditRoundQuestion extends Component {
 
     	if(formIsValid){
     		if(this.state.answers.length === 0 && parseInt(this.state.fields['answerType']) !== 5){
-				this.setState({tosterMsg:'Please add at least one answer'});
+				this.setState({tosterMsg:(this.state.fields['gameType'] !== 'Taboo') ? 'Please add at least one answer' : 'Please add at least one taboo'});
                  return false;
 	        }
 
@@ -285,16 +287,17 @@ class EditRoundQuestion extends Component {
 	        data.append('questionType',2);	
 			data.append('gameType',gameType);
 
-            if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){
-                data.append('file', this.uploadInput.files[0]);
-            } 
-            else
-            {
-            	data.append('file', '');
-            }
-            data.append('fileType',this.state.fields.fileType);
-            data.append('fileUrl',this.state.fields.fileUrl);
-
+			if(this.state.fields['gameType'] !== 'Taboo'){
+				if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){
+					data.append('file', this.uploadInput.files[0]);
+				} 
+				else
+				{
+					data.append('file', '');
+				}
+				data.append('fileType',this.state.fields.fileType);
+				data.append('fileUrl',this.state.fields.fileUrl);
+			}
             fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
                 method: "PUT",
                 headers: {
@@ -389,7 +392,7 @@ class EditRoundQuestion extends Component {
 
     	let errors = {};
         if(fields["answer"].trim() === ''){
-            errors["answer"] = "Please enter answer";formIsValid = false;
+            errors["answer"] = (this.state.fields['gameType'] !== 'Taboo') ? 'Please enter answer' : 'Please enter taboo';formIsValid = false;
         }
         this.setState({errorsAnswer: errors});
 
@@ -573,6 +576,8 @@ class EditRoundQuestion extends Component {
 	                            }
 	                        </div>
 	                        <div className="row">
+							{
+								(this.state.fields['gameType'] !== 'Taboo') ?
 	                            <div className="col-lg-4 col-md-6 col-sm-12">
 	                                <div className="profile-img" onClick={() => {this.setState({optionsModel:true})}}>
 	                                    <form id="file-upload-form" className="uploader question-add-edit">
@@ -591,7 +596,8 @@ class EditRoundQuestion extends Component {
 	                                    </form>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["image"]}</span>
-	                            </div>
+	                            </div> :null 
+							}
 	                            
 	                            
 	                            {
@@ -654,38 +660,44 @@ class EditRoundQuestion extends Component {
 	                                    <label>Question</label>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["question"]}</span>
-	                                <div className="cus_input input_wrap">
-	                                    <img src="./murabbo/img/answer.svg" alt="Upload"/> 
-	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'answerType')} value={this.state.fields['answerType']} required>
-					                      	<option value="1">Single Select</option>
-					                      	<option value="2">Multi Select</option>
-					                      	<option value="3">Free Text</option>
-					                      	{
-							                	(this.state.fields['scoring'] !== 2) ? (
-					                      		<option value="4">Flashcard</option> ) : null
-							           		}
-					                      	<option value="5">True or False</option>
-	                                    </select>
-	                                    <label>Question Type</label>
-	                                </div>
-	                                <span  className="error-msg">{this.state.errors["answerType"]}</span>
-		                               
+
+									{
+										(this.state.fields['gameType'] !== 'Taboo') ?
+										<div>
+											<div className="cus_input input_wrap">
+												<img src="./murabbo/img/answer.svg" alt="Upload"/> 
+												<select className="floating-select" onChange={this.handleChange.bind(this,'answerType')} value={this.state.fields['answerType']} required>
+													<option value="1">Single Select</option>
+													<option value="2">Multi Select</option>
+													<option value="3">Free Text</option>
+													{
+														(this.state.fields['scoring'] !== 2) ? (
+														<option value="4">Flashcard</option> ) : null
+													}
+													<option value="5">True or False</option>
+												</select>
+												<label>Question Type</label>
+											</div>
+											<span  className="error-msg">{this.state.errors["answerType"]}</span>
+											
 
 
-	                                <div className="cus_input input_wrap">
-	                                    <img src="./murabbo/img/info.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'hintText')} value={this.state.fields['hintText']} />
-	                                    <label>Hint</label>
-	                                </div>
-	                                <span  className="error-msg">{this.state.errors["hintText"]}</span>
-	                                <div className="cus_input input_wrap">
-	                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
-	                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
-					                      	<option value="2">Always</option>
-					                      	<option value="3">On demand</option>
-	                                    </select>
-	                                    <label>Show Hint</label>
-	                                </div>
-	                                <span  className="error-msg">{this.state.errors["hint"]}</span>
+											<div className="cus_input input_wrap">
+												<img src="./murabbo/img/info.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'hintText')} value={this.state.fields['hintText']} />
+												<label>Hint</label>
+											</div>
+											<span  className="error-msg">{this.state.errors["hintText"]}</span>
+												
+											<div className="cus_input input_wrap">
+												<img src="./murabbo/img/info2.svg" alt="Upload"/> 
+												<select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
+													<option value="2">Always</option>
+													<option value="3">On demand</option>
+												</select>
+												<label>Show Hint</label>
+											</div>
+											<span  className="error-msg">{this.state.errors["hint"]}</span>
+										</div> : null }
 
 	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
 	                                <div>
@@ -722,8 +734,8 @@ class EditRoundQuestion extends Component {
 	                            {
 	                            	(this.state.answers.length > 0) ? <div className="col-lg-12 col-md-12 col-sm-12">
 		                            	<div className="answer">
-		                                    <label>Select Answer {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
-		                                   (this.state.answers.length > 5) ? '( You can not add more than 6 answer )' : null }</label>
+		                                    <label>Select { (this.state.fields['gameType'] !== 'Taboo') ? "Answer" : this.state.fields['gameType']} {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
+		                                   (this.state.answers.length > 5) ? '( You can not add more than 6 '+ (this.state.fields['gameType'] !== 'Taboo') ? "answer" : this.state.fields['gameType'] +' )' : null }</label>
 		                                </div>
 		                            </div> : null
 	                            }
@@ -765,8 +777,8 @@ class EditRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
-		                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
-		                                    	(this.state.answers.length > 5) ? null : <button className="blue_btn light_blue_btn" type="button"  onClick={this.openModel.bind(this) }>Add {(this.state.answers.length > 0) ? 'More ' : '' }Answer</button> }
+										{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
+		                                   (this.state.answers.length > 5) ? null : <button className="blue_btn light_blue_btn" type="button"  onClick={this.openModel.bind(this) }>Add {(this.state.answers.length > 0) ? 'More ' : '' }{ (this.state.fields['gameType'] !== 'Taboo') ? "Answer" : this.state.fields['gameType']}</button> }
 		                                    <button className="pink_btn" type="button"  onClick={this.updateHandler.bind(this) } >Save & Exit</button>
 	                                    </div> 
 	                                </div>
@@ -788,12 +800,12 @@ class EditRoundQuestion extends Component {
 	                            </button>
                                 <div className="model_data">
                                     <div className="model-title">
-                                    	<h3>Add Answer</h3>	
+										<h3>Add { (this.state.fields['gameType'] !== 'Taboo') ? "Answer" : this.state.fields['gameType']}</h3>
                                     </div>
 
                                     <div className="cus_input input_wrap">
 	                                    <input type="text" required name="" onChange={this.handleChangeAnswer.bind(this,'answer')} value={this.state.fieldsAnswer['answer']} />
-	                                    <label>Type answer</label>
+	                                    <label>Type { (this.state.fields['gameType'] !== 'Taboo') ? "answer" : this.state.fields['gameType']}</label>
 	                                </div>
 	                                <span className="error-msg">{this.state.errorsAnswer["answer"]}</span>
 

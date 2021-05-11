@@ -420,16 +420,12 @@ class RoundTray extends Component {
     	if (data.gameType === 'Hangman' || data.gameType === 'Unscramble' || data.gameType === 'Gibberish') {
 			this.updateRoundHandler('Hangman',id);
 		}
-		else if (data.gameType === 'Bingo') {
+		else if (data.gameType === 'Bingo' || data.gameType === 'MatchIt') {
 			return false;
 		}
 		else if (data.gameType === 'Quiz' || data.gameType === 'GuessAndGo'  || data.gameType === 'Taboo')
 		{
 			this.updateRoundHandler('roundquestion',id);
-		}
-		else if (data.gameType === 'MatchIt' )
-		{
-			this.props.history.push('/matchit/'+contest_id);
 		}
 
     	
