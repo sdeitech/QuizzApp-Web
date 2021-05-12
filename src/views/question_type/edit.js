@@ -14,9 +14,9 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
-let round_id,contest_id,gameType;
-
-class AddRoundQuestion extends Component {
+let round_id,contest_id;
+let question_id,gameType;
+class EditRoundQuestion extends Component {
 	constructor(props) {
         super(props);
         this.state = {
@@ -26,11 +26,10 @@ class AddRoundQuestion extends Component {
 			fieldsAnswer:{},
 			errorsAnswer:{},
 			openModel:false,
-			optionsModel:false,
 			confirmationModel:false,
 			delete_id:'',
-            tosterMsg:'',
-            imageList:[],
+			tosterMsg:'',
+			imageList:[],
             videoList:[],
             audioList:[],
             typeOption:'',
@@ -44,8 +43,18 @@ class AddRoundQuestion extends Component {
 		$('.display-profile-pic').hide();
 		var url = window.location.href;
         round_id =url.substring(url.lastIndexOf('/') + 1);
+        round_id = round_id.split('?');
+
+        if (round_id[1]) {
+        	question_id = round_id[1];
+        }
+        if (round_id[0]) {
+        	round_id = round_id[0];
+        }
+
+        if (round_id && question_id) {
+
         
-        if (round_id) {
 			fetch(configuration.baseURL+"round/round?roundId="+round_id, {
 	                method: "GET",
 	                headers: {
@@ -55,24 +64,63 @@ class AddRoundQuestion extends Component {
 	                }
 	            }).then((response) =>{
 		    	return response.json();
-		    }).then((data)=> {
-		    	if (data.data.length > 0) {	
-					var data = data.data[0];
-					contest_id = data.contestId;
-					gameType = data.gameType;
-					let fields = this.state.fields;
-					fields['gameType']=gameType;
-					fields['answerType']=(gameType !== 'Taboo') ? 1 : 4;
-					fields['execution_mode']=data.execution_mode;
-					fields['negativeScoring']=data.negativeScoring;
-					fields['scoring']=data.scoring;
-			   		this.setState({fields});
+		    }).then((newdata)=> {
+		    	if (newdata.data.length > 0) {	
+		    		var that = this;
+					var newdata = newdata.data[0];
+					gameType = newdata.gameType;
+					contest_id = newdata.contestId;
+						
+					fetch(configuration.baseURL+"roundQuestion/roundQuestion?roundId="+round_id +"&questionId="+question_id+"&gameType="+gameType, {
+							method: "GET",
+							headers: {
+								'Accept': 'application/json',
+								'Content-Type': 'application/json',
+								'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+							}
+						}).then((response) =>{
+						return response.json();
+					}).then((data)=> {
+						if (data.data.length > 0) {	
+							let fields = that.state.fields;
+							fields = data.data[0];
+							
+							fields['gameType']=gameType;
+							fields['answerType']=(gameType !== 'Taboo') ? 1 : 4;
+							fields['timeLimitSeconds'] = fields['timeLimit'];
+							fields['execution_mode']=newdata.execution_mode;
+							fields['scoring']=newdata.scoring;
+							fields['image'] = '';
+							console.log(fields);
+							that.setState({fields});
+							that.setState({answers:data.data[0].answers})
+							if (data.data[0].file !== '') {
+								if (data.data[0].fileType === 'image') {
+									$('.display-profile-pic').attr('src', data.data[0].file);
+								}
+								else
+								{
+									if (data.data[0].fileType === 'video') {
+										that.setState({profilePic:'avatars/play.svg'});
+									}
+									else if (data.data[0].fileType === 'audio') {
+										that.setState({profilePic:'avatars/5.png'});
+									}
+								}
+								$('.display-profile-pic').show();
+								$('#start').hide();
+							}																	
+							setTimeout(function () {
+								that.changeTime(0);
+							}, 1000);
+						}
+					});	
+					
 		    	}
 			});	
 		}
 
-
-		fetch(configuration.baseURL+"media?type=image", {
+		fetch(configuration.APIbaseURL+"media?type=image", {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json',
@@ -81,12 +129,12 @@ class AddRoundQuestion extends Component {
 			}
 		}).then((response) =>{
 		return response.json();
-		}).then((data)=> {
-			if (data.data.length > 0) {	
-				var data = data.data;		   		
-				this.setState({imageList:data});
-			}
-		});	
+	}).then((data)=> {
+		if (data.data.length > 0) {	
+			var data = data.data;		   		
+			this.setState({imageList:data});
+		}
+	});		
 
 		fetch(configuration.baseURL+"media?type=video", {
                 method: "GET",
@@ -121,8 +169,6 @@ class AddRoundQuestion extends Component {
 		});	
 
 
-
-
 	}
 
 	btnClickHandler(type,e){
@@ -135,7 +181,7 @@ class AddRoundQuestion extends Component {
 			this.changeTime(5);
 		}
 	}
-	
+
 	handleChange(field, e){   
 
         let fields = this.state.fields;
@@ -145,8 +191,8 @@ class AddRoundQuestion extends Component {
         }
 
 		if (field === 'negativeScoring') {
-        	fields[field] = e.target.checked; 
-		}
+        	fields[field] = e.target.checked;	
+        }
 		else if (field === 'answerTypeBoolean') {
 			fields[field] = (e.target.value == 'true') ? true :false;
 		}
@@ -168,7 +214,7 @@ class AddRoundQuestion extends Component {
 
 
 
-	addHandler(e,type='')
+	updateHandler(e)
     {
     	let fields = this.state.fields;
         let formIsValid = true;
@@ -210,15 +256,11 @@ class AddRoundQuestion extends Component {
 				}
 
 			}
-	        
-
-        	// console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
+			
         	const data = new FormData();
-        	data.append('roundId',round_id);
         	data.append('question',this.state.fields.question);
-	        data.append('hintText',this.state.fields.hintText);
+        	data.append('hintText',this.state.fields.hintText);
         	data.append('answerType',this.state.fields.answerType);
-        	data.append('answerTypeBoolean',this.state.fields.answerTypeBoolean);
         	data.append('answers',JSON.stringify(this.state.answers));
         	if (this.state.fields.execution_mode === 2 || this.state.fields.execution_mode === '2') {
         		data.append('basePoints',this.state.fields.basePoints);
@@ -233,20 +275,31 @@ class AddRoundQuestion extends Component {
         		data.append('hint',1);
 	        	data.append('onDemandNegativePoints',0);
         	}
-            if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){
-                data.append('file', this.uploadInput.files[0]);
-            } 
-            else
-            {
-            	data.append('file', '');
-            }
-            data.append('fileType',this.state.fields.fileType);
-            data.append('fileUrl',this.state.fields.fileUrl);
-            data.append('questionType',2);
+
+        	if (this.state.fields.answerType !== 5 && this.state.fields.answerType !== '5') {
+	        	data.append('answerTypeBoolean',false);
+	        }
+	        else
+	        {
+        		data.append('answerTypeBoolean',this.state.fields.answerTypeBoolean);
+	        }
+
+	        data.append('questionType',2);	
 			data.append('gameType',gameType);
 
-            fetch(configuration.baseURL+"roundQuestion/roundQuestion", {
-                method: "POST",
+			if(this.state.fields['gameType'] !== 'Taboo'){
+				if(this.state.fields.image !== 'undefined' && this.state.fields.image === 'image'){
+					data.append('file', this.uploadInput.files[0]);
+				} 
+				else
+				{
+					data.append('file', '');
+				}
+				data.append('fileType',this.state.fields.fileType);
+				data.append('fileUrl',this.state.fields.fileUrl);
+			}
+            fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
+                method: "PUT",
                 headers: {
 					'contentType': "application/json",
                     'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
@@ -269,45 +322,7 @@ class AddRoundQuestion extends Component {
         }
     }
 
-
-    changeTime(sec){
-    	var fields = this.state.fields;
-      	var currentTime = parseInt(fields.timeLimitSeconds),
-          newTime = currentTime + sec, //calculate the new time
-          seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
-          minute = (Math.floor(newTime / 60)).toString();// get the hours and convert to a string
-
-	      //make sure we've got the right length for the seconds string
-	      if (seconds.length === 0){
-	        seconds = "00";
-	      }
-	      else if(seconds.length === 1){
-	        seconds = "0" + seconds;
-	      }
-
-	      if (minute.length === 0){
-	        minute = "00";
-	      }
-	      else if (minute.length === 1){
-	        minute = "0" + minute;
-	      }
-
-	      if (parseInt(minute) === 5 || parseInt(minute) > 5) {
-	      	minute = '05';
-	      	seconds = '00';
-	      }
-	      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 10)) {
-	      	minute = '00';
-	      	seconds = '10';
-	      }
-
-					
-		fields['timeLimit'] = minute + ":" + seconds;
-		fields['timeLimitSeconds'] = newTime;
-		this.setState({fields});
-    }
-
-
+    
     handleUploadProfile(type, ev) {
     	var type = this.uploadInput.files[0].type.split('/');
         let fields = this.state.fields;
@@ -323,8 +338,7 @@ class AddRoundQuestion extends Component {
         }
        
         
-    }
-    			
+    }		
 
     deleteHandler(key = '',e)
 	{	
@@ -349,7 +363,6 @@ class AddRoundQuestion extends Component {
 	{	
 		this.setState({fieldsAnswer:{answer:val.answer,correctAnswer:val.correctAnswer},errorsAnswer:{answer:''},openModel:true,edit_id:key});	
 	}
-
 
 	openModel()
 	{
@@ -386,12 +399,12 @@ class AddRoundQuestion extends Component {
     	if(formIsValid){
     		let answers = this.state.answers;
     		
-
     		if (this.state.edit_id !== '') {
 				answers[this.state.edit_id] = fields;
 			}
 			else
-				{
+			{
+
 	    		if(parseInt(this.state.fields['answerType']) !== 1 && parseInt(this.state.fields['answerType']) !== 2)
 	    		{
 					fields.correctAnswer = true;
@@ -402,9 +415,9 @@ class AddRoundQuestion extends Component {
 	    		}
 
 	    		answers.push(fields);
-			}
+    		}
 
-    		console.log(answers);
+
     		this.setState({answers: answers,tosterMsg:''});
     		this.setState({fieldsAnswer:{answer:''},errorsAnswer:{answer:''},openModel:false});
     	}
@@ -423,7 +436,6 @@ class AddRoundQuestion extends Component {
 			}	
 			else
 			{
-				
 				if (parseInt(that.state.fields['answerType']) === 1 && type === 'check') {
 					var obj = value;
 					obj.correctAnswer = false;
@@ -437,11 +449,10 @@ class AddRoundQuestion extends Component {
 		})
 		this.setState({answers: answers});
 	}
-
+	
 	truncate(str, n){
 	  return (str.length > n) ? str.substr(0, n-1) + '...' : str;
-	};
-
+	}
 
 	selectImage(data){
 		var fields = this.state.fields;
@@ -472,6 +483,43 @@ class AddRoundQuestion extends Component {
 		$('.display-profile-pic').show();
 		$('#start').hide();
 	}
+
+	changeTime(sec){
+    	var fields = this.state.fields;
+      	var currentTime = parseInt(fields.timeLimitSeconds),
+          newTime = currentTime + sec, //calculate the new time
+          seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
+          minute = (Math.floor(newTime / 60)).toString();// get the hours and convert to a string
+
+	      //make sure we've got the right length for the seconds string
+	      if (seconds.length === 0){
+	        seconds = "00";
+	      }
+	      else if(seconds.length === 1){
+	        seconds = "0" + seconds;
+	      }
+
+	      if (minute.length === 0){
+	        minute = "00";
+	      }
+	      else if (minute.length === 1){
+	        minute = "0" + minute;
+	      }
+
+	      if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+	      	minute = '05';
+	      	seconds = '00';
+	      }
+	      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 10)) {
+	      	minute = '00';
+	      	seconds = '10';
+	      }
+
+					
+		fields['timeLimit'] = minute + ":" + seconds;
+		fields['timeLimitSeconds'] = newTime;
+		this.setState({fields});
+    }
 
 	render() {
 		$(document).ready(function() {
@@ -510,7 +558,7 @@ class AddRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="main_title">
-	                                        <h3>Create {gameType} Question</h3>  
+	                                        <h3>Edit {gameType} Question</h3>  
 	                                    </div> 
 	                                </div>
 	                            </div>
@@ -553,17 +601,15 @@ class AddRoundQuestion extends Component {
 	                            
 	                            
 	                            {
-
 	                                	(this.state.fields['execution_mode'] === 2 || this.state.fields['execution_mode'] === "2") ? (
 	                                		<div className="col-lg-4 col-md-6 col-sm-12">
-	                                		<div>
 	                                			<div style={{margin: '0px 0 5px 0'}} className="cus_input ">
 				                                    <img src="./murabbo/img/clock.svg" alt="Upload"/> <label className="cus_label">Time Limit</label>
 				                                </div>
 
 				                                <div className="number">
 				                                    <span className="minus" style={{cursor:'pointer'}}><img src="./murabbo/img/minus.svg" onClick={this.btnClickHandler.bind(this,"minus")}/></span>
-				                                    <input type="text" value={this.state.fields['timeLimit']}  />
+				                                    <input type="text" value={this.state.fields['timeLimit']} />
 				                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus")}/></span>
 				                                </div>
 				                                <div style={{margin: '0px 0 5px 0'}} className="cus_input ">
@@ -577,15 +623,21 @@ class AddRoundQuestion extends Component {
 					                            <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
 				                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Scoring </label>
 				                                    <div className="button-switch">
-				                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this,'negativeScoring')} />
+													{
+									                (this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? 
+													<input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} checked="checked"  onChange={this.handleChange.bind(this,'negativeScoring')} />
+				                                    :
+													<input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this,'negativeScoring')} />
+				                                      
+													}
+				                                      <input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} checked={(this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? 'checked':''}  onChange={this.handleChange.bind(this,'negativeScoring')} />
 				                                      <label for="switch-orange" className="lbl-off"></label>
 				                                      <label for="switch-orange" className="lbl-on"></label>
 				                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
 				                                </div>
-				                            </div>
 
-				                            {
-							                	(this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? (
+				                                 {
+									                (this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? (
 				                                		<div>
 				                                			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
 							                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points</label>
@@ -595,43 +647,17 @@ class AddRoundQuestion extends Component {
 							                                  <output className="bubble">{this.state.fields['negativeBasePoints']}</output>
 							                                </div>
 				                                		</div> ) : null
-							           		}
-											{
-												(this.state.fields['gameType'] !== 'Taboo') ? <div>
-													<div className="cus_input input_wrap">
-														<img src="./murabbo/img/info2.svg" alt="Upload"/> 
-														<select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
-															<option value="2">Always</option>
-															<option value="3">On demand</option>
-														</select>
-														<label>Show Hint</label>
-													</div>
-													<span  className="error-msg">{this.state.errors["hint"]}</span>
-												</div> : null
-											}
-							           		
-        
-        	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
-            	                                <div>
-                                        			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-            		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
-            		                                </div>
-            		                                <div className="range-wrap">
-            		                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
-            		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
-            		                                </div>
-                                        		</div> 
-                                        	: null }
+									            }
 
-				                            </div>) : null
+
+				                            </div> ) : null
 				                }
-				                
-					            
+				               
 
 					            <div className="col-lg-4 col-md-6 col-sm-12">
 	                                <div className="cus_input input_wrap">
 	                                    <img src="./murabbo/img/help.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'question')} value={this.state.fields['question']} />
-	                                    <label>Add Question </label>
+	                                    <label>Question</label>
 	                                </div>
 	                                <span  className="error-msg">{this.state.errors["question"]}</span>
 
@@ -639,7 +665,7 @@ class AddRoundQuestion extends Component {
 										(this.state.fields['gameType'] !== 'Taboo') ?
 										<div>
 											<div className="cus_input input_wrap">
-												<img src="./murabbo/img/help.svg" alt="Upload"/> 
+												<img src="./murabbo/img/answer.svg" alt="Upload"/> 
 												<select className="floating-select" onChange={this.handleChange.bind(this,'answerType')} value={this.state.fields['answerType']} required>
 													<option value="1">Single Select</option>
 													<option value="2">Multi Select</option>
@@ -650,43 +676,61 @@ class AddRoundQuestion extends Component {
 													}
 													<option value="5">True or False</option>
 												</select>
-												<label>Select Question Type</label>
+												<label>Question Type</label>
 											</div>
 											<span  className="error-msg">{this.state.errors["answerType"]}</span>
+											
+
 
 											<div className="cus_input input_wrap">
 												<img src="./murabbo/img/info.svg" alt="Upload"/> <input type="text" required name="" onChange={this.handleChange.bind(this,'hintText')} value={this.state.fields['hintText']} />
 												<label>Hint</label>
 											</div>
 											<span  className="error-msg">{this.state.errors["hintText"]}</span>
+												
+											<div className="cus_input input_wrap">
+												<img src="./murabbo/img/info2.svg" alt="Upload"/> 
+												<select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
+													<option value="2">Always</option>
+													<option value="3">On demand</option>
+												</select>
+												<label>Show Hint</label>
+											</div>
+											<span  className="error-msg">{this.state.errors["hint"]}</span>
 										</div> : null }
 
-
-	                               
-	                                
-                            			{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? 
-	                            		<div>
-		                        			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-
-				                            	<img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
-			                                    <label className="cus_label">Select Answer </label>
-
-			                                </div>
-		                                    <label className="control control--radio">True
-												<input type="radio" name="radio" value={true}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === true ? 'checked' : '')}/>
-			                                  <div className="control__indicator"></div>
-			                                </label>
-			                                <label className="control control--radio">False
-			                                  <input type="radio" name="radio" value={false}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === false ? 'checked' : '')}/>
-			                                  <div className="control__indicator"></div>
-			                                </label>
+	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
+	                                <div>
+                            			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points  ( 0 - 100 )</label>
 		                                </div>
-		                                : 
-		                                null}
+		                                <div className="range-wrap">
+		                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
+		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
+		                                </div>
+                            		</div> : null }
+                            		{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? 
+                            		<div>
+	                        			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+
+			                            	<img src="./murabbo/img/negativeSign.png" alt="Upload"/> 
+		                                    <label className="cus_label">Select Answer </label>
+
+		                                </div>
+	                                    <label className="control control--radio">True
+											<input type="radio" name="radio" value={true}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === true ? 'checked' : '')}/>
+		                                  <div className="control__indicator"></div>
+		                                </label>
+		                                <label className="control control--radio">False
+		                                  <input type="radio" name="radio" value={false}  onChange={this.handleChange.bind(this, "answerTypeBoolean")} checked={(this.state.fields.answerTypeBoolean === false ? 'checked' : '')}/>
+		                                  <div className="control__indicator"></div>
+		                                </label>
+	                                </div>
+	                                : 
+	                                null}
                             		
 	                               
 	                            </div>
-
 	                            {
 	                            	(this.state.answers.length > 0) ? <div className="col-lg-12 col-md-12 col-sm-12">
 		                            	<div className="answer">
@@ -698,8 +742,7 @@ class AddRoundQuestion extends Component {
 	                            
 	                            {
 	                            	this.state.answers.map((val, key) => {
-
-	                            		return  <div className="col-lg-4 col-md-4 col-sm-12">
+	                            		return <div className="col-lg-4 col-md-4 col-sm-12">
 			                            	<div className="answer">
 
 			                                    <div className="answer-box">
@@ -734,9 +777,9 @@ class AddRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
-	                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
+										{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
 		                                   (this.state.answers.length > 5) ? null : <button className="blue_btn light_blue_btn" type="button"  onClick={this.openModel.bind(this) }>Add {(this.state.answers.length > 0) ? 'More ' : '' }{ (this.state.fields['gameType'] !== 'Taboo') ? "Answer" : this.state.fields['gameType']}</button> }
-		                                    <button className="pink_btn" type="button"  onClick={this.addHandler.bind(this) } >Save & Exit</button>
+		                                    <button className="pink_btn" type="button"  onClick={this.updateHandler.bind(this) } >Save & Exit</button>
 	                                    </div> 
 	                                </div>
 	                            </div>
@@ -757,7 +800,7 @@ class AddRoundQuestion extends Component {
 	                            </button>
                                 <div className="model_data">
                                     <div className="model-title">
-                                    	<h3>Add { (this.state.fields['gameType'] !== 'Taboo') ? "Answer" : this.state.fields['gameType']}</h3>	
+										<h3>Add { (this.state.fields['gameType'] !== 'Taboo') ? "Answer" : this.state.fields['gameType']}</h3>
                                     </div>
 
                                     <div className="cus_input input_wrap">
@@ -766,7 +809,7 @@ class AddRoundQuestion extends Component {
 	                                </div>
 	                                <span className="error-msg">{this.state.errorsAnswer["answer"]}</span>
 
-					                {/*<div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
+									{/*<div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
 					                     <div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
 					                        <img src="./murabbo/img/answer.svg" /> <label className="cus_label">Show Correct Answer</label>
 					                    </div>
@@ -781,7 +824,7 @@ class AddRoundQuestion extends Component {
 					                </div>*/}
 					               
 					                <div className="full_btn">
-					                    <button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"  onClick={this.saveAnswerModel.bind(this)} >{(this.state.edit_id !== '') ? 'Update' : 'Done'}</button>
+					                    <button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"  onClick={this.saveAnswerModel.bind(this)} >Done</button>
 					                </div>
                                 </div>
                             </div>
@@ -791,37 +834,39 @@ class AddRoundQuestion extends Component {
 	            <CModal show={this.state.confirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({confirmationModel:false,delete_id:''})}
                     color="danger" 
                     centered>
-                    <CModalBody className="model-bg">
+                        <CModalBody className="model-bg">
 
-                    <div>
-                        <div className="modal-body">
-                            
-                            <div className="model_data">
-                                <div className="model-title">
-                                	<h3>Are you sure you want to delete?</h3>
-                                </div>
-                                <img className="shape2" src="./murabbo/img/shape2.svg"/>
-                                <img className="shape3" src="./murabbo/img/shape3.svg"/>
-                                <div className="row">
-                                    <div className="col-md-10 offset-md-1">
+                        <div>
+                            <div className="modal-body">
+                                
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    	<h3>Are you sure you want to delete?</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
 
-						                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-						                <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.deleteHandler.bind(this,'')} >Yes</button>
-						                </div>
-                            			<div style={{ textAlign: 'center' , float:'left' }} className="">
+							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+							                	<button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.deleteHandler.bind(this,'')} >Yes</button>
+							                </div>
+                                			<div style={{ textAlign: 'center' , float:'left' }} className="">
 
-						                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
-						                    
-						                </div>
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                    
+							                </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        </div>
-                    </CModalBody>
-                </CModal>
+                            </div>
+                        </CModalBody>
+                    </CModal>
 
-                <CModal show={this.state.optionsModel}  closeOnBackdrop={false}  onClose={()=> this.setState({optionsModel:false})}
+
+
+                 <CModal show={this.state.optionsModel}  closeOnBackdrop={false}  onClose={()=> this.setState({optionsModel:false})}
                     color="danger" 
                     centered>
                     <CModalBody className="model-bg">
@@ -963,8 +1008,6 @@ class AddRoundQuestion extends Component {
                         </div>
                     </CModalBody>
                 </CModal>
-            
-
 	        </main>
 		        <TheFooter />
 		    </>
@@ -972,4 +1015,4 @@ class AddRoundQuestion extends Component {
 	}
 }
 
-export default AddRoundQuestion
+export default EditRoundQuestion

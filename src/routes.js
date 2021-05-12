@@ -63,6 +63,10 @@ const RoundWords = React.lazy(() => import("./views/words/view"));
 const AddRoundWords = React.lazy(() => import("./views/words/add"));
 const EditRoundWords = React.lazy(() => import("./views/words/edit"));
 
+const QuestionType = React.lazy(() => import("./views/question_type/view"));
+const AddQuestionType = React.lazy(() => import("./views/question_type/add"));
+const EditQuestionType = React.lazy(() => import("./views/question_type/edit"));
+
 const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
@@ -98,11 +102,13 @@ const routes = [
     { path: "/videoChat", name: "videoChat", component: videoChat },
     { path: "/plans", name: "plans", component: plans },
     { path: "/cards", name: "cards", component: cards },
-    { path: "/add_card", name: "add_card", component: add_card },
-    
+    { path: "/add_card", name: "add_card", component: add_card },    
     { path: '/round_words', name: 'RoundWords', component: RoundWords },
     { path: '/add_round_word', name: 'AddRoundWords', component: AddRoundWords },
     { path: '/edit_round_word', name: 'EditRoundWords', component: EditRoundWords },
+    { path: '/question_type', name: 'QuestionType', component: QuestionType },
+    { path: '/add_question_type', name: 'AddQuestionType', component: AddQuestionType },
+    { path: '/edit_question_type', name: 'EditQuestionType', component: EditQuestionType },
     
 ]
 
