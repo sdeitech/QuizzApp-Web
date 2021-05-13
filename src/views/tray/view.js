@@ -14,14 +14,13 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery';
 import RLDD from 'react-list-drag-and-drop/lib/RLDD';
-
 let contest_id;
 
 class RoundTray extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-			fields:{timeLimitSeconds:30,timeLimit:'00:30',execution_mode:1,onDemandNegativePoints:0,hint:''},
+			fields:{timeLimitSeconds:30,timeLimit:'00:30',execution_mode:1,onDemandNegativePoints:0,hint:'',entriesPerRound:4,type:'2',noOfQuestions:3},
 			errors:{},
 			openModelRoundAdd:false,
 			confirmationModel:false,
@@ -29,6 +28,7 @@ class RoundTray extends Component {
 			openModel:false,
 			qtyAdd:false,
 			wordModel:false,
+			tempSelectedGrid:4,
 			qty:1,
 			timeLimit:'00:00',
 			delete_id:'',
@@ -276,8 +276,26 @@ class RoundTray extends Component {
 		if (!data.negativeBasePoints) {
 			data.negativeBasePoints = 0;
 		}
-		
-
+		if(data.gameType === 'MatchIt' || data.gameType === 'Bingo' )
+		{
+			console.log(111);
+			if(!data.entriesPerRound){
+				data.entriesPerRound = 4;
+			}
+			if(!data.type || data.type === 'text'){
+				data.type = '1';
+			}
+			if(!data.noOfQuestions){
+				data.noOfQuestions = 3;
+			}
+			setTimeout(function(){
+			$('.GridRadio').each(function() {
+				var trueOrFalse = (Number($(this).attr('id')) === Number(data.entriesPerRound)) ? true : false;
+				console.log(trueOrFalse);
+				$(this).prop( "checked", trueOrFalse );
+			});
+			}, 1000);
+		}
 
 		this.setState({openModel:!this.state.openModel,fields:data})
 
@@ -370,6 +388,14 @@ class RoundTray extends Component {
             if(this.state.fields.image === 'image'){
                 data.append('image', this.uploadInput.files[0]);
             } 
+
+			if(type === 'Bingo' || type === 'MatchIt')
+			{
+				data.append('entriesPerRound',this.state.fields.entriesPerRound);
+				data.append('type',this.state.fields.type);
+				data.append('noOfQuestions',this.state.fields.noOfQuestions);	
+			}
+
             // console.log(data);
             fetch(configuration.baseURL+"round/round/"+this.state.fields._id, {
                 method: "PUT",
@@ -386,16 +412,21 @@ class RoundTray extends Component {
 
                 	if (type === 'roundquestion') {
                 		this.props.history.push('/roundquestion/'+contest_id+'/'+e);
-			               //  		if (this.state.fields.gameType === 'Hangman' || this.state.fields.gameType === 'Unscramble' || this.state.fields.gameType === 'Gibberish') {
-			               //  			this.props.history.push('/round_words/'+contest_id+'/'+e);	
-			               //  		}
-			            			// else{
-			            					
-			            			// }
                 	}
 					else if (type === 'Hangman' || type === 'Unscramble' || type === 'Gibberish') 
 					{
 						this.props.history.push('/round_words/'+contest_id+'/'+e);
+					}
+					else if (type === 'Bingo' || type === 'MatchIt') 
+					{
+						if(type === 'Bingo' && this.state.fields.type === 3 || this.state.fields.type === '3')
+						{
+							return false;
+						}
+						else{
+							
+						this.props.history.push('/question_type/'+contest_id+'/'+e);
+						}
 					}
                 	this.setState({openModel:!this.state.openModel});
                 }
@@ -417,19 +448,12 @@ class RoundTray extends Component {
 
     saveNextHandler(id,data,e)
     {
-    	if (data.gameType === 'Hangman' || data.gameType === 'Unscramble' || data.gameType === 'Gibberish') {
-			this.updateRoundHandler('Hangman',id);
-		}
-		else if (data.gameType === 'Bingo') {
-			return false;
+    	if (data.gameType === 'Hangman' || data.gameType === 'Unscramble' || data.gameType === 'Gibberish' || data.gameType === 'Bingo' || data.gameType === 'MatchIt') {
+			this.updateRoundHandler(data.gameType,id);
 		}
 		else if (data.gameType === 'Quiz' || data.gameType === 'GuessAndGo'  || data.gameType === 'Taboo')
 		{
 			this.updateRoundHandler('roundquestion',id);
-		}
-		else if (data.gameType === 'MatchIt' )
-		{
-			this.props.history.push('/matchit/'+contest_id);
 		}
 
     	
@@ -498,6 +522,32 @@ class RoundTray extends Component {
 		fields['timeLimit'] = minute + ":" + seconds;
 		fields['timeLimitSeconds'] = newTime;
 		this.setState({fields});
+    }
+
+	handleChangeGrid(data,e)
+    {
+		console.log(e.target.checked);
+		console.log(data);
+		let fields = this.state.fields;
+		
+		if (e.target.checked) {
+			fields['entriesPerRound'] = data;
+			this.setState({fields});
+			$('.GridRadio').each(function() {
+				var trueOrFalse = (Number($(this).attr('id')) === Number(data)) ? true : false;
+			    $(this).prop( "checked", trueOrFalse );
+			});
+		}
+		else
+		{
+			fields['entriesPerRound'] = 4;
+			this.setState({fields});
+			$('.GridRadio').each(function() {
+				var trueOrFalse = (Number($(this).attr('id')) === 4) ? true : false;
+			    $(this).prop( "checked", trueOrFalse );
+			});
+		}		
+		
     }
 
 	render() {
@@ -658,7 +708,67 @@ class RoundTray extends Component {
 					                                    <label>Execution Mode</label>
 					                                </div>
 					                                <span  className="error-msg">{this.state.errors["execution_mode"]}</span>
-					                               
+
+													{
+									                (this.state.fields['gameType'] === 'Bingo' || this.state.fields['gameType'] === 'MatchIt') ? (
+														<div>
+													<div className="cus_input grid_cus_input">
+					                                    
+														<label>Grid Size</label>
+					                                    <div className="contest saveToIdDiv row grid">				                                
+															
+															<div className="checkbox-buttons-container">
+																<input type="checkbox" name="GridRadio" class="GridRadio" id="4"  value="4" onChange={this.handleChangeGrid.bind(this,'4')}/>
+																<label for="4">
+																	<div className="cat_title checked_title">
+																		<h3>4</h3>
+																	</div>
+																</label>
+															</div>
+
+															<div className="checkbox-buttons-container">
+																<input type="checkbox" name="GridRadio" class="GridRadio" id="5"  value="5" onChange={this.handleChangeGrid.bind(this,'5')}/>
+																<label for="5">
+																	<div className="cat_title checked_title">
+																		<h3>5</h3>
+																	</div>
+																</label>
+															</div>
+
+															<div className="checkbox-buttons-container">
+																<input type="checkbox" name="GridRadio" class="GridRadio" id="8"  value="8" onChange={this.handleChangeGrid.bind(this,'8')}/>
+																<label for="8">
+																	<div className="cat_title checked_title">
+																		<h3>8</h3>
+																	</div>
+																</label>
+															</div>
+
+														</div>
+					                                </div>
+													
+													<div className="cus_input input_wrap">
+					                                    <img src="./murabbo/img/score.svg" alt="Upload"/> 
+					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'type')} value={this.state.fields['type']} required>
+									                      	<option value="1">Text</option>
+									                      	<option value="2">Image</option>
+															{ (this.state.fields['gameType'] === 'Bingo') ? <option value="3">Number</option> : null }
+					                                    </select>
+					                                    <label>{this.state.fields['gameType']} type</label>
+					                                </div>
+													{
+									                (this.state.fields['gameType'] === 'MatchIt') ? 
+													<div>
+														<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+															<label style={{paddingLeft: '5px'}} className="cus_label">Number of Questions </label>
+														</div>
+														<div className="range-wrap">
+															<input min="3" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['noOfQuestions']} onChange={this.handleChange.bind(this,'noOfQuestions')}  />
+															<output className="bubble">{this.state.fields['noOfQuestions']}</output>
+														</div>
+													</div> : null }
+												</div>) : null }
+
 					                            </div>
 					                            <div className="col-lg-4 col-md-6 col-sm-12">
 					                            {
@@ -745,7 +855,8 @@ class RoundTray extends Component {
 					                                    <label>Rendering Mode</label>
 					                                </div>
 					                                <span  className="error-msg">{this.state.errors["renderingMode"]}</span>
-					                               
+													
+													
 					                            </div>
 					                        </div>
 

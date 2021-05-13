@@ -4155,3 +4155,16 @@ img.icon_visa {
 }
 
 /* end css */
+
+
+.grid .checkbox-buttons-container label {
+    border: 1px solid #f8c74a;
+    padding: 0px 10px;
+}
+
+.grid_cus_input label
+{
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+}

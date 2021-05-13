@@ -72,20 +72,20 @@ class AddRoundQuestion extends Component {
 		}
 
 
-		fetch(configuration.baseURL+"media?type=image", {
-			method: "GET",
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-			}
-		}).then((response) =>{
-		return response.json();
-		}).then((data)=> {
-			if (data.data.length > 0) {	
+		fetch(configuration.APIbaseURL+"media?type=image", {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+	    	return response.json();
+	    }).then((data)=> {
+	    	if (data.data.length > 0) {	
 				var data = data.data;		   		
 				this.setState({imageList:data});
-			}
+	    	}
 		});	
 
 		fetch(configuration.baseURL+"media?type=video", {
