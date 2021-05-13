@@ -29,6 +29,25 @@ class Plans extends Component {
 	}
 
 	componentDidMount(){
+
+
+        
+        fetch(configuration.baseURL+"subscription/getSubscription", {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+            }
+        }).then((response) =>{
+            return response.json();
+        }).then((data)=> {
+            if(data)
+            {
+                this.setState({plans:data.data});
+            }
+        });
+
         var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
         fetch(configuration.baseURL+"subscription/getusersubscription?userId="+userId, {
                 method: "GET",
@@ -43,7 +62,7 @@ class Plans extends Component {
             if(data)
             {
                 var res = data.data;
-                this.setState({data:res.currentPlan,plans:res.plans});
+                this.setState({data:res.currentPlan});
             }
         });
         

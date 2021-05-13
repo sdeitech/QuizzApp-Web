@@ -53,7 +53,8 @@ class EditContest extends Component {
             saveToList:[],
             tempSelectedSaveTo:{},
             tempSelectedLanguage:{},
-            saveToTitle:''
+            saveToTitle:'',
+			subscriptionModel:false
 		};
 		this.searchUpdated = this.searchUpdated.bind(this)
 		this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this)
@@ -382,6 +383,15 @@ class EditContest extends Component {
 	}
 
 	handleChangeCategory(catdata,maindata, e){  
+
+		this.setState({subscriptionModel:false});
+		if(!configuration.checkUserHasAccess(catdata.subscriptionType))
+		{
+			this.handleCloseClick(this);
+			this.setState({subscriptionModel:true});
+			return false;	
+		}
+
     	let categoryListTempSelected = this.state.categoryListTempSelected;
 		let categoryListObj = this.state.categoryListObj;
 		if (e.target.checked) {
@@ -1126,6 +1136,40 @@ class EditContest extends Component {
 			            </section>
 
 
+						<CModal show={this.state.subscriptionModel}  closeOnBackdrop={false}  onClose={()=> this.setState({subscriptionModel:false})}
+							color="danger" 
+							centered>
+								<CModalBody className="model-bg">
+
+								<div>
+									<div className="modal-body">
+										<button type="button" className="close"   onClick={()=> this.setState({subscriptionModel:false})}>
+										<span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+									</button>
+										<div className="model_data">
+											<div className="model-title">
+												<img src='./murabbo/img/close_pink.png' alt=""  />
+												<h3>You need to purchase subscription.</h3>
+											</div>
+											<img className="shape2" src="./murabbo/img/shape2.svg"/>
+											<img className="shape3" src="./murabbo/img/shape3.svg"/>
+											<div className="row">
+												<div className="col-md-10 offset-md-1">
+
+													<div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+														<button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >No</button>
+													</div>
+													<div style={{ textAlign: 'center' , float:'left' }} className="">
+														<button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >Yes</button>
+													</div>
+
+												</div>
+											</div>
+										</div>
+									</div>
+									</div>
+								</CModalBody>
+							</CModal>
 			        <div className={(this.state.openSaveToModel) ? 'stopScorll' : ''}>	
 							<CModal className="model" size="lg" show={this.state.openSaveToModel} closeOnBackdrop={false}  onClose={this.handleCloseClick.bind(this) }  color="danger"  centered>
 		                    	<CModalBody className="model-bg">

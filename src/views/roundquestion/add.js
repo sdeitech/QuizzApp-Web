@@ -28,6 +28,7 @@ class AddRoundQuestion extends Component {
 			openModel:false,
 			optionsModel:false,
 			confirmationModel:false,
+			subscriptionModel:false,
 			delete_id:'',
             tosterMsg:'',
             imageList:[],
@@ -444,6 +445,12 @@ class AddRoundQuestion extends Component {
 
 
 	selectImage(data){
+		this.setState({subscriptionModel:false});
+		if(!configuration.checkUserHasAccess(data.subscriptionType))
+		{
+			this.setState({optionsValuesModel:false,subscriptionModel:true});
+			return false;	
+		}
 		var fields = this.state.fields;
 		fields['fileType'] = 'image';
 		fields['fileUrl'] = data.image;
@@ -454,6 +461,12 @@ class AddRoundQuestion extends Component {
 	}
 
 	selectVideo(data){
+		this.setState({subscriptionModel:false});
+		if(!configuration.checkUserHasAccess(data.subscriptionType))
+		{
+			this.setState({optionsValuesModel:false,subscriptionModel:true});
+			return false;	
+		}
 		var fields = this.state.fields;
 		fields['fileType'] = 'video';
 		fields['fileUrl'] = data.url;
@@ -464,6 +477,12 @@ class AddRoundQuestion extends Component {
 	}
 
 	selectAudio(data){
+		this.setState({subscriptionModel:false});
+		if(!configuration.checkUserHasAccess(data.subscriptionType))
+		{
+			this.setState({optionsValuesModel:false,subscriptionModel:true});
+			return false;	
+		}
 		var fields = this.state.fields;
 		fields['fileType'] = 'audio';
 		fields['fileUrl'] = data.url;
@@ -744,6 +763,42 @@ class AddRoundQuestion extends Component {
 	                    </div>
 	                </div>
 	            </section>
+
+				<CModal show={this.state.subscriptionModel}  closeOnBackdrop={false}  onClose={()=> this.setState({subscriptionModel:false})}
+							color="danger" 
+							centered>
+					<CModalBody className="model-bg">
+
+					<div>
+						<div className="modal-body">
+							<button type="button" className="close"   onClick={()=> this.setState({subscriptionModel:false})}>
+							<span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+						</button>
+							<div className="model_data">
+								<div className="model-title">
+									<img src='./murabbo/img/close_pink.png' alt=""  />
+									<h3>You need to purchase subscription.</h3>
+								</div>
+								<img className="shape2" src="./murabbo/img/shape2.svg"/>
+								<img className="shape3" src="./murabbo/img/shape3.svg"/>
+								<div className="row">
+									<div className="col-md-10 offset-md-1">
+
+										<div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+											<button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >No</button>
+										</div>
+										<div style={{ textAlign: 'center' , float:'left' }} className="">
+											<button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >Yes</button>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						</div>
+					</CModalBody>
+				</CModal>
+
 	            <CModal show={this.state.openModel}  closeOnBackdrop={false}  onClose={()=> this.setState({openModel:false})}
                     color="danger" 
                     centered>
