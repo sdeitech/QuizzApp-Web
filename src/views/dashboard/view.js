@@ -228,8 +228,14 @@ class Dashboard extends Component {
         this.props.history.push('/trending_contest');
     }
 
-    viewAllTrendingRounds(){
-        this.props.history.push('/trending_rounds');   
+    viewAllTrendingRounds(data=null,type=''){
+        if(type === 'gametype')
+        {
+            this.props.history.push('/trending_rounds/gameType?'+data.type);
+        }
+        else{
+            this.props.history.push('/trending_rounds');
+        }
     }
 
     handleRoundClick(data,e)
@@ -370,7 +376,7 @@ class Dashboard extends Component {
                                                                         <div className={e.class}>
                                                                             <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
                                                                             <img className="ico" src={e.src} alt="" />
-                                                                            <h3>{e.name}</h3>
+                                                                            <h3 onClick={this.viewAllTrendingRounds.bind(this,e,'gametype')} >{e.name}</h3>
                                                                             <p></p>
                                                                         </div>
                                                                     </div>
