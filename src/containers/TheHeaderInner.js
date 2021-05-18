@@ -14,7 +14,10 @@ class TheHeaderInner extends Component {
         this.state = {
             profile_picture:'avatars/placeholder-user.png',
             name:'',
-            confirmationModel:false
+            confirmationModel:false,
+            errorsPlay:{},
+			fieldsPlay:{display_name:'',password:''},
+			playNewContestModel:false,
         };
     }
 
@@ -56,6 +59,70 @@ class TheHeaderInner extends Component {
             }
         });
     }
+
+
+    handleChangePlay(field, e){  
+        let fields = this.state.fieldsPlay;
+         fields[field] = e.target.value;
+         this.setState({fieldsPlay:fields});
+ 
+         let errors = {};
+         if(field === 'display_name' && fields["display_name"].trim() === ''){
+             errors["display_name"] = "Please enter Game PIN";
+         }
+ 
+         if(field === 'password' && fields["password"].trim() === ''){
+             errors["password"] = "Please enter Game Password";
+         }
+         this.setState({errorsPlay: errors});
+     }
+ 
+ 
+     handleNext(){
+         let fields = this.state.fieldsPlay;
+         let errors = {};   
+         let formIsValid = true;
+         if(fields["display_name"].trim() === ''){
+             formIsValid = false;
+             errors["display_name"] = "Please enter Game PIN";
+         }
+ 
+         if(fields["password"].trim() === ''){
+            errors["password"] = "Please enter Game Password";
+        }
+ 
+         this.setState({errorsPlay: errors});
+         if(formIsValid){              
+            this.setState({playNewContestModel: false});
+            return false;
+            //  const data = new FormData();
+            //  data.append('displayName',fields["display_name"]);
+            //  data.append('password',fields["password"]);
+            //  data.append('createdBy',JSON.parse(reactLocalStorage.get('userData')).userId);
+            //  data.append('contestId',fields["contestId"]) ;
+             
+            //  fetch(configuration.baseURL+"room/room", {
+            //      method: "post",
+            //      headers: {
+            //          'contentType': "application/json",
+            //          'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+            //      },
+            //      body:data
+            //  }).then((response) => {
+            //      return response.json();
+            //  }).then((data) => {
+            //      if(data.code === 200){
+            //          this.props.history.push('/detail-contest/'+fields["contestId"]+'?'+data.data._id);
+            //      }
+            //      else
+            //      {
+            //          return toast.error(data.message);
+            //      }
+                 
+            //  });
+ 
+         }
+     }
  
 
     handleLogout(check,e)
@@ -114,7 +181,7 @@ class TheHeaderInner extends Component {
                                     </div>
                                 </div>
                                 <li class="nav-item">
-                                    <button class="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Enter Pin</button>
+                                    <button class="yellow_btn" type="button" onClick={()=> this.setState({playNewContestModel:true})}><img src="./murabbo/img/pin.svg" alt="Pin"/> Enter Pin</button>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link " href="#/add_contest">
@@ -126,6 +193,57 @@ class TheHeaderInner extends Component {
                       </div>
                 </nav>
             </div>
+
+            <CModal show={this.state.playNewContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playNewContestModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close"   onClick={()=> this.setState({playNewContestModel:false})}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                    	<h3>Enter Contest PIN</h3>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg"/>
+                                    <img className="shape3" src="./murabbo/img/shape3.svg"/>
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                        	
+                                        	<div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/title.svg" /> 
+												<input required type="text"  onChange={this.handleChangePlay.bind(this, "display_name")} value={this.state.fieldsPlay["display_name"]}/>
+												<label>Game PIN</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.errorsPlay["display_name"]}</span>
+
+                                            <div className="cus_input input_wrap">
+                                                <img src="./murabbo/img/password.svg" />
+												<input required type="text"  onChange={this.handleChangePlay.bind(this, "password")} value={this.state.fieldsPlay["password"]}/>
+												<label>Game Password</label>
+                                            </div> 
+                                            <span className="error-msg">{this.state.errorsPlay["password"]}</span>
+                                        </div>
+                                        <div className="col-md-10 offset-md-1">
+
+							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+							                   	<button  style={{minWidth: '150px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.handleNext.bind(this)}>Next</button>
+							                </div>
+                                        	<div style={{ textAlign: 'center'}} className="">
+							                    <button  style={{minWidth: '150px', float:'left'}}  className="pink_btn" type="button"  onClick={()=> this.setState({playNewContestModel:false})} >Cancel</button>
+							                </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
             <CModal show={this.state.confirmationModel}  closeOnBackdrop={false}  onClose={()=> this.setState({confirmationModel:false})}
                     color="danger" 
                     centered>

@@ -28,6 +28,7 @@ class RoundQuestion extends Component {
             edit_id:'',
 			fields:{question:''},
 			errors:{question:''},
+			subscriptionModel:false
 		};
 	}
 
@@ -228,6 +229,12 @@ class RoundQuestion extends Component {
 	}
 
 	selectImage(data){
+		this.setState({subscriptionModel:false});
+		if(!configuration.checkUserHasAccess(data.subscriptionType))
+		{
+			this.setState({optionsValuesModel:false,subscriptionModel:true});
+			return false;	
+		}
 		var fields = this.state.fields;
 		fields['question'] = data.image;
 		this.setState({fields});
@@ -509,7 +516,40 @@ class RoundQuestion extends Component {
                         </div>
                     </CModalBody>
                 </CModal>
+				<CModal show={this.state.subscriptionModel}  closeOnBackdrop={false}  onClose={()=> this.setState({subscriptionModel:false})}
+							color="danger" 
+							centered>
+					<CModalBody className="model-bg">
 
+					<div>
+						<div className="modal-body">
+							<button type="button" className="close"   onClick={()=> this.setState({subscriptionModel:false})}>
+							<span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+						</button>
+							<div className="model_data">
+								<div className="model-title">
+									<img src='./murabbo/img/close_pink.png' alt=""  />
+									<h3>You need to purchase subscription.</h3>
+								</div>
+								<img className="shape2" src="./murabbo/img/shape2.svg"/>
+								<img className="shape3" src="./murabbo/img/shape3.svg"/>
+								<div className="row">
+									<div className="col-md-10 offset-md-1">
+
+										<div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
+											<button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >No</button>
+										</div>
+										<div style={{ textAlign: 'center' , float:'left' }} className="">
+											<button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >Yes</button>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						</div>
+					</CModalBody>
+				</CModal>
 					<CModal show={this.state.optionsValuesModel}  closeOnBackdrop={false}  onClose={()=> this.setState({optionsValuesModel:false})}
 						color="danger" 
 						centered>

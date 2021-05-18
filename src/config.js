@@ -1,3 +1,4 @@
+import { ready } from 'jquery';
 import {reactLocalStorage} from 'reactjs-localstorage';
 var jwt = require('jsonwebtoken');
 
@@ -14,8 +15,29 @@ const config = {
         reactLocalStorage.set('clientToken', data.accessToken);
         reactLocalStorage.set('userData', JSON.stringify(data));
         reactLocalStorage.set('is_login', 'true');
+
+        if(data.userId)
+        {
+            fetch(config.baseURL+"subscription/getusersubscription?userId="+data.userId, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                }
+            }).then((response) =>{
+                return response.json();
+            }).then((data)=> {
+                if(data)
+                {
+                    var res = data.data;
+                    reactLocalStorage.set('subscriptionCode', res.currentPlan.subscriptionCode);
+                }
+            });
+        }
         done({})
     },
+
 
     generateToken(user) {
         var object = {
@@ -27,6 +49,37 @@ const config = {
         return jwt.sign(object, 'Murabbo', {
             expiresIn: '1d'
         });
+    },
+    checkUserHasAccess(subscriptionCodeItem) {
+        var subscriptionCode = reactLocalStorage.get('subscriptionCode');
+        
+        if(subscriptionCode === 'PREMIUM')
+        {
+            return true;
+        }
+        else if(subscriptionCode === 'PRO')
+        {
+            if(subscriptionCodeItem === 'PREMIUM'){
+                return false;
+            }
+            else if(subscriptionCodeItem === 'PRO' || subscriptionCodeItem === 'BASIC'){
+                return true;    
+            }
+        }
+        else if(subscriptionCode === 'BASIC')
+        {
+            if(subscriptionCodeItem === 'PRO' || subscriptionCodeItem === 'PREMIUM'){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            if(subscriptionCodeItem !== 'PRO' && subscriptionCodeItem !== 'PREMIUM'){
+                return true;
+            }
+        }
     }
 };
 

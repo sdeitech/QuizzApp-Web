@@ -228,8 +228,19 @@ class Dashboard extends Component {
         this.props.history.push('/trending_contest');
     }
 
-    viewAllTrendingRounds(){
-        this.props.history.push('/trending_rounds');   
+    viewAllTrendingRounds(data=null,type=''){
+        if(type === 'gametype')
+        {
+            this.props.history.push('/trending_rounds/gameType?'+data.type);
+        }
+        else{
+            this.props.history.push('/trending_rounds');
+        }
+    }
+
+    handleRoundClick(data,e)
+    {
+        this.props.history.push('/detail-round/'+data._id);
     }
 
 	render() {
@@ -323,7 +334,7 @@ class Dashboard extends Component {
                                             (this.state.roundListData.length > 0) ? 
                                             this.state.roundListData.map((e, key) => {
                                                 return <div class="col-lg-2 col-md-4 col-6">
-                                                    <div class="cate-box2"  onClick={() => {this.props.history.push('/detail-round/'+e._id)}}  style={{ cursor:'pointer'}} >
+                                                    <div class="cate-box2"  onClick={this.handleRoundClick.bind(this,e)}  style={{ cursor:'pointer'}} >
                                                         <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
                                                         <div class="cat_title2">
                                                             <h3>{e.numberOfQuestions} {(e.numberOfQuestions > 1) ? 'Questions' : 'Question'}</h3>
@@ -365,7 +376,7 @@ class Dashboard extends Component {
                                                                         <div className={e.class}>
                                                                             <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
                                                                             <img className="ico" src={e.src} alt="" />
-                                                                            <h3>{e.name}</h3>
+                                                                            <h3 onClick={this.viewAllTrendingRounds.bind(this,e,'gametype')} >{e.name}</h3>
                                                                             <p></p>
                                                                         </div>
                                                                     </div>
