@@ -270,7 +270,7 @@ class RoundWords extends Component {
                                 <div className="model_data">
                                     <div className="model-title">
                                     	<img src='./murabbo/img/close_pink.png' alt=""  />
-                                    	<h3>Are you sure you want to delete?</h3>
+                                    	<h3>Are you sure, you want to delete?</h3>
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg"/>
                                     <img className="shape3" src="./murabbo/img/shape3.svg"/>
@@ -278,7 +278,7 @@ class RoundWords extends Component {
                                         <div className="col-md-10 offset-md-1">
 
 							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-							                    <button  style={{minWidth: '150px',color: '#f8c84e',fontWeight: '500'}}  className="btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
 							                </div>
                                 			<div style={{ textAlign: 'center' , float:'left' }} className="">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.deleteHandler.bind(this)} >Yes</button>

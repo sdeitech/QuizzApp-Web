@@ -662,6 +662,7 @@ class RoundTray extends Component {
 		                            <div className="model_data">
 		                                <div className="model-title">
 			                                <h3>Round Details</h3>
+											<h4>{this.state.fields['gameType']}</h4>
 		                                </div>
 		                                <div className="contest">
 
@@ -836,16 +837,21 @@ class RoundTray extends Component {
 									            }
 
 									            
-					                                
-					                                <div className="cus_input input_wrap">
-					                                    <img src="./murabbo/img/score.svg" alt="Upload"/> 
-					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'scoring')} value={this.state.fields['scoring']} required>
-									                      	<option value="1">Moderator Driven</option>
-									                      	<option value="2">Automatic</option>
-					                                    </select>
-					                                    <label>Scoring</label>
-					                                </div>
-					                                <span  className="error-msg">{this.state.errors["scoring"]}</span>
+													{
+									                (this.state.fields['gameType'] !== 'Hangman' && this.state.fields['gameType'] !== 'Unscramble' && this.state.fields['gameType'] !== 'Gibberish') ? 
+													<div>
+														<div className="cus_input input_wrap">
+															<img src="./murabbo/img/score.svg" alt="Upload"/> 
+															<select className="floating-select" onChange={this.handleChange.bind(this,'scoring')} value={this.state.fields['scoring']} required>
+																<option value="1">Moderator Driven</option>
+																<option value="2">Automatic</option>
+															</select>
+															<label>Scoring</label>
+														</div> 
+														<span  className="error-msg">{this.state.errors["scoring"]}</span>
+													</div>
+													: null
+													}
 					                                <div className="cus_input input_wrap">
 					                                    <img src="./murabbo/img/3d.svg" alt="Upload"/> 
 					                                    <select className="floating-select" onChange={this.handleChange.bind(this,'renderingMode')} value={this.state.fields['renderingMode']} required>
