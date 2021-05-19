@@ -1160,7 +1160,7 @@ class EditContest extends Component {
 														<button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >No</button>
 													</div>
 													<div style={{ textAlign: 'center' , float:'left' }} className="">
-														<button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({subscriptionModel:false})} >Yes</button>
+														<button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={() => {this.props.history.push('/plans')}} >Yes</button>
 													</div>
 
 												</div>
