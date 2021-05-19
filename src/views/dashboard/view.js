@@ -371,12 +371,12 @@ class Dashboard extends Component {
                                         <div className="row round-box" style={{paddingTop: '30px'}}>
                                                 {
                                                     this.state.gameTypeArr.map((e, key) => {
-                                                        return 	<div className="col-lg-3 col-md-4 col-sm-6">
+                                                        return 	<div className="col-lg-3 col-md-4 col-sm-6" style={{ cursor:'pointer'}} onClick={this.viewAllTrendingRounds.bind(this,e,'gametype')}>
                                                                     <div>
                                                                         <div className={e.class}>
                                                                             <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
                                                                             <img className="ico" src={e.src} alt="" />
-                                                                            <h3 onClick={this.viewAllTrendingRounds.bind(this,e,'gametype')} >{e.name}</h3>
+                                                                            <h3 onClick={this.viewAllTrendingRounds.bind(this,e,'gametype')} style={{ cursor:'pointer'}}>{e.name}</h3>
                                                                             <p></p>
                                                                         </div>
                                                                     </div>
