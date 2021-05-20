@@ -271,7 +271,7 @@ class AddRoundQuestion extends Component {
 	                            <div className="row">
 	                                <div className="col-md-12">
 	                                    <div className="footer-btn">
-											<button className="pink_btn" type="button"  onClick={this.addHandler.bind(this) } >Save & Exit</button>
+											<button className="blue_btn light_blue_btn" type="button"  onClick={this.addHandler.bind(this) } >Submit</button>
 											<button class="yellow_btn" type="button" style={{marginLeft:'10px'}} onClick={() => {this.props.history.push('/round_words/'+contest_id+'/'+round_id)}}>Cancel</button>
 	                                    </div> 
 	                                </div>
