@@ -2452,6 +2452,10 @@ img.second {
     font-weight: 500;
 }
 
+.hangman input {
+    border-bottom: 2px solid lightgrey;
+}
+
 .answer-option3 {
     width: 100%;
     margin: 0 auto 25px;
@@ -2474,6 +2478,17 @@ img.second {
 }
 .numberkey {
     margin-bottom: 40px;
+}
+
+.blue_color_btn
+{
+    background: transparent linear-gradient( 270deg , #88D8B8 0%, #56D8F1 100%) 0% 0% no-repeat padding-box !important;
+    color: #000000 !important;
+}
+.pink_color_btn
+{
+    background: transparent linear-gradient(270deg, #FF5485 0%, #E3234A 100%) 0% 0% no-repeat padding-box !important;
+    color: #000000 !important;
 }
 
 .otpoutput {

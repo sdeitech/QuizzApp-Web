@@ -8,7 +8,9 @@ const config = {
     // APIbaseURL: 'http://localhost:9002/api/',
     baseURL: 'https://dev-api.murabbo.com/api/app/',
     APIbaseURL: 'https://dev-api.murabbo.com/api/',
-
+    // baseURL: 'http://590d368c4afb.ngrok.io/api/app/',
+    // APIbaseURL: 'http://590d368c4afb.ngrok.io/api/',
+    
     saveTokenData(data,done) {
         var token = this.generateToken(data);
         reactLocalStorage.set('token', token);

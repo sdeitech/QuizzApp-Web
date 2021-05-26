@@ -93,6 +93,7 @@ class DetailContest extends Component {
 		    }).then((data)=> {				
 				if (data.data.length > 0) {
 	   				var data = data.data;
+					this.setState({selectedRoundId:data[0]._id});
 		   			this.setState({listArr:data});
 	   			}
 	   			else
@@ -101,6 +102,7 @@ class DetailContest extends Component {
 	   			}
 			});	
 		}
+		
 	}
 	selectedRoundId(data)
 	{
@@ -131,7 +133,7 @@ class DetailContest extends Component {
 			this.setState({subscriptionModel:true});
 			return false;	
 		}
-
+		console.log(this.state.contestData.playerType);
 		if (this.state.contestData.playerType === 1) {
 			this.props.history.push('/contests/game/start/'+contestId+"?"+this.state.selectedRoundId);
 		}

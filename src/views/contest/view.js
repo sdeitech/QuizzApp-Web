@@ -177,7 +177,7 @@ class Contest extends Component {
         }
 
 
-		fetch(configuration.baseURL+"contest/contest?"+str+queryStr+"&saveToId="+this.state.saveToId, {
+		fetch(configuration.baseURL+"contest/contest?"+str+queryStr+"&saveToId="+this.state.saveToId+"&isPaginationTrue=false", {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -231,7 +231,7 @@ class Contest extends Component {
         }
 
 		var paramIsTrending = (isTrending !== '') ? 'yes' : 'no';
-		fetch(configuration.baseURL+"contest/contest?"+str+"&saveToId="+searchSaveToId, {
+		fetch(configuration.baseURL+"contest/contest?"+str+"&saveToId="+searchSaveToId+"&isPaginationTrue=false", {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
