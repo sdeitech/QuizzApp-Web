@@ -424,13 +424,13 @@ class MyAccount extends Component {
                                                         <form id="file-upload-form" className="uploader">
                                                           <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
 
-                                                          <label for="file-upload" id="file-drag">
+                                                          <label for="file-upload" id="file-drag" style={{width: '100px',height: '100px'}}>
                                                             <img id="file-image"   src="#" alt="Preview" className="hidden"/>
                                                             <div className="edit-pencil">
                                                                 <img src="/img/pen.svg" />
                                                             </div>
                                                             <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
-                                                            <div id="start">
+                                                            <div id="start" style={{ height: "100px",width: "100px"}}>
                                                                 {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
                                                               
                                                               <div id="add_image">Add Image</div></div> : null}
