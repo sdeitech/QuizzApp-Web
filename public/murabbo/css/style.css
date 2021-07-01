@@ -4183,3 +4183,16 @@ img.icon_visa {
     font-size: 14px;
     font-weight: 500;
 }
+button.pink_btn:hover {
+    background: transparent linear-gradient(270deg, #fb6892 0%, #ea365a 100%) 0% 0% no-repeat padding-box;
+}
+button.yellow_btn:hover {background: transparent linear-gradient(270deg, #ffd983 0%, #d2a43d 100%) 0% 0% no-repeat padding-box;
+}
+button.blue_btn.light_blue_btn:hover {
+    background: #6fc3a1 !important;
+}
+button.blue_btn:hover {
+    background: transparent linear-gradient( 
+270deg
+ , #9feacc 0%, #68dcf3 100%) 0% 0% no-repeat padding-box;
+}
