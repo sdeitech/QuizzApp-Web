@@ -20,6 +20,7 @@ class RoundTray extends Component {
 	constructor(props) {
         super(props);
         this.state = {
+			is_display_cross:false,
 			fields:{timeLimitSeconds:30,timeLimit:'00:30',execution_mode:1,onDemandNegativePoints:0,hint:'',entriesPerRound:4,type:'2',noOfQuestions:3},
 			errors:{},
 			openModelRoundAdd:false,
@@ -230,7 +231,9 @@ class RoundTray extends Component {
 
 	editHandler(data,e)
 	{
-
+		if(data.image){
+			this.setState({is_display_cross:true})
+		}
 		if (!data.timeLimit) {
 			data.timeLimit = '00:30';
 			data.timeLimitSeconds = 30;
@@ -395,7 +398,7 @@ class RoundTray extends Component {
 				data.append('type',this.state.fields.type);
 				data.append('noOfQuestions',this.state.fields.noOfQuestions);	
 			}
-
+			
             // console.log(data);
             fetch(configuration.baseURL+"round/round/"+this.state.fields._id, {
                 method: "PUT",
@@ -548,6 +551,41 @@ class RoundTray extends Component {
 			});
 		}		
 		
+	}
+	
+
+	removeImage(event) {
+		$('.display-profile-pic').hide();
+	    $('#start').show();
+
+	    var fields = this.state.fields;
+	    fields['image'] = '';
+		this.setState({fields});
+		// const formData = new FormData();
+		// formData.append('type', "round");
+		
+		// fetch(configuration.baseURL + "removeMedia/" + contest_id,{
+		// 	method: "DELETE",
+		// 	body:formData,
+		// 	headers: {
+		// 		Accept: "application/json",
+		// 		Authorization:
+		// 			"Bearer " + reactLocalStorage.get("clientToken"),
+		// 	},
+		// }).then((response) => {
+		// 	return response.json();
+		// })
+		// .then((data) => {
+		// 	if (data.code === 200) {
+				
+				
+
+
+
+		// 	} else {
+		// 		return toast.error(data.message);
+		// 	}
+		// });
     }
 
 	render() {
@@ -569,7 +607,10 @@ class RoundTray extends Component {
             });
             $(".upload-button").on('click', function() {
             	$(".file-upload").click();
-            });
+			});
+			
+			$('.display-profile-pic').show();
+			
         });
 
        
@@ -656,7 +697,10 @@ class RoundTray extends Component {
 
 		                    <div>
 		                        <div className="modal-body">
-		                            <button type="button" className="close"  onClick={()=> this.setState({openModel:false})}>
+		                            <button type="button" className="close"  onClick={()=> {
+										this.setState({openModel:false});
+
+									}}>
 		                            <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
 		                        </button>
 		                            <div className="model_data">
@@ -671,7 +715,18 @@ class RoundTray extends Component {
 					                                <div className="profile-img">
 					                                    <form id="file-upload-form" className="uploader">
 					                                      <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
-
+														  {this.state.fields["image"] ==
+															"image" || this.state.fields["image"] ? (
+																<span aria-hidden="true">
+																	<img
+																		className="close_svg"
+                                                                        src="./murabbo/img/close_dark.svg"
+																		onClick={this.removeImage.bind(
+																			this
+																		)}
+																	/>
+																</span>
+															) : null}
 					                                      <label for="file-upload" id="file-drag">
 					                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
 					                                        <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
@@ -844,7 +899,9 @@ class RoundTray extends Component {
 															<img src="./murabbo/img/score.svg" alt="Upload"/> 
 															<select className="floating-select" onChange={this.handleChange.bind(this,'scoring')} value={this.state.fields['scoring']} required>
 																<option value="1">Moderator Driven</option>
-																<option value="2">Automatic</option>
+
+																{this.state.fields['gameType']  !== 'Taboo' ? (<option value="2">Automatic</option>):(null)}
+																
 															</select>
 															<label>Scoring</label>
 														</div> 

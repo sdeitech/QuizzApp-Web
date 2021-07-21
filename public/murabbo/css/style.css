@@ -2864,7 +2864,8 @@ img.position_right {
 
 .checkbox-buttons-container input {
   position: absolute;
-  left: -100vw; / don't hide the input but move it out of view instead for better accessibility   /
+  left: -100vw; 
+  /* / don't hide the input but move it out of view instead for better accessibility   / */
 }
 
 .checkbox-buttons-container label {
@@ -4195,4 +4196,14 @@ button.blue_btn:hover {
     background: transparent linear-gradient( 
 270deg
  , #9feacc 0%, #68dcf3 100%) 0% 0% no-repeat padding-box;
+}
+
+.close_svg{
+    position: absolute;
+    right: 20px;
+    top: 5px;
+    cursor: pointer;
+    background-color: #fec951;
+    padding: 5px;
+    border-radius: 40px;
 }
