@@ -492,6 +492,22 @@ class AddRoundQuestion extends Component {
 		$('#start').hide();
 	}
 
+	removeImage(event) {
+        $(document).ready(function () {
+            $(".display-profile-pic").attr("src", "");
+            $(".display-profile-pic").hide();
+            $(".file-upload").val("");
+            $("#start").show();
+        });
+        // let fields = this.state.fields;
+        // fields["image"] = "";
+		// this.setState({ fields });
+		
+		var fields = this.state.fields;
+		fields['fileType'] = '';
+		this.setState({fields});
+    }
+
 	render() {
 		$(document).ready(function() {
             var readURL = function(input) {
@@ -550,8 +566,27 @@ class AddRoundQuestion extends Component {
 							{
 								(this.state.fields['gameType'] !== 'Taboo') ?
 	                            <div className="col-lg-4 col-md-6 col-sm-12">
+
+								{this.state.fields["fileType"] !== ""  ? (
+
+								<span aria-hidden="true">
+								<img
+									className="close_svg"
+									src="./murabbo/img/close_dark.svg"
+									onClick={this.removeImage.bind(
+										this
+									)}
+								/>
+								</span>
+
+								) : (null)}
 	                                <div className="profile-img" onClick={() => {this.setState({optionsModel:true})}}>
+
+							
 	                                    <form id="file-upload-form" className="uploader question-add-edit">
+
+
+										
 	                                      <label id="file-drag">
 	                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
 	                                        <img className="display-profile-pic" src={this.state.profilePic} alt=""  />
