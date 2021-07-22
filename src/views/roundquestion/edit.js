@@ -97,10 +97,19 @@ class EditRoundQuestion extends Component {
 							that.setState({answers:data.data[0].answers})
 							if (data.data[0].file !== '') {
 								if (data.data[0].fileType === 'image') {
+								  
+									
+										
+									let fields = this.state.fields;
+									fields['fileType'] = 'image';
+									fields['fileUrl'] = data.data[0].file;
+									this.setState({fields});
+										
 									$('.display-profile-pic').attr('src', data.data[0].file);
 								}
 								else
 								{
+										
 									if (data.data[0].fileType === 'video') {
 										that.setState({profilePic:'avatars/play.svg'});
 									}
@@ -110,6 +119,12 @@ class EditRoundQuestion extends Component {
 								}
 								$('.display-profile-pic').show();
 								$('#start').hide();
+							}else{
+								// let fields = this.state.fields;
+								
+								// fields['fileUrl'] = './murabbo/img/upload.svg';
+								// this.setState({profilePic:"./murabbo/img/upload.svg"});
+								// this.setState({fields});
 							}																	
 							setTimeout(function () {
 								that.changeTime(0);
@@ -538,7 +553,81 @@ class EditRoundQuestion extends Component {
 		fields['timeLimit'] = minute + ":" + seconds;
 		fields['timeLimitSeconds'] = newTime;
 		this.setState({fields});
+	}
+	
+
+
+	removeImage(event) {
+
+
+
+		$(document).ready(function () {
+        $(".display-profile-pic").attr("src", "");
+	    $(".display-profile-pic").hide();
+		$(".file-upload").val("");
+		$("#start").show();
+     	});
+
+	
+	var fields = this.state.fields;
+	fields['fileType'] = '';
+	fields['fileUrl'] = './murabbo/img/upload.svg';
+	this.setState({profilePic:"./murabbo/img/upload.svg"});
+	this.setState({fields});
+        
+		// const formData = new FormData();
+        // formData.append('type', "question");
+        
+        // fetch(configuration.baseURL + "removeMedia/" + contest_id,{
+        //     method: "DELETE",
+        //     body:formData,
+        //     headers: {
+        //         Accept: "application/json",
+        //         Authorization:
+        //             "Bearer " + reactLocalStorage.get("clientToken"),
+        //     },
+        // }).then((response) => {
+        //     return response.json();
+        // })
+        // .then((data) => {
+        //     if (data.code === 200) {
+               
+		// 		$(document).ready(function () {
+		// 			$(".display-profile-pic").attr("src", "");
+		// 			$(".display-profile-pic").hide();
+		// 			$(".file-upload").val("");
+		// 			$("#start").show();
+		// 		});
+			
+				
+		// 		var fields = this.state.fields;
+		// 		fields['fileType'] = '';
+		// 		fields['fileUrl'] = '';
+		// 		this.setState({profilePic:"./murabbo/img/upload.svg"});
+		// 		this.setState({fields});
+               
+        //     } else {
+        //         return toast.error(data.message);
+        //     }
+        // });
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
 
 	render() {
 		$(document).ready(function() {
@@ -562,7 +651,9 @@ class EditRoundQuestion extends Component {
             });
             $(".upload-button").on('click', function() {
             	$(".file-upload").click();
-            });
+			});
+			
+			$('.display-profile-pic').show();
         });
 
 		return (
@@ -598,6 +689,23 @@ class EditRoundQuestion extends Component {
 							{
 								(this.state.fields['gameType'] !== 'Taboo') ?
 	                            <div className="col-lg-4 col-md-6 col-sm-12">
+
+
+
+									{this.state.fields["fileType"] !== ""  ? (
+
+									<span aria-hidden="true">
+									<img
+										className="close_svg"
+										src="./murabbo/img/close_dark.svg"
+										onClick={this.removeImage.bind(
+											this
+										)}
+									/>
+									</span>
+
+									) : (null)}
+
 	                                <div className="profile-img" onClick={() => {this.setState({optionsModel:true})}}>
 	                                    <form id="file-upload-form" className="uploader question-add-edit">
 	                                      <label id="file-drag">

@@ -73,7 +73,7 @@ const routes = [
     { path: '/trending_contest', name: 'Dashboard_Trending_Contest', component: Dashboard_Trending_Contest },
     { path: '/trending_rounds', name: 'Dashboard_Trending_Rounds', component: Dashboard_Trending_Rounds },
     { path: '/contests/start_round', name: 'StartRound', component: StartRound },
-    
+ 
     { path: '/games_history', name: 'GamesHistory', component: GamesHistory },    
     { path: '/add_contest', name: 'AddContest', component: AddContest },
     { path: '/edit_contest', name: 'EditContest', component: EditContest },
