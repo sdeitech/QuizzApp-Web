@@ -202,8 +202,8 @@ class Dashboard extends Component {
 	}
 
 	titleSmall(name){
-		if (name.length > 18) {
-		    var shortname = name.substring(0, 18) + "...";
+		if (name.length > 10) {
+		    var shortname = name.substring(0, 10) + "...";
 		    return shortname;
 		}
 		else
@@ -244,7 +244,7 @@ class Dashboard extends Component {
     }
 
 	render() {
-		return (
+        return (
 			<>
 				<TheHeaderInner />				
 					<main id="main" className="dashboard-page">
@@ -293,9 +293,6 @@ class Dashboard extends Component {
                                                         <div class="cat_title2">
                                                             <h3 style={{cursor: 'pointer'}} onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)}</h3>
                                                             <p>  {e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} </p>
-                                                            
-                                                            {/*<p className="play_btn_contest" onClick={this.playContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Play</p>
-                                                            <p className="play_btn_contest" onClick={this.joinRoomContest.bind(this,e)} style={{bottom:'0',top:'auto',cursor:'pointer',display: (e.isPublish) ? 'block' : 'none'}}>Join</p>*/}
                                                         <p className="username">{e.userName}</p>
                                                         </div>
                                                     </div>
@@ -338,7 +335,7 @@ class Dashboard extends Component {
                                                         <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
                                                         <div class="cat_title2">
                                                             <h3>{e.numberOfQuestions} {(e.numberOfQuestions > 1) ? 'Questions' : 'Question'}</h3>
-                                                            <p>{e.title}</p>
+                                                            <p>{this.titleSmall(e.title)}</p>
                                                             <p className="username">{e.createdBy}</p>
                                                         </div>
                                                     </div>

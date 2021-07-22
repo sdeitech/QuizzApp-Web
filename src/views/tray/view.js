@@ -35,7 +35,7 @@ class RoundTray extends Component {
 			contest_id: "",
 			listArr:[],
 			selectedType:[],
-			gameTypeArr:[{type:'Hangman',name:'HangMan',src:'./murabbo/img/hangman.svg',qtyAdd:false,qty:1,class:'contest-box'},{type:'MatchIt',name:'Match It',src:'./murabbo/img/cups.svg',qtyAdd:false,qty:1,class:'contest-box purple-bg'},{type:'Unscramble',name:'Unscramble',src:'./murabbo/img/unscramble.svg',qtyAdd:false,qty:1,class:'contest-box dark-pink'},{type:'GuessAndGo',name:'Guess & Go',src:'./murabbo/img/brain.svg',qtyAdd:false,qty:1,class:'contest-box coffee-bg'},{type:'Gibberish',name:'Gibberish',src:'./murabbo/img/giberish.svg',qtyAdd:false,qty:1,class:'contest-box light-pink'},{type:'Bingo',name:'Bingo',src:'./murabbo/img/bingo.svg',qtyAdd:false,qty:1,class:'contest-box green-bg'},{type:'Quiz',name:'Quiz',src:'./murabbo/img/quizz.svg',qtyAdd:false,qty:1,class:'contest-box yellow-bg'},{type:'Taboo',name:'Taboo',src:'./murabbo/img/padlock.svg',qtyAdd:false,qty:1,class:'contest-box lightgreen'}]
+			gameTypeArr:[{type:'Hangman',name:'HangMan',src:'./murabbo/img/hangman.svg',qtyAdd:false,qty:1,class:'contest-box'},{type:'MatchIt',name:'Match It',src:'./murabbo/img/cups.svg',qtyAdd:false,qty:1,class:'contest-box purple-bg'},{type:'Unscramble',name:'Unscramble',src:'./murabbo/img/unscramble.svg',qtyAdd:false,qty:1,class:'contest-box dark-pink'},{type:'GuessAndGo',name:'Guess & Go',src:'./murabbo/img/brain.svg',qtyAdd:false,qty:1,class:'contest-box coffee-bg'},{type:'Gibberish',name:'Gibberish',src:'./murabbo/img/giberish.svg',qtyAdd:false,qty:1,class:'contest-box light-pink'},{type:'Bingo',name:'Bingo',src:'./murabbo/img/bingo.svg',qtyAdd:false,qty:1,class:'contest-box green-bg'},{type:'Quiz',name:'Quiz',src:'./murabbo/img/quizz.svg',qtyAdd:false,qty:1,class:'contest-box yellow-bg'},{type:'Taboo',name:'Taboo',src:'./murabbo/img/padlock.svg',qtyAdd:false,qty:1,class:'contest-box lightgreen'},{type:'Blank',name:'Blank',src:'./murabbo/img/more.svg',qtyAdd:false,qty:1,class:'contest-box grey-bg'}]
 		};
 	}
 
@@ -230,6 +230,7 @@ class RoundTray extends Component {
 
 	editHandler(data,e)
 	{
+		alert(data);
 
 		if (!data.timeLimit) {
 			data.timeLimit = '00:30';
@@ -573,7 +574,7 @@ class RoundTray extends Component {
         });
 
        
-
+		const MAX_LENGTH = 30;
 		return (
 			<>
 				<TheHeaderInner />				
@@ -589,13 +590,7 @@ class RoundTray extends Component {
 			                                        <h3>Rounds</h3>  
 			                                    </div> 
 			                                </div>
-			                                <div className="col-md-8">
-			                                    {/*<ul className="title-link">
-			                                        <a href="javascript:void(0);"><li><img src="./murabbo/img/close2.svg" alt="" /> Remove</li></a>
-			                                        <a href="javascript:void(0);"><li><img style={{width: '17px'}} src="./murabbo/img/send.svg" alt="" /> Publish</li></a>
-			                                        <a href="javascript:void(0);"><li><img src="./murabbo/img/edit.svg" alt="" /> Edit</li></a>
-			                                    </ul> */} 
-			                                </div>
+			                                <div className="col-md-8"></div>
 			                            </div>
 			                        </div>
 			                    </div>
@@ -620,12 +615,12 @@ class RoundTray extends Component {
 													  itemRenderer={(val,index) => {
 													    return (
 													      <div className="custom-round-list">
-											                    <div className={this.className(val.gameType,'class')}>
+											                    <div className={this.className(val.gameType,'class')} style={{height: "170px"}}>
 											                        <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}/>
 											                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" onClick={this.deleteHandler.bind(this,val._id)} />
 											                        <img className="ico" src={this.className(val.gameType,'src')} alt="" onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}} />
 																	<h3 onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer"}}>{val.gameType}</h3>
-											                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer",color:"#000",font: 'normal normal 14px Montserrat'}}>{(val.title !== '') ? val.title : ''}</p>
+											                        <p onClick={this.editHandler.bind(this,val)} style={{cursor:"pointer",color:"#000",font: 'normal normal 14px Montserrat'}}>{`${val.title.substring(0, MAX_LENGTH)}`}{(val.title.length > MAX_LENGTH) ? '...' : ''}</p>
 											                    </div>
 											                </div>
 													    );
@@ -924,17 +919,6 @@ class RoundTray extends Component {
 												                </div>
 		                                        	})
 						                        }
-								                
-								                <div className="col-lg-3 col-md-4 col-sm-6">
-								                    <div >
-								                        <div className="contest-box grey-bg">
-								                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-								                            <img className="ico" src="./murabbo/img/more.svg" alt="" />
-								                            <h3></h3>
-								                            <p></p>
-								                        </div>
-								                    </div>
-								                </div>
 
 								                <div className="col-lg-12 col-md-12 col-sm-12">
 									                <div style={{ textAlign: 'center' }} className="">
