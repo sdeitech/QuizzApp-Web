@@ -54,7 +54,8 @@ const config = {
     },
     checkUserHasAccess(subscriptionCodeItem) {
         var subscriptionCode = reactLocalStorage.get('subscriptionCode');
-        
+        console.log("User Subscription : "+subscriptionCode);
+        console.log("Item Subscription : "+subscriptionCodeItem);
         if(subscriptionCode === 'PREMIUM')
         {
             return true;
