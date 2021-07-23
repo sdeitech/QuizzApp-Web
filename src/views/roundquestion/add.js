@@ -14,6 +14,9 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
+import { shortTitle } from "../../utils/common";
+import _ from "underscore";
+
 let round_id,contest_id,gameType;
 
 class AddRoundQuestion extends Component {
@@ -979,9 +982,24 @@ class AddRoundQuestion extends Component {
 				                        	this.state.imageList.map((e, key) => {
 	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
 				                                	<div class="cate-box2"  onClick={this.selectImage.bind(this,e)}  style={{ cursor:'pointer'}} >
-				                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+				                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main paid-media-img"/>
+				                                        {
+                                                            (_.contains(["PRO","PREMIUM"],e.subscriptionType)) ? ((e.subscriptionType === "PRO") ? (
+                                                                <div className="paid-cat">
+                                                                    <img
+                                                                        src="img/pro.png"
+                                                                    />
+                                                                    <span className="paid-cat-color">Pro</span>
+                                                                </div>
+                                                            ) : (<div className="paid-cat">
+                                                                    <img
+                                                                        src="img/premium.png"
+                                                                    />
+                                                                    <span className="paid-cat-color">Premium</span>
+                                                                </div>)) : null
+                                                        }
 				                                        <div class="cat_title2">
-				                                            <p>{e.title}</p>
+				                                            <p className="paid-media-title-btm-spc">{shortTitle(e.title,15)}</p>
 				                                        </div>
 				                                    </div>
 					                            </div>
@@ -1008,8 +1026,23 @@ class AddRoundQuestion extends Component {
 														  <source src={e.url} type="video/mp4"/>
 														  <source src={e.url} type="video/ogg"/>
 														</video>
+				                                        {
+                                                            (_.contains(["PRO","PREMIUM"],e.subscriptionType)) ? ((e.subscriptionType === "PRO") ? (
+                                                                <div className="paid-cat">
+                                                                    <img
+                                                                        src="img/pro.png"
+                                                                    />
+                                                                    <span className="paid-cat-color">Pro</span>
+                                                                </div>
+                                                            ) : (<div className="paid-cat">
+                                                                    <img
+                                                                        src="img/premium.png"
+                                                                    />
+                                                                    <span className="paid-cat-color">Premium</span>
+                                                                </div>)) : null
+                                                        }
 				                                        <div class="cat_title2">
-				                                            <p>{e.name}</p>
+				                                            <p className="paid-media-title-btm-spc">{shortTitle(e.name,15)}</p>
 				                                        </div>
 				                                    </div>
 					                            </div>
@@ -1034,8 +1067,23 @@ class AddRoundQuestion extends Component {
 														  <source src={e.url} type="audio/ogg"/>
 														  <source src={e.url} type="audio/mpeg"/>
 														</audio>
+				                                        {
+                                                            (_.contains(["PRO","PREMIUM"],e.subscriptionType)) ? ((e.subscriptionType === "PRO") ? (
+                                                                <div className="paid-cat">
+                                                                    <img
+                                                                        src="img/pro.png"
+                                                                    />
+                                                                    <span className="paid-cat-color">Pro</span>
+                                                                </div>
+                                                            ) : (<div className="paid-cat">
+                                                                    <img
+                                                                        src="img/premium.png"
+                                                                    />
+                                                                    <span className="paid-cat-color">Premium</span>
+                                                                </div>)) : null
+                                                        }
 				                                        <div class="cat_title2">
-				                                            <p>{e.name}</p>
+				                                            <p className="paid-media-title-btm-spc">{shortTitle(e.name,12)}</p>
 				                                        </div>
 				                                    </div>
 					                            </div>

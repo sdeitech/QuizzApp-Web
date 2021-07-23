@@ -8,6 +8,7 @@ import { CModal, CModalBody } from "@coreui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import languages from "../../languages";
+import _ from "underscore";
 
 class AddContest extends Component {
     constructor(props) {
@@ -17,6 +18,9 @@ class AddContest extends Component {
             searchCategoryTerm: "",
             filterBrandList: [],
             filterCategoryList: [],
+            mainLabels: [],
+            loadLabels: [],
+            mainSelectedCategories: [],
             categoryList: [],
             categoryListObj: [],
             categoryListSelected: [],
@@ -77,10 +81,18 @@ class AddContest extends Component {
                 return response.json();
             })
             .then((data) => {
-                var categoryList = data.data;
+                let mainLabels = data.data;
+                _.each(mainLabels, function(item, index) {
+                    _.each(item.categories, function(itemCat, indexCat) {
+                        mainLabels[index]["categories"][indexCat]['is_selected'] = false;
+                    })
+                })
+
                 this.setState({
-                    categoryList: categoryList,
-                    filterCategoryList: categoryList,
+                    mainLabels,
+                    loadLabels: mainLabels, 
+                    categoryList: mainLabels,
+                    filterCategoryList: mainLabels
                 });
             });
 
@@ -234,9 +246,6 @@ class AddContest extends Component {
     }
 
     handleChangeCategory(catdata, maindata, e) {
-        let categoryListTempSelected = this.state.categoryListTempSelected;
-        let categoryListObj = this.state.categoryListObj;
-
         this.setState({ subscriptionModel: false });
         if (!configuration.checkUserHasAccess(catdata.subscriptionType)) {
             this.handleCloseClick(this);
@@ -244,95 +253,33 @@ class AddContest extends Component {
             return false;
         }
 
-        if (e.target.checked) {
-            categoryListObj = categoryListObj.filter(function (
-                value,
-                index,
-                arr
-            ) {
-                if (value.categoryId !== catdata._id) {
-                    return value;
+        let loadLabels = this.state.loadLabels;
+        _.each(loadLabels, function(item, index) {
+            _.each(item.categories, function(itemCat, indexCat) {
+                if(e.target.id === itemCat._id){
+                    loadLabels[index]["categories"][indexCat]['is_selected'] = e.target.checked ? true : false;
                 }
-            });
+            })
+        })
 
-            categoryListObj.push({
-                categoryId: catdata._id,
-                mainLabelId: maindata.id,
-                name: catdata.name,
-            });
-            categoryListTempSelected.push(catdata._id);
-        } else {
-            categoryListObj = categoryListObj.filter(function (
-                value,
-                index,
-                arr
-            ) {
-                if (value.categoryId !== catdata._id) {
-                    return value;
-                }
-            });
-
-            categoryListTempSelected = categoryListTempSelected.filter(
-                function (value, index, arr) {
-                    if (value !== catdata._id) {
-                        return value;
-                    }
-                }
-            );
-        }
-        this.setState({
-            categoryListObj: categoryListObj,
-            categoryListTempSelected: categoryListTempSelected,
-        });
-
-        $(".categoryCheckbox").each(function () {
-            $(this).prop(
-                "checked",
-                categoryListTempSelected.includes($(this).attr("id"))
-            );
-        });
+        this.setState({loadLabels})
+        console.log(loadLabels);
     }
 
     handleSubmitCategory(e) {
-        let categoryListObj = this.state.categoryListObj;
-
-        let categoryListSelected = [];
-        let displayArr = [];
-
-        for (var i = 0; i < categoryListObj.length; i++) {
-            categoryListSelected.push(categoryListObj[i].categoryId);
-            var obj = {};
-            obj.categoryId = categoryListObj[i].categoryId;
-            obj.name = categoryListObj[i].name;
-            displayArr.push(obj);
-        }
-
-        this.setState({
-            categoryListObjDisplaySelected: displayArr,
-            categoryListSelected: categoryListSelected,
-        });
-
-        let fields = this.state.fields;
-        fields.categoryIds = JSON.stringify(categoryListObj);
-        this.setState({ fields });
-        this.setState({ openModelCategory: false });
-
-        let errors = {};
-        if (
-            typeof categoryListObj === "undefined" ||
-            categoryListObj.length === 0
-        ) {
-            errors["categoryIds"] = "Please select category";
-        }
-        this.setState({ errors: errors });
-        $("body").removeClass("modal-open");
-
-        this.setState({
-            searchTerm: "",
-            searchCategoryTerm: "",
-        });
-        this.searchUpdatedCategory("");
-        this.searchUpdated("");
+        let mainSelectedCategories = [];
+        _.each(this.state.mainLabels, function(item, index) {
+            _.each(item.categories, function(itemCat, indexCat) {
+                if(itemCat.is_selected){
+                    mainSelectedCategories.push({
+                        categoryId: itemCat._id,
+                        mainLabelId: item.title,
+                        name: itemCat.name
+                    })
+                }
+            })
+        })
+        this.setState({mainSelectedCategories, openModelCategory: false})
     }
 
     handleChangeBrand(maindata, e) {
@@ -412,53 +359,18 @@ class AddContest extends Component {
     }
 
     handleRemoveCategory(data, e) {
-        let categoryListObj = this.state.categoryListObj;
-        let categoryListObjDisplaySelected = this.state
-            .categoryListObjDisplaySelected;
-        let categoryListSelected = this.state.categoryListSelected;
-        categoryListObj = categoryListObj.filter(function (value, index, arr) {
-            if (value.categoryId !== data.categoryId) {
-                return value;
-            } else {
-                $("#" + data.categoryId).prop("checked", false);
-            }
-        });
-        categoryListSelected = categoryListSelected.filter(function (
-            value,
-            index,
-            arr
-        ) {
-            if (value !== data.categoryId) {
-                return value;
-            }
-        });
+        let mainSelectedCategories = this.state.mainSelectedCategories;
+        mainSelectedCategories = _.reject(mainSelectedCategories, function(item){ return item.categoryId === data.categoryId; });
 
-        categoryListObjDisplaySelected = categoryListObjDisplaySelected.filter(
-            function (value, index, arr) {
-                if (value.categoryId !== data.categoryId) {
-                    return value;
+        let loadLabels = this.state.loadLabels;
+        _.each(loadLabels, function(item, index) {
+            _.each(item.categories, function(itemCat, indexCat) {
+                if(itemCat._id === data.categoryId){
+                   loadLabels[index]['categories'][indexCat]['is_selected'] = false;
                 }
-            }
-        );
-
-        this.setState({
-            categoryListObj: categoryListObj,
-            categoryListObjDisplaySelected: categoryListObjDisplaySelected,
-            categoryListSelected: categoryListSelected,
-        });
-
-        let fields = this.state.fields;
-        fields.categoryIds = JSON.stringify(categoryListObj);
-        this.setState({ fields });
-
-        let errors = {};
-        if (
-            typeof categoryListObj === "undefined" ||
-            categoryListObj.length === 0
-        ) {
-            errors["categoryIds"] = "Please select category";
-        }
-        this.setState({ errors: errors });
+            })
+        })
+        this.setState({mainSelectedCategories,mainLabels: loadLabels, loadLabels})
     }
 
     handleRemoveBrand(data, e) {
@@ -563,8 +475,8 @@ class AddContest extends Component {
 
         this.setState({ fields });
 
-        var categoryArr = fields["categoryIds"]
-            ? JSON.parse(fields["categoryIds"])
+        var categoryArr = (this.state.mainSelectedCategories.length > 0)
+            ? this.state.mainSelectedCategories
             : [];
 
         if (fields["title"].trim() === "") {
@@ -589,7 +501,6 @@ class AddContest extends Component {
 
         this.setState({ errors: errors });
         if (formIsValid) {
-            // console.log(JSON.parse(reactLocalStorage.get('userData')).userId);
             const data = new FormData();
             data.append("title", this.state.fields.title);
             data.append("description", this.state.fields.description);
@@ -603,7 +514,7 @@ class AddContest extends Component {
             data.append("playerType", this.state.fields.playerType);
             data.append("saveToId", this.state.fields.saveToId);
             data.append("saveToTitle", this.state.fields.saveToTitle);
-            data.append("categoryIds", this.state.fields.categoryIds);
+            data.append("categoryIds", JSON.stringify(categoryArr));
             data.append("brandIds", this.state.fields.brandIds);
             if (this.state.fields.image === "image") {
                 console.log(this.uploadInput.files);
@@ -628,8 +539,6 @@ class AddContest extends Component {
                             pathname: "/tray/" + data.data._id,
                             state: { contest_id: data.data._id },
                         });
-
-                        // window.location.href = '/#/tray'
                     } else {
                         return toast.error(data.message);
                     }
@@ -716,84 +625,32 @@ class AddContest extends Component {
         }, 1000);
     }
 
-    searchUpdatedCategory(term) {
-        if (term !== "") {
-            term = term.target.value;
-            this.setState({ searchCategoryTerm: term });
-        }
+    searchUpdatedCategory(e) {
+        if(e.target){
+            this.setState({searchCategoryTerm: e.target.value});
+            if(e.target.value){
+                let filterItems = [];
+                _.each(this.state.loadLabels, function(item, index) {
+                    let catArr = [];
+                    _.each(item.categories, function(itemCat, indexCat) {
+                        if(itemCat.name.includes(e.target.value) || itemCat.name.toLowerCase().includes(e.target.value) || itemCat.name.toUpperCase().includes(e.target.value)){
+                            catArr.push(itemCat);
+                        }
+                    })
 
-        let filterCategoryList = [];
-        if (term) {
-            fetch(configuration.baseURL + "category/categoryList", {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization:
-                        "Bearer " + reactLocalStorage.get("clientToken"),
-                },
-            })
-                .then((response) => {
-                    return response.json();
-                })
-                .then((data) => {
-                    var categoryList1 = data.data;
-                    // console.log(categoryList1);
-                    for (var i = 0; i < categoryList1.length; i++) {
-                        var innerArr = [];
-                        for (
-                            var k = 0;
-                            k < categoryList1[i].categories.length;
-                            k++
-                        ) {
-                            var name = categoryList1[i].categories[k].name;
-                            if (
-                                name.includes(term) ||
-                                name.toLowerCase().includes(term) ||
-                                name.toUpperCase().includes(term)
-                            ) {
-                                innerArr.push(categoryList1[i].categories[k]);
-                            }
-                        }
-                        if (innerArr.length > 0) {
-                            var obj = {};
-                            obj = categoryList1[i];
-                            obj.categories = innerArr;
-                            filterCategoryList.push(obj);
-                        }
+                    if(catArr.length > 0){
+                        filterItems.push({
+                            id: item.id,
+                            title: item.title,
+                            categories: catArr
+                        })
                     }
-                    // console.log(filterCategoryList);
-                    this.setState({ filterCategoryList: filterCategoryList });
-                });
-        } else {
-            fetch(configuration.baseURL + "category/categoryList", {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization:
-                        "Bearer " + reactLocalStorage.get("clientToken"),
-                },
-            })
-                .then((response) => {
-                    return response.json();
                 })
-                .then((data) => {
-                    var category = data.data;
-                    this.setState({ filterCategoryList: category });
-                });
+                this.setState({mainLabels: filterItems});
+            } else {
+                this.setState({mainLabels: this.state.loadLabels});
+            }
         }
-
-        let that = this;
-        setTimeout(function () {
-            let categoryListSelected = that.state.categoryListSelected;
-            $(".categoryCheckbox").each(function () {
-                $(this).prop(
-                    "checked",
-                    categoryListSelected.includes($(this).attr("id"))
-                );
-            });
-        }, 1000);
     }
     removeImage(event) {
         $(document).ready(function () {
@@ -1207,7 +1064,7 @@ class AddContest extends Component {
                                             </label>
                                             <br />
 
-                                            {this.state.categoryListObjDisplaySelected.map(
+                                            {this.state.mainSelectedCategories.map(
                                                 (e, key) => {
                                                     return (
                                                         <div
@@ -1681,15 +1538,13 @@ class AddContest extends Component {
                                                             this.state
                                                                 .searchCategoryTerm
                                                         }
-                                                        onChange={this.searchUpdatedCategory.bind(
-                                                            this
-                                                        )}
+                                                        onChange={this.searchUpdatedCategory.bind(this)}
                                                     />
                                                     <i className="bx bx-search"></i>
                                                 </div>
-                                                {this.state.filterCategoryList
+                                                {this.state.mainLabels
                                                     .length > 0 ? (
-                                                    this.state.filterCategoryList.map(
+                                                    this.state.mainLabels.map(
                                                         (e, key) => {
                                                             return (
                                                                 <div className="row">
@@ -1726,6 +1581,7 @@ class AddContest extends Component {
                                                                                             cat,
                                                                                             e
                                                                                         )}
+                                                                                        checked={cat.is_selected ? "checked" : ""}
                                                                                     />
                                                                                     <label
                                                                                         for={
@@ -1744,6 +1600,21 @@ class AddContest extends Component {
                                                                                                     cat.image
                                                                                                 }
                                                                                             />
+                                                                                            {
+                                                                                                (_.contains(["PRO","PREMIUM"],cat.subscriptionType)) ? ((cat.subscriptionType === "PRO") ? (
+                                                                                                    <div className="paid-cat">
+                                                                                                        <img
+                                                                                                            src="img/pro.png"
+                                                                                                        />
+                                                                                                        <span className="paid-cat-color">Pro</span>
+                                                                                                    </div>
+                                                                                                ) : (<div className="paid-cat">
+                                                                                                        <img
+                                                                                                            src="img/premium.png"
+                                                                                                        />
+                                                                                                        <span className="paid-cat-color">Premium</span>
+                                                                                                    </div>)) : null
+                                                                                            }
                                                                                         </div>
                                                                                     </label>
                                                                                     <div className="cat_title checked_title">
