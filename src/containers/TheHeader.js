@@ -624,6 +624,8 @@ class TheHeader extends Component {
                     },
                 });
             }
+
+            this.callAPI(socialResponse.id,postData,socialResponse.profileObj); 
         }
     };
 
@@ -654,6 +656,41 @@ class TheHeader extends Component {
             }
         }
     };
+
+    callAPI(social_id,postData,profileObj){
+        console.log("call API Header: ");
+        console.log("social_id : "+social_id);
+        console.log(postData);
+        fetch(configuration.baseURL+"user/checkSocial", {
+            method: "post",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({'social_id':social_id,'language_code':'EN'})
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            console.log(data);
+            if(data.code === 404){
+                this.setState({
+                    openModelRegister: true,
+                    openModelLogin: false,
+                });
+            } else if(data.code === 200){
+                this.setState({
+                    openModelRegister: false,
+                    openModelLogin: false,
+                });
+                console.log("Good to go for login");
+                let that = this;
+                configuration.saveTokenData(data.data,function(payload){
+                    console.log(payload);
+                    that.props.history.push('/dashboard');
+                });
+            }
+        });
+    }
 
     render() {
         return (
