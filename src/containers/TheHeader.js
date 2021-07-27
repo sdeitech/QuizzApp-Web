@@ -965,7 +965,7 @@ class TheHeader extends Component {
 
                                             <div className="social-login">
                                                 <FacebookLogin
-                                                    appId="1355959991407151"
+                                                    appId="218767566802676"
                                                     // autoLoad
                                                     fields="name,email,picture"
                                                     callback={this.responseFacebook.bind(
@@ -1181,7 +1181,7 @@ class TheHeader extends Component {
                                                 </div>
                                                 <div className="social-login">
                                                     <FacebookLogin
-                                                        appId="1355959991407151"
+                                                        appId="218767566802676"
                                                         // autoLoad
                                                         fields="name,email,picture"
                                                         callback={this.responseFacebookForLogin.bind(
