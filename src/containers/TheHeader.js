@@ -625,7 +625,7 @@ class TheHeader extends Component {
                 });
             }
 
-            this.callAPI(socialResponse.id,postData,socialResponse.profileObj, registerType: "facebook"); 
+            this.callAPI(socialResponse.id,postData,socialResponse.profileObj, "facebook"); 
         }
     };
 
