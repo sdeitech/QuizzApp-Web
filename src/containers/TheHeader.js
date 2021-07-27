@@ -686,7 +686,7 @@ class TheHeader extends Component {
                 let that = this;
                 configuration.saveTokenData(data.data,function(payload){
                     console.log(payload);
-                    that.props.history.push('/dashboard');
+                    window.location.href = "/#/dashboard";
                 });
             }
         });
