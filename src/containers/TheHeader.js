@@ -570,6 +570,7 @@ class TheHeader extends Component {
             if (postData) {
                 this.setState({
                     fields: {
+                        social_id: postData.social_id,
                         name: postData.name,
                         email: postData.email,
                     },
@@ -619,7 +620,9 @@ class TheHeader extends Component {
             // console.log(postData);
             if (postData) {
                 this.setState({
-                    loginFields: {
+                    fields: {
+                        social_id: postData.social_id,
+                        name: postData.name,
                         email: postData.email,
                     },
                 });
@@ -687,6 +690,11 @@ class TheHeader extends Component {
                 configuration.saveTokenData(data.data,function(payload){
                     console.log(payload);
                     window.location.href = "/#/dashboard";
+                });
+            } else {
+                this.setState({
+                    openModelRegister: true,
+                    openModelLogin: false,
                 });
             }
         });
