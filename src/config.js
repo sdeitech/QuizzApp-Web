@@ -4,8 +4,9 @@ var jwt = require('jsonwebtoken');
 
 const config = {
     appName: 'Murabbo',
-    // baseURL: 'http://localhost:9002/api/app/',
-    // APIbaseURL: 'http://localhost:9002/api/',
+    fbAppId: "218767566802676",
+    /*baseURL: 'http://localhost:9002/api/app/',
+    APIbaseURL: 'http://localhost:9002/api/',*/
     baseURL: 'https://dev-api.murabbo.com/api/app/',
     APIbaseURL: 'https://dev-api.murabbo.com/api/',
     // baseURL: 'http://590d368c4afb.ngrok.io/api/app/',

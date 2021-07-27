@@ -557,7 +557,8 @@ class TheHeader extends Component {
     }
 
     responseFacebook = (socialResponse) => {
-        // console.log(socialResponse);
+        console.log("socialResponse Login");
+        console.log(socialResponse);
 
         if (socialResponse.id) {
             var postData = {
@@ -606,7 +607,8 @@ class TheHeader extends Component {
         }
     };
     responseFacebookForLogin = (socialResponse) => {
-        // console.log(socialResponse);
+        console.log("Call responseFacebookForLogin");
+        console.log(socialResponse);
 
         if (socialResponse.id) {
             var postData = {
@@ -916,7 +918,7 @@ class TheHeader extends Component {
 
                                             <div className="social-login">
                                                 <FacebookLogin
-                                                    appId="407986900535598"
+                                                    appId="218767566802676"
                                                     // autoLoad
                                                     fields="name,email,picture"
                                                     callback={this.responseFacebook.bind(
@@ -1132,7 +1134,7 @@ class TheHeader extends Component {
                                                 </div>
                                                 <div className="social-login">
                                                     <FacebookLogin
-                                                        appId="407986900535598"
+                                                        appId="218767566802676"
                                                         // autoLoad
                                                         fields="name,email,picture"
                                                         callback={this.responseFacebookForLogin.bind(

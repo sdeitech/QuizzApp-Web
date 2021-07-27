@@ -148,9 +148,6 @@ class MyAccount extends Component {
             errors["availabilityStatus"] = "Please select availability status";formIsValid = false;
         }
 
-        if(!fields["image"]){
-            errors["image"] = "Please select image";formIsValid = false;
-        }
         this.setState({errors: errors});
 
         if(formIsValid){
@@ -282,6 +279,13 @@ class MyAccount extends Component {
                 
             });
         }
+    }
+
+    removeImage(){
+        let fields = this.state.fields;
+        fields['image'] = '';
+        console.log(fields);
+        this.setState({fields});
     }
 
 	render() {
@@ -426,9 +430,8 @@ class MyAccount extends Component {
 
                                                           <label for="file-upload" id="file-drag" style={{width: '100px',height: '100px'}}>
                                                             <img id="file-image"   src="#" alt="Preview" className="hidden"/>
-                                                            <div className="edit-pencil">
-                                                                <img src="/img/pen.svg" />
-                                                            </div>
+                                                            {(!this.state.fields['image']) ? (<div className="edit-pencil"><img src="/img/pen.svg"/></div>) : null}
+                                                            
                                                             <img className="display-profile-pic" src={this.state.fields['image']} alt=""  />
                                                             <div id="start" style={{ height: "100px",width: "100px"}}>
                                                                 {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
@@ -443,6 +446,8 @@ class MyAccount extends Component {
                                                           </label>
                                                         </form>
                                                     </div>
+                                                    <br/>
+                                                    {(this.state.fields['image']) ? (<button className="pink_btn" type="button" onClick={this.removeImage.bind(this)} >Remove Profile Photo</button>) : null}
 
                                                     <span  className="error-msg">{this.state.errors["image"]}</span>
 
