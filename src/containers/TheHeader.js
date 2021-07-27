@@ -625,7 +625,7 @@ class TheHeader extends Component {
                 });
             }
 
-            this.callAPI(socialResponse.id,postData,socialResponse.profileObj); 
+            this.callAPI(socialResponse.id,postData,socialResponse.profileObj, registerType: "facebook"); 
         }
     };
 
@@ -657,7 +657,7 @@ class TheHeader extends Component {
         }
     };
 
-    callAPI(social_id,postData,profileObj){
+    callAPI(social_id,postData,profileObj,registerType){
         console.log("call API Header: ");
         console.log("social_id : "+social_id);
         console.log(postData);
@@ -667,7 +667,7 @@ class TheHeader extends Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body:JSON.stringify({'social_id':social_id,'language_code':'EN'})
+            body:JSON.stringify({socialId:social_id,registerType,roleId:2})
         }).then((response) => {
             return response.json();
         }).then((data) => {
