@@ -566,6 +566,16 @@ class TheHeader extends Component {
                 name: socialResponse.name,
                 email: socialResponse.email || "",
             };
+            // console.log(postData);
+            if (postData) {
+                this.setState({
+                    fields: {
+                        social_id: postData.social_id,
+                        name: postData.name,
+                        email: postData.email,
+                    },
+                });
+            }
 
             this.callAPI(socialResponse.id,postData,socialResponse.profileObj, "facebook");
         }
@@ -609,6 +619,16 @@ class TheHeader extends Component {
                 name: socialResponse.name,
                 email: socialResponse.email || "",
             };
+            // console.log(postData);
+            if (postData) {
+                this.setState({
+                    fields: {
+                        social_id: postData.social_id,
+                        name: postData.name,
+                        email: postData.email,
+                    },
+                });
+            }
 
             this.callAPI(socialResponse.id,postData,socialResponse.profileObj, "facebook"); 
         }
@@ -661,9 +681,6 @@ class TheHeader extends Component {
                 this.setState({
                     openModelRegister: true,
                     openModelLogin: false,
-                    social_id: postData.social_id,
-                    name: postData.name,
-                    email: postData.email,
                 });
             } else if(data.code === 200){
                 this.setState({
@@ -680,9 +697,6 @@ class TheHeader extends Component {
                 this.setState({
                     openModelRegister: true,
                     openModelLogin: false,
-                    social_id: postData.social_id,
-                    name: postData.name,
-                    email: postData.email,
                 });
             }
         });
