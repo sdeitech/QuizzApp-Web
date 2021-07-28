@@ -584,7 +584,6 @@ class TheHeader extends Component {
     responseGoogle = (socialResponse) => {
     	console.log("Google login call");
         console.log(socialResponse);
-        return false;
         if (socialResponse.googleId) {
             var social_id = socialResponse.googleId;
 
