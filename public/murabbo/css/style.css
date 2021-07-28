@@ -4246,6 +4246,10 @@ button.blue_btn:hover {
     max-height: 140px !important;
 }
 
+.cursor{
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .paid-cat span {
         font-size: 9px;
