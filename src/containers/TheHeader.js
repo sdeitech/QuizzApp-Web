@@ -987,7 +987,7 @@ class TheHeader extends Component {
                                                 />
 
                                                 <GoogleLogin
-                                                    clientId="625895329090-etdnedjeipf6nv8dau5efjd9dllad9r0.apps.googleusercontent.com"
+                                                    clientId="118148468529-v1147npplqkpe9gmjf0pvgb03q4pg1i5.apps.googleusercontent.com"
                                                     buttonText="Login"
                                                     render={(renderProps) => (
                                                         <span
@@ -1002,6 +1002,7 @@ class TheHeader extends Component {
                                                             <img src="./murabbo/img/google.svg" className="cursor"/>
                                                         </span>
                                                     )}
+                                                    cookiePolicy={'single_host_origin'}
                                                     onSuccess={this.responseGoogle.bind(this)}
                                                     onFailure={this.responseGoogle.bind(this)}
                                                 />
@@ -1202,7 +1203,7 @@ class TheHeader extends Component {
                                                 </a> */}
 
                                                     <GoogleLogin
-                                                        clientId="625895329090-etdnedjeipf6nv8dau5efjd9dllad9r0.apps.googleusercontent.com"
+                                                        clientId="118148468529-v1147npplqkpe9gmjf0pvgb03q4pg1i5.apps.googleusercontent.com"
                                                         render={(
                                                             renderProps
                                                         ) => (
@@ -1218,12 +1219,9 @@ class TheHeader extends Component {
                                                                 <img src="./murabbo/img/google.svg" className="cursor"/>
                                                             </span>
                                                         )}
-                                                        onSuccess={this.responseGoogle.bind(
-                                                            this
-                                                        )}
-                                                        onFailure={this.responseGoogle.bind(
-                                                            this
-                                                        )}
+                                                        cookiePolicy={'single_host_origin'}
+                                                        onSuccess={this.responseGoogle.bind(this)}
+                                                        onFailure={this.responseGoogle.bind(this)}
                                                     />
                                                 </div>
 
