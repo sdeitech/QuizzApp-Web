@@ -582,7 +582,9 @@ class TheHeader extends Component {
     };
 
     responseGoogle = (socialResponse) => {
+    	console.log("Google login call");
         console.log(socialResponse);
+        return false;
         if (socialResponse.googleId) {
             var social_id = socialResponse.googleId;
 
@@ -593,20 +595,22 @@ class TheHeader extends Component {
                 first_name: socialResponse.profileObj.familyName,
                 last_name: socialResponse.profileObj.givenName,
                 name: socialResponse.profileObj.name,
-                email: socialResponse.profileObj.email,
+                email: socialResponse.profileObj.email || '',
                 password: "",
                 player_id: "",
             };
-            // console.log(postData);
 
             if (postData) {
                 this.setState({
                     fields: {
+                    	social_id: postData.social_id,
                         name: postData.name,
                         email: postData.email,
                     },
                 });
             }
+
+            this.callAPI(socialResponse.googleId,postData,socialResponse.profileObj, "google");
         }
     };
     responseFacebookForLogin = (socialResponse) => {
@@ -977,17 +981,14 @@ class TheHeader extends Component {
                                                                 renderProps.onClick
                                                             }
                                                         >
-                                                            <img src="./murabbo/img/facebook.svg" />
+                                                            <img src="./murabbo/img/facebook.svg" className="cursor"/>
                                                         </span>
                                                     )}
                                                 />
-                                                {/* <a href="#"><img src="./murabbo/img/facebook.svg" /></a> */}
-                                                {/* <a href="#">
-                                                    <img src="./murabbo/img/google.svg" />
-                                                </a> */}
 
                                                 <GoogleLogin
-                                                    clientId="118148468529-v1147npplqkpe9gmjf0pvgb03q4pg1i5.apps.googleusercontent.com"
+                                                    clientId="625895329090-etdnedjeipf6nv8dau5efjd9dllad9r0.apps.googleusercontent.com"
+                                                    buttonText="Login"
                                                     render={(renderProps) => (
                                                         <span
                                                             style={{
@@ -998,15 +999,11 @@ class TheHeader extends Component {
                                                                 renderProps.onClick
                                                             }
                                                         >
-                                                            <img src="./murabbo/img/google.svg" />
+                                                            <img src="./murabbo/img/google.svg" className="cursor"/>
                                                         </span>
                                                     )}
-                                                    onSuccess={this.responseGoogle.bind(
-                                                        this
-                                                    )}
-                                                    onFailure={this.responseGoogle.bind(
-                                                        this
-                                                    )}
+                                                    onSuccess={this.responseGoogle.bind(this)}
+                                                    onFailure={this.responseGoogle.bind(this)}
                                                 />
                                             </div>
 
@@ -1195,7 +1192,7 @@ class TheHeader extends Component {
                                                                     renderProps.onClick
                                                                 }
                                                             >
-                                                                <img src="./murabbo/img/facebook.svg" />
+                                                                <img src="./murabbo/img/facebook.svg" className="cursor"/>
                                                             </span>
                                                         )}
                                                     />
@@ -1205,7 +1202,7 @@ class TheHeader extends Component {
                                                 </a> */}
 
                                                     <GoogleLogin
-                                                        clientId="118148468529-v1147npplqkpe9gmjf0pvgb03q4pg1i5.apps.googleusercontent.com"
+                                                        clientId="625895329090-etdnedjeipf6nv8dau5efjd9dllad9r0.apps.googleusercontent.com"
                                                         render={(
                                                             renderProps
                                                         ) => (
@@ -1218,7 +1215,7 @@ class TheHeader extends Component {
                                                                     renderProps.onClick
                                                                 }
                                                             >
-                                                                <img src="./murabbo/img/google.svg" />
+                                                                <img src="./murabbo/img/google.svg" className="cursor"/>
                                                             </span>
                                                         )}
                                                         onSuccess={this.responseGoogle.bind(
