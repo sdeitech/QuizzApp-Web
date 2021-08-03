@@ -20,6 +20,7 @@ class EditRoundQuestion extends Component {
 	constructor(props) {
         super(props);
         this.state = {
+        	isexitImage:"",
         	answers:[],
         	fields:{image:'',question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0,scoring:1, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
 			errors:{},
@@ -96,16 +97,15 @@ class EditRoundQuestion extends Component {
 							that.setState({fields});
 							that.setState({answers:data.data[0].answers})
 							if (data.data[0].file !== '') {
-								if (data.data[0].fileType === 'image') {
-								  
-									
-										
+								if (data.data[0].fileType === 'image') {								
 									let fields = this.state.fields;
 									fields['fileType'] = 'image';
 									fields['fileUrl'] = data.data[0].file;
-									this.setState({fields});
-										
+									fields['image'] = "image"
+									this.setState({fields});	
 									$('.display-profile-pic').attr('src', data.data[0].file);
+									$('.display-profile-pic').show();
+									$('#start').hide();	
 								}
 								else
 								{
@@ -115,16 +115,22 @@ class EditRoundQuestion extends Component {
 									}
 									else if (data.data[0].fileType === 'audio') {
 										that.setState({profilePic:'avatars/5.png'});
+									}else{
+											$('.display-profile-pic').hide();
+											$('#start').show();	
 									}
 								}
-								$('.display-profile-pic').show();
-								$('#start').hide();
+								
 							}else{
+
 								// let fields = this.state.fields;
 								
 								// fields['fileUrl'] = './murabbo/img/upload.svg';
 								// this.setState({profilePic:"./murabbo/img/upload.svg"});
 								// this.setState({fields});
+								$('.display-profile-pic').hide();
+								$('#start').show();
+								
 							}																	
 							setTimeout(function () {
 								that.changeTime(0);
@@ -310,6 +316,20 @@ class EditRoundQuestion extends Component {
 				else
 				{
 					data.append('file', '');
+
+					// if(this.state.isexitImage !== ""){
+                    //     data.append('file',this.state.isexitImage);    
+	                // }else{
+					// 	data.append('file', '');
+	                // }
+					
+					
+					let fields = this.state.fields;
+					// fields['fileType'] = '';
+					fields['fileUrl'] = 'avatars/question.png';
+					this.setState({profilePic:"./murabbo/img/upload.svg"});
+					this.setState({fields});
+
 				}
 				data.append('fileType',this.state.fields.fileType);
 				data.append('fileUrl',this.state.fields.fileUrl);
@@ -558,70 +578,23 @@ class EditRoundQuestion extends Component {
 
 
 	removeImage(event) {
-
-
-
+		event.stopPropagation();
 		$(document).ready(function () {
         $(".display-profile-pic").attr("src", "");
 	    $(".display-profile-pic").hide();
 		$(".file-upload").val("");
 		$("#start").show();
      	});
-
-	
-	var fields = this.state.fields;
-	fields['fileType'] = '';
-	fields['fileUrl'] = './murabbo/img/upload.svg';
-	this.setState({profilePic:"./murabbo/img/upload.svg"});
-	this.setState({fields});
-        
-		// const formData = new FormData();
-        // formData.append('type', "question");
-        
-        // fetch(configuration.baseURL + "removeMedia/" + contest_id,{
-        //     method: "DELETE",
-        //     body:formData,
-        //     headers: {
-        //         Accept: "application/json",
-        //         Authorization:
-        //             "Bearer " + reactLocalStorage.get("clientToken"),
-        //     },
-        // }).then((response) => {
-        //     return response.json();
-        // })
-        // .then((data) => {
-        //     if (data.code === 200) {
-               
-		// 		$(document).ready(function () {
-		// 			$(".display-profile-pic").attr("src", "");
-		// 			$(".display-profile-pic").hide();
-		// 			$(".file-upload").val("");
-		// 			$("#start").show();
-		// 		});
-			
-				
-		// 		var fields = this.state.fields;
-		// 		fields['fileType'] = '';
-		// 		fields['fileUrl'] = '';
-		// 		this.setState({profilePic:"./murabbo/img/upload.svg"});
-		// 		this.setState({fields});
-               
-        //     } else {
-        //         return toast.error(data.message);
-        //     }
-        // });
-
-
-
-
-
-
-
-
-
-
-
-
+		var fields = this.state.fields;
+		if($(".display-profile-pic").attr("src") !== ""){
+            this.setState({isexitImage:$(".display-profile-pic").attr("src")});
+          }
+		fields['fileType'] = '';
+		fields['image'] = "";
+		fields['fileUrl'] = 'avatars/question.png';
+		this.setState({profilePic:"./murabbo/img/upload.svg"});
+		this.setState({fields});
+    
     }
 
 

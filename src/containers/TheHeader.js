@@ -675,7 +675,7 @@ class TheHeader extends Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body:JSON.stringify({socialId:social_id,registerType,roleId:2})
+            body:JSON.stringify({socialId:social_id,email:postData.email,registerType,roleId:2})
         }).then((response) => {
             return response.json();
         }).then((data) => {

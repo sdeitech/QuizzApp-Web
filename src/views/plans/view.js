@@ -85,7 +85,7 @@ class Plans extends Component {
 
     }
 
-    handlePurcaseClick(subscriptionId){
+    handlePurcaseClick(subscriptionId,subscriptionCode){
         if(this.state.listData.length === 0)
         {
             this.props.history.push('/add_card')  
@@ -101,7 +101,7 @@ class Plans extends Component {
         } 
         
         this.setState({fields});
-        this.setState({purchaseModel:true});        
+        this.setState({purchaseModel:true,subscriptionCode});        
     }
 
     clickHandle(card_id)
@@ -147,7 +147,7 @@ class Plans extends Component {
             }).then((response) =>{
             return response.json();
         }).then((data)=> {
-            
+            reactLocalStorage.set("subscriptionCode", this.state.subscriptionCode)
             this.setState({purchaseModel:false,fields:{subscriptionId:''},errors:{card_id:''}}); 
             this.componentDidMount();
         }); 
@@ -204,7 +204,7 @@ class Plans extends Component {
                                                     <h3>{val1.title}</h3>
                                                     <h5>{(val1.price > 0) ? '$'+val1.price : 'Free' }</h5>
                                                     <p>{val1.description}</p>
-                                                    {(val1.subscriptionCode !== 'BASIC') ? <button type="button" onClick={this.handlePurcaseClick.bind(this,val1._id)}>Purchase</button> : null}
+                                                    {(val1.subscriptionCode !== 'BASIC') ? <button type="button" onClick={this.handlePurcaseClick.bind(this,val1._id,val1.subscriptionCode)}>Purchase</button> : null}
                                                     {(val1.subscriptionCode === 'BASIC') ? <button type="button">Free</button> : null}
                                                 </div>
                                             </div>

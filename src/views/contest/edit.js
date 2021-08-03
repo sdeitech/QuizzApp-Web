@@ -15,6 +15,7 @@ class EditContest extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isexitImage:"",
             searchTerm: "",
             searchCategoryTerm: "",
             filterBrandList: [],
@@ -673,6 +674,14 @@ class EditContest extends Component {
             data.append("brandIds", this.state.fields.brandIds);
             if (this.state.fields.image === "image") {
                 data.append("image", this.uploadInput.files[0]);
+            }else{
+                data.append('image','');
+
+                // if(this.state.isexitImage !== ""){
+                //         data.append('image',this.state.isexitImage);    
+                // }else{
+                //     data.append('image','');
+                // }
             }
 
             /*console.log(data);
@@ -867,28 +876,19 @@ class EditContest extends Component {
     }
 
     removeImage(event) {
-       
-        const formData = new FormData();
-        formData.append('type', "contest");
-        
-        fetch(configuration.baseURL + "removeMedia/" + contest_id,{
-            method: "DELETE",
-            body:formData,
-            headers: {
-                Accept: "application/json",
-                Authorization:
-                    "Bearer " + reactLocalStorage.get("clientToken"),
-            },
-        }).then((response) => {
-            return response.json();
-        })
-        .then((data) => {
-            if (data.code == 200) {
-                this.componentDidMount();
-            } else {
-                return toast.error(data.message);
-            }
+        event.stopPropagation();
+        $(document).ready(function () {
+        $(".display-profile-pic").attr("src", "avatars/placeholder.png");
+        $(".file-upload").val("");  
         });
+        let fields = this.state.fields;
+
+        if(fields["image"] !== ""){
+            this.setState({isexitImage:fields["image"]});
+        // console.log(this.state.isexitImage);
+        }
+        fields["image"] = "";
+        this.setState({ fields });      
     }
 
     render() {
