@@ -14,6 +14,7 @@ import {
 import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery';
 var jwt = require('jsonwebtoken');
+var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
 class MyAccount extends Component {
 	constructor(props) {
@@ -28,7 +29,8 @@ class MyAccount extends Component {
             errors:{},
             changePasswordFields:{userId:'',oldPassword:'',password:'',confirm_password:''},
             changePasswordErrors:{},
-            tosterMsg:''
+            tosterMsg:'',
+            isexitImage:''
 
 		};
 	}
@@ -49,7 +51,7 @@ class MyAccount extends Component {
             }
         });
 
-        var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+        // var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
         fetch(configuration.baseURL+"user/userProfile?userId="+userId, {
                 method: "GET",
                 headers: {
@@ -63,7 +65,7 @@ class MyAccount extends Component {
                 var data = data.data;
                 this.setState({fields:data});
                 if (data.image === '') {
-                    this.setState({image: 'avatars/placeholder-user.png'})
+                    this.setState({profile_picture: 'avatars/placeholder-user.png'})
                 }
                 else
                 {
@@ -159,6 +161,17 @@ class MyAccount extends Component {
             data.append('availabilityStatus',this.state.fields.availabilityStatus);
             if(this.state.fields.image === 'image'){
                 data.append('image', this.uploadInput.files[0]);
+            }else if(this.state.fields.image !== ""){
+                data.append("image",this.state.fields.image);
+            }else{
+                data.append('image','');
+                // if(this.state.isexitImage !== ""){
+                //         data.append('image',this.state.isexitImage);    
+                // }else{
+                //     data.append('image','');
+
+                // }
+                
             } 
             // console.log(data);
             fetch(configuration.baseURL+"user/userProfile", {
@@ -281,11 +294,25 @@ class MyAccount extends Component {
         }
     }
 
-    removeImage(){
+    removeImage(event){
+         event.stopPropagation();
+         $(document).ready(function () {
+            $(".display-profile-pic").attr("src", "");
+            $(".profile").attr("src","");
+            $(".display-profile-pic").hide();
+            $(".file-upload").val("");  
+            $("#start").show();
+        });
         let fields = this.state.fields;
-        fields['image'] = '';
-        console.log(fields);
-        this.setState({fields});
+
+        if(fields["image"] !== ""){
+            this.setState({isexitImage:fields["image"]});
+        // console.log(this.state.isexitImage);
+        }
+        fields["image"] = "";
+        this.setState({ fields });
+        this.setState({profilePic:"avatars/placeholder-user.png"});
+        
     }
 
 	render() {
@@ -428,6 +455,21 @@ class MyAccount extends Component {
                                                         <form id="file-upload-form" className="uploader">
                                                           <input id="file-upload" type="file" name="fileUpload" className="file-upload" accept="image/*" onChange={this.handleUploadProfile.bind(this,'image')} ref={(ref) => { this.uploadInput = ref; }}  />
 
+                                                            {this.state.fields["image"] ==
+                                                            "image"  || this.state.fields["image"]? (
+                                                                <span aria-hidden="true" 
+                                                                    className="close_svg_profile"
+                                                                >
+                                                                    <img
+                                                                        className="close_svg"
+                                                                        src="./murabbo/img/close_dark.svg"
+                                                                        onClick={this.removeImage.bind(
+                                                                            this
+                                                                        )}
+                                                                    />
+                                                                </span>
+                                                            ) : null}
+
                                                           <label for="file-upload" id="file-drag" style={{width: '100px',height: '100px'}}>
                                                             <img id="file-image"   src="#" alt="Preview" className="hidden"/>
                                                             {(!this.state.fields['image']) ? (<div className="edit-pencil"><img src="/img/pen.svg"/></div>) : null}
@@ -447,7 +489,6 @@ class MyAccount extends Component {
                                                         </form>
                                                     </div>
                                                     <br/>
-                                                    {(this.state.fields['image']) ? (<button className="pink_btn" type="button" onClick={this.removeImage.bind(this)} >Remove Profile Photo</button>) : null}
 
                                                     <span  className="error-msg">{this.state.errors["image"]}</span>
 

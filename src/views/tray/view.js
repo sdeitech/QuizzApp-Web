@@ -15,11 +15,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery';
 import RLDD from 'react-list-drag-and-drop/lib/RLDD';
 let contest_id;
-
+let round_id;
 class RoundTray extends Component {
 	constructor(props) {
         super(props);
         this.state = {
+        	isexitImage:'',
 			is_display_cross:false,
 			fields:{timeLimitSeconds:30,timeLimit:'00:30',execution_mode:1,onDemandNegativePoints:0,hint:'',entriesPerRound:4,type:'2',noOfQuestions:3},
 			errors:{},
@@ -231,6 +232,8 @@ class RoundTray extends Component {
 
 	editHandler(data,e)
 	{
+
+		round_id = data.id
 		if(data.image){
 			this.setState({is_display_cross:true})
 		}
@@ -391,6 +394,13 @@ class RoundTray extends Component {
 	        }
             if(this.state.fields.image === 'image'){
                 data.append('image', this.uploadInput.files[0]);
+            }else{
+				data.append('image','');
+            	// if(this.state.isexitImage !== ""){
+                //         data.append('image',this.state.isexitImage);    
+                // }else{
+                //     data.append('image','');
+                // }
             } 
 
 			if(type === 'Bingo' || type === 'MatchIt')
@@ -556,37 +566,18 @@ class RoundTray extends Component {
 	
 
 	removeImage(event) {
+		event.stopPropagation();
 		$('.display-profile-pic').hide();
+     	$(".file-upload").val("");
 	    $('#start').show();
-
 	    var fields = this.state.fields;
+
+	    if(fields["image"] !== ""){
+            this.setState({isexitImage:fields["image"]});
+        // console.log(this.state.exitImage);
+        }
 	    fields['image'] = '';
 		this.setState({fields});
-		// const formData = new FormData();
-		// formData.append('type', "round");
-		
-		// fetch(configuration.baseURL + "removeMedia/" + contest_id,{
-		// 	method: "DELETE",
-		// 	body:formData,
-		// 	headers: {
-		// 		Accept: "application/json",
-		// 		Authorization:
-		// 			"Bearer " + reactLocalStorage.get("clientToken"),
-		// 	},
-		// }).then((response) => {
-		// 	return response.json();
-		// })
-		// .then((data) => {
-		// 	if (data.code === 200) {
-				
-				
-
-
-
-		// 	} else {
-		// 		return toast.error(data.message);
-		// 	}
-		// });
     }
 
 	render() {
@@ -841,15 +832,7 @@ class RoundTray extends Component {
 							                                      <output className="bubble">{this.state.fields['basePoints']}</output>
 							                                    </div>
 					                                		
-								                                <div className="cus_input input_wrap">
-								                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
-								                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
-												                      	<option value="2">Always</option>
-												                      	<option value="3">On demand</option>
-								                                    </select>
-								                                    <label>Show Hint</label>
-								                                </div>
-								                                <span  className="error-msg">{this.state.errors["hint"]}</span>
+								                                
 
 
 									                            <div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
@@ -861,7 +844,35 @@ class RoundTray extends Component {
 								                                    </div><img style={{ left: 'auto',top: '0px' }} src="./murabbo/img/info.svg" />
 								                                </div>
 
-								                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
+								                               
+
+
+																{
+																	(this.state.fields['negativeScoring'] === true) ? (
+																				<div>
+																					<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
+																						<label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points (0 - 100)</label>
+																					</div>
+																					<div className="range-wrap">
+																					<input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
+																					<output className="bubble">{this.state.fields['negativeBasePoints']}</output>
+																					</div>
+																				</div> ) : null
+																}
+
+
+																<div className="cus_input input_wrap">
+								                                    <img src="./murabbo/img/info2.svg" alt="Upload"/> 
+								                                    <select className="floating-select" onChange={this.handleChange.bind(this,'hint')} value={this.state.fields['hint']} required>
+												                      	<option value="2">Always</option>
+												                      	<option value="3">On demand</option>
+								                                    </select>
+								                                    <label>Show Hint</label>
+								                                </div>
+								                                <span  className="error-msg">{this.state.errors["hint"]}</span>
+
+
+																{(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
 								                                <div>
 							                            			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
 									                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
@@ -871,20 +882,11 @@ class RoundTray extends Component {
 									                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
 									                                </div>
 							                            		</div> : null }
+
+
 								                            </div> ) : null
 								                }
-								                {
-									                (this.state.fields['negativeScoring'] === true) ? (
-						                                		<div>
-						                                			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-									                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points (0 - 100)</label>
-									                                </div>
-									                                <div className="range-wrap">
-									                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
-									                                  <output className="bubble">{this.state.fields['negativeBasePoints']}</output>
-									                                </div>
-						                                		</div> ) : null
-									            }
+								                
 
 									            
 													{

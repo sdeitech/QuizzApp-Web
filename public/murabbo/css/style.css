@@ -4208,8 +4208,13 @@ button.blue_btn:hover {
     top: 5px;
     cursor: pointer;
     background-color: #fec951;
-    padding: 5px;
+    padding: 10px;
     border-radius: 40px;
+}
+.close_svg_profile{
+    position: absolute;
+    margin-left: 117px;
+    z-index: 1;
 }
 .paid-cat{
     position: absolute;

@@ -51,7 +51,7 @@ class TheHeaderInner extends Component {
         }).then((data)=> {
             var data = data.data;
             if (data.image === '') {
-                this.setState({image: 'avatars/placeholder-user.png',name:data.name})
+                this.setState({profile_picture: 'avatars/placeholder-user.png',name:data.name})
             }
             else
             {
