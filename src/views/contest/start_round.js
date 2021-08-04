@@ -30,6 +30,7 @@ class StartRound extends Component {
         	listArr:[],
         	selectedAnswer:[],
         	indexQuestion:0,
+			indexRound:0,
 			gameId:'',
 			freeTextAnswer:'',
 			saveExitAnswer:false,
@@ -103,6 +104,9 @@ class StartRound extends Component {
 	   			}
 			});	
 		}
+
+
+		console.log(this.state.roundListArr);
 
 	}
 	selectedRoundId(data)
@@ -339,7 +343,8 @@ class StartRound extends Component {
 
 	getQuestionList(roundId1)
 	{
-		fetch(configuration.baseURL+"roundQuestion/roundQuestion?roundId="+roundId1, {
+		let indexRoundNo = this.state.indexRound;
+		fetch(configuration.baseURL+"roundQuestion/roundQuestion?roundId="+roundId1+"&gameType="+this.state.roundListArr[indexRoundNo].gameType, {
                 method: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -350,7 +355,7 @@ class StartRound extends Component {
 	    	return response.json();
 	    }).then((data)=> {
 			var data = data.data;
-	   		this.setState({listArr:data,showRound:false,saveExitAnswer:false});
+	   		this.setState({listArr:data,showRound:false,saveExitAnswer:false,indexRound: (indexRoundNo + 1)});
 	   		// console.log(this.state.listArr);
 	   		this.startTimer();
 		});	

@@ -11,7 +11,7 @@ class Detail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: { invitedUserDetails: [], acceptedUserDetails: [] },
+            data: { invitedUserDetails: [], acceptedUserDetails: [] ,roomDetails : {}},
             contestData:{image:''},
             userListInvite: [],
             userListInviteSearch: "",
@@ -49,7 +49,10 @@ class Detail extends Component {
             })
             .then((data) => {
                 if (data.data.length > 0) {
-                    this.setState({ data: data.data[0] });
+                    let dataObj = this.state.data;
+                    dataObj['roomDetails'] = data.data[0];
+                    this.setState({ data: dataObj });
+                    
                 }
             });
 
@@ -71,6 +74,7 @@ class Detail extends Component {
             .then((data) => {
                 if (data.data.length > 0) {
                     this.setState({ contestData: data.data[0] });
+
                 }
             });
         this.getUsersList();
@@ -507,7 +511,7 @@ class Detail extends Component {
                                                 In This Room
                                             </h3>
                                             <div className="cus_scroll">
-                                                {this.state.data
+                                                { this.state.data
                                                     .invitedUserDetails.length >
                                                 0 ? (
                                                     this.state.data.invitedUserDetails.map(
