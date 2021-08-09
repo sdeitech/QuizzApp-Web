@@ -25,6 +25,7 @@ class Leaderboard extends Component {
             name:'',
             tosterMsg:'',
             fields:{},
+            currentRank: 0,
             items:[],
             currentPage:1,
             hasmore:true
@@ -79,8 +80,7 @@ class Leaderboard extends Component {
             }).then((response) =>{
             return response.json();
         }).then((data)=> {
-                var data = data.data.leaderBoard;
-                this.setState({items:data,currentPage:this.state.currentPage+1,hasmore:(data.length > 0) ? true : false});
+            this.setState({currentRank: data.data.userInfo.rank, items:data.data.leaderBoard,currentPage:this.state.currentPage+1,hasmore:(data.data.leaderBoard.length > 0) ? true : false});
         });
 
     }
@@ -149,8 +149,8 @@ class Leaderboard extends Component {
                                                     <div class="col-lg-4 col-md-6">
                                                         <div class="scrore">
                                                             <img src="./murabbo/img/tropy.svg"/>
-                                                            <p>Current Score</p>
-                                                            <h2>{this.state.fields['currentScore']} <span>pt</span></h2>
+                                                            <p>Current Rank : {this.state.currentRank}</p>
+                                                            <h2><span>Score : </span> {this.state.fields['currentScore']} <span>pt</span></h2>
                                                         </div>    
                                                     </div>
                                                 </div>
