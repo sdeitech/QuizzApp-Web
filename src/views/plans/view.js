@@ -26,6 +26,7 @@ class Plans extends Component {
             fields:{subscriptionId:'',card_id:''},
             errors:{card_id:''},
 		};
+        this.purchaseFreePlan = this.purchaseFreePlan.bind(this);
 	}
 
 	componentDidMount(){
@@ -86,22 +87,48 @@ class Plans extends Component {
     }
 
     handlePurcaseClick(subscriptionId,subscriptionCode){
-        if(this.state.listData.length === 0)
-        {
-            this.props.history.push('/add_card')  
-        }
-        let fields = this.state.fields;
-        fields['subscriptionId'] = subscriptionId;
-        
-        for (var i = 0; i < this.state.listData.length; i++) {
-            if(this.state.listData[i].is_default === true)
-            {
-                fields['card_id'] = this.state.listData[i].id;
+        if(subscriptionCode === 'BASIC'){
+            this.purchaseFreePlan({
+                card_id: '',
+                subscriptionId,
+                subscriptionCode,
+                user_id: JSON.parse(reactLocalStorage.get('userData')).userId
+            });
+        } else {
+            if(this.state.listData.length === 0){
+                this.props.history.push('/add_card')  
             }
-        } 
-        
-        this.setState({fields});
-        this.setState({purchaseModel:true,subscriptionCode});        
+            let fields = this.state.fields;
+            fields['subscriptionId'] = subscriptionId;
+            fields['subscriptionCode'] = subscriptionCode;
+            for (var i = 0; i < this.state.listData.length; i++) {
+                if(this.state.listData[i].is_default === true)
+                {
+                    fields['card_id'] = this.state.listData[i].id;
+                }
+            } 
+            
+            this.setState({fields});
+            this.setState({purchaseModel:true,subscriptionCode});        
+        }
+    }
+
+    purchaseFreePlan(obj){
+        fetch(configuration.baseURL+"subscription/addusersubscription", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                },
+                body:JSON.stringify(obj)
+            }).then((response) =>{
+            return response.json();
+        }).then((data)=> {
+            reactLocalStorage.set("subscriptionCode", this.state.subscriptionCode)
+            this.setState({purchaseModel:false,fields:{subscriptionId:''},errors:{card_id:''}}); 
+            this.componentDidMount();
+        });
     }
 
     clickHandle(card_id)
@@ -204,8 +231,7 @@ class Plans extends Component {
                                                     <h3>{val1.title}</h3>
                                                     <h5>{(val1.price > 0) ? '$'+val1.price : 'Free' }</h5>
                                                     <p>{val1.description}</p>
-                                                    {(val1.subscriptionCode !== 'BASIC') ? <button type="button" onClick={this.handlePurcaseClick.bind(this,val1._id,val1.subscriptionCode)}>Purchase</button> : null}
-                                                    {(val1.subscriptionCode === 'BASIC') ? <button type="button">Free</button> : null}
+                                                    <button type="button" onClick={this.handlePurcaseClick.bind(this,val1._id,val1.subscriptionCode)}>{(val1.subscriptionCode === 'BASIC') ? 'Free' : 'Purchase'}</button>
                                                 </div>
                                             </div>
                                         })
