@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {
     TheFooter,
+    TheHeader,
     TheHeaderInner
 } from '../../containers/index'
 import {ToastContainer, toast} from 'react-toastify';
@@ -44,7 +45,7 @@ class TermsConditions extends Component {
 	render() {
 		return (
 			<>
-				<TheHeaderInner />		
+				{ reactLocalStorage.get('is_login') === 'true' ? (<TheHeaderInner/>):(<TheHeader/>) }			
 				<ToastContainer position="top-right" autoClose={25000} style={{top:'80px'}}/>		
 					<main id="main">
 			            <section>
