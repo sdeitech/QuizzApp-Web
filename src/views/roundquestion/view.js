@@ -194,7 +194,7 @@ class RoundQuestion extends Component {
                                         <div className="col-md-12">
                                             <div className="main_title">
                                                 <h3>
-                                                    {gameType} Round Questions
+                                                    {gameType} Round {this.state.listArr.length == 0 ? ('Questions'): (this.state.listArr.length == 1 ? ('Question'):('Questions'))}
                                                 </h3>
                                             </div>
                                         </div>

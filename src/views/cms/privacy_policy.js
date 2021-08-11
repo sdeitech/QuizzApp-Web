@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {
     TheFooter,
+    TheHeader,
     TheHeaderInner
 } from '../../containers/index'
 import {ToastContainer, toast} from 'react-toastify';
@@ -20,9 +21,8 @@ class PrivacyPolicy extends Component {
         	data:{}
 		};
 	}
-
 	componentDidMount(){
-
+	
 		fetch(configuration.baseURL+"cms/cms?cmsCode=PRIVACY_POLICY", {
                 method: "GET",
                 headers: {
@@ -36,7 +36,12 @@ class PrivacyPolicy extends Component {
 	    	if (data.data) {
 		   		this.setState({data:data.data});
 		   	}
+		}).catch((error)=>{
+			console.log("error")
+			console.log(error)
 		});	
+
+		
 	}
 
 
@@ -45,7 +50,7 @@ class PrivacyPolicy extends Component {
 	render() {
 		return (
 			<>
-				<TheHeaderInner />		
+				{ reactLocalStorage.get('is_login') === 'true' ? (<TheHeaderInner/>):(<TheHeader/>) }	
 				<ToastContainer position="top-right" autoClose={25000} style={{top:'80px'}}/>		
 				<main id="main">
 			            <section>

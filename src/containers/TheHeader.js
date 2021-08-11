@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import GoogleLogin from "react-google-login";
+import Session from '../session';
 
 import configuration from "../config";
 import { ToastContainer, toast } from "react-toastify";
@@ -27,9 +28,20 @@ class TheHeader extends Component {
             openModelCongratulation: false,
             checkbox: false,
             tosterMsg: "",
+            hiddenPassword: true,
+            hiddenConfirmPassword:true
+
         };
     }
 
+
+    toggleShowPassword() {
+        this.setState({ hiddenPassword: !this.state.hiddenPassword });
+      }
+
+      toggleShowConfirmPassword(){
+        this.setState({ hiddenConfirmPassword: !this.state.hiddenConfirmPassword });
+      }
     toggle(type) {
         if (type === "login") {
             this.setState({
@@ -714,11 +726,11 @@ class TheHeader extends Component {
                     style={{ top: "80px" }}
                 />
 
-                <header id="header" className="fixed-top">
+                <header id="header" className="fixed-top">y
                     <div className="container align-items-center">
                         <nav className="navbar navbar-expand-lg navbar-dark">
                             <h1 className="logo mr-auto">
-                                <a href="javascript:void(0);">
+                                <a href="/">
                                     <img
                                         src="./murabbo/img/logo.png"
                                         alt="logo"
@@ -909,7 +921,9 @@ class TheHeader extends Component {
                                                 <img src="./murabbo/img/password.svg" />{" "}
                                                 <input
                                                     required
-                                                    type="password"
+                                                    // type="password"
+
+                                                    type={this.state.hiddenPassword ? 'password' : 'text'}
                                                     onChange={this.handleChangeRegister.bind(
                                                         this,
                                                         "password"
@@ -921,7 +935,19 @@ class TheHeader extends Component {
                                                     }
                                                 />
                                                 <label>Password</label>
+                                              
+                                                
+                                                <span style={{
+                                                position: "absolute",
+                                                right: "27px",
+                                                top: "47px"
+                                                    }}>
+                                                
+                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
+                                            </span>
+                                                
                                             </div>
+                                            
                                             <span className="error-msg">
                                                 {this.state.errors["password"]}
                                             </span>
@@ -929,7 +955,8 @@ class TheHeader extends Component {
                                                 <img src="./murabbo/img/password.svg" />{" "}
                                                 <input
                                                     required
-                                                    type="password"
+                                                    // type="password"
+                                                    type={this.state.hiddenConfirmPassword ? 'password' : 'text'}
                                                     onChange={this.handleChangeRegister.bind(
                                                         this,
                                                         "confirm_password"
@@ -941,7 +968,16 @@ class TheHeader extends Component {
                                                     }
                                                 />
                                                 <label>Confirm Password</label>
+                                                <span style={{
+                                                position: "absolute",
+                                                right: "28px",
+                                                top: "47px"
+                                                }}>
+                                                
+                                                {this.state.hiddenConfirmPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)}  />)}
+                                            </span>
                                             </div>
+                                            
                                             <span className="error-msg">
                                                 {
                                                     this.state.errors[
@@ -1128,7 +1164,8 @@ class TheHeader extends Component {
                                                     <img src="./murabbo/img/password.svg" />{" "}
                                                     <input
                                                         required
-                                                        type="password"
+                                                        // type="password"
+                                                        type={this.state.hiddenPassword ? 'password' : 'text'}
                                                         onChange={this.handleChangeLogin.bind(
                                                             this,
                                                             "password"
@@ -1141,7 +1178,16 @@ class TheHeader extends Component {
                                                         }
                                                     />
                                                     <label>Password</label>
+                                                    <span style={{
+                                                        position: "absolute",
+                                                        right: "27px",
+                                                        top: "47px"
+                                                        }}>
+                                                
+                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
+                                              </span>
                                                 </div>
+                                                
                                                 <span className="error-msg">
                                                     {
                                                         this.state.loginErrors[
@@ -1472,7 +1518,8 @@ class TheHeader extends Component {
                                                     <img src="./murabbo/img/password.svg" />{" "}
                                                     <input
                                                         required
-                                                        type="password"
+                                                        // type="password"
+                                                        type={this.state.hiddenPassword ? 'password' : 'text'}
                                                         onChange={this.handleChangeResetPassword.bind(
                                                             this,
                                                             "password"
@@ -1485,7 +1532,16 @@ class TheHeader extends Component {
                                                         }
                                                     />
                                                     <label>Password</label>
+                                                    <span style={{
+                                                position: "absolute",
+                                                right: "27px",
+                                                top: "47px"
+                                                }}>
+                                                
+                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
+                                              </span>
                                                 </div>
+                                                
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
@@ -1497,7 +1553,8 @@ class TheHeader extends Component {
                                                     <img src="./murabbo/img/password.svg" />{" "}
                                                     <input
                                                         required
-                                                        type="password"
+                                                        // type="password"
+                                                        ype={this.state.hiddenConfirmPassword ? 'password' : 'text'}
                                                         onChange={this.handleChangeResetPassword.bind(
                                                             this,
                                                             "confirm_password"
@@ -1512,7 +1569,17 @@ class TheHeader extends Component {
                                                     <label>
                                                         Confirm Password
                                                     </label>
+
+                                              <span style={{
+                                                position: "absolute",
+                                                right: "27px",
+                                                top: "46px"
+                                                }}>
+                                                
+                                                {this.state.hiddenConfirmPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)}  />)}
+                                              </span>
                                                 </div>
+                                                
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
