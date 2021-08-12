@@ -42,6 +42,7 @@ const MyGroups = React.lazy(() => import("./views/my_groups/view"));
 const Dashboard = React.lazy(() => import("./views/dashboard/view"));
 
 const Notification = React.lazy(() => import("./views/notification/view"));
+const YourFriends = React.lazy(() => import("./views/your_friends/view"));
 
 const PrivacyPolicy = React.lazy(() => import("./views/cms/privacy_policy"));
 
@@ -69,6 +70,7 @@ const routes = [
     { path: '/', exact: true, name: 'Home', component: Home },
     { path: '/dashboard', name: 'Dashboard', component: Dashboard },
     { path: '/notification', name: 'Notification', component: Notification },
+    { path: '/yourfriends', name:'YourFriends', component:YourFriends},
     { path: '/contest', name: 'Contest', component: Contest },
     { path: '/trending_contest', name: 'Dashboard_Trending_Contest', component: Dashboard_Trending_Contest },
     { path: '/trending_rounds', name: 'Dashboard_Trending_Rounds', component: Dashboard_Trending_Rounds },
