@@ -156,7 +156,7 @@ class Detail extends Component {
 
     playWithoutVideo()
     {
-        this.props.history.push('/contests/start_round/'+contestId);
+        this.props.history.push('/contests/start_round/'+contestId+'?'+roomId);
     }
     render() {
         return (

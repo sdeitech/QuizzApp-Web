@@ -1554,7 +1554,7 @@ class TheHeader extends Component {
                                                     <input
                                                         required
                                                         // type="password"
-                                                        ype={this.state.hiddenConfirmPassword ? 'password' : 'text'}
+                                                        type={this.state.hiddenConfirmPassword ? 'password' : 'text'}
                                                         onChange={this.handleChangeResetPassword.bind(
                                                             this,
                                                             "confirm_password"

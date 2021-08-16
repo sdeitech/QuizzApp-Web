@@ -444,7 +444,7 @@ class RoundQuestion extends Component {
                                                 <button
                                                     className="pink_btn"
                                                     type="button"
-                                                    onClick={this.saveNextHandler.bind(
+                                                    onClick={this.backToRound.bind(
                                                         this
                                                     )}
                                                 >
