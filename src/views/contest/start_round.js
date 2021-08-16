@@ -15,7 +15,7 @@ import {
 import $ from 'jquery';
 var jwt = require('jsonwebtoken');
 
-let contestId,roundId;
+let contestId,roundId,roomId;
 class StartRound extends Component {
 	constructor(props) {
         super(props);
@@ -32,6 +32,7 @@ class StartRound extends Component {
         	indexQuestion:0,
 			indexRound:0,
 			gameId:'',
+			roomId:'',
 			freeTextAnswer:'',
 			saveExitAnswer:false,
 			showRound:true,
@@ -60,6 +61,7 @@ class StartRound extends Component {
 
 		var url = window.location.href;
         contestId = url.substring(url.lastIndexOf('/') + 1);
+		contestId =contestId.substring(0,contestId.lastIndexOf('?'));
 		fetch(configuration.baseURL+"contest/contest?contestId="+contestId, {
                 method: "GET",
                 headers: {
@@ -76,6 +78,9 @@ class StartRound extends Component {
 		   	}
 		});	
 		this.getList(contestId);
+
+       
+
 	}
 
 	getList(contest_id1)
@@ -132,6 +137,10 @@ class StartRound extends Component {
 	}
 
 	playContest(){
+		
+		var url = window.location.href;
+        roomId = url.substring(url.lastIndexOf('/') + 1);
+		roomId =roomId.substring(roomId.lastIndexOf('?')+1);
 		// if (this.state.contestData.playerType === 1) {
 			// console.log(this.state.roundListArr[this.state.currentIndexRound]);
 			if (this.state.roundListArr[this.state.currentIndexRound] !== undefined) {
@@ -140,6 +149,7 @@ class StartRound extends Component {
 				this.setState({roundData:this.state.roundListArr[this.state.currentIndexRound]});
 				var postData = {};
 		    	postData.contestId=contestId;
+				postData.roomId = roomId;
 		    	postData.roundId=roundId;
 		    	postData.createdBy=JSON.parse(reactLocalStorage.get('userData')).userId;
 		    	// console.log(postData);
@@ -156,6 +166,7 @@ class StartRound extends Component {
 		        }).then((data) => {
 		            if(data.code === 200){
 		            	this.setState({gameId:data.data._id})
+						this.setState({roomId:data.data.roomId})
 		            }
 		            else
 		            {
@@ -455,6 +466,7 @@ class StartRound extends Component {
 			
 			postData.userId=JSON.parse(reactLocalStorage.get('userData')).userId;	    	
 	    	postData.gameId=this.state.gameId;
+			postData.roomId = this.state.roomId;
 	    	postData.roundQuestionId=this.state.listArr[index]['_id'];
 	    	postData.selectedAnswer= (this.state.listArr[index]['selectAnswer'].toString() !== '') ? this.state.listArr[index]['selectAnswer'].toString() : 'false'; 
 	    	postData.isCorrect=(this.state.listArr[index]['isAnswerTrue'] !== undefined) ? this.state.listArr[index]['isAnswerTrue'] : false;
