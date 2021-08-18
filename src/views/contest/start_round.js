@@ -15,7 +15,7 @@ import {
 import $ from 'jquery';
 var jwt = require('jsonwebtoken');
 
-let contestId,roundId,roomId;
+let contestId,roundId,roomId,parentContestId;
 class StartRound extends Component {
 	constructor(props) {
         super(props);
@@ -23,6 +23,7 @@ class StartRound extends Component {
         	profile_picture:'avatars/placeholder-user.png',
             name:'',
         	data:{},
+			openModel:false,
         	contestData:{image:''},
         	roundListArr:[],
         	currentIndexRound:0,
@@ -38,7 +39,14 @@ class StartRound extends Component {
 			showRound:true,
 			winnerScreen:false,
 			showGoLeaderBoardBtn:false,
-			totalScore:0
+			totalScore:0,
+			errors:{
+			
+			},
+			fields:{
+				title: "",
+                description: "",
+			}
 		};
 	}
 
@@ -73,7 +81,7 @@ class StartRound extends Component {
 	    	return response.json();
 	    }).then((data)=> {
 	    	if (data.data.length > 0) {
-	    		// console.log(data.data[0]);
+	    		parentContestId = data.data[0]._id;
 		   		this.setState({contestData:data.data[0]});
 		   	}
 		});	
@@ -82,6 +90,7 @@ class StartRound extends Component {
        
 
 	}
+
 
 	getList(contest_id1)
 	{
@@ -568,7 +577,7 @@ class StartRound extends Component {
 
         this.setState({errorsPlay: errors});
 		if(formIsValid){ 
-			
+
 			const data = new FormData();
         	data.append('displayName',fields["display_name"]);
         	data.append('password',fields["password"]);
@@ -596,6 +605,99 @@ class StartRound extends Component {
             });
 
 		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	handleChange(field, e) {
+        let fields = this.state.fields;
+        fields[field] = e.target.value;
+        this.setState({ fields });
+
+        let errors = {};
+        if (field === "title" && fields["title"].trim() === "") {
+            errors["title"] = "Please enter title";
+			return
+        }
+		if (field === "description" && fields["description"].trim() === "") {
+            errors["description"] = "Please enter description";
+			return
+        }
+        this.setState({ errors: errors });
+    }
+
+
+	handleSubmit(){
+		let fields = this.state.fields;
+        let errors = {};
+        let formIsValid = true;
+        this.setState({ fields });
+        if (fields["title"].trim() === "") {
+            formIsValid = false;
+            errors["title"] = "Please enter title";
+        }
+
+        if (!fields["description"]) {
+            formIsValid = false;
+            errors["description"] = "Please select description";
+        }
+        this.setState({ errors: errors });
+        if (formIsValid) {
+			this.setState({openModel:false})
+            const data = new FormData();
+            data.append("title", this.state.fields.title);
+            data.append("description", this.state.fields.description);
+			data.append("contestId", parentContestId);
+            data.append("roomId", roomId);
+            data.append("userId",JSON.parse(reactLocalStorage.get('userData')).userId)
+            
+            fetch(configuration.baseURL + "report", {
+                method: "post",
+                headers: {
+                    contentType: "application/json",
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
+                },
+                body: data,
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.code === 200) {
+						let fields = this.state.fields;
+						fields['title'] = '';
+						fields['description'] = '';
+						this.setState({ fields });
+						toast.success(data.message);
+						setTimeout(()=>{
+							this.props.history.push('/dashboard');
+						},2000)
+                    } else {
+                        return toast.error(data.message);
+                    }
+                });
+        }
+
 	}
 
 	render() {
@@ -869,13 +971,15 @@ class StartRound extends Component {
 						                        		: null
 						                        	}			                            
 
-						                        </div>
-
-						                        
+						                        </div> 
 						                    </div>
 						                    <div class="align-self-center" style={{ textAlign: 'center' }}>
-			                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
+			                                	<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
+												<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
+													this.setState({openModel:true})
+												}}>Report</button>
 			                                </div>
+											
 		                                </div>
 		                                 :
 					                    null 
@@ -982,6 +1086,89 @@ class StartRound extends Component {
 		            </div>
 		            }
 		        </main>
+
+
+
+				<CModal show={this.state.openModel}  closeOnBackdrop={false}  onClose={()=> this.setState({openModel:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                
+                        		<button type="button" className="close" onClick={()=> this.setState({openModel:false})}>
+	                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+	                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+										<h3>Report Contest</h3>
+                                    </div>
+
+                                    <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/title.svg" />
+                                            <input
+                                                required
+                                                type="text"
+                                                onChange={this.handleChange.bind(
+                                                    this,
+                                                    "title"
+                                                )}
+                                                value={
+                                                    this.state.fields["title"]
+                                                }
+                                            />
+                                            <label>Title</label>
+                                        </div>
+                                        <span className="error-msg">
+                                            {this.state.errors["title"]}
+                                        </span>
+
+										<div className="cus_input input_wrap">
+                                            <img
+                                                src="./murabbo/img/des.svg"
+                                                alt="Murabbo"
+                                            />{" "}
+                                            <input
+                                                required
+                                                type="text"
+                                                onChange={this.handleChange.bind(
+                                                    this,
+                                                    "description"
+                                                )}
+                                                value={
+                                                    this.state.fields[
+                                                        "description"
+                                                    ]
+                                                }
+                                            />
+                                            <label>Description</label>
+                                        </div>
+										<span className="error-msg">
+                                            {this.state.errors["description"]}
+                                        </span>
+	               
+					                <div className="full_btn">
+					                    <button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"
+										
+										onClick={this.handleSubmit.bind(
+											this
+										)}
+										>Send</button>
+					                </div>
+									
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
+
+
+
+
+
+
 		    </>
 		)
 	}
