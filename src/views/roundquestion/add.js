@@ -69,6 +69,10 @@ class AddRoundQuestion extends Component {
 					fields['answerType']=(gameType !== 'Taboo') ? 1 : 4;
 					fields['execution_mode']=data.execution_mode;
 					fields['negativeScoring']=data.negativeScoring;
+					fields['basePoints']=data.basePoints;
+
+					
+
 					fields['scoring']=data.scoring;
 			   		this.setState({fields});
 		    	}
