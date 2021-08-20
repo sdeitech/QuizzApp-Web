@@ -428,6 +428,17 @@ class RoundTray extends Component {
         let formIsValid = true;
 
         let errors = {};
+
+        if(this.state.fields[
+            "gameType"
+        ] === "Blank"){
+
+            if( this.state.fields.timeLimitSeconds >900 ){
+                errors["time"] = "Please enter time less 15 minutes";
+                formIsValid = false;
+            }
+
+        }
         if (fields["title"].trim() === "") {
             errors["title"] = "Please enter title";
             formIsValid = false;
@@ -597,7 +608,11 @@ class RoundTray extends Component {
     }
 
     changeTime(sec) {
-        var fields = this.state.fields;
+
+        if(this.state.fields[
+            "gameType"
+        ] === "Blank"){
+            var fields = this.state.fields;
         var currentTime = parseInt(fields.timeLimitSeconds),
             newTime = currentTime + sec, //calculate the new time
             seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
@@ -616,7 +631,7 @@ class RoundTray extends Component {
             minute = "0" + minute;
         }
 
-        if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+        if (parseInt(minute) === 15 || parseInt(minute) > 15) {
             minute = "05";
             seconds = "00";
         } else if (
@@ -630,6 +645,42 @@ class RoundTray extends Component {
         fields["timeLimit"] = minute + ":" + seconds;
         fields["timeLimitSeconds"] = newTime;
         this.setState({ fields });
+        }else{
+            var fields = this.state.fields;
+            var currentTime = parseInt(fields.timeLimitSeconds),
+                newTime = currentTime + sec, //calculate the new time
+                seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
+                minute = Math.floor(newTime / 60).toString(); // get the hours and convert to a string
+    
+            //make sure we've got the right length for the seconds string
+            if (seconds.length === 0) {
+                seconds = "00";
+            } else if (seconds.length === 1) {
+                seconds = "0" + seconds;
+            }
+    
+            if (minute.length === 0) {
+                minute = "00";
+            } else if (minute.length === 1) {
+                minute = "0" + minute;
+            }
+    
+            if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+                minute = "05";
+                seconds = "00";
+            } else if (
+                parseInt(minute) < 1 &&
+                (parseInt(seconds) === 0 || parseInt(seconds) < 10)
+            ) {
+                minute = "00";
+                seconds = "10";
+            }
+    
+            fields["timeLimit"] = minute + ":" + seconds;
+            fields["timeLimitSeconds"] = newTime;
+            this.setState({ fields });
+        }
+        
     }
 
     handleChangeGrid(data, e) {
@@ -1341,6 +1392,14 @@ class RoundTray extends Component {
                                                                     />
                                                                 </span>
                                                             </div>
+
+                                                            <span className="error-msg">
+                                                                {
+                                                                    this.state.errors[
+                                                                        "time"
+                                                                    ]
+                                                                }
+                                                            </span>
 
                                                             {this.state.fields[
                                                                 "gameType"

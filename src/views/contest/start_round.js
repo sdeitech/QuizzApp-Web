@@ -48,7 +48,8 @@ class StartRound extends Component {
 			fields:{
 				title: "",
                 description: "",
-			}
+			},
+			newTime:0
 		};
 	}
 
@@ -539,23 +540,30 @@ class StartRound extends Component {
 					// 	}, 1000);
 					// }
 
-
-					that.setState({indexRound:that.state.indexRound+1});
-					if (that.state.roundListArr[(that.state.currentIndexRound+1)] !== undefined) {
-						that.setState({saveExitAnswer:true});
-						setTimeout(function () {
-								that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{}});
-						}, 500);
-					}else{
-
-
-						that.setState({saveExitAnswer:true});
-						
-						setTimeout(function () {
-							that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true});
-						}, 2000);
-
+					if(that.state.newTime == 0){
+						that.setState({indexRound:that.state.indexRound+1,newTime:1});
+						if (that.state.roundListArr[(that.state.currentIndexRound+1)] !== undefined) {
+							that.setState({saveExitAnswer:true});
+	
+							setTimeout(function () {
+								that.setState({winnerScreen:true});
+								setTimeout(function () {
+									that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{}});
+							   }, 5000);
+							}, 2000);
+							
+						}else{
+	
+	
+							that.setState({saveExitAnswer:true});
+							
+							setTimeout(function () {
+								that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true});
+							}, 2000);
+	
+						}
 					}
+					
 
 
 					
@@ -579,6 +587,34 @@ class StartRound extends Component {
 	    	that.saveExitAnswer();	
 	    }
 	}
+
+	saveExitAnswerForBlank(isLast= 0){
+
+
+		this.setState({indexRound:this.state.indexRound+1,newTime:1});
+					if (this.state.roundListArr[(this.state.currentIndexRound+1)] !== undefined) {
+						this.setState({saveExitAnswer:true});
+						var that = this;
+						setTimeout(function () {
+							that.setState({winnerScreen:true});
+							setTimeout(function () {
+								that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{}});
+						   }, 5000);
+						}, 2000);
+						
+					}else{
+
+
+						this.setState({saveExitAnswer:true});
+						var that = this;
+						setTimeout(function () {
+							that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true});
+						}, 2000);
+
+					}
+
+	}
+
 
     countScore(index)
 	{
@@ -911,12 +947,19 @@ class StartRound extends Component {
 									
 									(this.state.isBalnkRound) ? (
 
-										<div class="align-self-center" style={{ textAlign: 'center' }}>
-													<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
-													<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
-														this.setState({openModel:true})
-													}}>Report</button>
+
+											<>
+												<div>
+														<h1 class="align-self-center" style={{ textAlign: 'center', color:'white', marginTop:"10px" }} >Give Score</h1>
+
+														
 												</div>
+
+												<div class="align-self-center" style={{ textAlign: 'center' }}>
+													<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswerForBlank.bind(this)}>Start Next Round</button>		
+												</div>
+
+											</>
 									) : (
 
 
