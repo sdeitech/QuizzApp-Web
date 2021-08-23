@@ -24,6 +24,7 @@ class StartRound extends Component {
             name:'',
         	data:{},
 			openModel:false,
+			openModelForGiveScore:false,
         	contestData:{image:''},
         	roundListArr:[],
         	currentIndexRound:0,
@@ -42,6 +43,7 @@ class StartRound extends Component {
 			totalScore:0,
 			isBalnkRound:false,
 			blankRoundObj:{},
+			activelistArr:[],
 			errors:{
 			
 			},
@@ -49,7 +51,10 @@ class StartRound extends Component {
 				title: "",
                 description: "",
 			},
-			newTime:0
+			newTime:0,
+			contestCreater:false,
+			createdBy:'',
+			isActive:''
 		};
 	}
 
@@ -89,7 +94,7 @@ class StartRound extends Component {
 		   	}
 		});	
 		this.getList(contestId);
-
+		this.getRoomDetails();
        
 
 	}
@@ -179,7 +184,10 @@ class StartRound extends Component {
 		        }).then((data) => {
 		            if(data.code === 200){
 		            	this.setState({gameId:data.data._id})
-						this.setState({roomId:data.data.roomId})
+						this.setState({roomId:data.data.roomId});
+						if(JSON.parse(reactLocalStorage.get('userData')).userId == data.data.createdBy){
+							this.setState({contestCreater:true});
+						}
 		            }
 		            else
 		            {
@@ -841,6 +849,94 @@ class StartRound extends Component {
 
 	}
 
+	handleSubmitScore(){
+			if(this.state.activelistArr.length > 0){
+				fetch(configuration.baseURL+"game/blankRoundScore", {
+					method: "post",
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+					},
+					body:JSON.stringify(this.state.activelistArr)
+				}).then((response) => {
+					return response.json();
+				}).then((data) => {
+					if(data){
+						// console.log("data");
+						// console.log(data.data);
+						this.setState({totalScore:10})
+						
+					this.setState({openModelForGiveScore:false,isActive:false})
+					}else{
+						
+						console.log("error");
+					}
+				});
+
+			}
+	}
+
+	getParticipants(){
+		fetch(configuration.baseURL+"game/activeUser/?roomId="+roomId, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) =>{
+		return response.json();
+    	}).then((data)=> {				
+		if (data.data.length > 0) {
+			  this.setState({activelistArr:data.data,openModelForGiveScore:true})
+		   }
+		   else
+		   {
+
+		   }
+	});	
+	}
+
+
+	getRoomDetails(){
+		fetch(configuration.baseURL + "room/room?roomId=" + roomId, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+            },
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                if (data.data.length > 0) {
+                    let createdBy =  data.data[0].createdBy;
+                    this.setState({  createdBy: createdBy });
+                    
+                }
+            });
+	}
+	modifyActiveUser(index,score,e){
+
+		this.setState({isActive:index+""+score})
+			console.log("sss",e);
+			let dataArr  = this.state.activelistArr;
+			dataArr = dataArr.map((e,i)=>{
+					if(e._id == index){
+						e['score'] = score;
+						e['gameId'] = this.state.gameId;
+						return e;
+					}
+					return e;
+			});
+			this.setState({activelistArr:dataArr})
+
+
+	}
+
 	render() {
 		return (
 			<>
@@ -853,7 +949,19 @@ class StartRound extends Component {
 		            {(this.state.showRound === false) ?
 		            	(this.state.saveExitAnswer === false) ? 
 				            <section id="hero" class="d-flex align-items-center">
-				                <div class="quizz-game"  style={{marginTop:'35px'}}>
+				                <div className="quizz-game"  style={{marginTop:'35px'}}>
+								<div className="dropdown show" style={{float:"right"}}> 
+										<a className="btn btn-secondary dropdown-toggle toggle-arrow" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<i class="fas fa-ellipsis-v"></i>
+										</a>
+
+										<div className="dropdown-menu drop-btn-menu" aria-labelledby="dropdownMenuLink">
+										<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
+														this.setState({openModel:true})
+													}}>Report</button>
+												{this.state.contestCreater ? (<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>):(null)}	
+										</div>
+										</div>
 				                    <h3>{this.state.contestData.title}</h3>
 				                    <p>{this.state.roundData.gameType}</p>
 				                    <div class="quizz-quas">
@@ -949,12 +1057,6 @@ class StartRound extends Component {
 
 
 											<>
-												<div>
-														<h1 class="align-self-center" style={{ textAlign: 'center', color:'white', marginTop:"10px" }} >Give Score</h1>
-
-														
-												</div>
-
 												<div class="align-self-center" style={{ textAlign: 'center' }}>
 													<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswerForBlank.bind(this)}>Start Next Round</button>		
 												</div>
@@ -1169,9 +1271,7 @@ class StartRound extends Component {
 												</div>
 												<div class="align-self-center" style={{ textAlign: 'center' }}>
 													<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
-													<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
-														this.setState({openModel:true})
-													}}>Report</button>
+													
 												</div>
 												
 											</div>)
@@ -1184,6 +1284,8 @@ class StartRound extends Component {
 				                </div>
 				            </section>
 			            :
+
+
 			            	(this.state.winnerScreen) ?
 				            <section id="hero" class="d-flex align-items-center">
 
@@ -1234,7 +1336,7 @@ class StartRound extends Component {
 												<h3 style={{paddingLeft: '0px'}}>{this.state.contestData.title}</h3>
 												<p>{this.state.contestData.description}</p> 													
 											</div>
-											<div class="col-lg-12 col-md-12 align-self-center mb-3">
+											<div className="col-lg-12 col-md-12 align-self-center mb-3">
 												<div className="accordion-wrapper" >
 													<div className='acc-title'>
 													Round Detail
@@ -1262,7 +1364,15 @@ class StartRound extends Component {
 																				</p>
 																				<p> {this.state.roundListArr[this.state.currentIndexRound].description}</p>
 
-																				<button style={{minWidth: '150px'}} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
+																				{/* {this.state.createdBy == JSON.parse(reactLocalStorage.get('userData')).userId ? (
+
+																			
+
+																				):(null)} */}
+
+
+																			<button style={{minWidth: '150px'}} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
+
 
 																				</div>) : null
 																		}
@@ -1287,6 +1397,8 @@ class StartRound extends Component {
 			            
 
 		            </div>
+
+						
 		            }
 		        </main>
 
@@ -1359,6 +1471,103 @@ class StartRound extends Component {
 										)}
 										>Send</button>
 					                </div>
+									
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
+
+					<CModal show={this.state.openModelForGiveScore}  closeOnBackdrop={false}  onClose={()=> this.setState({openModelForGiveScore:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                
+                        		<button type="button" className="close" onClick={()=> this.setState({openModelForGiveScore:false})}>
+	                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+	                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+										<h3>Give Score</h3>
+                                    </div>
+
+                                    		
+
+										{this.state.activelistArr.length > 0 ? (
+
+													<>
+
+
+															{
+																this.state.activelistArr.map((e,i)=>{
+
+																	return<> <div className="container" style={{marginBottom:"10px"}} key={i}>
+																	<div className="row">
+																		<div className="col-md-12">
+																			<div className="row">
+																				<div className="col-md-4">
+	
+																				<div className="giveScoreImg_">
+																				<img src={e.image !== '' ? e.image : 'avatars/placeholder-user.png' }  className="rounded-circle" width="75px" height="75px" alt="user image" />
+																				</div>
+																				
+																				</div>
+																				<div className="col-md-8 text-left">
+																					<div>
+																						<h3 style={{color:"#88d8b8",textAlign:"left"}}>{e.name}</h3>
+																					</div>
+																					<div>
+																						<p style={{color:"#ffffff85"}}>	</p>
+																					</div>
+																				</div>
+																			</div>
+																			<div className="row" style={{marginTop:"30px"}}>
+																				<div className="col-md-12" style={{
+																				display: "flex",
+																				alignItem: "center",
+																				justifyContent: "center",
+																				gap: "14px"
+																				}}>
+
+
+																					<div className={this.state.isActive == e._id +""+-10 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,-10)}>-10</div>
+																					<div className={this.state.isActive == e._id +""+-5 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,-5)}>-5</div>
+																					<div className={this.state.isActive == e._id +""+0 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,0)}>0</div>
+																					<div className={this.state.isActive == e._id +""+5 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,5)}>5</div>
+																					<div className={this.state.isActive == e._id +""+10 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,10)}>10</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+
+																</div>
+																	<hr/>
+																</>
+																
+
+																})
+															}
+																
+															
+														<div className="full_btn">
+															<button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"
+															
+															onClick={this.handleSubmitScore.bind(
+																this
+															)}
+															>Submit</button>
+														</div>
+													</>
+
+										):(
+											<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+										)}	
+
+									
 									
                                 </div>
                             </div>
