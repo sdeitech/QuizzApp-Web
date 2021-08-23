@@ -8,6 +8,9 @@ const config = {
     // baseURL: 'http://localhost:9002/api/app/',
     // APIbaseURL: 'http://localhost:9002/api/',
 
+    //  baseURL: 'http://192.168.1.8:9002/api/app/',
+    //  APIbaseURL: 'http://192.168.1.8:9002/api/',
+
     // APIbaseURL: 'http://localhost:9002/api/',
      baseURL: 'https://dev-api.murabbo.com/api/app/',
      APIbaseURL: 'https://dev-api.murabbo.com/api/',

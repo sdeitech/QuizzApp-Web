@@ -330,7 +330,7 @@ button.close {
 .model_data h3{
     letter-spacing: 0px;
     color: #FFFFFF;
-    text-align: center;
+    
     padding: 10px 0 0;
     font-size: 30px;
     font-weight: 600;
@@ -2928,9 +2928,9 @@ img.position_right {
 }
 
 
-.dropdown-menu {
+/* .dropdown-menu {
     min-width: 12rem;
-}
+} */
 
 /**/
 
@@ -4263,4 +4263,44 @@ button.blue_btn:hover {
         bottom: 1px;
         font-weight: 600;
     }
+}
+
+.drop-btn-menu{
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: transparent !important;
+    transform: translate3d(50px, -3px, 0px) !important;
+}
+
+.toggle-arrow::after{
+    display: none;
+}
+
+.drop_menu{
+    min-width: 12rem !important;
+}
+
+.giveScoreImg_ {
+    width: 75px;
+    float: left;
+    position: relative;
+    text-align: center;
+    bottom: -15px;
+    left: 6px;
+}
+
+.scoreBadge {
+    padding: 10px 20px;
+    background-color:#465d67;
+    color: #fff;
+    width: 70px;
+    height: 43px;
+    border-radius: 25px 25px 25px 25px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.active-scoreBadge{
+    background-color:#88d7b7;
+    color: #334b55;
 }

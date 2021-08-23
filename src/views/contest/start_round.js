@@ -24,6 +24,7 @@ class StartRound extends Component {
             name:'',
         	data:{},
 			openModel:false,
+			openModelForGiveScore:false,
         	contestData:{image:''},
         	roundListArr:[],
         	currentIndexRound:0,
@@ -40,13 +41,20 @@ class StartRound extends Component {
 			winnerScreen:false,
 			showGoLeaderBoardBtn:false,
 			totalScore:0,
+			isBalnkRound:false,
+			blankRoundObj:{},
+			activelistArr:[],
 			errors:{
 			
 			},
 			fields:{
 				title: "",
                 description: "",
-			}
+			},
+			newTime:0,
+			contestCreater:false,
+			createdBy:'',
+			isActive:''
 		};
 	}
 
@@ -86,7 +94,7 @@ class StartRound extends Component {
 		   	}
 		});	
 		this.getList(contestId);
-
+		this.getRoomDetails();
        
 
 	}
@@ -146,7 +154,7 @@ class StartRound extends Component {
 	}
 
 	playContest(){
-		
+		let gameTypeObj  = "";
 		var url = window.location.href;
         roomId = url.substring(url.lastIndexOf('/') + 1);
 		roomId =roomId.substring(roomId.lastIndexOf('?')+1);
@@ -154,6 +162,7 @@ class StartRound extends Component {
 			// console.log(this.state.roundListArr[this.state.currentIndexRound]);
 			if (this.state.roundListArr[this.state.currentIndexRound] !== undefined) {
 				roundId = this.state.roundListArr[this.state.currentIndexRound]._id;
+				gameTypeObj = this.state.roundListArr[this.state.currentIndexRound];
 
 				this.setState({roundData:this.state.roundListArr[this.state.currentIndexRound]});
 				var postData = {};
@@ -175,7 +184,10 @@ class StartRound extends Component {
 		        }).then((data) => {
 		            if(data.code === 200){
 		            	this.setState({gameId:data.data._id})
-						this.setState({roomId:data.data.roomId})
+						this.setState({roomId:data.data.roomId});
+						if(JSON.parse(reactLocalStorage.get('userData')).userId == data.data.createdBy){
+							this.setState({contestCreater:true});
+						}
 		            }
 		            else
 		            {
@@ -183,7 +195,15 @@ class StartRound extends Component {
 		            }
 		        });  
 		        this.setState({indexQuestion:0});
-				this.getQuestionList(roundId);
+
+				if(gameTypeObj.gameType !== "Blank"){
+					this.getQuestionList(roundId);
+					this.setState({isBalnkRound:false,blankRoundObj:{}});
+				}else{
+					this.setState({isBalnkRound:true,blankRoundObj:gameTypeObj,showRound:false,saveExitAnswer:false});
+					this.startTimerForBlankRound(gameTypeObj);
+
+				}
 			}
 			else{
 				this.saveExitAnswer(1);
@@ -223,6 +243,11 @@ class StartRound extends Component {
 	plusCount(){
 		var roundListArr = [];
 		for (var i = 0; i < this.state.roundListArr.length; i++) {
+
+
+			if(this.state.roundListArr[i].gameType == "Blank"){
+				roundListArr.push(this.state.roundListArr[i]);
+			}
 			if (this.state.roundListArr[i].totalQuestions > 0) {
 				roundListArr.push(this.state.roundListArr[i]);
 			}
@@ -454,6 +479,151 @@ class StartRound extends Component {
 	    }
     }
 
+	startTimerForBlankRound(gameTypeObj){
+		let fields = gameTypeObj;
+    	var that = this;
+    	if (fields !== undefined) {    		
+	    	setTimeout(function () {
+
+	    		
+	    		var newTime = 0;
+	    		if(fields !== undefined && fields['timeLimit'] !== undefined)
+	    		{
+	    			var currentTime = parseInt(fields['timeLimit']);
+
+	    			if(fields['timeAlloted'] === undefined)
+		    		{
+		    			fields['timeAlloted'] = currentTime;
+		    		}
+	    			// console.log('timeLimit--->',fields[that.state.indexQuestion]['timeLimit']);
+		      		
+					newTime = currentTime - 1;
+					var seconds = (newTime % 60).toString();
+					var minute = (Math.floor(newTime / 60)).toString();
+
+					
+					if (seconds.length === 0){
+					seconds = "00";
+					}
+					else if(seconds.length === 1){
+					seconds = "0" + seconds;
+					}
+
+					if (minute.length === 0){
+					minute = "00";
+					}
+					else if (minute.length === 1){
+					minute = "0" + minute;
+					}
+
+					fields['displaytimeLimit'] = minute + ":" + seconds;
+					fields['timeLimit'] = newTime;
+
+						
+					that.setState({blankRoundObj:fields});
+					// console.log(fields[that.state.indexQuestion]['displaytimeLimit'])
+					
+				}
+
+						
+			
+			if (newTime === 0) {
+
+				// if (that.state.indexQuestion < that.state.listArr.length) {
+				// 	fields[that.state.indexQuestion]['selectAnswer'] = "";
+				// 	fields[that.state.indexQuestion]['isAnswerTrue'] = false;
+				// 	that.setState({listArr:fields});
+				// 	that.countScore(that.state.indexQuestion);
+		    	// 	that.setState({indexQuestion:that.state.indexQuestion+1})
+		    	// 	that.startTimer();	
+		    	// }
+		    	// else
+		    	// {
+					// that.setState({isBalnkRound:false,blankRoundObj:{}});
+					
+					// if (that.state.roundListArr[(that.state.currentIndexRound+1)] !== undefined) {
+						// that.setState({saveExitAnswer:true});
+					// 	setTimeout(function () {
+					// 		that.setState({showRound:true,saveExitAnswer:true,indexRound:that.state.indexRound+1,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false});
+					// 	}, 1000);
+					// }
+
+					if(that.state.newTime == 0){
+						that.setState({indexRound:that.state.indexRound+1,newTime:1});
+						if (that.state.roundListArr[(that.state.currentIndexRound+1)] !== undefined) {
+							that.setState({saveExitAnswer:true});
+	
+							setTimeout(function () {
+								that.setState({winnerScreen:true});
+								setTimeout(function () {
+									that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{}});
+							   }, 5000);
+							}, 2000);
+							
+						}else{
+	
+	
+							that.setState({saveExitAnswer:true});
+							
+							setTimeout(function () {
+								that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true});
+							}, 2000);
+	
+						}
+					}
+					
+
+
+					
+					
+
+					that.setState({isBalnkRound:false,blankRoundObj:{}});
+
+
+		    	// }
+
+				// this.setState({blankRoundObj:fields});
+			}
+			else
+			{
+
+				that.startTimerForBlankRound(fields);	
+			}
+			}, 1000);
+	    }
+	    else{
+	    	that.saveExitAnswer();	
+	    }
+	}
+
+	saveExitAnswerForBlank(isLast= 0){
+
+
+		this.setState({indexRound:this.state.indexRound+1,newTime:1});
+					if (this.state.roundListArr[(this.state.currentIndexRound+1)] !== undefined) {
+						this.setState({saveExitAnswer:true});
+						var that = this;
+						setTimeout(function () {
+							that.setState({winnerScreen:true});
+							setTimeout(function () {
+								that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{}});
+						   }, 5000);
+						}, 2000);
+						
+					}else{
+
+
+						this.setState({saveExitAnswer:true});
+						var that = this;
+						setTimeout(function () {
+							that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true});
+						}, 2000);
+
+					}
+
+	}
+
+
     countScore(index)
 	{
 		if (this.state.listArr.length > 0 && this.state.listArr[index] !== undefined) {  
@@ -607,27 +777,6 @@ class StartRound extends Component {
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	handleChange(field, e) {
         let fields = this.state.fields;
         fields[field] = e.target.value;
@@ -700,6 +849,94 @@ class StartRound extends Component {
 
 	}
 
+	handleSubmitScore(){
+			if(this.state.activelistArr.length > 0){
+				fetch(configuration.baseURL+"game/blankRoundScore", {
+					method: "post",
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+					},
+					body:JSON.stringify(this.state.activelistArr)
+				}).then((response) => {
+					return response.json();
+				}).then((data) => {
+					if(data){
+						// console.log("data");
+						// console.log(data.data);
+						this.setState({totalScore:10})
+						
+					this.setState({openModelForGiveScore:false,isActive:false})
+					}else{
+						
+						console.log("error");
+					}
+				});
+
+			}
+	}
+
+	getParticipants(){
+		fetch(configuration.baseURL+"game/activeUser/?roomId="+roomId, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) =>{
+		return response.json();
+    	}).then((data)=> {				
+		if (data.data.length > 0) {
+			  this.setState({activelistArr:data.data,openModelForGiveScore:true})
+		   }
+		   else
+		   {
+
+		   }
+	});	
+	}
+
+
+	getRoomDetails(){
+		fetch(configuration.baseURL + "room/room?roomId=" + roomId, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+            },
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                if (data.data.length > 0) {
+                    let createdBy =  data.data[0].createdBy;
+                    this.setState({  createdBy: createdBy });
+                    
+                }
+            });
+	}
+	modifyActiveUser(index,score,e){
+
+		this.setState({isActive:index+""+score})
+			console.log("sss",e);
+			let dataArr  = this.state.activelistArr;
+			dataArr = dataArr.map((e,i)=>{
+					if(e._id == index){
+						e['score'] = score;
+						e['gameId'] = this.state.gameId;
+						return e;
+					}
+					return e;
+			});
+			this.setState({activelistArr:dataArr})
+
+
+	}
+
 	render() {
 		return (
 			<>
@@ -712,24 +949,52 @@ class StartRound extends Component {
 		            {(this.state.showRound === false) ?
 		            	(this.state.saveExitAnswer === false) ? 
 				            <section id="hero" class="d-flex align-items-center">
-				                <div class="quizz-game"  style={{marginTop:'35px'}}>
+				                <div className="quizz-game"  style={{marginTop:'35px'}}>
+								<div className="dropdown show" style={{float:"right"}}> 
+										<a className="btn btn-secondary dropdown-toggle toggle-arrow" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<i class="fas fa-ellipsis-v"></i>
+										</a>
+
+										<div className="dropdown-menu drop-btn-menu" aria-labelledby="dropdownMenuLink">
+										<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
+														this.setState({openModel:true})
+													}}>Report</button>
+												{this.state.contestCreater ? (<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>):(null)}	
+										</div>
+										</div>
 				                    <h3>{this.state.contestData.title}</h3>
 				                    <p>{this.state.roundData.gameType}</p>
 				                    <div class="quizz-quas">
+
+										
 				                    { 
-				                     	(this.state.listArr[this.state.indexQuestion]) ?
-				                        <h4>Question {this.state.indexQuestion+1}/{this.state.listArr.length}</h4>
-				                        :
-				                        <h4>Question {this.state.listArr.length}/{this.state.listArr.length}</h4>
+										(this.state.isBalnkRound) ? (<h4>Blank Round</h4>) : (
+											(this.state.listArr[this.state.indexQuestion]) ?
+											(<h4>Question {this.state.indexQuestion+1}/{this.state.listArr.length}</h4>)
+											:
+											(<h4>Question {this.state.listArr.length}/{this.state.listArr.length}</h4>)
+										)
+
+				                     	
 				                    }
 
 
 			                        {
-			                        	this.state.listArr.map((e, key) => {
+
+                                     (this.state.isBalnkRound) ? (
+										<div style={{
+
+											padding: "10px",
+    										display: "inline"
+										}}></div>
+									 ) : (
+										this.state.listArr.map((e, key) => {
 			                        		let classname = (key === this.state.indexQuestion) ? "step_progress yellow_" : 
 			                        		(typeof e.selectAnswer !== 'undefined') ? ((e.isAnswerTrue) ? "step_progress blue_" : "step_progress pink_") : "step_progress";
 	                                        return <div className={classname}></div>
 	                                    })
+									 )
+			                        	
 			                        }		                        
 				                        <div id="app">
 						                    <div class="base-timer">
@@ -762,231 +1027,265 @@ class StartRound extends Component {
 				                                  
 				                                </g>
 				                              </svg>
-				                              	{ (this.state.listArr[this.state.indexQuestion]) ?
-							                        <span id="base-timer-label" class="base-timer__label">{(this.state.listArr[this.state.indexQuestion]['displaytimeLimit']) ? this.state.listArr[this.state.indexQuestion]['displaytimeLimit'] : '00:00'}</span>
+				                              	{ 
+
+												  (this.state.isBalnkRound) ? (
+
+													<>
+															<span id="base-timer-label" class="base-timer__label">{(this.state.blankRoundObj['displaytimeLimit']) ? this.state.blankRoundObj['displaytimeLimit'] : '00:00'}</span>
+							                                
+													
+													</>
+												  ) : (
+													(this.state.listArr[this.state.indexQuestion]) ?
+							                        (<span id="base-timer-label" class="base-timer__label">{(this.state.listArr[this.state.indexQuestion]['displaytimeLimit']) ? this.state.listArr[this.state.indexQuestion]['displaytimeLimit'] : '00:00'}</span>)
 							                        :
-							                        <span id="base-timer-label" class="base-timer__label">00:00</span>
+							                        (<span id="base-timer-label" class="base-timer__label">00:00</span>)
+												  )
+												  
+												  
 							                    }
+												
 				                              
 				                            </div>
 				                        </div>
 				                    </div>   
-				                    { (this.state.listArr[this.state.indexQuestion]) ? 
-					                    <div>
-						                    <div class="qus" style={{marginBottom: "30px"}}>
-						                        <h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
-
-						                        {
-					                        		(this.state.listArr[this.state.indexQuestion]['hint'] === 2) ? 
-					                        		<p className="hintText"><span>Hint - </span>{this.state.listArr[this.state.indexQuestion]['hintText']}</p> : 
-					                        		(this.state.listArr[this.state.indexQuestion]['hint'] === 3) ? 
-					                        		<p className="hintText">{(this.state.listArr[this.state.indexQuestion]['hintTextStyle'] !== undefined && this.state.listArr[this.state.indexQuestion]['hintTextStyle'] === true) ? this.state.listArr[this.state.indexQuestion]['hintText'] : <button class="blue_btn" onClick={this.changeOnDemand.bind(this)}>Show Hint</button> }</p> :  null
-
-					                        	}
-
-						                        <div class="answer-option">
-
-						                        	
-
-						                        	{
-						                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 1) ? 
-
-						                        			this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
-						                        				var forclass=e._id+key;
-					                                            return <p class={
-					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
-					                                            			'fancy2 highlight' : 
-				                                            				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight': 'fancy2 pinkhighlight' 
-				                                            				: 'fancy2'
-				                                            			}>
-										                                <label>
-										                                    
-								                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
-								                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
-								                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
-								                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
-								                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
-								                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
-										                                    
-										                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
-										                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled':''} /> : 
-										                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer}  disabled={(e.readonly) ? 'disabled':''} />
-										                                    }							                                    
-										                                    <span for={forclass}>{e.answer}</span>
-										                                </label>
-										                            </p>
-				                                        	})
-
-						                        		: null
-						                        	}
-
-						                        	{
-						                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 2) ? 
-						                        		<div className="row">
-						                        			<div className="col-12" style={{marginBottom: "30px"}}>
-							                        		{
-								                        		this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
-								                        				var forclass=e._id+key;
-																		var innnerpclass =  "fancy2 fancy2_"+key;
-																		var tempcls = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
-
-																		
-								                        				var pcalss = (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] !== undefined) ? 
-																						(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
-																							'fancy2 highlight' : 
-																							(e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2 highlight' 
-																							: tempcls;
-										                            // var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
-									                           		var inputclass = "input_"+key;
-							                                            return <p class={pcalss}>
-												                                <label>
-												                                    
-										                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
-										                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
-										                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
-										                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
-										                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
-										                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
-											                                    
-												                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id) && e.correctAnswer === true) ? 
-												                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked"   disabled={(e.readonly) ? 'disabled':''} /> : 
-												                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} disabled={(e.readonly) ? 'disabled':''}  />
-												                                    }							                                    
-												                                    <span for={forclass}>{e.answer}</span>
-												                                </label>
-												                            </p>
-						                                        	})
-								                        	}
-								                        	</div>
-							                        		<div class="col-12 align-self-center" style={{ textAlign: 'center' }}>
-							                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveIndexAnswer.bind(this)}>Save</button>
-							                                </div>
-						                                </div>
-
-						                        		: null
-						                        	}
-
-						                        	{
-						                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 3) ? 
-						                        		<div className="row">
-						                        			<div className="col-12" style={{marginBottom: "30px",textAlign: 'center'}}>
-						                        				<div className="cus_input input_wrap">
-																	<input type="text" required value={this.state.freeTextAnswer} onChange={this.handleFreeTextChange.bind(this)} style={{textAlign: 'center'}}  />
-								                                </div>
-						                        			</div>
-						                        			<div className="col-12" style={{ marginBottom: "30px",display:(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? "block":"none"}}> 		                        			
-							                        		{
-								                        		this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
-								                        				var forclass=e._id+key;
-								                        			
-									                              	var innnerpclass ="fancy2 highlight fancy2_"+key;
-										                            var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2 highlight";
-									                           		var inputclass = "input_"+key;
-							                                            return <p class={pcalss}>
-												                                <label>
-												                                    
-										                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
-										                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
-										                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
-										                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
-										                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
-										                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
-											                                    
-												                                    {	(e.correctAnswer === true) ? 
-												                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" value={e.answer} checked="checked" disabled='disabled' /> : 
-												                                    	<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" value={e.answer}  disabled='disabled'  />
-												                                    }							                                    
-												                                    <span for={forclass}>{e.answer}</span>
-												                                </label>
-												                            </p>
-						                                        	})
-								                        	}
-
-								                        	</div>
-							                        		<div class="col-12 align-self-center" style={{ textAlign: 'center' }}>
-							                                	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.submitFreeText.bind(this)}>Save</button>
-							                                </div>
-						                                </div>
-
-						                        		: null
-						                        	}
+				                    { 
+									
+									
+									(this.state.isBalnkRound) ? (
 
 
+											<>
+												<div class="align-self-center" style={{ textAlign: 'center' }}>
+													<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswerForBlank.bind(this)}>Start Next Round</button>		
+												</div>
+
+											</>
+									) : (
+
+
+
+										(this.state.listArr[this.state.indexQuestion]) ?( 
+											<div>
+													
+												<div class="qus" style={{marginBottom: "30px"}}>
+													<h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
+	
 													{
-						                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ? 
-
-						                        			this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
-						                        				var forclass=e._id+key;
-					                                            return <p class={
-					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
-					                                            		(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
-					                                            			'fancy2 highlight' : 
-				                                            				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight': 'fancy2 pinkhighlight' 
-				                                            				: 'fancy2'
-				                                            			}>
-										                                <label>
-										                                    
-								                                    		{(key === 0) ? <b class="option_ _a">A</b> : null}
-								                                    		{(key === 1) ? <b class="option_ _b">B</b> : null}
-								                                    		{(key === 2) ? <b class="option_ _c">C</b> : null}
-								                                    		{(key === 3) ? <b class="option_ _d">D</b> : null}
-								                                    		{(key === 4) ? <b class="option_ _e">E</b> : null}
-								                                    		{(key === 5) ? <b class="option_ _f">F</b> : null}
-										                                    
-										                                    {(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
-										                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled':''} /> : 
-										                                    	<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer}  disabled={(e.readonly) ? 'disabled':''} />
-										                                    }							                                    
-										                                    <span for={forclass}>{e.answer}</span>
-										                                </label>
-										                            </p>
-				                                        	})
-
-						                        		: null
-						                        	}
-
-						                        	{
-						                        		(this.state.listArr[this.state.indexQuestion]['answerType'] === 5) ? 
-						                        			
-						                        			<div>
-					                        					<p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ? 
-					                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' :  (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' : (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ? 'fancy2 pinkhighlight' : 'fancy2' }>
-									                                <label >
-									                                    <b class="option_ _a">A</b>
-									                                    <input id="trueFalse1" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}   />
-									                                    <span for="trueFalse1">True</span>
-									                                </label>
-									                            </p>
-									                            <p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ? 
-					                                            		(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' :  (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' :  (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ? 'fancy2 pinkhighlight' : 'fancy2' }>
-									                                <label >
-									                                    <b class="option_ _b">B</b>
-									                                    <input id="trueFalse2" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,false)} value='false' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}  />
-									                                    <span for="trueFalse2">False</span>
-									                                </label>
-									                            </p>
-						                        			</div>
-						                        			
-						                        		: null
-						                        	}			                            
-
-						                        </div> 
-						                    </div>
-						                    <div class="align-self-center" style={{ textAlign: 'center' }}>
-			                                	<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
-												<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
-													this.setState({openModel:true})
-												}}>Report</button>
-			                                </div>
-											
-		                                </div>
-		                                 :
-					                    null 
+														(this.state.listArr[this.state.indexQuestion]['hint'] === 2) ? 
+														<p className="hintText"><span>Hint - </span>{this.state.listArr[this.state.indexQuestion]['hintText']}</p> : 
+														(this.state.listArr[this.state.indexQuestion]['hint'] === 3) ? 
+														<p className="hintText">{(this.state.listArr[this.state.indexQuestion]['hintTextStyle'] !== undefined && this.state.listArr[this.state.indexQuestion]['hintTextStyle'] === true) ? this.state.listArr[this.state.indexQuestion]['hintText'] : <button class="blue_btn" onClick={this.changeOnDemand.bind(this)}>Show Hint</button> }</p> :  null
+	
+													}
+	
+													<div class="answer-option">
+	
+														
+	
+														{
+															(this.state.listArr[this.state.indexQuestion]['answerType'] === 1) ? 
+	
+																this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+																	var forclass=e._id+key;
+																	return <p class={
+																			(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+																			(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+																				'fancy2 highlight' : 
+																				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight': 'fancy2 pinkhighlight' 
+																				: 'fancy2'
+																			}>
+																			<label>
+																				
+																				{(key === 0) ? <b class="option_ _a">A</b> : null}
+																				{(key === 1) ? <b class="option_ _b">B</b> : null}
+																				{(key === 2) ? <b class="option_ _c">C</b> : null}
+																				{(key === 3) ? <b class="option_ _d">D</b> : null}
+																				{(key === 4) ? <b class="option_ _e">E</b> : null}
+																				{(key === 5) ? <b class="option_ _f">F</b> : null}
+																				
+																				{(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+																					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled':''} /> : 
+																					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer}  disabled={(e.readonly) ? 'disabled':''} />
+																				}							                                    
+																				<span for={forclass}>{e.answer}</span>
+																			</label>
+																		</p>
+																})
+	
+															: null
+														}
+	
+														{
+															(this.state.listArr[this.state.indexQuestion]['answerType'] === 2) ? 
+															<div className="row">
+																<div className="col-12" style={{marginBottom: "30px"}}>
+																{
+																	this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+																			var forclass=e._id+key;
+																			var innnerpclass =  "fancy2 fancy2_"+key;
+																			var tempcls = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
+	
+																			
+																			var pcalss = (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] !== undefined) ? 
+																							(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ? 
+																								'fancy2 highlight' : 
+																								(e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2 highlight' 
+																								: tempcls;
+																		// var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
+																		   var inputclass = "input_"+key;
+																			return <p class={pcalss}>
+																					<label>
+																						
+																						{(key === 0) ? <b class="option_ _a">A</b> : null}
+																						{(key === 1) ? <b class="option_ _b">B</b> : null}
+																						{(key === 2) ? <b class="option_ _c">C</b> : null}
+																						{(key === 3) ? <b class="option_ _d">D</b> : null}
+																						{(key === 4) ? <b class="option_ _e">E</b> : null}
+																						{(key === 5) ? <b class="option_ _f">F</b> : null}
+																					
+																						{(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id) && e.correctAnswer === true) ? 
+																							<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked"   disabled={(e.readonly) ? 'disabled':''} /> : 
+																							<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" onChange={this.handleMultiSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} disabled={(e.readonly) ? 'disabled':''}  />
+																						}							                                    
+																						<span for={forclass}>{e.answer}</span>
+																					</label>
+																				</p>
+																		})
+																}
+																</div>
+																<div class="col-12 align-self-center" style={{ textAlign: 'center' }}>
+																	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.saveIndexAnswer.bind(this)}>Save</button>
+																</div>
+															</div>
+	
+															: null
+														}
+	
+														{
+															(this.state.listArr[this.state.indexQuestion]['answerType'] === 3) ? 
+															<div className="row">
+																<div className="col-12" style={{marginBottom: "30px",textAlign: 'center'}}>
+																	<div className="cus_input input_wrap">
+																		<input type="text" required value={this.state.freeTextAnswer} onChange={this.handleFreeTextChange.bind(this)} style={{textAlign: 'center'}}  />
+																	</div>
+																</div>
+																<div className="col-12" style={{ marginBottom: "30px",display:(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? "block":"none"}}> 		                        			
+																{
+																	this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+																			var forclass=e._id+key;
+																		
+																		  var innnerpclass ="fancy2 highlight fancy2_"+key;
+																		var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2 highlight";
+																		   var inputclass = "input_"+key;
+																			return <p class={pcalss}>
+																					<label>
+																						
+																						{(key === 0) ? <b class="option_ _a">A</b> : null}
+																						{(key === 1) ? <b class="option_ _b">B</b> : null}
+																						{(key === 2) ? <b class="option_ _c">C</b> : null}
+																						{(key === 3) ? <b class="option_ _d">D</b> : null}
+																						{(key === 4) ? <b class="option_ _e">E</b> : null}
+																						{(key === 5) ? <b class="option_ _f">F</b> : null}
+																					
+																						{	(e.correctAnswer === true) ? 
+																							<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" value={e.answer} checked="checked" disabled='disabled' /> : 
+																							<input id={forclass} className={inputclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="checkbox" value={e.answer}  disabled='disabled'  />
+																						}							                                    
+																						<span for={forclass}>{e.answer}</span>
+																					</label>
+																				</p>
+																		})
+																}
+	
+																</div>
+																<div class="col-12 align-self-center" style={{ textAlign: 'center' }}>
+																	<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.submitFreeText.bind(this)}>Save</button>
+																</div>
+															</div>
+	
+															: null
+														}
+	
+	
+														{
+															(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ? 
+	
+																this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+																	var forclass=e._id+key;
+																	return <p class={
+																			(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ? 
+																			(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+																				'fancy2 highlight' : 
+																				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight': 'fancy2 pinkhighlight' 
+																				: 'fancy2'
+																			}>
+																			<label>
+																				
+																				{(key === 0) ? <b class="option_ _a">A</b> : null}
+																				{(key === 1) ? <b class="option_ _b">B</b> : null}
+																				{(key === 2) ? <b class="option_ _c">C</b> : null}
+																				{(key === 3) ? <b class="option_ _d">D</b> : null}
+																				{(key === 4) ? <b class="option_ _e">E</b> : null}
+																				{(key === 5) ? <b class="option_ _f">F</b> : null}
+																				
+																				{(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ? 
+																					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled':''} /> : 
+																					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this,this.state.indexQuestion,e)} value={e.answer}  disabled={(e.readonly) ? 'disabled':''} />
+																				}							                                    
+																				<span for={forclass}>{e.answer}</span>
+																			</label>
+																		</p>
+																})
+	
+															: null
+														}
+	
+														{
+															(this.state.listArr[this.state.indexQuestion]['answerType'] === 5) ? 
+																
+																<div>
+																	<p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ? 
+																			(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' :  (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' : (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ? 'fancy2 pinkhighlight' : 'fancy2' }>
+																		<label >
+																			<b class="option_ _a">A</b>
+																			<input id="trueFalse1" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}   />
+																			<span for="trueFalse1">True</span>
+																		</label>
+																	</p>
+																	<p class={ (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ? 
+																			(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' :  (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' :  (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ? 'fancy2 pinkhighlight' : 'fancy2' }>
+																		<label >
+																			<b class="option_ _b">B</b>
+																			<input id="trueFalse2" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this,this.state.indexQuestion,false)} value='false' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled':''}  />
+																			<span for="trueFalse2">False</span>
+																		</label>
+																	</p>
+																</div>
+																
+															: null
+														}			                            
+	
+													</div> 
+												</div>
+												<div class="align-self-center" style={{ textAlign: 'center' }}>
+													<button style={{minWidth: '150px',marginRight:'18px'}} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
+													
+												</div>
+												
+											</div>)
+											 :
+											(null) 
+									)
+									
+									
 				                	}
 				                </div>
 				            </section>
 			            :
+
+
 			            	(this.state.winnerScreen) ?
 				            <section id="hero" class="d-flex align-items-center">
 
@@ -1037,7 +1336,7 @@ class StartRound extends Component {
 												<h3 style={{paddingLeft: '0px'}}>{this.state.contestData.title}</h3>
 												<p>{this.state.contestData.description}</p> 													
 											</div>
-											<div class="col-lg-12 col-md-12 align-self-center mb-3">
+											<div className="col-lg-12 col-md-12 align-self-center mb-3">
 												<div className="accordion-wrapper" >
 													<div className='acc-title'>
 													Round Detail
@@ -1049,17 +1348,31 @@ class StartRound extends Component {
 																(this.state.roundListArr.length > 0) ?
 																		<div>
 																		{								                        	
-																			(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 0) ? 
+																			(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 0 || this.state.roundListArr[this.state.currentIndexRound].gameType === "Blank") ? 
 																			(<div>
 																				<p>{(this.state.roundListArr[this.state.currentIndexRound].title !== '') ? 
 																					this.state.roundListArr[this.state.currentIndexRound].title : 
 																					this.state.roundListArr[this.state.currentIndexRound].gameType} 
-																					<span>({this.state.roundListArr[this.state.currentIndexRound].totalQuestions} 
-																					{(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 1) ? 'Questions' : 'Question'})</span>
+																					{
+																						this.state.roundListArr[this.state.currentIndexRound].gameType != "Blank" ? (
+
+																							<span>({this.state.roundListArr[this.state.currentIndexRound].totalQuestions} 
+																								{(this.state.roundListArr[this.state.currentIndexRound].totalQuestions > 1) ? 'Questions' : 'Question'})</span>
+																						):(null)
+																					}
+																					
 																				</p>
 																				<p> {this.state.roundListArr[this.state.currentIndexRound].description}</p>
 
-																				<button style={{minWidth: '150px'}} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
+																				{/* {this.state.createdBy == JSON.parse(reactLocalStorage.get('userData')).userId ? (
+
+																			
+
+																				):(null)} */}
+
+
+																			<button style={{minWidth: '150px'}} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
+
 
 																				</div>) : null
 																		}
@@ -1084,6 +1397,8 @@ class StartRound extends Component {
 			            
 
 		            </div>
+
+						
 		            }
 		        </main>
 
@@ -1156,6 +1471,103 @@ class StartRound extends Component {
 										)}
 										>Send</button>
 					                </div>
+									
+                                </div>
+                            </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
+
+					<CModal show={this.state.openModelForGiveScore}  closeOnBackdrop={false}  onClose={()=> this.setState({openModelForGiveScore:false})}
+                    color="danger" 
+                    centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                
+                        		<button type="button" className="close" onClick={()=> this.setState({openModelForGiveScore:false})}>
+	                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+	                            </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+										<h3>Give Score</h3>
+                                    </div>
+
+                                    		
+
+										{this.state.activelistArr.length > 0 ? (
+
+													<>
+
+
+															{
+																this.state.activelistArr.map((e,i)=>{
+
+																	return<> <div className="container" style={{marginBottom:"10px"}} key={i}>
+																	<div className="row">
+																		<div className="col-md-12">
+																			<div className="row">
+																				<div className="col-md-4">
+	
+																				<div className="giveScoreImg_">
+																				<img src={e.image !== '' ? e.image : 'avatars/placeholder-user.png' }  className="rounded-circle" width="75px" height="75px" alt="user image" />
+																				</div>
+																				
+																				</div>
+																				<div className="col-md-8 text-left">
+																					<div>
+																						<h3 style={{color:"#88d8b8",textAlign:"left"}}>{e.name}</h3>
+																					</div>
+																					<div>
+																						<p style={{color:"#ffffff85"}}>	</p>
+																					</div>
+																				</div>
+																			</div>
+																			<div className="row" style={{marginTop:"30px"}}>
+																				<div className="col-md-12" style={{
+																				display: "flex",
+																				alignItem: "center",
+																				justifyContent: "center",
+																				gap: "14px"
+																				}}>
+
+
+																					<div className={this.state.isActive == e._id +""+-10 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,-10)}>-10</div>
+																					<div className={this.state.isActive == e._id +""+-5 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,-5)}>-5</div>
+																					<div className={this.state.isActive == e._id +""+0 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,0)}>0</div>
+																					<div className={this.state.isActive == e._id +""+5 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,5)}>5</div>
+																					<div className={this.state.isActive == e._id +""+10 ? 'scoreBadge active-scoreBadge':'scoreBadge'} onClick={this.modifyActiveUser.bind(this,e._id,10)}>10</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+
+																</div>
+																	<hr/>
+																</>
+																
+
+																})
+															}
+																
+															
+														<div className="full_btn">
+															<button style={{marginBottom: '15px'}}  className="yellow_btn" type="button"
+															
+															onClick={this.handleSubmitScore.bind(
+																this
+															)}
+															>Submit</button>
+														</div>
+													</>
+
+										):(
+											<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"150px",marginBottom:"150px"}} className="flex"><p className="item-author text-color">No data found</p></div>
+										)}	
+
+									
 									
                                 </div>
                             </div>
