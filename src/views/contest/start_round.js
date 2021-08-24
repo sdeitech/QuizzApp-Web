@@ -54,7 +54,8 @@ class StartRound extends Component {
 			newTime:0,
 			contestCreater:false,
 			createdBy:'',
-			isActive:''
+			isActive:'',
+			isWinnerScreenShow:false
 		};
 	}
 
@@ -94,7 +95,7 @@ class StartRound extends Component {
 		   	}
 		});	
 		this.getList(contestId);
-		this.getRoomDetails();
+		
        
 
 	}
@@ -158,6 +159,8 @@ class StartRound extends Component {
 		var url = window.location.href;
         roomId = url.substring(url.lastIndexOf('/') + 1);
 		roomId =roomId.substring(roomId.lastIndexOf('?')+1);
+
+		this.getRoomDetails();
 		// if (this.state.contestData.playerType === 1) {
 			// console.log(this.state.roundListArr[this.state.currentIndexRound]);
 			if (this.state.roundListArr[this.state.currentIndexRound] !== undefined) {
@@ -185,7 +188,7 @@ class StartRound extends Component {
 		            if(data.code === 200){
 		            	this.setState({gameId:data.data._id})
 						this.setState({roomId:data.data.roomId});
-						if(JSON.parse(reactLocalStorage.get('userData')).userId == data.data.createdBy){
+						if(JSON.parse(reactLocalStorage.get('userData')).userId == this.state.createdBy){
 							this.setState({contestCreater:true});
 						}
 		            }
@@ -197,10 +200,11 @@ class StartRound extends Component {
 		        this.setState({indexQuestion:0});
 
 				if(gameTypeObj.gameType !== "Blank"){
+					
 					this.getQuestionList(roundId);
-					this.setState({isBalnkRound:false,blankRoundObj:{}});
+					this.setState({isBalnkRound:false,blankRoundObj:{},newTime:0,isWinnerScreenShow:false});
 				}else{
-					this.setState({isBalnkRound:true,blankRoundObj:gameTypeObj,showRound:false,saveExitAnswer:false});
+					this.setState({isBalnkRound:true,blankRoundObj:gameTypeObj,showRound:false,saveExitAnswer:false,isWinnerScreenShow:true});
 					this.startTimerForBlankRound(gameTypeObj);
 
 				}
@@ -554,11 +558,13 @@ class StartRound extends Component {
 							that.setState({saveExitAnswer:true});
 	
 							setTimeout(function () {
-								that.setState({winnerScreen:true});
+								that.setState({winnerScreen:true,openModelForGiveScore:false});
 								setTimeout(function () {
-									that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{}});
+									that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{},activelistArr:[]});
 							   }, 5000);
 							}, 2000);
+
+							
 							
 						}else{
 	
@@ -566,9 +572,9 @@ class StartRound extends Component {
 							that.setState({saveExitAnswer:true});
 							
 							setTimeout(function () {
-								that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true});
+								that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true,openModelForGiveScore:false});
 							}, 2000);
-	
+							
 						}
 					}
 					
@@ -577,7 +583,8 @@ class StartRound extends Component {
 					
 					
 
-					that.setState({isBalnkRound:false,blankRoundObj:{}});
+					that.setState({isBalnkRound:false,blankRoundObj:{},openModelForGiveScore:false});
+					
 
 
 		    	// }
@@ -586,13 +593,15 @@ class StartRound extends Component {
 			}
 			else
 			{
-
-				that.startTimerForBlankRound(fields);	
+					if(that.state.newTime !== 1){
+						that.startTimerForBlankRound(fields);
+					}
+					
 			}
 			}, 1000);
 	    }
 	    else{
-	    	that.saveExitAnswer();	
+			this.saveExitAnswerForBlank();
 	    }
 	}
 
@@ -604,20 +613,20 @@ class StartRound extends Component {
 						this.setState({saveExitAnswer:true});
 						var that = this;
 						setTimeout(function () {
-							that.setState({winnerScreen:true});
+							that.setState({winnerScreen:true,openModelForGiveScore:false});
 							setTimeout(function () {
-								that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{}});
+								that.setState({showRound:true,currentIndexRound:that.state.currentIndexRound+1,winnerScreen:false,isBalnkRound:false,blankRoundObj:{},activelistArr:[]});
 						   }, 5000);
-						}, 2000);
-						
+						}, 2000);		
 					}else{
 
 
 						this.setState({saveExitAnswer:true});
 						var that = this;
 						setTimeout(function () {
-							that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true});
+							that.setState({winnerScreen:true,showRound:false,showGoLeaderBoardBtn:true,openModelForGiveScore:false});
 						}, 2000);
+						
 
 					}
 
@@ -800,10 +809,10 @@ class StartRound extends Component {
         let errors = {};
         let formIsValid = true;
         this.setState({ fields });
-        if (fields["title"].trim() === "") {
-            formIsValid = false;
-            errors["title"] = "Please enter title";
-        }
+        // if (fields["title"].trim() === "") {
+        //     formIsValid = false;
+        //     errors["title"] = "Please enter title";
+        // }
 
         if (!fields["description"]) {
             formIsValid = false;
@@ -813,7 +822,7 @@ class StartRound extends Component {
         if (formIsValid) {
 			this.setState({openModel:false})
             const data = new FormData();
-            data.append("title", this.state.fields.title);
+            // data.append("title", this.state.fields.title);
             data.append("description", this.state.fields.description);
 			data.append("contestId", parentContestId);
             data.append("roomId", roomId);
@@ -834,7 +843,7 @@ class StartRound extends Component {
                 .then((data) => {
                     if (data.code === 200) {
 						let fields = this.state.fields;
-						fields['title'] = '';
+						// fields['title'] = '';
 						fields['description'] = '';
 						this.setState({ fields });
 						toast.success(data.message);
@@ -865,9 +874,9 @@ class StartRound extends Component {
 					if(data){
 						// console.log("data");
 						// console.log(data.data);
-						this.setState({totalScore:10})
+						// this.setState({totalScore:10})
 						
-					this.setState({openModelForGiveScore:false,isActive:false})
+					this.setState({openModelForGiveScore:false})
 					}else{
 						
 						console.log("error");
@@ -878,7 +887,7 @@ class StartRound extends Component {
 	}
 
 	getParticipants(){
-		fetch(configuration.baseURL+"game/activeUser/?roomId="+roomId, {
+		fetch(configuration.baseURL+"game/activeUser/?roomId="+roomId+"&gameId="+this.state.gameId, {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json',
@@ -890,6 +899,7 @@ class StartRound extends Component {
     	}).then((data)=> {				
 		if (data.data.length > 0) {
 			  this.setState({activelistArr:data.data,openModelForGiveScore:true})
+			  
 		   }
 		   else
 		   {
@@ -900,7 +910,7 @@ class StartRound extends Component {
 
 
 	getRoomDetails(){
-		fetch(configuration.baseURL + "room/room?roomId=" + roomId, {
+		fetch(configuration.baseURL + "room/room/?roomId=" + roomId, {
             method: "GET",
             headers: {
                 Accept: "application/json",
@@ -913,7 +923,7 @@ class StartRound extends Component {
             })
             .then((data) => {
                 if (data.data.length > 0) {
-                    let createdBy =  data.data[0].createdBy;
+                    let createdBy =  data.data[0].createdById;
                     this.setState({  createdBy: createdBy });
                     
                 }
@@ -926,7 +936,7 @@ class StartRound extends Component {
 			let dataArr  = this.state.activelistArr;
 			dataArr = dataArr.map((e,i)=>{
 					if(e._id == index){
-						e['score'] = score;
+						e.score = score;
 						e['gameId'] = this.state.gameId;
 						return e;
 					}
@@ -956,10 +966,22 @@ class StartRound extends Component {
 										</a>
 
 										<div className="dropdown-menu drop-btn-menu" aria-labelledby="dropdownMenuLink">
-										<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
-														this.setState({openModel:true})
-													}}>Report</button>
-												{this.state.contestCreater ? (<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>):(null)}	
+
+
+											{this.state.contestCreater ? (null):(
+												<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={()=>{
+													this.setState({openModel:true})
+												}}>Report</button>
+
+											)}
+										
+
+													{this.state.isBalnkRound ? (
+
+												this.state.contestCreater ? (<button style={{minWidth: '150px'}} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>):(null)	
+
+
+													):(null)}
 										</div>
 										</div>
 				                    <h3>{this.state.contestData.title}</h3>
@@ -1291,31 +1313,85 @@ class StartRound extends Component {
 
 				                <div class="quizz-game width40">
 				                	<p></p><br/>
-				                    <h3 style={{textAlign:'center'}}>Contest completed you win {this.state.totalScore} pt</h3><br/>
-				                    <h3 style={{textAlign:'center'}}>Round {this.state.totalScore} score</h3><br/>
-				                    <div class="firstthree">
-				                    	
-				                        <div class="_1st">
-				                            <div class="_1stimg">
-				                                <div class="leaderimg2">
-				                                    <img  src={this.state.profile_picture} />
-				                                    <p style={{background: '#FFC542 0% 0% no-repeat padding-box'}}>1</p>
-				                                </div>
-				                                <div class="user-detail">
-				                                    <h3>{this.state.name}</h3>
-				                                </div>
-				                                <div class="point">
-				                                    <h5>{this.state.totalScore} pt</h5>
-				                                </div>
-				                            </div>
-				                        </div>
-				                        {
-				                        	(this.state.showGoLeaderBoardBtn) ? 
-					                        <div class="full_btn">
-					                            <a href="#/contest"><button class="blue_btn" type="button" >Go To Leader Board</button></a>
-					                        </div> : null 
-				                        }
-				                    </div>
+				                   
+
+
+									{
+										 (this.state.isWinnerScreenShow	) ? (
+
+											this.state.activelistArr.map((e,i)=>{
+
+													return  (
+															<>
+
+														<h3 style={{textAlign:'center'}}>Contest completed</h3><br/>
+
+														<div class="firstthree">
+														<div class="_1st">
+															<div class="_1stimg">
+																<div class="leaderimg2">
+																	<img src={e.image !== '' ? e.image : 'avatars/placeholder-user.png' }  className="rounded-circle" width="75px" height="75px" alt="user image" />		
+																	<p style={{background: '#FFC542 0% 0% no-repeat padding-box'}}>1</p>
+																</div>
+																<div class="user-detail">
+																	<h3>{e.name}</h3>
+																</div>
+																<div class="point">
+																	<h5>{e.score} pt</h5>
+																</div>
+															</div>
+														</div>
+														{
+															(this.state.showGoLeaderBoardBtn) ? 
+															<div class="full_btn">
+																<a href="#/contest"><button class="blue_btn" type="button" >Go To Leader Board</button></a>
+															</div> : null 
+														}
+													</div>
+													</>
+
+													)
+
+											})
+
+
+										 ):( 
+
+											<>
+											 <h3 style={{textAlign:'center'}}>Contest completed you win {this.state.totalScore} pt</h3><br/>
+				                    		<h3 style={{textAlign:'center'}}>Round {this.state.totalScore} score</h3><br/>
+											<div class="firstthree">
+												<div class="_1st">
+													<div class="_1stimg">
+														<div class="leaderimg2">
+															<img  src={this.state.profile_picture} />
+															<p style={{background: '#FFC542 0% 0% no-repeat padding-box'}}>1</p>
+														</div>
+														<div class="user-detail">
+															<h3>{this.state.name}</h3>
+														</div>
+														<div class="point">
+															<h5>{this.state.totalScore} pt</h5>
+														</div>
+													</div>
+												</div>
+												{
+													(this.state.showGoLeaderBoardBtn) ? 
+													<div class="full_btn">
+														<a href="#/contest"><button class="blue_btn" type="button" >Go To Leader Board</button></a>
+													</div> : null 
+												}
+										    </div>
+
+											</>
+
+											
+										 )
+									}		
+
+
+
+				                   
 				                </div>
 				                
 				            </section> : null
@@ -1420,7 +1496,7 @@ class StartRound extends Component {
 										<h3>Report Contest</h3>
                                     </div>
 
-                                    <div className="cus_input input_wrap">
+                                    {/* <div className="cus_input input_wrap">
                                             <img src="./murabbo/img/title.svg" />
                                             <input
                                                 required
@@ -1437,7 +1513,7 @@ class StartRound extends Component {
                                         </div>
                                         <span className="error-msg">
                                             {this.state.errors["title"]}
-                                        </span>
+                                        </span> */}
 
 										<div className="cus_input input_wrap">
                                             <img
