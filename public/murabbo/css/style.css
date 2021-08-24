@@ -4304,3 +4304,8 @@ button.blue_btn:hover {
     background-color:#88d7b7;
     color: #334b55;
 }
+
+
+.modal-open {
+    overflow: visible !important;
+}
