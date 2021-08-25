@@ -1317,14 +1317,18 @@ class StartRound extends Component {
 
 
 									{
+
 										 (this.state.isWinnerScreenShow	) ? (
 
-											this.state.activelistArr.map((e,i)=>{
+											this.state.activelistArr.length > 0 ? (
+
+												this.state.activelistArr.map((e,i)=>{
 
 													return  (
 															<>
 
-														<h3 style={{textAlign:'center'}}>Contest completed</h3><br/>
+										            <h3 style={{textAlign:'center'}}>Contest completed</h3><br/>
+														
 
 														<div class="firstthree">
 														<div class="_1st">
@@ -1353,6 +1357,16 @@ class StartRound extends Component {
 													)
 
 											})
+											):(
+
+												<>
+												
+										<h3 style={{textAlign:'center'}}>Contest completed</h3><br/>
+
+												</>
+											)
+											
+											
 
 
 										 ):( 

@@ -13,7 +13,7 @@ import {
     CModal,
     CModalBody,
   } from '@coreui/react';
-
+var saveToIdForEdit;
 class MyGroups extends Component {
     constructor(props) {
         super(props);
@@ -21,7 +21,8 @@ class MyGroups extends Component {
             listData:[],
             addModel:false,
             fields:{saveToTitle:''},
-            errors:{}
+            errors:{},
+            isEditMode:false
         };
     }
 
@@ -113,6 +114,87 @@ class MyGroups extends Component {
         this.props.history.push('/contest?'+saveToId)
     }
 
+    EditSaveGroupModel(){
+        let fields = this.state.fields;
+        let formIsValid = true;
+
+        let errors = {};
+        if(fields["saveToTitle"].trim() === ''){
+            errors["saveToTitle"] = "Please enter title";
+            formIsValid = false;
+        }
+        this.setState({errors: errors});
+
+        if(formIsValid){
+            var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+            const data = new FormData();
+            data.append('userId',userId);
+            data.append('saveToId',saveToIdForEdit);
+            data.append('saveToTitle',fields['saveToTitle']);
+            
+            fetch(configuration.baseURL+"user/saveTo", {
+                method: "POST",
+                headers: {
+                    'contentType': "application/json",
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                },
+                body:data
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if(data.code === 200){
+                    saveToIdForEdit = "";
+                    this.componentDidMount();
+                    fields['saveToTitle']='';
+                    this.setState({fields:fields,addModel:false,isEditMode:false});
+                }
+                else
+                {
+                    return toast.error(data.message);
+                }
+                
+            });
+
+            
+        }
+    }
+
+
+    deleteSaveToItem(saveToId){
+        let userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+        console.log("id",saveToId);
+
+        if(saveToId){
+
+                fetch(configuration.baseURL + "user/saveTo?saveToId="+saveToId+"&userId="+userId,{
+                    method:"delete",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                    }
+                }).then((response)=>response.json()).then((data)=>{
+                        if(data){
+                            this.componentDidMount();
+                        }else{
+                            return toast.error("Something Went Wrong");
+                        }
+                })
+
+        }
+    }
+
+    EditGroup(saveToId,saveToTitle){
+        let fields = this.state.fields;
+        fields['saveToTitle'] = saveToTitle;
+        this.setState({fields});
+        
+        this.setState({isEditMode:true,addModel:true})
+
+        saveToIdForEdit = saveToId;
+        console.log("sace",saveToIdForEdit);
+    }
+
 
     render() {
         return (
@@ -144,14 +226,37 @@ class MyGroups extends Component {
 
                                             (this.state.listData.length > 0) ? 
                                             this.state.listData.map((e, key) => {
-                                                return <div className="col-lg-3 col-md-4 col-sm-6 groups-box-inner" onClick={this.clickHandle.bind(this,e.saveToId)}>                        
+                                                return <div className="col-lg-3 col-md-4 col-sm-6 groups-box-inner" >                        
                                                         <div className="addfriend box_yellow">
-                                                            <div className="inline">
+                                                            <div className="inline" onClick={this.clickHandle.bind(this,e.saveToId)}>
                                                                 <h5>{e.saveToTitle}</h5>
                                                             </div>
-                                                            <div style={{float: 'right'}} className="inline arrow">
-                                                                <img src="./murabbo/img/arrow-right_yellow.svg"/>
-                                                            </div>
+
+                                                            {e.createdBy == "Data Admin" ? (null):(
+                                                                        <div style={{float: 'right'}} className="inline arrow">
+                                                                        <div className="dropdown show" style={{float:"right"}}> 
+                                                                                 <a className="btn  dropdown-toggle toggle-arrow" style={{
+         
+                                                                                         position: "absolute",
+                                                                                         left: "-20px",
+                                                                                         color: "#fff",
+                                                                                         top: "-5px"
+         
+                                                                                 }} href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                 <i class="fas fa-ellipsis-v"></i>
+                                                                                 </a>
+         
+                                                                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+         
+                                                                                         <a  className="dropdown-item" onClick={this.EditGroup.bind(this,e.saveToId,e.saveToTitle)}>Edit</a>
+                                                                                         <a  className="dropdown-item" onClick={this.deleteSaveToItem.bind(this,e.saveToId)}>Delete</a>
+                                                                                     
+                                                                                 </div>
+                                                                         </div>
+                                                                     </div>
+
+                                                            )}
+                                                            
                                                         </div>
                                                     </div>
                                             }) : 
@@ -176,7 +281,7 @@ class MyGroups extends Component {
                                 </button>
                                 <div className="model_data">
                                     <div className="model-title">
-                                        <h3>Add Group</h3> 
+                                        {this.state.isEditMode ? (<h3>Edit Group</h3> ):(<h3>Add Group</h3>)}
                                     </div>
 
                                     <div className="cus_input input_wrap">
@@ -186,7 +291,15 @@ class MyGroups extends Component {
                                     </div>
                                     <span className="error-msg">{this.state.errors["saveToTitle"]}</span>
                                     <div style={{textAlign:'center'}} className="col-md-12">
+
+                                        {this.state.isEditMode ? (
+
+                                        <button style={{minWidth: '150px',marginRight:'10px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.EditSaveGroupModel.bind(this)} >Edit</button>
+
+                                        ):(
                                         <button style={{minWidth: '150px',marginRight:'10px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveGroupModel.bind(this)} >Add</button>
+
+                                        )}
                                         <button style={{minWidth: '150px',marginRight:'10px'}} className="pink_btn" type="button"  onClick={() => this.setState({'addModel':false,fields:{saveToTitle:''},errors:{saveToTitle:''}})} >Cancel</button>
                                     </div>
                                 </div>
@@ -194,7 +307,6 @@ class MyGroups extends Component {
                             </div>
                         </CModalBody>
                     </CModal>
-                
                     </main>
                 <TheFooter />
             </>

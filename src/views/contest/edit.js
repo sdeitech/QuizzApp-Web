@@ -64,6 +64,8 @@ class EditContest extends Component {
             tempSelectedLanguage: {},
             saveToTitle: "",
             subscriptionModel: false,
+            fieldsForSaveTo:{saveToTitle:''},
+            fieldsForSaveToerrors:{}
         };
         this.searchUpdated = this.searchUpdated.bind(this);
         this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this);
@@ -891,6 +893,72 @@ class EditContest extends Component {
         this.setState({ fields });      
     }
 
+
+
+    addModel()
+    {
+        this.setState({'addModel':true,fieldsForSaveTo:{saveToTitle:''},fieldsForSaveToerrors:{saveToTitle:''}})
+    }
+
+    handleChangeForSaveTo(field, e){  
+        let fields = this.state.fieldsForSaveTo;
+        fields['saveToTitle'] = e.target.value;
+        this.setState({fields});
+
+
+        let errors = {};
+        if(field === 'saveToTitle' && fields["saveToTitle"].trim() === ''){
+            errors["saveToTitle"] = "Please enter title";
+        }
+
+        this.setState({fieldsForSaveToerrors: errors});
+
+    }
+
+    saveGroupModel(){
+        let fields = this.state.fieldsForSaveTo;
+        let formIsValid = true;
+
+        let errors = {};
+        if(fields["saveToTitle"].trim() === ''){
+            errors["saveToTitle"] = "Please enter title";
+            formIsValid = false;
+        }
+        this.setState({fieldsForSaveToerrors: errors});
+
+        if(formIsValid){
+
+            var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+            const data = new FormData();
+            data.append('userId',userId);
+            data.append('saveToTitle',fields['saveToTitle']);
+            
+            fetch(configuration.baseURL+"user/saveTo", {
+                method: "POST",
+                headers: {
+                    'contentType': "application/json",
+                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                },
+                body:data
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                if(data.code === 200){
+                    this.componentDidMount();
+                    fields['saveToTitle']='';
+                    this.setState({fieldsForSaveTo:fields,addModel:false});
+                }
+                else
+                {
+                    return toast.error(data.message);
+                }
+                
+            });
+
+            
+        }
+    }
+
     render() {
         $(document).ready(function () {
             var readURL = function (input) {
@@ -1668,6 +1736,16 @@ class EditContest extends Component {
                                                     >
                                                         Done
                                                     </button>
+
+
+                                                    <button
+                                                        class="yellow_btn"
+                                                        type="button"
+                                                        style={{marginLeft:"10px"}}
+                                                        onClick={this.addModel.bind(this)}
+                                                    >
+                                                        Add Group
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -2318,6 +2396,40 @@ class EditContest extends Component {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </CModalBody>
+                    </CModal>
+
+
+
+                    <CModal show={this.state.addModel}  closeOnBackdrop={false}  onClose={()=> this.setState({addModel:false})}
+                        color="danger" 
+                        centered>
+                        <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                
+                                <button type="button" className="close" onClick={()=> this.setState({addModel:false})}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <h3>Add Group</h3> 
+                                    </div>
+
+                                    <div className="cus_input input_wrap">
+                                        <img src="./murabbo/img/title.svg" alt="Upload"/>
+                                        <input type="text" required name="" onChange={this.handleChangeForSaveTo.bind(this,'saveToTitle')} value={this.state.fieldsForSaveTo['saveToTitle']} />
+                                        <label>Title</label>
+                                    </div>
+                                    <span className="error-msg">{this.state.errors["saveToTitle"]}</span>
+                                    <div style={{textAlign:'center'}} className="col-md-12">
+                                        <button style={{minWidth: '150px',marginRight:'10px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveGroupModel.bind(this)} >Add</button>
+                                        <button style={{minWidth: '150px',marginRight:'10px'}} className="pink_btn" type="button"  onClick={() => this.setState({'addModel':false,fieldsForSaveTo:{saveToTitle:''},fieldsForSaveToerrors:{saveToTitle:''}})} >Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
                         </CModalBody>
                     </CModal>

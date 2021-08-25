@@ -632,7 +632,7 @@ class RoundTray extends Component {
         }
 
         if (parseInt(minute) === 15 || parseInt(minute) > 15) {
-            minute = "05";
+            minute = "15";
             seconds = "00";
         } else if (
             parseInt(minute) < 1 &&
@@ -865,8 +865,16 @@ class RoundTray extends Component {
                                                                     .length >
                                                                 MAX_LENGTH
                                                                     ? "..."
-                                                                    : ""}
+                                                                    : ""}<br/>
+
+                                                                    {val.totalQuestions==0  ? (null):(
+                                                                        val.totalQuestions==1?(val.totalQuestions  + "  Question"):(val.totalQuestions  + "  Questions")
+                                                                        )}
                                                             </p>
+
+                                                          
+
+                                                            
                                                         </div>
                                                     </div>
                                                 );
@@ -1536,14 +1544,22 @@ class RoundTray extends Component {
                                                                             Negative
                                                                             Base
                                                                             Points
-                                                                            (0 -
-                                                                            100)
+                                                                            (0 -&nbsp; 
+                                                                            { this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "basePoints"
+                                                                                ]})
                                                                         </label>
                                                                     </div>
                                                                     <div className="range-wrap">
                                                                         <input
                                                                             min="0"
-                                                                            max="100"
+                                                                            max={this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]}
                                                                             step={
                                                                                 configuration.sliderScore
                                                                             }
@@ -1647,16 +1663,22 @@ class RoundTray extends Component {
                                                                             Demand
                                                                             Negative
                                                                             Points
-                                                                            ( 0
-                                                                            -
-                                                                            100
-                                                                            )
+                                                                            (0 -&nbsp; 
+                                                                            { this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "basePoints"
+                                                                                ]})
                                                                         </label>
                                                                     </div>
                                                                     <div className="range-wrap">
                                                                         <input
                                                                             min="0"
-                                                                            max="100"
+                                                                            max={this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]}
                                                                             step={
                                                                                 configuration.sliderScore
                                                                             }
@@ -2213,7 +2235,7 @@ class RoundTray extends Component {
                                 </div>
                             </div>
                         </CModalBody>
-                    </CModal>
+                 </CModal>
 
                     <CModal
                         show={this.state.wordModel}
