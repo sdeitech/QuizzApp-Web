@@ -230,6 +230,7 @@ class MyGroups extends Component {
                                                         <div className="addfriend box_yellow">
                                                             <div className="inline" onClick={this.clickHandle.bind(this,e.saveToId)}>
                                                                 <h5>{e.saveToTitle}</h5>
+                                                                <small style={{marginLeft:"10px"}}>{e.contestNumber == 1 ? (e.contestNumber+' Contest'):(e.contestNumber+' Contests')}</small>
                                                             </div>
 
                                                             {e.createdBy == "Data Admin" ? (null):(
