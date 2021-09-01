@@ -414,9 +414,9 @@ class Contest extends Component {
 															{(this.state.fields['playerType'] === "") ?  "Select" : (this.state.fields['playerType'] === "1") ?  "Single Player" : "Multi Player"} 
 															</div>
 															<div class="dropdown-menu drop_menu player_drop_down " aria-labelledby="dropdownMenu3">
-																<li onClick={this.handlePlayerTypeChange.bind(this, "")}>All</li>
-																<li onClick={this.handlePlayerTypeChange.bind(this, "1")}>Single Player</li>
-																<li onClick={this.handlePlayerTypeChange.bind(this, "2")}>Multi Player</li>
+																<li  class="dropdown-item" style={{cursor:"pointer"}} onClick={this.handlePlayerTypeChange.bind(this, "")}>All</li>
+																<li class="dropdown-item"  style={{cursor:"pointer"}} onClick={this.handlePlayerTypeChange.bind(this, "1")}>Single Player</li>
+																<li  class="dropdown-item"  style={{cursor:"pointer"}} onClick={this.handlePlayerTypeChange.bind(this, "2")}>Multi Player</li>
 															</div>
 														</div>
 													</ul>

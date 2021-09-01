@@ -36,7 +36,8 @@ class EditRoundQuestion extends Component {
             audioList:[],
             typeOption:'',
             profilePic:'',
-            edit_id:''
+            edit_id:'',
+			fieldsForYoutube:{url:'',startMin:0,startSec:0,endMin:0,endSec:0}
 		};
 	}
 
@@ -112,9 +113,14 @@ class EditRoundQuestion extends Component {
 										
 									if (data.data[0].fileType === 'video') {
 										that.setState({profilePic:'avatars/play.svg'});
+										$('#start').hide();	
 									}
 									else if (data.data[0].fileType === 'audio') {
 										that.setState({profilePic:'avatars/5.png'});
+										$('#start').hide();	
+									}if (data.data[0].fileType === 'link') {
+										that.setState({profilePic:'avatars/play.svg'});
+										$('#start').hide();	
 									}else{
 											$('.display-profile-pic').hide();
 											$('#start').show();	
@@ -234,6 +240,95 @@ class EditRoundQuestion extends Component {
 
     }	
 
+	handleChangeForYoutube(field, e){   
+
+        let fieldsForYoutube = this.state.fieldsForYoutube;
+		let errors = {};
+        if (field === 'url') {
+			fieldsForYoutube[field] = e.target.value; 
+        }
+		if (field === 'startMin') {
+        	fieldsForYoutube[field] = e.target.value; 
+		}
+		if (field === 'startSec') {
+        	fieldsForYoutube[field] = e.target.value; 
+		}
+		if (field === 'endMin') {
+        	fieldsForYoutube[field] = e.target.value; 
+		}
+		if (field === 'endSec') {
+        	fieldsForYoutube[field] = e.target.value; 
+		}
+		
+        this.setState({fieldsForYoutube});
+
+       
+        if(fieldsForYoutube["url"].trim() === ''){
+           errors['url'] = "Please Enter URL"
+        }
+
+        this.setState({errors: errors});
+
+    }
+	setData(){
+		let isValid  =  true;
+		let errors = {};
+		if(this.state.fieldsForYoutube['url'] == ""){
+			errors['url'] = "Please Enter URL"
+			isValid = false;
+		}else if(this.state.fieldsForYoutube['startMin'] == 0){
+			errors['startMin'] = "Please Enter Minute"
+			isValid = false;
+		}else if(this.state.fieldsForYoutube['startSec'] == 0){
+			errors['startSec'] = "Please Enter Seconds"
+			isValid = false;
+		}else if(this.state.fieldsForYoutube['endMin'] == 0){
+			errors['endMin'] = "Please Enter Minute"
+			isValid = false;
+		}else if(this.state.fieldsForYoutube['endSec'] == 0){
+			errors['endSec'] = "Please Enter Seconds"
+			isValid = false;
+		}
+		this.setState({errors: errors});
+		if(isValid){
+
+				let start = +this.state.fieldsForYoutube['startMin'] * 60;
+				start +=  Number(this.state.fieldsForYoutube['startSec']);
+				let end = +this.state.fieldsForYoutube['endMin'] * 60;
+				end += Number(this.state.fieldsForYoutube['endSec']);
+				let video_id = this.state.fieldsForYoutube['url'].split("v=")[1];
+
+					if (video_id) {
+						var ampersandPosition = video_id.indexOf("&");
+						if (ampersandPosition != -1) {
+						video_id = video_id.substring(0, ampersandPosition);
+						}
+					}
+					console.log(`Video ID = ${video_id}`);
+				let url = `https://www.youtube.com/embed/${video_id}?start=${start}&end=${end}&autoplay=1`;
+				let fieldsForYoutube = this.state.fieldsForYoutube;
+				
+				fieldsForYoutube['url'] = url; 
+					this.setState({fieldsForYoutube});
+
+
+					let fields1 = this.state.fields;
+					fields1['fileType'] = 'link';
+					fields1['fileUrl'] = this.state.fieldsForYoutube['url'];
+					this.setState({fields1});
+                    this.selectYoutube();
+			
+		}
+
+
+
+	}
+	onDone(){
+		
+		this.setState({optionsValuesModel:false})
+
+	}
+
 
 
 	updateHandler(e)
@@ -242,7 +337,7 @@ class EditRoundQuestion extends Component {
         let formIsValid = true;
 
     	let errors = {};
-        if(fields["question"].trim() === ''){
+        if(fields["question"] === ''){
             errors["question"] = "Please enter question";formIsValid=false;
         }
 
@@ -315,7 +410,13 @@ class EditRoundQuestion extends Component {
 				} 
 				else
 				{
-					data.append('file', '');
+
+					if(this.state.fields.fileType == "link"){
+						data.append('file', this.state.fields.fileUrl);
+					}
+					else{
+						data.append('file', '');
+					}
 
 					// if(this.state.isexitImage !== ""){
                     //     data.append('file',this.state.isexitImage);    
@@ -324,11 +425,11 @@ class EditRoundQuestion extends Component {
 	                // }
 					
 					
-					let fields = this.state.fields;
-					// fields['fileType'] = '';
-					fields['fileUrl'] = 'avatars/question.png';
-					this.setState({profilePic:"./murabbo/img/upload.svg"});
-					this.setState({fields});
+					// let fields = this.state.fields;
+					// // fields['fileType'] = '';
+					// fields['fileUrl'] = 'avatars/question.png';
+					// this.setState({profilePic:"./murabbo/img/upload.svg"});
+					// this.setState({fields});
 
 				}
 				data.append('fileType',this.state.fields.fileType);
@@ -371,6 +472,8 @@ class EditRoundQuestion extends Component {
         }
         else if (type[0] === 'audio') {
         	this.setState({profilePic:'avatars/5.png'});
+        }else if (type[0] === 'link') {
+        	this.setState({profilePic:'avatars/play.svg'});
         }
        
         
@@ -518,6 +621,12 @@ class EditRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({fields});
 		this.setState({optionsValuesModel:false,profilePic:'avatars/play.svg'});
+		$('.display-profile-pic').show();
+		$('#start').hide();
+	}
+
+	selectYoutube(){
+		this.setState({profilePic:'avatars/play.svg'});
 		$('.display-profile-pic').show();
 		$('#start').hide();
 	}
@@ -1005,6 +1114,9 @@ class EditRoundQuestion extends Component {
 				                <div className="full_btn">
 				                    <button style={{marginBottom: '15px'}}  className="blue_btn light_blue_btn" type="button"  onClick={() => {this.setState({optionsModel:false,optionsValuesModel:true,typeOption:'audio'})}} >Murabbo Audio</button>
 				                </div>
+								<div className="full_btn">
+				                    <button style={{marginBottom: '15px'}}  className="blue_btn light_blue_btn" type="button"  onClick={() => {this.setState({optionsModel:false,optionsValuesModel:true,typeOption:'url'})}} >Youtube URL</button>
+				                </div>
 				               
 				                
                             </div>
@@ -1136,6 +1248,78 @@ class EditRoundQuestion extends Component {
                         				</div>
                            			: null
                            		}
+
+
+
+{
+                           			(this.state.typeOption === 'url') ? 
+                           			 	<div>
+												<div>
+													<h1 style={{textAlign:"center",color:"#fff"}}>YouTube</h1>
+												</div>
+												<div style={{
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center"
+
+												}}>
+												    <iframe width="300" height="150" src={this.state.fieldsForYoutube['url'] == "" ? './murabbo/img/upload.svg':this.state.fieldsForYoutube['url']} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+												</div>
+												<div style={{marginTop:"20px"}} className="container">
+													<div className="row">
+														<div className="col-md-12">
+															<div className="cus_input input_wrap">
+																<img src="./murabbo/img/cube.png" alt="Upload"/> <input type="text" required name="" onChange={this.handleChangeForYoutube.bind(this,'url')} value={this.state.fieldsForYoutube['url']} />
+																<label>Paste YouTube URL here </label>
+															</div>
+															<span  className="error-msg">{this.state.errors["url"]}</span>
+														</div>
+													</div>
+													<div className="row">
+														<div className="col-md-6">
+															<div className="cus_input input_wrap">
+																 <input type="text" required name="" onChange={this.handleChangeForYoutube.bind(this,'startMin')} value={this.state.fieldsForYoutube['startMin']} />
+																<label>Start At Min </label>
+															</div>
+														</div>
+														<div className="col-md-6">
+															<div className="cus_input input_wrap">
+																 <input type="text" required name="" onChange={this.handleChangeForYoutube.bind(this,'startSec')} value={this.state.fieldsForYoutube['startSec']} />
+																<label>Start At Sec</label>
+															</div>
+														</div>
+													</div>
+
+													<div className="row">
+														<div className="col-md-6">
+															<div className="cus_input input_wrap">
+																 <input type="text" required name="" onChange={this.handleChangeForYoutube.bind(this,'endMin')} value={this.state.fieldsForYoutube['endMin']} />
+																<label>End At Min </label>
+															</div>
+														</div>
+														<div className="col-md-6">
+															<div className="cus_input input_wrap">
+																 <input type="text" required name="" onChange={this.handleChangeForYoutube.bind(this,'endSec')} value={this.state.fieldsForYoutube['endSec']} />
+																<label>End At Sec</label>
+															</div>
+														</div>
+													</div>
+													<div className="row">
+														<div className="col-md-6">
+														   <button className="blue_btn light_blue_btn" type="button"  style={{float:"right"}} onClick={this.setData.bind(this) }>Set</button>
+														</div>
+														<div className="col-md-6">
+														  <button className="pink_btn" type="button"  onClick={this.onDone.bind(this) }>Done</button>
+														</div>
+
+													</div>
+
+
+												</div>
+
+										</div>
+                           			: null
+                           		}   
                                 					               
 				                
                             </div>

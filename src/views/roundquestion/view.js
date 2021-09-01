@@ -244,6 +244,10 @@ class RoundQuestion extends Component {
                                                                                 <img src="avatars/play.svg" />
                                                                             ) : null}
                                                                             {val.fileType ===
+                                                                            "link" ? (
+                                                                                <img src="avatars/play.svg" />
+                                                                            ) : null}
+                                                                            {val.fileType ===
                                                                                 "gallery" ||
                                                                             val.fileType ===
                                                                                 "image" ? (
