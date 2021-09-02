@@ -90,7 +90,7 @@ class EditRoundQuestion extends Component {
 							fields = data.data[0];
 							
 							fields['gameType']=gameType;
-							fields['answerType']=(gameType !== 'Taboo') ? 1 : 4;
+							fields['answerType']=(gameType !== 'Taboo') ? data.data[0]["answerType"] : 4;
 							fields['timeLimitSeconds'] = fields['timeLimit'];
 							fields['execution_mode']=newdata.execution_mode;
 							fields['scoring']=newdata.scoring;

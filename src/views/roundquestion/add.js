@@ -733,7 +733,7 @@ class AddRoundQuestion extends Component {
 				                                    <label style={{paddingLeft: '5px'}} className="cus_label">Base Points</label>
 				                                </div>
 			                                    <div className="range-wrap">
-			                                      <input min="0" max="100" value={this.state.fields['basePoints']} onChange={this.handleChange.bind(this,'basePoints')}  step="1" type="range" className="range" id="range" />
+			                                      <input min="0" max="100" value={this.state.fields['basePoints']} onChange={this.handleChange.bind(this,'basePoints')}  step={configuration.sliderScore} type="range" className="range" id="range" />
 			                                      <output className="bubble">{this.state.fields['basePoints']}</output>
 			                                    </div>
 	                                		
@@ -754,7 +754,7 @@ class AddRoundQuestion extends Component {
 							                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points</label>
 							                                </div>
 							                                <div className="range-wrap">
-							                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
+							                                  <input min="0" max="100" step={configuration.sliderScore} type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
 							                                  <output className="bubble">{this.state.fields['negativeBasePoints']}</output>
 							                                </div>
 				                                		</div> ) : null
@@ -780,7 +780,7 @@ class AddRoundQuestion extends Component {
             		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
             		                                </div>
             		                                <div className="range-wrap">
-            		                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
+            		                                  <input min="0" max="100" step={configuration.sliderScore} type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
             		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
             		                                </div>
                                         		</div> 
