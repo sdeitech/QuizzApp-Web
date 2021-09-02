@@ -161,9 +161,9 @@ class Leaderboard extends Component {
                                                 </div>
                                                 <InfiniteScroll className="row"
                                                     dataLength={this.state.items.length}
-                                                    next={(this.state.currentPage>2)?(null):this.fetchMoreData.bind(this)}
+                                                    next={(this.state.currentPage>3)?(null):this.fetchMoreData.bind(this)}
                                                     hasMore={this.state.hasmore}
-                                                    loader={(this.state.currentPage>2)?(null):(<h4 className="col-lg-12 col-md-12 col-sm-12 leaderloading">Loading...</h4>)
+                                                    loader={(this.state.currentPage>3)?(null):(<h4 className="col-lg-12 col-md-12 col-sm-12 leaderloading">Loading...</h4>)
                                                 
                                                 }
                                                      

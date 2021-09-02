@@ -320,9 +320,9 @@ class RoundTray extends Component {
             data.timeLimit = "00:30";
             data.timeLimitSeconds = 30;
         } else {
-            var currentTime = parseInt(data.timeLimit),
-                seconds = (currentTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
-                minute = Math.floor(currentTime / 60).toString(); // get the hours and convert to a string
+            var currentTime = parseInt(data.timeLimit);
+            var seconds = (currentTime % 60).toString(); //get the seconds using the modulus operator and convert to a string (so we can use length below)
+             var   minute = Math.floor(currentTime / 60).toString(); // get the hours and convert to a string
 
             //make sure we've got the right length for the seconds string
             if (seconds.length === 0) {
@@ -337,15 +337,32 @@ class RoundTray extends Component {
                 minute = "0" + minute;
             }
 
-            if (parseInt(minute) === 5 || parseInt(minute) > 5) {
-                minute = "05";
-                seconds = "00";
-            } else if (
-                (parseInt(minute) === 0 && parseInt(seconds) === 0) ||
-                parseInt(seconds) < 30
-            ) {
-                minute = "00";
-                seconds = "30";
+            if(data.gameType === "Blank"){
+                if (parseInt(minute) === 15 || parseInt(minute) > 15) {
+                    minute = "15";
+                    seconds = "00";
+                } else if (
+                    (parseInt(minute) === 0 && parseInt(seconds) === 0) 
+                ) {
+                    minute = "00";
+                    seconds = "30";
+                }else{
+                    minute = minute;
+                    seconds = seconds;
+                }
+            }else{
+                if (parseInt(minute) === 5 || parseInt(minute) > 5) {
+                    minute = "05";
+                    seconds = "00";
+                } else if (
+                    (parseInt(minute) === 0 && parseInt(seconds) === 0)
+                ) {
+                    minute = "00";
+                    seconds = "30";
+                }else{
+                    minute = minute;
+                    seconds = seconds;
+                }
             }
 
             data.timeLimit = minute + ":" + seconds;
@@ -374,7 +391,7 @@ class RoundTray extends Component {
                 $(".GridRadio").each(function () {
                     var trueOrFalse =
                         Number($(this).attr("id")) ===
-                        Number(data.entriesPerRound)
+                            Number(data.entriesPerRound)
                             ? true
                             : false;
                     console.log(trueOrFalse);
@@ -429,14 +446,14 @@ class RoundTray extends Component {
 
         let errors = {};
 
-        if(this.state.fields[
+        if (this.state.fields[
             "gameType"
-        ] === "Blank"){
+        ] === "Blank") {
 
-            if( this.state.fields.timeLimitSeconds >900 ){
-                errors["time"] = "Please enter time less 15 minutes";
-                formIsValid = false;
-            }
+            // if( this.state.fields.timeLimitSeconds >901 ){
+            //     errors["time"] = "Please enter time less 15 minutes";
+            //     formIsValid = false;
+            // }
 
         }
         if (fields["title"].trim() === "") {
@@ -586,8 +603,9 @@ class RoundTray extends Component {
 
     saveExitHandler(check, e) {
         this.props.history.push("/contest");
+        
         /*if (check) {
-			this.props.history.push('/contest');
+            this.props.history.push('/contest');
         }
         else
         {
@@ -609,65 +627,75 @@ class RoundTray extends Component {
 
     changeTime(sec) {
 
-        if(this.state.fields[
+        if (this.state.fields[
             "gameType"
-        ] === "Blank"){
-            var fields = this.state.fields;
-        var currentTime = parseInt(fields.timeLimitSeconds),
-            newTime = currentTime + sec, //calculate the new time
-            seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
-            minute = Math.floor(newTime / 60).toString(); // get the hours and convert to a string
+        ] === "Blank") {
 
-        //make sure we've got the right length for the seconds string
-        if (seconds.length === 0) {
-            seconds = "00";
-        } else if (seconds.length === 1) {
-            seconds = "0" + seconds;
-        }
 
-        if (minute.length === 0) {
-            minute = "00";
-        } else if (minute.length === 1) {
-            minute = "0" + minute;
-        }
-
-        if (parseInt(minute) === 15 || parseInt(minute) > 15) {
-            minute = "15";
-            seconds = "00";
-        } else if (
-            parseInt(minute) < 1 &&
-            (parseInt(seconds) === 0 || parseInt(seconds) < 10)
-        ) {
-            minute = "00";
-            seconds = "10";
-        }
-
-        fields["timeLimit"] = minute + ":" + seconds;
-        fields["timeLimitSeconds"] = newTime;
-        this.setState({ fields });
-        }else{
             var fields = this.state.fields;
             var currentTime = parseInt(fields.timeLimitSeconds),
                 newTime = currentTime + sec, //calculate the new time
                 seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
                 minute = Math.floor(newTime / 60).toString(); // get the hours and convert to a string
-    
+
             //make sure we've got the right length for the seconds string
             if (seconds.length === 0) {
                 seconds = "00";
             } else if (seconds.length === 1) {
                 seconds = "0" + seconds;
             }
-    
+
             if (minute.length === 0) {
                 minute = "00";
             } else if (minute.length === 1) {
                 minute = "0" + minute;
             }
-    
+                
+            if (parseInt(minute) === 15 || parseInt(minute) > 15) {
+                minute = "15";
+                seconds = "00";
+                newTime = 900
+            } else if (
+                parseInt(minute) < 1 &&
+                (parseInt(seconds) === 0 || parseInt(seconds) < 10)
+            ) {
+                minute = "00";
+                seconds = "10";
+          }
+
+            fields["timeLimit"] = minute + ":" + seconds;
+            fields["timeLimitSeconds"] = newTime;
+            this.setState({ fields });
+
+
+            // if (parseInt(minute) === 15 || parseInt(minute) > 15) {    
+
+            //     return;
+            // } 
+        } else {
+            var fields = this.state.fields;
+            var currentTime = parseInt(fields.timeLimitSeconds),
+                newTime = currentTime + sec, //calculate the new time
+                seconds = (newTime % 60).toString(), //get the seconds using the modulus operator and convert to a string (so we can use length below)
+                minute = Math.floor(newTime / 60).toString(); // get the hours and convert to a string
+
+            //make sure we've got the right length for the seconds string
+            if (seconds.length === 0) {
+                seconds = "00";
+            } else if (seconds.length === 1) {
+                seconds = "0" + seconds;
+            }
+
+            if (minute.length === 0) {
+                minute = "00";
+            } else if (minute.length === 1) {
+                minute = "0" + minute;
+            }
+
             if (parseInt(minute) === 5 || parseInt(minute) > 5) {
                 minute = "05";
                 seconds = "00";
+                newTime = 300;
             } else if (
                 parseInt(minute) < 1 &&
                 (parseInt(seconds) === 0 || parseInt(seconds) < 10)
@@ -675,12 +703,12 @@ class RoundTray extends Component {
                 minute = "00";
                 seconds = "10";
             }
-    
+
             fields["timeLimit"] = minute + ":" + seconds;
             fields["timeLimitSeconds"] = newTime;
             this.setState({ fields });
         }
-        
+
     }
 
     handleChangeGrid(data, e) {
@@ -863,18 +891,18 @@ class RoundTray extends Component {
                                                                 )}`}
                                                                 {val.title
                                                                     .length >
-                                                                MAX_LENGTH
+                                                                    MAX_LENGTH
                                                                     ? "..."
-                                                                    : ""}<br/>
+                                                                    : ""}<br />
 
-                                                                    {val.totalQuestions==0  ? (null):(
-                                                                        val.totalQuestions==1?(val.totalQuestions  + "  Question"):(val.totalQuestions  + "  Questions")
-                                                                        )}
+                                                                {val.totalQuestions == 0 ? (null) : (
+                                                                    val.totalQuestions == 1 ? (val.totalQuestions + "  Question") : (val.totalQuestions + "  Questions")
+                                                                )}
                                                             </p>
 
-                                                          
 
-                                                            
+
+
                                                         </div>
                                                     </div>
                                                 );
@@ -939,8 +967,12 @@ class RoundTray extends Component {
                     <CModal
                         size="lg"
                         show={this.state.openModel}
-                        onClose={() =>
+                        onClose={() =>{
                             this.setState({ openModel: !this.state.openModel })
+                            this.componentDidMount();
+                        }
+                            
+                           
                         }
                         color="danger"
                         centered
@@ -953,6 +985,7 @@ class RoundTray extends Component {
                                         className="close"
                                         onClick={() => {
                                             this.setState({ openModel: false });
+                                            this.componentDidMount();
                                         }}
                                     >
                                         <span aria-hidden="true">
@@ -992,9 +1025,9 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "image"
                                                             ] == "image" ||
-                                                            this.state.fields[
+                                                                this.state.fields[
                                                                 "image"
-                                                            ] ? (
+                                                                ] ? (
                                                                 <span aria-hidden="true">
                                                                     <img
                                                                         className="close_svg"
@@ -1021,7 +1054,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                            "image"
+                                                                        "image"
                                                                         ]
                                                                     }
                                                                     alt=""
@@ -1057,7 +1090,7 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                                "image"
+                                                            "image"
                                                             ]
                                                         }
                                                     </span>
@@ -1079,7 +1112,7 @@ class RoundTray extends Component {
                                                             value={
                                                                 this.state
                                                                     .fields[
-                                                                    "title"
+                                                                "title"
                                                                 ]
                                                             }
                                                         />
@@ -1088,7 +1121,7 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                                "title"
+                                                            "title"
                                                             ]
                                                         }
                                                     </span>
@@ -1108,7 +1141,7 @@ class RoundTray extends Component {
                                                             value={
                                                                 this.state
                                                                     .fields[
-                                                                    "description"
+                                                                "description"
                                                                 ]
                                                             }
                                                         />
@@ -1133,7 +1166,7 @@ class RoundTray extends Component {
                                                                 value={
                                                                     this.state
                                                                         .fields[
-                                                                        "execution_mode"
+                                                                    "execution_mode"
                                                                     ]
                                                                 }
                                                                 required
@@ -1154,7 +1187,7 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                                "execution_mode"
+                                                            "execution_mode"
                                                             ]
                                                         }
                                                     </span>
@@ -1162,9 +1195,9 @@ class RoundTray extends Component {
                                                     {this.state.fields[
                                                         "gameType"
                                                     ] === "Bingo" ||
-                                                    this.state.fields[
+                                                        this.state.fields[
                                                         "gameType"
-                                                    ] === "MatchIt" ? (
+                                                        ] === "MatchIt" ? (
                                                         <div>
                                                             <div className="cus_input grid_cus_input">
                                                                 <label>
@@ -1251,7 +1284,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                            "type"
+                                                                        "type"
                                                                         ]
                                                                     }
                                                                     required
@@ -1266,7 +1299,7 @@ class RoundTray extends Component {
                                                                         .fields[
                                                                         "gameType"
                                                                     ] ===
-                                                                    "Bingo" ? (
+                                                                        "Bingo" ? (
                                                                         <option value="3">
                                                                             Number
                                                                         </option>
@@ -1277,7 +1310,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                            "gameType"
+                                                                        "gameType"
                                                                         ]
                                                                     }{" "}
                                                                     type
@@ -1317,7 +1350,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "noOfQuestions"
+                                                                                "noOfQuestions"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1330,7 +1363,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "noOfQuestions"
+                                                                                "noOfQuestions"
                                                                                 ]
                                                                             }
                                                                         </output>
@@ -1381,7 +1414,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                            "timeLimit"
+                                                                        "timeLimit"
                                                                         ]
                                                                     }
                                                                 />
@@ -1404,7 +1437,7 @@ class RoundTray extends Component {
                                                             <span className="error-msg">
                                                                 {
                                                                     this.state.errors[
-                                                                        "time"
+                                                                    "time"
                                                                     ]
                                                                 }
                                                             </span>
@@ -1412,7 +1445,7 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "gameType"
                                                             ] ===
-                                                            "Blank" ? null : (
+                                                                "Blank" ? null : (
                                                                 <div>
                                                                     <div
                                                                         style={{
@@ -1441,7 +1474,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "basePoints"
+                                                                                "basePoints"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1460,7 +1493,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "basePoints"
+                                                                                "basePoints"
                                                                                 ]
                                                                             }
                                                                         </output>
@@ -1471,7 +1504,7 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "gameType"
                                                             ] ===
-                                                            "Blank" ? null : (
+                                                                "Blank" ? null : (
                                                                 <div
                                                                     style={{
                                                                         margin: "0px 0 5px 0",
@@ -1497,7 +1530,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "negativeScoring"
+                                                                                "negativeScoring"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1544,12 +1577,12 @@ class RoundTray extends Component {
                                                                             Negative
                                                                             Base
                                                                             Points
-                                                                            (0 -&nbsp; 
-                                                                            { this
-                                                                                    .state
-                                                                                    .fields[
-                                                                                    "basePoints"
-                                                                                ]})
+                                                                            (0 -&nbsp;
+                                                                            {this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]})
                                                                         </label>
                                                                     </div>
                                                                     <div className="range-wrap">
@@ -1570,7 +1603,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "negativeBasePoints"
+                                                                                "negativeBasePoints"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1583,7 +1616,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "negativeBasePoints"
+                                                                                "negativeBasePoints"
                                                                                 ]
                                                                             }
                                                                         </output>
@@ -1594,7 +1627,7 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "gameType"
                                                             ] ===
-                                                            "Blank" ? null : (
+                                                                "Blank" ? null : (
                                                                 <div className="cus_input input_wrap">
                                                                     <img
                                                                         src="./murabbo/img/info2.svg"
@@ -1610,7 +1643,7 @@ class RoundTray extends Component {
                                                                             this
                                                                                 .state
                                                                                 .fields[
-                                                                                "hint"
+                                                                            "hint"
                                                                             ]
                                                                         }
                                                                         required
@@ -1634,7 +1667,7 @@ class RoundTray extends Component {
                                                                 {
                                                                     this.state
                                                                         .errors[
-                                                                        "hint"
+                                                                    "hint"
                                                                     ]
                                                                 }
                                                             </span>
@@ -1642,9 +1675,9 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "hint"
                                                             ] === 3 ||
-                                                            this.state.fields[
+                                                                this.state.fields[
                                                                 "hint"
-                                                            ] === "3" ? (
+                                                                ] === "3" ? (
                                                                 <div>
                                                                     <div
                                                                         style={{
@@ -1663,12 +1696,12 @@ class RoundTray extends Component {
                                                                             Demand
                                                                             Negative
                                                                             Points
-                                                                            (0 -&nbsp; 
-                                                                            { this
-                                                                                    .state
-                                                                                    .fields[
-                                                                                    "basePoints"
-                                                                                ]})
+                                                                            (0 -&nbsp;
+                                                                            {this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]})
                                                                         </label>
                                                                     </div>
                                                                     <div className="range-wrap">
@@ -1689,7 +1722,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "onDemandNegativePoints"
+                                                                                "onDemandNegativePoints"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1702,7 +1735,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                    "onDemandNegativePoints"
+                                                                                "onDemandNegativePoints"
                                                                                 ]
                                                                             }
                                                                         </output>
@@ -1715,15 +1748,15 @@ class RoundTray extends Component {
                                                     {this.state.fields[
                                                         "gameType"
                                                     ] !== "Hangman" &&
-                                                    this.state.fields[
+                                                        this.state.fields[
                                                         "gameType"
-                                                    ] !== "Unscramble" &&
-                                                    this.state.fields[
+                                                        ] !== "Unscramble" &&
+                                                        this.state.fields[
                                                         "gameType"
-                                                    ] !== "Gibberish" &&
-                                                    this.state.fields[
+                                                        ] !== "Gibberish" &&
+                                                        this.state.fields[
                                                         "gameType"
-                                                    ] !== "Blank" ? (
+                                                        ] !== "Blank" ? (
                                                         <div>
                                                             <div className="cus_input input_wrap">
                                                                 <img
@@ -1740,7 +1773,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                            "scoring"
+                                                                        "scoring"
                                                                         ]
                                                                     }
                                                                     required
@@ -1754,7 +1787,7 @@ class RoundTray extends Component {
                                                                         .fields[
                                                                         "gameType"
                                                                     ] !==
-                                                                    "Taboo" ? (
+                                                                        "Taboo" ? (
                                                                         <option value="2">
                                                                             Automatic
                                                                         </option>
@@ -1768,7 +1801,7 @@ class RoundTray extends Component {
                                                                 {
                                                                     this.state
                                                                         .errors[
-                                                                        "scoring"
+                                                                    "scoring"
                                                                     ]
                                                                 }
                                                             </span>
@@ -1792,7 +1825,7 @@ class RoundTray extends Component {
                                                                 value={
                                                                     this.state
                                                                         .fields[
-                                                                        "renderingMode"
+                                                                    "renderingMode"
                                                                     ]
                                                                 }
                                                                 required
@@ -1813,103 +1846,103 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                                "renderingMode"
+                                                            "renderingMode"
                                                             ]
                                                         }
                                                     </span>
                                                 </div>
                                             </div>
-											{this.state.fields['gameType']=== 'Blank' ? (
-												<div
-                                                style={{
-                                                    marginTop: "50px",
-                                                    textAlign: "center",
-                                                    float: "left",
-                                                }}
-                                                className="col-lg-12 col-md-6 col-sm-12"
-                                            >
-                                                <button
-                                                    className="pink_btn"
-                                                    type="button"
-                                                    onClick={this.updateRoundHandler.bind(
-                                                        this
-                                                    )}
-                                                >
-                                                    Save & Exit
-                                                </button>
-                                            </div>
-											): (
-												<>
-												<div
-                                                style={{
-                                                    marginTop: "50px",
-                                                    textAlign: "center",
-                                                    float: "left",
-                                                }}
-                                                className="col-lg-4 col-md-6 col-sm-12"
-                                            >
-                                                <button
+                                            {this.state.fields['gameType'] === 'Blank' ? (
+                                                <div
                                                     style={{
-                                                        minWidth: "150px",
+                                                        marginTop: "50px",
+                                                        textAlign: "center",
+                                                        float: "left",
                                                     }}
-                                                    className="blue_btn light_blue_btn"
-                                                    type="button"
-                                                    onClick={this.saveNextHandler.bind(
-                                                        this,
-                                                        this.state.fields[
-                                                            "_id"
-                                                        ],
-                                                        this.state.fields
-                                                    )}
+                                                    className="col-lg-12 col-md-6 col-sm-12"
                                                 >
-                                                    Save & Next
-                                                </button>
-                                            </div>
-											<div
-                                                style={{
-                                                    marginTop: "50px",
-                                                    textAlign: "center",
-                                                    float: "left",
-                                                }}
-                                                className="col-lg-4 col-md-6 col-sm-12"
-                                            >
-                                                <button
-                                                    style={{
-                                                        minWidth: "150px",
-                                                    }}
-                                                    className="yellow_btn"
-                                                    type="button"
-                                                >
-                                                    Generate Question
-                                                </button>
-                                            </div>
-											<div
-                                                style={{
-                                                    marginTop: "50px",
-                                                    textAlign: "center",
-                                                    float: "left",
-                                                }}
-                                                className="col-lg-4 col-md-6 col-sm-12"
-                                            >
-                                                <button
-                                                    className="pink_btn"
-                                                    type="button"
-                                                    onClick={this.updateRoundHandler.bind(
-                                                        this
-                                                    )}
-                                                >
-                                                    Save & Exit
-                                                </button>
-                                            </div>
+                                                    <button
+                                                        className="pink_btn"
+                                                        type="button"
+                                                        onClick={this.updateRoundHandler.bind(
+                                                            this
+                                                        )}
+                                                    >
+                                                        Save & Exit
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div
+                                                        style={{
+                                                            marginTop: "50px",
+                                                            textAlign: "center",
+                                                            float: "left",
+                                                        }}
+                                                        className="col-lg-4 col-md-6 col-sm-12"
+                                                    >
+                                                        <button
+                                                            style={{
+                                                                minWidth: "150px",
+                                                            }}
+                                                            className="blue_btn light_blue_btn"
+                                                            type="button"
+                                                            onClick={this.saveNextHandler.bind(
+                                                                this,
+                                                                this.state.fields[
+                                                                "_id"
+                                                                ],
+                                                                this.state.fields
+                                                            )}
+                                                        >
+                                                            Save & Next
+                                                        </button>
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            marginTop: "50px",
+                                                            textAlign: "center",
+                                                            float: "left",
+                                                        }}
+                                                        className="col-lg-4 col-md-6 col-sm-12"
+                                                    >
+                                                        <button
+                                                            style={{
+                                                                minWidth: "150px",
+                                                            }}
+                                                            className="yellow_btn"
+                                                            type="button"
+                                                        >
+                                                            Generate Question
+                                                        </button>
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            marginTop: "50px",
+                                                            textAlign: "center",
+                                                            float: "left",
+                                                        }}
+                                                        className="col-lg-4 col-md-6 col-sm-12"
+                                                    >
+                                                        <button
+                                                            className="pink_btn"
+                                                            type="button"
+                                                            onClick={this.updateRoundHandler.bind(
+                                                                this
+                                                            )}
+                                                        >
+                                                            Save & Exit
+                                                        </button>
+                                                    </div>
 
 
-											</>
-											)}				
-                                            
+                                                </>
+                                            )}
 
-											
-                                            
-                                            
+
+
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -2235,7 +2268,7 @@ class RoundTray extends Component {
                                 </div>
                             </div>
                         </CModalBody>
-                 </CModal>
+                    </CModal>
 
                     <CModal
                         show={this.state.wordModel}
