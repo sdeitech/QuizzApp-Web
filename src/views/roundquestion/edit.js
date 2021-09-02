@@ -37,7 +37,8 @@ class EditRoundQuestion extends Component {
             typeOption:'',
             profilePic:'',
             edit_id:'',
-			fieldsForYoutube:{url:'',startMin:0,startSec:0,endMin:0,endSec:0}
+			fieldsForYoutube:{url:'',startMin:0,startSec:0,endMin:0,endSec:0},
+			isSet:false
 		};
 	}
 
@@ -317,6 +318,7 @@ class EditRoundQuestion extends Component {
 					fields1['fileUrl'] = this.state.fieldsForYoutube['url'];
 					this.setState({fields1});
                     this.selectYoutube();
+					this.setState({isSet:true});
 			
 		}
 
@@ -325,7 +327,7 @@ class EditRoundQuestion extends Component {
 	}
 	onDone(){
 		
-		this.setState({optionsValuesModel:false})
+		this.setState({optionsValuesModel:false,isSet:false})
 
 	}
 
@@ -1263,7 +1265,7 @@ class EditRoundQuestion extends Component {
 												justifyContent: "center"
 
 												}}>
-												    <iframe width="300" height="150" src={this.state.fieldsForYoutube['url'] == "" ? './murabbo/img/upload.svg':this.state.fieldsForYoutube['url']} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+												    <iframe width="300" height="150" src={this.state.fieldsForYoutube['url'] == "" ? null:this.state.isSet ? this.state.fieldsForYoutube['url']:null} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 												</div>
 												<div style={{marginTop:"20px"}} className="container">
 													<div className="row">

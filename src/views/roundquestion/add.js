@@ -42,7 +42,8 @@ class AddRoundQuestion extends Component {
             typeOption:'',
             profilePic:'',
             edit_id:'',
-			fieldsForYoutube:{url:'',startMin:0,startSec:0,endMin:0,endSec:0}
+			fieldsForYoutube:{url:'',startMin:0,startSec:0,endMin:0,endSec:0},
+			isSet:false
 		};
 	}
 
@@ -179,28 +180,28 @@ class AddRoundQuestion extends Component {
 	
 	handleChangeForYoutube(field, e){   
 
-        let fields = this.state.fieldsForYoutube;
+        let fieldsForYoutube = this.state.fieldsForYoutube;
 		let errors = {};
         if (field === 'url') {
-			fields[field] = e.target.value; 
+			fieldsForYoutube[field] = e.target.value; 
         }
 		if (field === 'startMin') {
-        	fields[field] = e.target.value; 
+        	fieldsForYoutube[field] = e.target.value; 
 		}
 		if (field === 'startSec') {
-        	fields[field] = e.target.value; 
+        	fieldsForYoutube[field] = e.target.value; 
 		}
 		if (field === 'endMin') {
-        	fields[field] = e.target.value; 
+        	fieldsForYoutube[field] = e.target.value; 
 		}
 		if (field === 'endSec') {
-        	fields[field] = e.target.value; 
+        	fieldsForYoutube[field] = e.target.value; 
 		}
 		
-        this.setState({fields});
+        this.setState({fieldsForYoutube});
 
        
-        if(fields["url"].trim() === ''){
+        if(fieldsForYoutube["url"].trim() === ''){
            errors['url'] = "Please Enter URL"
         }
 
@@ -242,17 +243,18 @@ class AddRoundQuestion extends Component {
 					}
 					console.log(`Video ID = ${video_id}`);
 				let url = `https://www.youtube.com/embed/${video_id}?start=${start}&end=${end}&autoplay=1`;
-				let fields = this.state.fieldsForYoutube;
+				let fieldsForYoutube = this.state.fieldsForYoutube;
 				
-					fields['url'] = url; 
+				    fieldsForYoutube['url'] = url; 
+					this.setState({fieldsForYoutube});
+
+
+					let fields = this.state.fields;
+					fields['fileType'] = 'link';
+					fields['fileUrl'] = this.state.fieldsForYoutube['url'];
 					this.setState({fields});
-
-
-					let fields1 = this.state.fields;
-					fields1['fileType'] = 'link';
-					fields1['fileUrl'] = this.state.fieldsForYoutube['url'];
-					this.setState({fields1});
                     this.selectYoutube();
+					this.setState({isSet:true});
 			
 		}
 
@@ -261,7 +263,7 @@ class AddRoundQuestion extends Component {
 	}
 	onDone(){
 		
-		this.setState({optionsValuesModel:false})
+		this.setState({optionsValuesModel:false,isSet:false})
 
 	}
 
@@ -273,7 +275,7 @@ class AddRoundQuestion extends Component {
         let formIsValid = true;
 
     	let errors = {};
-        if(fields["question"].trim() === ''){
+        if(fields["question"] === ''){
             errors["question"] = "Please enter question";formIsValid=false;
         }
 
@@ -1205,14 +1207,14 @@ class AddRoundQuestion extends Component {
 												<div>
 													<h1 style={{textAlign:"center",color:"#fff"}}>YouTube</h1>
 												</div>
-												{/* <div style={{
+												<div style={{
 												display: "flex",
 												alignItems: "center",
 												justifyContent: "center"
 
 												}}>
-												    <iframe width="300" height="150" src={this.state.fieldsForYoutube['url'] == "" ? './murabbo/img/upload.svg':this.state.fieldsForYoutube['url']} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-												</div> */}
+												    <iframe width="300" height="150" src={this.state.fieldsForYoutube['url'] == "" ? null:this.state.isSet ? this.state.fieldsForYoutube['url']:null} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+												</div>
 												<div style={{marginTop:"20px"}} className="container">
 													<div className="row">
 														<div className="col-md-12">
