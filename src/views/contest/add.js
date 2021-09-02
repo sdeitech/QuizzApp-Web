@@ -673,13 +673,13 @@ class AddContest extends Component {
     }
 
     handleChangeForSaveTo(field, e){  
-        let fields = this.state.fieldsForSaveTo;
-        fields['saveToTitle'] = e.target.value;
-        this.setState({fields});
+        let fieldsForSaveTo = this.state.fieldsForSaveTo;
+        fieldsForSaveTo['saveToTitle'] = e.target.value;
+        this.setState({fieldsForSaveTo});
 
 
         let errors = {};
-        if(field === 'saveToTitle' && fields["saveToTitle"].trim() === ''){
+        if(field === 'saveToTitle' && fieldsForSaveTo["saveToTitle"].trim() === ''){
             errors["saveToTitle"] = "Please enter title";
         }
 
