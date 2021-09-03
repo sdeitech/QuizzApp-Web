@@ -13,6 +13,7 @@ class Add extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading:false,
             fields:{card_name:'',card_number:'',exp_month_year:'',cvc:''},
             errors:{}
         };
@@ -69,6 +70,8 @@ class Add extends Component {
             
             var postdata = {'user_id':userId,type:'add','card_name':fields['card_name'],'card_number':fields['card_number'],'exp_month':date[0],'exp_year':date[1],'cvc':fields['cvc']}
             
+
+            this.setState({isLoading:true});
             fetch(configuration.baseURL+"card/managecards", {
                 method: "POST",
                 headers: {
@@ -81,10 +84,12 @@ class Add extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
+                    this.setState({isLoading:false});
                     this.props.history.push('/cards')  
                 }
                 else
                 {
+                    this.setState({isLoading:false});
                     return toast.error(data.message);
                 }
                 
@@ -150,7 +155,15 @@ class Add extends Component {
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="footer-btn">
-                                                <button class="blue_btn" type="button" onClick={this.handleSubmit.bind(this)}>Submit</button>
+                                                <button class="blue_btn" type="button" 
+                                                 disabled={this.state.isLoading}
+                                                onClick={this.handleSubmit.bind(this)}>
+                                                    
+                                                    
+                                                    {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Submit")}
+                                                    
+                                                    </button>
                                                 <button class="yellow_btn" type="button" style={{marginLeft:'10px'}} onClick={() => {this.props.history.push('/cards') }}>Cancel</button>
                                             </div> 
                                         </div>

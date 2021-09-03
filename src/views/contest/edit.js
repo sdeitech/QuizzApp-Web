@@ -15,6 +15,7 @@ class EditContest extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
             isexitImage:"",
             searchTerm: "",
             searchCategoryTerm: "",
@@ -688,7 +689,7 @@ class EditContest extends Component {
 
             /*console.log(data);
             return false;*/
-
+            this.setState({isLoading:true});
             fetch(configuration.baseURL + "contest/contest/" + contest_id, {
                 method: "PUT",
                 headers: {
@@ -703,11 +704,13 @@ class EditContest extends Component {
                 })
                 .then((data) => {
                     if (data.code === 200) {
+                        this.setState({isLoading:false});
                         this.props.history.push({
                             pathname: "/tray/" + data.data._id,
                             state: { contest_id: data.data._id },
                         });
                     } else {
+                        this.setState({isLoading:false});
                         return toast.error(data.message);
                     }
                 });
@@ -1520,11 +1523,15 @@ class EditContest extends Component {
                                                 <button
                                                     className="blue_btn light_blue_btn"
                                                     type="button"
+                                                    disabled={this.state.isLoading}
                                                     onClick={this.handleSubmit.bind(
                                                         this
                                                     )}
                                                 >
-                                                    Save & Next
+
+{this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Save & Next")}
+                                                   
                                                 </button>
                                             </div>
                                         </div>

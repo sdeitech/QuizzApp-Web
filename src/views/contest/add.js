@@ -14,6 +14,7 @@ class AddContest extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
             searchTerm: "",
             searchCategoryTerm: "",
             filterBrandList: [],
@@ -55,9 +56,9 @@ class AddContest extends Component {
             tempSelectedSaveTo: {},
             tempSelectedLanguage: {},
             subscriptionModel: false,
-            addModel:false,
-            fieldsForSaveTo:{saveToTitle:''},
-            fieldsForSaveToerrors:{}
+            addModel: false,
+            fieldsForSaveTo: { saveToTitle: '' },
+            fieldsForSaveToerrors: {}
         };
         this.searchUpdated = this.searchUpdated.bind(this);
         this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this);
@@ -85,15 +86,15 @@ class AddContest extends Component {
             })
             .then((data) => {
                 let mainLabels = data.data;
-                _.each(mainLabels, function(item, index) {
-                    _.each(item.categories, function(itemCat, indexCat) {
+                _.each(mainLabels, function (item, index) {
+                    _.each(item.categories, function (itemCat, indexCat) {
                         mainLabels[index]["categories"][indexCat]['is_selected'] = false;
                     })
                 })
 
                 this.setState({
                     mainLabels,
-                    loadLabels: mainLabels, 
+                    loadLabels: mainLabels,
                     categoryList: mainLabels,
                     filterCategoryList: mainLabels
                 });
@@ -257,23 +258,23 @@ class AddContest extends Component {
         }
 
         let loadLabels = this.state.loadLabels;
-        _.each(loadLabels, function(item, index) {
-            _.each(item.categories, function(itemCat, indexCat) {
-                if(e.target.id === itemCat._id){
+        _.each(loadLabels, function (item, index) {
+            _.each(item.categories, function (itemCat, indexCat) {
+                if (e.target.id === itemCat._id) {
                     loadLabels[index]["categories"][indexCat]['is_selected'] = e.target.checked ? true : false;
                 }
             })
         })
 
-        this.setState({loadLabels})
+        this.setState({ loadLabels })
         console.log(loadLabels);
     }
 
     handleSubmitCategory(e) {
         let mainSelectedCategories = [];
-        _.each(this.state.mainLabels, function(item, index) {
-            _.each(item.categories, function(itemCat, indexCat) {
-                if(itemCat.is_selected){
+        _.each(this.state.mainLabels, function (item, index) {
+            _.each(item.categories, function (itemCat, indexCat) {
+                if (itemCat.is_selected) {
                     mainSelectedCategories.push({
                         categoryId: itemCat._id,
                         mainLabelId: item.title,
@@ -282,7 +283,7 @@ class AddContest extends Component {
                 }
             })
         })
-        this.setState({mainSelectedCategories, openModelCategory: false})
+        this.setState({ mainSelectedCategories, openModelCategory: false })
     }
 
     handleChangeBrand(maindata, e) {
@@ -363,17 +364,17 @@ class AddContest extends Component {
 
     handleRemoveCategory(data, e) {
         let mainSelectedCategories = this.state.mainSelectedCategories;
-        mainSelectedCategories = _.reject(mainSelectedCategories, function(item){ return item.categoryId === data.categoryId; });
+        mainSelectedCategories = _.reject(mainSelectedCategories, function (item) { return item.categoryId === data.categoryId; });
 
         let loadLabels = this.state.loadLabels;
-        _.each(loadLabels, function(item, index) {
-            _.each(item.categories, function(itemCat, indexCat) {
-                if(itemCat._id === data.categoryId){
-                   loadLabels[index]['categories'][indexCat]['is_selected'] = false;
+        _.each(loadLabels, function (item, index) {
+            _.each(item.categories, function (itemCat, indexCat) {
+                if (itemCat._id === data.categoryId) {
+                    loadLabels[index]['categories'][indexCat]['is_selected'] = false;
                 }
             })
         })
-        this.setState({mainSelectedCategories,mainLabels: loadLabels, loadLabels})
+        this.setState({ mainSelectedCategories, mainLabels: loadLabels, loadLabels })
     }
 
     handleRemoveBrand(data, e) {
@@ -524,6 +525,7 @@ class AddContest extends Component {
                 data.append("image", this.uploadInput.files[0]);
             }
             // console.log(data);
+            this.setState({isLoading:true});
             fetch(configuration.baseURL + "contest/contest", {
                 method: "post",
                 headers: {
@@ -538,11 +540,13 @@ class AddContest extends Component {
                 })
                 .then((data) => {
                     if (data.code === 200) {
+                        this.setState({isLoading:false});
                         this.props.history.push({
                             pathname: "/tray/" + data.data._id,
                             state: { contest_id: data.data._id },
                         });
                     } else {
+                        this.setState({isLoading:false});
                         return toast.error(data.message);
                     }
                 });
@@ -629,19 +633,19 @@ class AddContest extends Component {
     }
 
     searchUpdatedCategory(e) {
-        if(e.target){
-            this.setState({searchCategoryTerm: e.target.value});
-            if(e.target.value){
+        if (e.target) {
+            this.setState({ searchCategoryTerm: e.target.value });
+            if (e.target.value) {
                 let filterItems = [];
-                _.each(this.state.loadLabels, function(item, index) {
+                _.each(this.state.loadLabels, function (item, index) {
                     let catArr = [];
-                    _.each(item.categories, function(itemCat, indexCat) {
-                        if(itemCat.name.includes(e.target.value) || itemCat.name.toLowerCase().includes(e.target.value) || itemCat.name.toUpperCase().includes(e.target.value)){
+                    _.each(item.categories, function (itemCat, indexCat) {
+                        if (itemCat.name.includes(e.target.value) || itemCat.name.toLowerCase().includes(e.target.value) || itemCat.name.toUpperCase().includes(e.target.value)) {
                             catArr.push(itemCat);
                         }
                     })
 
-                    if(catArr.length > 0){
+                    if (catArr.length > 0) {
                         filterItems.push({
                             id: item.id,
                             title: item.title,
@@ -649,9 +653,9 @@ class AddContest extends Component {
                         })
                     }
                 })
-                this.setState({mainLabels: filterItems});
+                this.setState({ mainLabels: filterItems });
             } else {
-                this.setState({mainLabels: this.state.loadLabels});
+                this.setState({ mainLabels: this.state.loadLabels });
             }
         }
     }
@@ -667,67 +671,70 @@ class AddContest extends Component {
         this.setState({ fields });
     }
 
-    addModel()
-    {
-        this.setState({'addModel':true,fieldsForSaveTo:{saveToTitle:''},fieldsForSaveToerrors:{saveToTitle:''}})
+    addModel() {
+        this.setState({ 'addModel': true, fieldsForSaveTo: { saveToTitle: '' }, fieldsForSaveToerrors: { saveToTitle: '' } })
     }
 
-    handleChangeForSaveTo(field, e){  
+    handleChangeForSaveTo(field, e) {
         let fieldsForSaveTo = this.state.fieldsForSaveTo;
         fieldsForSaveTo['saveToTitle'] = e.target.value;
-        this.setState({fieldsForSaveTo});
+        this.setState({ fieldsForSaveTo });
 
 
         let errors = {};
-        if(field === 'saveToTitle' && fieldsForSaveTo["saveToTitle"].trim() === ''){
+        if (field === 'saveToTitle' && fieldsForSaveTo["saveToTitle"].trim() === '') {
             errors["saveToTitle"] = "Please enter title";
         }
 
-        this.setState({fieldsForSaveToerrors: errors});
+        this.setState({ fieldsForSaveToerrors: errors });
 
     }
 
-    saveGroupModel(){
+    saveGroupModel() {
         let fields = this.state.fieldsForSaveTo;
         let formIsValid = true;
 
         let errors = {};
-        if(fields["saveToTitle"].trim() === ''){
+        if (fields["saveToTitle"].trim() === '') {
             errors["saveToTitle"] = "Please enter title";
             formIsValid = false;
         }
-        this.setState({fieldsForSaveToerrors: errors});
+        this.setState({ fieldsForSaveToerrors: errors });
 
-        if(formIsValid){
+        if (formIsValid) {
 
             var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
             const data = new FormData();
-            data.append('userId',userId);
-            data.append('saveToTitle',fields['saveToTitle']);
-            
-            fetch(configuration.baseURL+"user/saveTo", {
+            data.append('userId', userId);
+            data.append('saveToTitle', fields['saveToTitle']);
+
+            this.setState({isLoading:true});
+            fetch(configuration.baseURL + "user/saveTo", {
                 method: "POST",
                 headers: {
                     'contentType': "application/json",
                     'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
                 },
-                body:data
+                body: data
             }).then((response) => {
                 return response.json();
             }).then((data) => {
-                if(data.code === 200){
+                if (data.code === 200) {
+                this.setState({isLoading:true});
+
                     this.componentDidMount();
-                    fields['saveToTitle']='';
-                    this.setState({fieldsForSaveTo:fields,addModel:false});
+                    fields['saveToTitle'] = '';
+                    this.setState({ fieldsForSaveTo: fields, addModel: false });
                 }
-                else
-                {
+                else {
+                this.setState({isLoading:true});
+
                     return toast.error(data.message);
                 }
-                
+
             });
 
-            
+
         }
     }
 
@@ -815,7 +822,7 @@ class AddContest extends Component {
                                                 />
 
                                                 {this.state.fields["image"] ==
-                                                "image" ? (
+                                                    "image" ? (
                                                     <span aria-hidden="true">
                                                         <img
                                                             className="close_svg"
@@ -902,7 +909,7 @@ class AddContest extends Component {
                                                 )}
                                                 value={
                                                     this.state.fields[
-                                                        "description"
+                                                    "description"
                                                     ]
                                                 }
                                             />
@@ -1053,7 +1060,7 @@ class AddContest extends Component {
                                             <span className="error-msg">
                                                 {
                                                     this.state.errors[
-                                                        "playerType"
+                                                    "playerType"
                                                     ]
                                                 }
                                             </span>
@@ -1113,7 +1120,7 @@ class AddContest extends Component {
                                             <span className="error-msg">
                                                 {
                                                     this.state.errors[
-                                                        "visibility"
+                                                    "visibility"
                                                     ]
                                                 }
                                             </span>
@@ -1222,8 +1229,18 @@ class AddContest extends Component {
                                                     onClick={this.handleSubmit.bind(
                                                         this
                                                     )}
+                                                    disabled={
+                                                        this.state.isLoading
+                                                    }
                                                 >
-                                                    Save & Next
+
+                                                    {this.state.isLoading ? (
+                                                        <>
+                                                            <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                                                            Loading...
+                                                        </>
+                                                    ) : ("Save & Next")}
+
                                                 </button>
                                             </div>
                                         </div>
@@ -1366,7 +1383,7 @@ class AddContest extends Component {
                                             </div>
                                             <div className="contest saveToIdDiv row">
                                                 {this.state.saveToList.length >
-                                                0 ? (
+                                                    0 ? (
                                                     this.state.saveToList.map(
                                                         (saveTo, key) => {
                                                             return (
@@ -1440,7 +1457,7 @@ class AddContest extends Component {
                                                     <button
                                                         class="yellow_btn"
                                                         type="button"
-                                                        style={{marginLeft:"10px"}}
+                                                        style={{ marginLeft: "10px" }}
                                                         onClick={this.addModel.bind(this)}
                                                     >
                                                         Add Group
@@ -1488,7 +1505,7 @@ class AddContest extends Component {
                                             </div>
                                             <div className="contest saveToIdDiv row">
                                                 {languages.languages.length >
-                                                0 ? (
+                                                    0 ? (
                                                     languages.languages.map(
                                                         (language, key) => {
                                                             return (
@@ -1677,7 +1694,7 @@ class AddContest extends Component {
                                                                                                 }
                                                                                             />
                                                                                             {
-                                                                                                (_.contains(["PRO","PREMIUM"],cat.subscriptionType)) ? ((cat.subscriptionType === "PRO") ? (
+                                                                                                (_.contains(["PRO", "PREMIUM"], cat.subscriptionType)) ? ((cat.subscriptionType === "PRO") ? (
                                                                                                     <div className="paid-cat">
                                                                                                         <img
                                                                                                             src="img/pro.png"
@@ -1685,11 +1702,11 @@ class AddContest extends Component {
                                                                                                         <span className="paid-cat-color">Pro</span>
                                                                                                     </div>
                                                                                                 ) : (<div className="paid-cat">
-                                                                                                        <img
-                                                                                                            src="img/premium.png"
-                                                                                                        />
-                                                                                                        <span className="paid-cat-color">Premium</span>
-                                                                                                    </div>)) : null
+                                                                                                    <img
+                                                                                                        src="img/premium.png"
+                                                                                                    />
+                                                                                                    <span className="paid-cat-color">Premium</span>
+                                                                                                </div>)) : null
                                                                                             }
                                                                                         </div>
                                                                                     </label>
@@ -1907,34 +1924,44 @@ class AddContest extends Component {
 
 
 
-                    <CModal show={this.state.addModel}  closeOnBackdrop={false}  onClose={()=> this.setState({addModel:false})}
-                        color="danger" 
+                    <CModal show={this.state.addModel} closeOnBackdrop={false} onClose={() => this.setState({ addModel: false })}
+                        color="danger"
                         centered>
                         <CModalBody className="model-bg">
 
-                        <div>
-                            <div className="modal-body">
-                                
-                                <button type="button" className="close" onClick={()=> this.setState({addModel:false})}>
-                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                                </button>
-                                <div className="model_data">
-                                    <div className="model-title">
-                                        <h3>Add Group</h3> 
-                                    </div>
+                            <div>
+                                <div className="modal-body">
 
-                                    <div className="cus_input input_wrap">
-                                        <img src="./murabbo/img/title.svg" alt="Upload"/>
-                                        <input type="text" required name="" onChange={this.handleChangeForSaveTo.bind(this,'saveToTitle')} value={this.state.fieldsForSaveTo['saveToTitle']} />
-                                        <label>Title</label>
-                                    </div>
-                                    <span className="error-msg">{this.state.errors["saveToTitle"]}</span>
-                                    <div style={{textAlign:'center'}} className="col-md-12">
-                                        <button style={{minWidth: '150px',marginRight:'10px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveGroupModel.bind(this)} >Add</button>
-                                        <button style={{minWidth: '150px',marginRight:'10px'}} className="pink_btn" type="button"  onClick={() => this.setState({'addModel':false,fieldsForSaveTo:{saveToTitle:''},fieldsForSaveToerrors:{saveToTitle:''}})} >Cancel</button>
+                                    <button type="button" className="close" onClick={() => this.setState({ addModel: false })}>
+                                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                    </button>
+                                    <div className="model_data">
+                                        <div className="model-title">
+                                            <h3>Add Group</h3>
+                                        </div>
+
+                                        <div className="cus_input input_wrap">
+                                            <img src="./murabbo/img/title.svg" alt="Upload" />
+                                            <input type="text" required name="" onChange={this.handleChangeForSaveTo.bind(this, 'saveToTitle')} value={this.state.fieldsForSaveTo['saveToTitle']} />
+                                            <label>Title</label>
+                                        </div>
+                                        <span className="error-msg">{this.state.errors["saveToTitle"]}</span>
+                                        <div style={{ textAlign: 'center' }} className="col-md-12">
+                                            <button style={{ minWidth: '150px', marginRight: '10px' }}
+                                            
+                                            
+                                            disabled={this.state.isLoading}
+                                            
+                                            className="blue_btn light_blue_btn" type="button" onClick={this.saveGroupModel.bind(this)} >
+                                            {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Add")}
+                                                
+                                                
+                                                </button>
+                                            <button style={{ minWidth: '150px', marginRight: '10px' }} className="pink_btn" type="button" onClick={() => this.setState({ 'addModel': false, fieldsForSaveTo: { saveToTitle: '' }, fieldsForSaveToerrors: { saveToTitle: '' } })} >Cancel</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                         </CModalBody>
                     </CModal>
