@@ -76,7 +76,9 @@ class MyGroups extends Component {
             var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
             const data = new FormData();
             data.append('userId',userId);
-            data.append('saveToTitle',fields['saveToTitle']);
+            let title = fields['saveToTitle'].trim();
+            title = title.replace(/\s+/g, " ");
+            data.append('saveToTitle',title);
             
             fetch(configuration.baseURL+"user/saveTo", {
                 method: "POST",

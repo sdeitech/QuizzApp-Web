@@ -476,7 +476,10 @@ class Contest extends Component {
                                             return <div class="col-lg-3 col-md-4 col-sm-6" >
 			                                	<div class="cate-box2">
 			                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main" style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}/>
+
+													{e.isPublish ? null:
 			                                        <img className="con-close" src="./murabbo/img/close-white2.svg" alt="" style={{ cursor:'pointer'}} onClick={this.removeContestHandler.bind(this,'no',e)} />
+													}
 			                                        <div class="cat_title2" style={{ cursor:'pointer'}} >
 			                                            <h3 style={{ cursor:'pointer'}} onClick={this.editHandler.bind(this,e)}>{this.titleSmall(e.title)}</h3>
 			                                            <p style={{cursor: 'pointer'}}  onClick={this.roundsListHandler.bind(this,e)} >{e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} 
