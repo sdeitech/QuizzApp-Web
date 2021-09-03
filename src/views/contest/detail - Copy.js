@@ -79,6 +79,7 @@ class Detail extends Component {
     invite(data) {
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
         if (data.is_invited === false) {
+            this.setState({isLoading:true});
             fetch(configuration.baseURL + "room/inviteRoom", {
                 method: "POSt",
                 headers: {
@@ -97,9 +98,13 @@ class Detail extends Component {
                 })
                 .then((data) => {
                     if (data.code === 200) {
+                       
                         this.componentDidMount();
+                        this.setState({isLoading:true});
                         return toast.success("Invite successfully");
                     } else {
+                        this.setState({isLoading:false});
+
                         return toast.error(data.message);
                     }
                 });
@@ -686,15 +691,23 @@ class Detail extends Component {
                                                                                     "0",
                                                                             }}
                                                                             type="button"
+                                                                            disabled={this.state.isLoading}
                                                                             className="yellow_btn"
                                                                             onClick={this.invite.bind(
                                                                                 this,
                                                                                 e
                                                                             )}
                                                                         >
-                                                                            {e.is_invited
-                                                                                ? "Invited"
-                                                                                : "Invite"}
+
+{this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : (
+
+
+    e.is_invited
+        ? "Invited"
+        : "Invite"
+ )}
+                                                                            
                                                                         </button>
                                                                     </div>
                                                                 </div>

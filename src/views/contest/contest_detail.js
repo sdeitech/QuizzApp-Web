@@ -18,6 +18,7 @@ class DetailContest extends Component {
 	constructor(props) {
         super(props);
         this.state = {
+			isLoading:false,
         	data:{},
         	contestData:{image:''},
         	show:true,
@@ -32,7 +33,8 @@ class DetailContest extends Component {
 			searchTerm:'',
 			page:0,
 			size:2,
-			subscriptionModel:false
+			subscriptionModel:false,
+			hiddenPassword: true,
 		};
 	}
 
@@ -61,6 +63,10 @@ class DetailContest extends Component {
 		this.getList(contestId);
 	}
 	
+
+	toggleShowPassword() {
+        this.setState({ hiddenPassword: !this.state.hiddenPassword });
+      }
 	roomList()
 	{		
 		fetch(configuration.baseURL+"room/room?contestId="+contestId+"&page="+this.state.page+"&size="+this.state.size, {
@@ -193,6 +199,7 @@ class DetailContest extends Component {
         	data.append('createdBy',JSON.parse(reactLocalStorage.get('userData')).userId);
         	data.append('contestId',fields["contestId"]) ;
             
+			this.setState({isLoading:true});
             fetch(configuration.baseURL+"room/room", {
                 method: "post",
                 headers: {
@@ -204,10 +211,12 @@ class DetailContest extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
+					this.setState({isLoading:false});
 					this.props.history.push('/detail-contest/'+fields["contestId"]+'?'+data.data._id);
                 }
                 else
                 {
+					this.setState({isLoading:false});
                     return toast.error(data.message);
                 }
                 
@@ -418,15 +427,31 @@ class DetailContest extends Component {
 
                                             <div className="cus_input input_wrap">
                                                 <img src="./murabbo/img/password.svg" />
-												<input required type="text"  onChange={this.handleChangePlay.bind(this, "password")} value={this.state.fieldsPlay["password"]}/>
+												<input required 
+												
+												type={this.state.hiddenPassword ? 'password' : 'text'}
+												
+												onChange={this.handleChangePlay.bind(this, "password")} value={this.state.fieldsPlay["password"]}/>
 												<label>Game Password</label>
+												<span style={{
+                                                position: "absolute",
+                                                right: "27px",
+                                                top: "47px"
+                                                    }}>
+                                                
+                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
+                                            </span>
                                             </div> 
                                             <span className="error-msg">{this.state.errorsPlay["password"]}</span>
                                         </div>
                                         <div className="col-md-10 offset-md-1">
 
 							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-							                   	<button  style={{minWidth: '150px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.handleNext.bind(this)}>Next</button>
+							                   	<button  style={{minWidth: '150px'}}  disabled={this.state.isLoading} className="blue_btn light_blue_btn" type="button"  onClick={this.handleNext.bind(this)}>
+												   {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Next")}
+													   
+													   </button>
 							                </div>
                                         	<div style={{ textAlign: 'center'}} className="">
 							                    <button  style={{minWidth: '150px', float:'left'}}  className="pink_btn" type="button"  onClick={()=> this.setState({playNewContestModel:false})} >Cancel</button>

@@ -18,6 +18,7 @@ class MyGroups extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
             listData:[],
             addModel:false,
             fields:{saveToTitle:''},
@@ -79,7 +80,7 @@ class MyGroups extends Component {
             let title = fields['saveToTitle'].trim();
             title = title.replace(/\s+/g, " ");
             data.append('saveToTitle',title);
-            
+            this.setState({isLoading:true});
             fetch(configuration.baseURL+"user/saveTo", {
                 method: "POST",
                 headers: {
@@ -93,10 +94,11 @@ class MyGroups extends Component {
                 if(data.code === 200){
                     this.componentDidMount();
                     fields['saveToTitle']='';
-                    this.setState({fields:fields,addModel:false});
+                    this.setState({fields:fields,addModel:false,isLoading:false});
                 }
                 else
-                {
+                {   
+                    this.setState({isLoading:false});
                     return toast.error(data.message);
                 }
                 
@@ -134,6 +136,7 @@ class MyGroups extends Component {
             data.append('saveToId',saveToIdForEdit);
             data.append('saveToTitle',fields['saveToTitle']);
             
+            this.setState({isLoading:true});
             fetch(configuration.baseURL+"user/saveTo", {
                 method: "POST",
                 headers: {
@@ -145,6 +148,7 @@ class MyGroups extends Component {
                 return response.json();
             }).then((data) => {
                 if(data.code === 200){
+                    this.setState({isLoading:false});
                     saveToIdForEdit = "";
                     this.componentDidMount();
                     fields['saveToTitle']='';
@@ -152,6 +156,7 @@ class MyGroups extends Component {
                 }
                 else
                 {
+                    this.setState({isLoading:false});
                     return toast.error(data.message);
                 }
                 
@@ -297,10 +302,28 @@ class MyGroups extends Component {
 
                                         {this.state.isEditMode ? (
 
-                                        <button style={{minWidth: '150px',marginRight:'10px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.EditSaveGroupModel.bind(this)} >Edit</button>
+                                        <button style={{minWidth: '150px',marginRight:'10px'}} 
+                                        
+                                        disabled={this.state.isLoading}
+                                        className="blue_btn light_blue_btn" type="button"  onClick={this.EditSaveGroupModel.bind(this)} >
+                                            
+                                            
+                                            {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Edit")}
+
+                                            
+                                            </button>
 
                                         ):(
-                                        <button style={{minWidth: '150px',marginRight:'10px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveGroupModel.bind(this)} >Add</button>
+                                        <button style={{minWidth: '150px',marginRight:'10px'}} 
+                                        
+                                        
+                                        disabled={this.state.isLoading}
+                                        className="blue_btn light_blue_btn" type="button"  onClick={this.saveGroupModel.bind(this)} >
+                                            
+                                            
+                                            {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Add")}</button>
 
                                         )}
                                         <button style={{minWidth: '150px',marginRight:'10px'}} className="pink_btn" type="button"  onClick={() => this.setState({'addModel':false,fields:{saveToTitle:''},errors:{saveToTitle:''}})} >Cancel</button>

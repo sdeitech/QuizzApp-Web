@@ -25,6 +25,7 @@ class AddRoundQuestion extends Component {
 	constructor(props) {
         super(props);
         this.state = {
+			isLoading:false,
         	answers:[],
         	fields:{image:'',question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0,scoring:1, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
 			errors:{},
@@ -349,7 +350,7 @@ class AddRoundQuestion extends Component {
             data.append('fileUrl',this.state.fields.fileUrl);
             data.append('questionType',2);
 			data.append('gameType',gameType);
-
+			this.setState({isLoading:true});
             fetch(configuration.baseURL+"roundQuestion/roundQuestion", {
                 method: "POST",
                 headers: {
@@ -368,6 +369,7 @@ class AddRoundQuestion extends Component {
                 // 	this.setState({tosterMsg:data.message});
                 //  	return false;
                 // }
+				this.setState({isLoading:false});
                 this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
                 
             });
@@ -400,6 +402,7 @@ class AddRoundQuestion extends Component {
 	      if (parseInt(minute) === 5 || parseInt(minute) > 5) {
 	      	minute = '05';
 	      	seconds = '00';
+			  newTime = 300;
 	      }
 	      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 10)) {
 	      	minute = '00';
@@ -899,7 +902,16 @@ class AddRoundQuestion extends Component {
 	                                    <div className="footer-btn">
 	                                    {(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? null :
 		                                   (this.state.answers.length > 5) ? null : <button className="blue_btn light_blue_btn" type="button"  onClick={this.openModel.bind(this) }>Add {(this.state.answers.length > 0) ? 'More ' : '' }{ (this.state.fields['gameType'] !== 'Taboo') ? "Answer" : this.state.fields['gameType']}</button> }
-		                                    <button className="pink_btn" type="button"  onClick={this.addHandler.bind(this) } >Save & Exit</button>
+		                                    <button className="pink_btn" type="button"
+											disabled={this.state.isLoading}
+											
+											onClick={this.addHandler.bind(this) } >
+												
+												
+												{this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Save & Exit")}
+												
+												</button>
 	                                    </div> 
 	                                </div>
 	                            </div>

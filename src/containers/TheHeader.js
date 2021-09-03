@@ -13,6 +13,7 @@ class TheHeader extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
             fields: {},
             errors: {},
             loginFields: {},
@@ -312,7 +313,7 @@ class TheHeader extends Component {
         if (formIsValid) {
             fields.roleId = "2";
             fields.email = reactLocalStorage.get("forgot_email");
-            this.setState({ resetFields: fields });
+            this.setState({ resetFields: fields ,isLoading:true});
             fetch(configuration.baseURL + "user/resetPassword", {
                 method: "post",
                 headers: {
@@ -331,16 +332,17 @@ class TheHeader extends Component {
                             openModelForgot: false,
                             openModelReset: false,
                             openModelCongratulation: true,
+                            isLoading:false
                         });
                         fields.otp = "";
                         fields.password = "";
                         fields.confirm_password = "";
                         this.setState({ resetFields: fields });
                     } else if (data.code === 400) {
-                        this.setState({ tosterMsg: "Invalid OTP!" });
+                        this.setState({ tosterMsg: "Invalid OTP!",isLoading:false });
                         return false;
                     } else {
-                        this.setState({ tosterMsg: data.message });
+                        this.setState({ tosterMsg: data.message,isLoading:false });
                         return false;
                     }
                 });
@@ -374,7 +376,9 @@ class TheHeader extends Component {
         this.setState({ forgotErrors: errors });
         if (formIsValid) {
             fields.roleId = "2";
-            this.setState({ forgotFields: fields });
+            this.setState({ forgotFields: fields,isLoading:true });
+
+
             fetch(configuration.baseURL + "user/forgotPassword", {
                 method: "post",
                 headers: {
@@ -389,7 +393,7 @@ class TheHeader extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.handleCloseClick();
-                        this.setState({ resetFields: {}, resetErrors: {} });
+                        this.setState({ resetFields: {}, resetErrors: {},isLoading:false });
                         this.setState({
                             openModelForgot: !this.state.openModelForgot,
                             openModelReset: true,
@@ -397,7 +401,7 @@ class TheHeader extends Component {
                         fields.email = "";
                         this.setState({ forgotFields: fields });
                     } else {
-                        this.setState({ tosterMsg: data.message });
+                        this.setState({ tosterMsg: data.message,isLoading:false });
                         return false;
                     }
                 });
@@ -437,7 +441,10 @@ class TheHeader extends Component {
         this.setState({ loginErrors: errors });
         if (formIsValid) {
             fields.roleId = "2";
-            this.setState({ loginFields: fields });
+            fields['timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            this.setState({ loginFields: fields,isLoading:true });
+
+
             fetch(configuration.baseURL + "user/userLogin", {
                 method: "post",
                 headers: {
@@ -452,7 +459,7 @@ class TheHeader extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.setState({
-                            openModelLogin: !this.state.openModelLogin,
+                            openModelLogin: !this.state.openModelLogin,isLoading:false
                         });
                         fields.password = "";
                         fields.email = "";
@@ -466,7 +473,7 @@ class TheHeader extends Component {
                             }
                         );
                     } else {
-                        this.setState({ tosterMsg: data.message });
+                        this.setState({ tosterMsg: data.message,isLoading:false });
                         return false;
                     }
                 });
@@ -1199,11 +1206,13 @@ class TheHeader extends Component {
                                                     <button
                                                         className="blue_btn"
                                                         type="button"
+                                                        disabled={this.state.isLoading}
                                                         onClick={this.handleLoginSubmit.bind(
                                                             this
                                                         )}
                                                     >
-                                                        Login
+                                                       {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Login")}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">
@@ -1388,11 +1397,13 @@ class TheHeader extends Component {
                                                     <button
                                                         className="blue_btn light_blue_btn"
                                                         type="button"
+                                                        disabled={this.state.isLoading}
                                                         onClick={this.handleForgotPasswordSubmit.bind(
                                                             this
                                                         )}
                                                     >
-                                                        Reset
+                                                         {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Reset")}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">
@@ -1592,11 +1603,13 @@ class TheHeader extends Component {
                                                     <button
                                                         className="blue_btn light_blue_btn"
                                                         type="button"
+                                                        disabled={this.state.isLoading}
                                                         onClick={this.handleResetPasswordSubmit.bind(
                                                             this
                                                         )}
                                                     >
-                                                        Submit
+                                                         {this.state.isLoading ? 
+ (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Submit")}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">
