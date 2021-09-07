@@ -14,6 +14,7 @@ class Dashboard extends Component {
         this.state = {
             listData: [],
             roundListData: [],
+            gameOfTheDaylistData: [],
             gameTypeArr: [
                 {
                     type: "Hangman",
@@ -21,7 +22,7 @@ class Dashboard extends Component {
                     src: "./murabbo/img/hangman.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box"
+                    class: "contest-box",
                 },
                 {
                     type: "MatchIt",
@@ -29,7 +30,7 @@ class Dashboard extends Component {
                     src: "./murabbo/img/cups.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box purple-bg"
+                    class: "contest-box purple-bg",
                 },
                 {
                     type: "Unscramble",
@@ -37,7 +38,7 @@ class Dashboard extends Component {
                     src: "./murabbo/img/unscramble.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box dark-pink"
+                    class: "contest-box dark-pink",
                 },
                 {
                     type: "GuessAndGo",
@@ -45,7 +46,7 @@ class Dashboard extends Component {
                     src: "./murabbo/img/brain.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box coffee-bg"
+                    class: "contest-box coffee-bg",
                 },
                 {
                     type: "Gibberish",
@@ -53,7 +54,7 @@ class Dashboard extends Component {
                     src: "./murabbo/img/giberish.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box light-pink"
+                    class: "contest-box light-pink",
                 },
                 {
                     type: "Bingo",
@@ -61,7 +62,7 @@ class Dashboard extends Component {
                     src: "./murabbo/img/bingo.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box green-bg"
+                    class: "contest-box green-bg",
                 },
                 {
                     type: "Quiz",
@@ -69,7 +70,7 @@ class Dashboard extends Component {
                     src: "./murabbo/img/quizz.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box yellow-bg"
+                    class: "contest-box yellow-bg",
                 },
                 {
                     type: "Taboo",
@@ -77,48 +78,86 @@ class Dashboard extends Component {
                     src: "./murabbo/img/padlock.svg",
                     qtyAdd: false,
                     qty: 1,
-                    class: "contest-box lightgreen"
-                }
+                    class: "contest-box lightgreen",
+                },
             ],
             errorsPlay: {},
             fieldsPlay: { display_name: "", password: "" },
             playNewContestModel: false,
             playContestModel: false,
-            size:6,
-            page:0
+            size: 6,
+            page: 0,
         };
     }
 
     componentDidMount() {
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
-        fetch(configuration.baseURL + "contest/contest?isTrending=yes&page="+this.state.page+"&size="+this.state.size, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + reactLocalStorage.get("clientToken")
+        fetch(
+            configuration.baseURL +
+                "contest/contest?isTrending=yes&page=" +
+                this.state.page +
+                "&size=" +
+                this.state.size,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
+                },
             }
-        })
-            .then(response => {
+        )
+            .then((response) => {
                 return response.json();
             })
-            .then(data => {
+            .then((data) => {
                 this.setState({ listData: data.data });
             });
 
-        fetch(configuration.baseURL + "individual/getTrending?page="+this.state.page+"&size="+this.state.size, {
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + reactLocalStorage.get("clientToken")
+        fetch(
+            configuration.baseURL +
+                "individual/getTrending?page=" +
+                this.state.page +
+                "&size=" +
+                this.state.size,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
+                },
             }
-        })
-            .then(response => {
+        )
+            .then((response) => {
                 return response.json();
             })
-            .then(data => {
+            .then((data) => {
                 this.setState({ roundListData: data.data });
+            });
+
+        var currentDate = new Date();
+        currentDate = currentDate.toUTCString();
+
+        fetch(
+            configuration.baseURL + "contest/gameOfTheDay?date=" + currentDate,
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
+                },
+            }
+        )
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                this.setState({ gameOfTheDaylistData: data.data });
             });
     }
 
@@ -126,7 +165,7 @@ class Dashboard extends Component {
         this.setState({
             playContestModel: true,
             errorsPlay: { display_name: "", password: "" },
-            fieldsPlay: { display_name: "", password: "", contestId: data._id }
+            fieldsPlay: { display_name: "", password: "", contestId: data._id },
         });
     }
 
@@ -182,77 +221,73 @@ class Dashboard extends Component {
                 headers: {
                     contentType: "application/json",
                     Authorization:
-                        "Bearer " + reactLocalStorage.get("clientToken")
+                        "Bearer " + reactLocalStorage.get("clientToken"),
                 },
-                body:data
-            }).then((response) => {
-                return response.json();
-            }).then((data) => {
-                if(data.code === 200){
-					this.props.history.push('/detail-contest/'+fields["contestId"]+'?'+data.data._id);
-                }
-                else
-                {
-                    return toast.error(data.message);
-                }
-                
-            });
-
-		}
-	}
-
-	titleSmall(name){
-		if (name.length > 10) {
-		    var shortname = name.substring(0, 10) + "...";
-		    return shortname;
-		}
-		else
-		{
-			return name;
-		}
-	}
-
-	roundsListHandler(data,e)
-	{
-		if (data.isPublish) {
-			this.props.history.push('/contests/detail/'+data._id);
-		}
-		else
-		{
-	        return toast.error('Contest is not publish,you can not play yet!');
-		}
-		
-	}
-
-    viewAllTrending(){
-        this.props.history.push('/trending_contest');
-    }
-
-    viewAllTrendingRounds(data=null,type=''){
-        if(type === 'gametype')
-        {
-            this.props.history.push('/trending_rounds/gameType?'+data.type);
-        }
-        else{
-            this.props.history.push('/trending_rounds');
+                body: data,
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.code === 200) {
+                        this.props.history.push(
+                            "/detail-contest/" +
+                                fields["contestId"] +
+                                "?" +
+                                data.data._id
+                        );
+                    } else {
+                        return toast.error(data.message);
+                    }
+                });
         }
     }
 
-    handleRoundClick(data,e)
-    {
-        this.props.history.push('/detail-round/'+data._id);
+    titleSmall(name) {
+        if (name.length > 10) {
+            var shortname = name.substring(0, 10) + "...";
+            return shortname;
+        } else {
+            return name;
+        }
     }
 
-	render() {
+    roundsListHandler(data, e) {
+        if (data.isPublish) {
+            this.props.history.push("/contests/detail/" + data._id);
+        } else {
+            return toast.error("Contest is not publish,you can not play yet!");
+        }
+    }
+
+    viewAllTrending() {
+        this.props.history.push("/trending_contest");
+    }
+
+    viewAllTrendingRounds(data = null, type = "") {
+        if (type === "gametype") {
+            this.props.history.push("/trending_rounds/gameType?" + data.type);
+        } else {
+            this.props.history.push("/trending_rounds");
+        }
+    }
+
+    handleRoundClick(data, e) {
+        this.props.history.push("/detail-round/" + data._id);
+    }
+
+    render() {
         return (
-			<>
-				<TheHeaderInner />				
-					<main id="main" className="dashboard-page">
-					<ToastContainer position="top-right" autoClose={5000} style={{top:'80px'}}/>
-			            <section id="contest" class="">
-			                
-
-			                	{/*<div style={{paddingBottom: '30px'}} class="contest-info banner-div">
+            <>
+                <TheHeaderInner />
+                <main id="main" className="dashboard-page">
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        style={{ top: "80px" }}
+                    />
+                    <section id="contest" class="">
+                        {/*<div style={{paddingBottom: '30px'}} class="contest-info banner-div">
 			                        <div class="row">
                                         <div class="col-lg-12 col-md-12 col-sm-12" >
 		                                	<div class="cate-box2">
@@ -262,133 +297,408 @@ class Dashboard extends Component {
                                        
 			                        </div>
 			                    </div>*/}
-                                <div class="trending-contest-dashboard">
-			                    <div class="create-contest">
-                                    <div class="container">
-                                        <div class="contest-title">
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <div class="main_title">
-                                                        <h3 style={{color:'#F2BE47',marginBottom:'5px'}}>Trending </h3>  
-                                                        <h6>Contest</h6>    
-                                                    </div> 
+
+                        <div class="trending-contest-dashboard" style={{paddingBottom: "0px"}}>
+                            <div class="create-contest">
+                                <div class="container">
+                                    <div class="contest-title">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="main_title">
+                                                    <h3
+                                                        style={{
+                                                            color: "#F2BE47",
+                                                            marginBottom: "5px",
+                                                        }}
+                                                    >
+                                                        Game Of The Day
+                                                    </h3>
+                                                    {/* <h6>Contest</h6> */}
                                                 </div>
-                                                <div class="col-md-4" style={{ cursor:'pointer',display: (this.state.listData.length > 0) ? 'block' : 'none'}}>
-                                                    <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrending.bind(this)}>See All</h6>
-                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-md-4"
+                                                style={{
+                                                    cursor: "pointer",
+                                                    display:
+                                                        this.state.listData
+                                                            .length > 0
+                                                            ? "block"
+                                                            : "none",
+                                                }}
+                                            >
+                                                {/* <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrending.bind(this)}>See All</h6> */}
                                             </div>
                                         </div>
                                     </div>
-			                    </div>
-			                    <div class="contest-info dashboard-contest fix-box">
-                                    <div class="container">
-                                        <div class="row">
-                                        {
-
-                                            (this.state.listData.length > 0) ? 
-                                            this.state.listData.map((e, key) => {
-                                                return <div class="col-lg-2 col-md-4 col-sm-6 col-6" >
-                                                    <div class="cate-box2">
-                                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
-                                                        <div class="cat_title2">
-                                                            <h3 style={{cursor: 'pointer'}} onClick={this.roundsListHandler.bind(this,e)}>{this.titleSmall(e.title)}</h3>
-                                                            <p>  {e.totalRound} {(e.totalRound > 1) ? 'Rounds' : 'Round'} </p>
-                                                        <p className="username">{e.userName}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            }) : 
-                                            (
-                                                <div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
-                                            )
-                                        }
-                                        </div>
-                                    </div>
-			                    </div>
-
-
-			                    <div class="create-contest round-dashboard">
-                                    <div class="container">
-                                        <div class="contest-title">
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    <div class="main_title">
-                                                        <h6>Rounds</h6>  
-                                                    </div> 
-                                                </div>
-                                                <div class="col-md-4" style={{ cursor:'pointer',display: (this.state.listData.length > 0) ? 'block' : 'none'}}>
-                                                    <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrendingRounds.bind(this)}>See All</h6>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-			                    </div>
-			                    <div class="contest-info dashboard-contest fix-box">
-                                    <div class="container">
-                                        <div class="row">
-                                        {
-
-                                            (this.state.roundListData.length > 0) ? 
-                                            this.state.roundListData.map((e, key) => {
-                                                return <div class="col-lg-2 col-md-4 col-6">
-                                                    <div class="cate-box2"  onClick={this.handleRoundClick.bind(this,e)}  style={{ cursor:'pointer'}} >
-                                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
-                                                        <div class="cat_title2">
-                                                            <h3>{e.numberOfQuestions} {(e.numberOfQuestions > 1) ? 'Questions' : 'Question'}</h3>
-                                                            <p>{this.titleSmall(e.title)}</p>
-                                                            <p className="username">{e.createdBy}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            }) : 
-                                            (
-                                                <div style={{color:'white',width: '100%',textAlign:'center',marginTop:"50px",marginBottom:"50px"}} className="flex"><p className="item-author text-color">No data found</p></div>
-                                            )
-                                        }
-			                            </div>
-                                    </div>
-			                    </div>
                                 </div>
-                                <div class="games-dashboard">
-                                    <div class="create-contest">
-                                        <div class="container">
-                                            <div class="contest-title">
-                                                <div class="row">
-                                                    <div class="col-md-8">
-                                                        <div class="main_title">
-                                                            <h3 style={{color:'#F2BE47',marginBottom:'5px'}}>Games </h3>   
-                                                        </div> 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="contest-info trending">
-                                        <div class="container">
-                                        <div className="row round-box" style={{paddingTop: '30px'}}>
-                                                {
-                                                    this.state.gameTypeArr.map((e, key) => {
-                                                        return 	<div className="col-lg-3 col-md-4 col-sm-6" style={{ cursor:'pointer'}} onClick={this.viewAllTrendingRounds.bind(this,e,'gametype')}>
-                                                                    <div>
-                                                                        <div className={e.class}>
-                                                                            <img className="placeholder" src="./murabbo/img/placeholder.svg" alt="" />
-                                                                            <img className="ico" src={e.src} alt="" />
-                                                                            <h3 onClick={this.viewAllTrendingRounds.bind(this,e,'gametype')} style={{ cursor:'pointer'}}>{e.name}</h3>
-                                                                            <p></p>
-                                                                        </div>
-                                                                    </div>
+                            </div>
+                            <div class="contest-info dashboard-contest fix-box">
+                                <div class="container">
+                                    <div class="row">
+                                        {this.state.gameOfTheDaylistData
+                                            .length > 0 ? (
+                                            this.state.gameOfTheDaylistData.map(
+                                                (e, key) => {
+                                                    return (
+                                                        <div class="col-lg-2 col-md-4 col-sm-6 col-6">
+                                                            <div class="cate-box2">
+                                                                <img
+                                                                    src={
+                                                                        e.image !==
+                                                                        ""
+                                                                            ? e.image
+                                                                            : "avatars/placeholder.png"
+                                                                    }
+                                                                    alt="Game"
+                                                                    className="main"
+                                                                />
+                                                                <div class="cat_title2">
+                                                                    <h3
+                                                                        style={{
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                        onClick={this.roundsListHandler.bind(
+                                                                            this,
+                                                                            e
+                                                                        )}
+                                                                    >
+                                                                        {this.titleSmall(
+                                                                            e.title
+                                                                        )}
+                                                                    </h3>
+                                                                    <p>
+                                                                        {" "}
+                                                                        {
+                                                                            e.totalRound
+                                                                        }{" "}
+                                                                        {e.totalRound >
+                                                                        1
+                                                                            ? "Rounds"
+                                                                            : "Round"}{" "}
+                                                                    </p>
+                                                                    <p className="username">
+                                                                        {
+                                                                            e.userName
+                                                                        }
+                                                                    </p>
                                                                 </div>
-                                                    })
+                                                            </div>
+                                                        </div>
+                                                    );
                                                 }
+                                            )
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    color: "white",
+                                                    width: "100%",
+                                                    textAlign: "center",
+                                                    marginTop: "50px",
+                                                    marginBottom: "50px",
+                                                }}
+                                                className="flex"
+                                            >
+                                                <p className="item-author text-color">
+                                                    No data found
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="trending-contest-dashboard" style={{paddingTop: "0px"}}>
+                            <div class="create-contest">
+                                <div class="container">
+                                    <div class="contest-title">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="main_title">
+                                                    <h3
+                                                        style={{
+                                                            color: "#F2BE47",
+                                                            marginBottom: "5px",
+                                                        }}
+                                                    >
+                                                        Trending{" "}
+                                                    </h3>
+                                                    <h6>Contest</h6>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-md-4"
+                                                style={{
+                                                    cursor: "pointer",
+                                                    display:
+                                                        this.state.listData
+                                                            .length > 0
+                                                            ? "block"
+                                                            : "none",
+                                                }}
+                                            >
+                                                {/* <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrending.bind(this)}>See All</h6> */}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-			                
-			            </section>
-			           
+                            </div>
+                            <div class="contest-info dashboard-contest fix-box">
+                                <div class="container">
+                                    <div class="row">
+                                        {this.state.listData.length > 0 ? (
+                                            this.state.listData.map(
+                                                (e, key) => {
+                                                    return (
+                                                        <div class="col-lg-2 col-md-4 col-sm-6 col-6">
+                                                            <div class="cate-box2">
+                                                                <img
+                                                                    src={
+                                                                        e.image !==
+                                                                        ""
+                                                                            ? e.image
+                                                                            : "avatars/placeholder.png"
+                                                                    }
+                                                                    alt="Game"
+                                                                    className="main"
+                                                                />
+                                                                <div class="cat_title2">
+                                                                    <h3
+                                                                        style={{
+                                                                            cursor: "pointer",
+                                                                        }}
+                                                                        onClick={this.roundsListHandler.bind(
+                                                                            this,
+                                                                            e
+                                                                        )}
+                                                                    >
+                                                                        {this.titleSmall(
+                                                                            e.title
+                                                                        )}
+                                                                    </h3>
+                                                                    <p>
+                                                                        {" "}
+                                                                        {
+                                                                            e.totalRound
+                                                                        }{" "}
+                                                                        {e.totalRound >
+                                                                        1
+                                                                            ? "Rounds"
+                                                                            : "Round"}{" "}
+                                                                    </p>
+                                                                    <p className="username">
+                                                                        {
+                                                                            e.userName
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                            )
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    color: "white",
+                                                    width: "100%",
+                                                    textAlign: "center",
+                                                    marginTop: "50px",
+                                                    marginBottom: "50px",
+                                                }}
+                                                className="flex"
+                                            >
+                                                <p className="item-author text-color">
+                                                    No data found
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
-                            
+                            <div class="create-contest round-dashboard">
+                                <div class="container">
+                                    <div class="contest-title">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="main_title">
+                                                    <h6>Rounds</h6>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-md-4"
+                                                style={{
+                                                    cursor: "pointer",
+                                                    display:
+                                                        this.state.listData
+                                                            .length > 0
+                                                            ? "block"
+                                                            : "none",
+                                                }}
+                                            >
+                                                {/* <h6 style={{float:'right',cursor:'pointer',color: "rgb(242, 190, 71)"}} onClick={this.viewAllTrendingRounds.bind(this)}>See All</h6> */}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contest-info dashboard-contest fix-box">
+                                <div class="container">
+                                    <div class="row">
+                                        {this.state.roundListData.length > 0 ? (
+                                            this.state.roundListData.map(
+                                                (e, key) => {
+                                                    return (
+                                                        <div class="col-lg-2 col-md-4 col-6">
+                                                            <div
+                                                                class="cate-box2"
+                                                                onClick={this.handleRoundClick.bind(
+                                                                    this,
+                                                                    e
+                                                                )}
+                                                                style={{
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                <img
+                                                                    src={
+                                                                        e.image !==
+                                                                        ""
+                                                                            ? e.image
+                                                                            : "avatars/placeholder.png"
+                                                                    }
+                                                                    alt="Game"
+                                                                    className="main"
+                                                                />
+                                                                <div class="cat_title2">
+                                                                    <h3>
+                                                                        {
+                                                                            e.numberOfQuestions
+                                                                        }{" "}
+                                                                        {e.numberOfQuestions >
+                                                                        1
+                                                                            ? "Questions"
+                                                                            : "Question"}
+                                                                    </h3>
+                                                                    <p>
+                                                                        {this.titleSmall(
+                                                                            e.title
+                                                                        )}
+                                                                    </p>
+                                                                    <p className="username">
+                                                                        {
+                                                                            e.createdBy
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+                                            )
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    color: "white",
+                                                    width: "100%",
+                                                    textAlign: "center",
+                                                    marginTop: "50px",
+                                                    marginBottom: "50px",
+                                                }}
+                                                className="flex"
+                                            >
+                                                <p className="item-author text-color">
+                                                    No data found
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="games-dashboard">
+                            <div class="create-contest">
+                                <div class="container">
+                                    <div class="contest-title">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="main_title">
+                                                    <h3
+                                                        style={{
+                                                            color: "#F2BE47",
+                                                            marginBottom: "5px",
+                                                        }}
+                                                    >
+                                                        Games{" "}
+                                                    </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contest-info trending">
+                                <div class="container">
+                                    <div
+                                        className="row round-box"
+                                        style={{ paddingTop: "30px" }}
+                                    >
+                                        {this.state.gameTypeArr.map(
+                                            (e, key) => {
+                                                return (
+                                                    <div
+                                                        className="col-lg-3 col-md-4 col-sm-6"
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={this.viewAllTrendingRounds.bind(
+                                                            this,
+                                                            e,
+                                                            "gametype"
+                                                        )}
+                                                    >
+                                                        <div>
+                                                            <div
+                                                                className={
+                                                                    e.class
+                                                                }
+                                                            >
+                                                                <img
+                                                                    className="placeholder"
+                                                                    src="./murabbo/img/placeholder.svg"
+                                                                    alt=""
+                                                                />
+                                                                <img
+                                                                    className="ico"
+                                                                    src={e.src}
+                                                                    alt=""
+                                                                />
+                                                                <h3
+                                                                    onClick={this.viewAllTrendingRounds.bind(
+                                                                        this,
+                                                                        e,
+                                                                        "gametype"
+                                                                    )}
+                                                                    style={{
+                                                                        cursor: "pointer",
+                                                                    }}
+                                                                >
+                                                                    {e.name}
+                                                                </h3>
+                                                                <p></p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <CModal
                         show={this.state.playContestModel}
@@ -407,7 +717,7 @@ class Dashboard extends Component {
                                         className="close"
                                         onClick={() =>
                                             this.setState({
-                                                playContestModel: false
+                                                playContestModel: false,
                                             })
                                         }
                                     >
@@ -429,14 +739,15 @@ class Dashboard extends Component {
                                             <div className="col-md-10 offset-md-1">
                                                 <div
                                                     style={{
-                                                        textAlign: "center"
+                                                        textAlign: "center",
                                                     }}
                                                     className=""
                                                 >
                                                     <button
                                                         style={{
                                                             minWidth: "250px",
-                                                            marginBottom: "10px"
+                                                            marginBottom:
+                                                                "10px",
                                                         }}
                                                         className="blue_btn light_blue_btn"
                                                         type="button"
@@ -446,21 +757,22 @@ class Dashboard extends Component {
                                                 </div>
                                                 <div
                                                     style={{
-                                                        textAlign: "center"
+                                                        textAlign: "center",
                                                     }}
                                                     className=""
                                                 >
                                                     <button
                                                         style={{
                                                             minWidth: "250px",
-                                                            marginBottom: "10px"
+                                                            marginBottom:
+                                                                "10px",
                                                         }}
                                                         className="yellow_btn"
                                                         type="button"
                                                         onClick={() =>
                                                             this.setState({
                                                                 playContestModel: false,
-                                                                playNewContestModel: true
+                                                                playNewContestModel: true,
                                                             })
                                                         }
                                                     >
@@ -469,20 +781,21 @@ class Dashboard extends Component {
                                                 </div>
                                                 <div
                                                     style={{
-                                                        textAlign: "center"
+                                                        textAlign: "center",
                                                     }}
                                                     className=""
                                                 >
                                                     <button
                                                         style={{
                                                             minWidth: "250px",
-                                                            marginBottom: "10px"
+                                                            marginBottom:
+                                                                "10px",
                                                         }}
                                                         className="pink_btn"
                                                         type="button"
                                                         onClick={() =>
                                                             this.setState({
-                                                                playContestModel: false
+                                                                playContestModel: false,
                                                             })
                                                         }
                                                     >
@@ -514,7 +827,7 @@ class Dashboard extends Component {
                                         className="close"
                                         onClick={() =>
                                             this.setState({
-                                                playNewContestModel: false
+                                                playNewContestModel: false,
                                             })
                                         }
                                     >
@@ -599,13 +912,13 @@ class Dashboard extends Component {
                                                     style={{
                                                         textAlign: "center",
                                                         float: "left",
-                                                        marginRight: "10px"
+                                                        marginRight: "10px",
                                                     }}
                                                     className=""
                                                 >
                                                     <button
                                                         style={{
-                                                            minWidth: "150px"
+                                                            minWidth: "150px",
                                                         }}
                                                         className="blue_btn light_blue_btn"
                                                         type="button"
@@ -618,20 +931,20 @@ class Dashboard extends Component {
                                                 </div>
                                                 <div
                                                     style={{
-                                                        textAlign: "center"
+                                                        textAlign: "center",
                                                     }}
                                                     className=""
                                                 >
                                                     <button
                                                         style={{
                                                             minWidth: "150px",
-                                                            float: "left"
+                                                            float: "left",
                                                         }}
                                                         className="pink_btn"
                                                         type="button"
                                                         onClick={() =>
                                                             this.setState({
-                                                                playNewContestModel: false
+                                                                playNewContestModel: false,
                                                             })
                                                         }
                                                     >
