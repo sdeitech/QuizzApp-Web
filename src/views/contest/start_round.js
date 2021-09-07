@@ -79,7 +79,7 @@ class StartRound extends Component {
 		var url = window.location.href;
 		contestId = url.substring(url.lastIndexOf('/') + 1);
 		contestId = contestId.substring(0, contestId.lastIndexOf('?'));
-		fetch(configuration.baseURL + "contest/contest?contestId=" + contestId, {
+		fetch(configuration.baseURL + "contest/contest?contestId=" + contestId + "&v=" + 1, {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json',
@@ -92,6 +92,10 @@ class StartRound extends Component {
 			if (data.data.length > 0) {
 				parentContestId = data.data[0]._id;
 				this.setState({ contestData: data.data[0] });
+
+
+				let createdBy = data.data[0].createdBy;
+					this.setState({ createdBy: createdBy });
 			}
 		});
 		this.getList(contestId);
@@ -819,9 +823,9 @@ class StartRound extends Component {
 						fields['description'] = '';
 						this.setState({ fields });
 						toast.success(data.message);
-						setTimeout(() => {
-							this.props.history.push('/dashboard');
-						}, 2000)
+						// setTimeout(() => {
+						// 	this.props.history.push('/dashboard');
+						// }, 2000)
 					} else {
 						return toast.error(data.message);
 					}
@@ -894,8 +898,8 @@ class StartRound extends Component {
 			})
 			.then((data) => {
 				if (data.data.length > 0) {
-					let createdBy = data.data[0].createdById;
-					this.setState({ createdBy: createdBy });
+					// let createdBy = data.data[0].createdById;
+					// this.setState({ createdBy: createdBy });
 
 				}
 			});
@@ -976,7 +980,6 @@ class StartRound extends Component {
 
 											(this.state.isBalnkRound) ? (
 												<div style={{
-
 													padding: "10px",
 													display: "inline"
 												}}></div>
@@ -1042,7 +1045,7 @@ class StartRound extends Component {
 
 											</div>
 										</div>
-									</div>
+								     	</div>
 									{
 
 
