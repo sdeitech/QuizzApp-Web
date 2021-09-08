@@ -175,7 +175,6 @@ class DetailContestWithQuestionList extends Component {
 
 	}
 
-
 	saveExitAnswer() {
 		console.log("indexRound saveExitAnswer ---  ", this.state.indexRound + 1);
 		if (this.state.roundData[this.state.indexRound + 1] !== undefined) {
@@ -312,96 +311,67 @@ class DetailContestWithQuestionList extends Component {
 	startTimer() {
 
 		
-		if(this.state.roundData[this.state.indexRound].gameType === 'Blank'){
+		// if(this.state.roundData[this.state.indexRound].gameType === 'Blank'){
+		// let fields = this.state.roundData;
+		// var that = this;
+		// if (this.state.roundData.length > 0 && fields[that.state.indexRound] !== undefined) {
+		// 	setTimeout(function () {
+
+
+		// 		var newTime = 0;
+		// 		if (fields[that.state.indexRound] !== undefined && fields[that.state.indexRound]['timeLimit'] !== undefined) {
+		// 			var currentTime = parseInt(fields[that.state.indexRound]['timeLimit']);
+
+		// 			if (fields[that.state.indexRound]['timeAlloted'] === undefined) {
+		// 				fields[that.state.indexRound]['timeAlloted'] = currentTime;
+		// 			}
+		// 			// console.log('timeLimit--->',fields[that.state.indexRound]['timeLimit']);
+
+		// 			newTime = currentTime - 1;
+		// 			var seconds = (newTime % 60).toString();
+		// 			var minute = (Math.floor(newTime / 60)).toString();
+
+
+		// 			if (seconds.length === 0) {
+		// 				seconds = "00";
+		// 			}
+		// 			else if (seconds.length === 1) {
+		// 				seconds = "0" + seconds;
+		// 			}
+
+		// 			if (minute.length === 0) {
+		// 				minute = "00";
+		// 			}
+		// 			else if (minute.length === 1) {
+		// 				minute = "0" + minute;
+		// 			}
+
+		// 			fields[that.state.indexRound]['displaytimeLimit'] = minute + ":" + seconds;
+		// 			fields[that.state.indexRound]['timeLimit'] = newTime;
+		// 			that.setState({ roundData: fields });
+
+		// 		}
 
 
 
-		let fields = this.state.roundData;
-		var that = this;
-		if (this.state.roundData.length > 0 && fields[that.state.indexRound] !== undefined) {
-			setTimeout(function () {
+		// 		if (newTime === 0) {
 
-
-				var newTime = 0;
-				if (fields[that.state.indexRound] !== undefined && fields[that.state.indexRound]['timeLimit'] !== undefined) {
-					var currentTime = parseInt(fields[that.state.indexRound]['timeLimit']);
-
-					if (fields[that.state.indexRound]['timeAlloted'] === undefined) {
-						fields[that.state.indexRound]['timeAlloted'] = currentTime;
-					}
-					// console.log('timeLimit--->',fields[that.state.indexRound]['timeLimit']);
-
-					newTime = currentTime - 1;
-					var seconds = (newTime % 60).toString();
-					var minute = (Math.floor(newTime / 60)).toString();
-
-
-					if (seconds.length === 0) {
-						seconds = "00";
-					}
-					else if (seconds.length === 1) {
-						seconds = "0" + seconds;
-					}
-
-					if (minute.length === 0) {
-						minute = "00";
-					}
-					else if (minute.length === 1) {
-						minute = "0" + minute;
-					}
-
-					fields[that.state.indexRound]['displaytimeLimit'] = minute + ":" + seconds;
-					fields[that.state.indexRound]['timeLimit'] = newTime;
-					that.setState({ roundData: fields });
-
-				}
-
-
-
-				if (newTime === 0) {
-
-					that.setState({ roundData: fields });
-						that.saveExitAnswer();
+		// 			that.setState({ roundData: fields });
+		// 				that.saveExitAnswer();
 					
-				}
-				else {
+		// 		}
+		// 		else {
 
-					that.startTimer();
-				}
-			}, 1000);
-		}
-		else {
-			that.saveExitAnswer();
-		}
+		// 			that.startTimer();
+		// 		}
+		// 	}, 1000);
+		// }
+		// else {
+		// 	that.saveExitAnswer();
+		// }
+		// }else{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		}else{
+		// }	
 
 		
 
@@ -471,7 +441,7 @@ class DetailContestWithQuestionList extends Component {
 			that.saveExitAnswer();
 		}
 
-		}		
+			
 	}
 
 	countScore(index) {
@@ -1124,7 +1094,7 @@ class DetailContestWithQuestionList extends Component {
 										
 								 }
 
-                                 {
+                                 {/* {
 								  (this.state.roundData[this.state.indexRound].gameType === 'Blank') ?
 									<section id="hero" class="d-flex align-items-center">
 										<div class="quizz-game" style={{ marginTop: '35px' }}>
@@ -1144,13 +1114,7 @@ class DetailContestWithQuestionList extends Component {
 
 													)}
 
-													{/* 
-											{this.state.isBalnkRound ? (
 
-												this.state.contestCreater ? (<button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>) : (null)
-
-
-											) : (null)} */}
 												</div>
 											</div>
 											<h3>{this.state.contestData.title}</h3>
@@ -1168,22 +1132,7 @@ class DetailContestWithQuestionList extends Component {
 													<g class="base-timer__circle">
 														<circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
 														<span id="base-timer-label" class="base-timer__label"></span>
-														{ /*(this.state.listArr[this.state.indexQuestion]) ?
-				                                  	var dasharray = this.state.listArr[this.state.indexQuestion]['timeLimit'] + ' 283';					                        
-							                        <path id="base-timer-path-remaining" stroke-dasharray={dasharray} class="base-timer__path-remaining red" d="
-				                                      M 50, 50
-				                                      m -45, 0
-				                                      a 45,45 0 1,0 90,0
-				                                      a 45,45 0 1,0 -90,0
-				                                    "></path>
-							                        :
-							                        <path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
-				                                      M 50, 50
-				                                      m -45, 0
-				                                      a 45,45 0 1,0 90,0
-				                                      a 45,45 0 1,0 -90,0
-				                                    "></path>*/
-														}
+														
 														<path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
 				                                      M 50, 50
 				                                      m -45, 0
@@ -1209,37 +1158,10 @@ class DetailContestWithQuestionList extends Component {
 													}}>Start Next Round</button>
 										</div>
 								</div>
-							</section>
-												
-												
-									
+							</section>	
 									: null
 										
-								 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+								 } */}
 							</div>
 							:
 							<section id="hero" class="d-flex align-items-center">

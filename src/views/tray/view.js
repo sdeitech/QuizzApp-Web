@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { CModal, CModalBody } from "@coreui/react";
 import { ToastContainer, toast } from "react-toastify";
+import humanizeDuration from "humanize-duration";
 import "react-toastify/dist/ReactToastify.css";
 import $ from "jquery";
 import RLDD from "react-list-drag-and-drop/lib/RLDD";
@@ -898,8 +899,9 @@ class RoundTray extends Component {
                                                                 {val.totalQuestions == 0 ? (null) : (
                                                                     val.totalQuestions == 1 ? (val.totalQuestions + "  Question") : (val.totalQuestions + "  Questions")
                                                                 )}
+                                                                {val.gameType == "Blank" ? (humanizeDuration(val.timeLimit*1000)):(null)}
                                                             </p>
-
+                                                         
 
 
 

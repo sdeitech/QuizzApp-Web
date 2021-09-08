@@ -361,16 +361,17 @@ class AddRoundQuestion extends Component {
             }).then((response) => {
                 return response.json();
             }).then((data) => {
-                 // if(data.code === 200){
-					
-                // }
-                // else
-                // {
-                // 	this.setState({tosterMsg:data.message});
-                //  	return false;
-                // }
-				this.setState({isLoading:false});
-                this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
+                 if(data.code === 200){
+					this.setState({isLoading:false});
+                   this.props.history.push('/roundquestion/'+contest_id+'/'+round_id);
+                }
+                else
+                {
+					this.setState({isLoading:false});
+                	this.setState({tosterMsg:data.message});
+                 	return false;
+                }
+				
                 
             });
         }

@@ -33,6 +33,7 @@
     "core-js": "^3.6.5",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
+    "humanize-duration": "^3.27.0",
     "jquery": "^3.5.1",
     "jsonwebtoken": "^8.5.1",
     "node-sass": "^4.14.1",
