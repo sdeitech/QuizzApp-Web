@@ -1387,7 +1387,18 @@ class StartRound extends Component {
 
 													<>
 
-														<h3 style={{ textAlign: 'center' }}>Contest completed</h3><br />
+														<h3 style={{ textAlign: 'center' }}>Contest completed</h3>
+														
+														
+														
+														<br />
+
+														{
+																		(this.state.showGoLeaderBoardBtn) ?
+																			<div class="full_btn">
+																				<a href="#/contest"><button class="blue_btn" type="button" >Go To Leader Board</button></a>
+																			</div> : null
+																	}
 
 													</>
 												)
