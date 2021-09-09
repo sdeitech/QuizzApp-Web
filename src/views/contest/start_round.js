@@ -95,7 +95,7 @@ class StartRound extends Component {
 
 
 				let createdBy = data.data[0].createdBy;
-					this.setState({ createdBy: createdBy });
+				this.setState({ createdBy: createdBy });
 			}
 		});
 		this.getList(contestId);
@@ -953,7 +953,7 @@ class StartRound extends Component {
 
 											{this.state.isBalnkRound ? (
 
-												this.state.contestCreater ? (<button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>) : (null)
+												<button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>
 
 
 											) : (null)}
@@ -1045,7 +1045,7 @@ class StartRound extends Component {
 
 											</div>
 										</div>
-								     	</div>
+									</div>
 									{
 
 
@@ -1109,7 +1109,7 @@ class StartRound extends Component {
 																height: "150px",
 																marginLeft: "232px"
 															}}>
-														
+
 																<iframe width="300" height="150" src={this.state.listArr[this.state.indexQuestion]['file']} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 															</div>
@@ -1319,7 +1319,6 @@ class StartRound extends Component {
 													</div>
 													<div class="align-self-center" style={{ textAlign: 'center' }}>
 														<button style={{ minWidth: '150px', marginRight: '18px' }} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
-
 													</div>
 
 												</div>)
@@ -1332,16 +1331,10 @@ class StartRound extends Component {
 								</div>
 							</section>
 							:
-
-
 							(this.state.winnerScreen) ?
 								<section id="hero" class="d-flex align-items-center">
-
 									<div class="quizz-game width40">
 										<p></p><br />
-
-
-
 										{
 
 											(this.state.isWinnerScreenShow) ? (
@@ -1352,10 +1345,7 @@ class StartRound extends Component {
 
 														return (
 															<>
-
 																<h3 style={{ textAlign: 'center' }}>Contest completed</h3><br />
-
-
 																<div class="firstthree">
 																	<div class="_1st">
 																		<div class="_1stimg">
@@ -1388,17 +1378,14 @@ class StartRound extends Component {
 													<>
 
 														<h3 style={{ textAlign: 'center' }}>Contest completed</h3>
-														
-														
-														
 														<br />
 
 														{
-																		(this.state.showGoLeaderBoardBtn) ?
-																			<div class="full_btn">
-																				<a href="#/contest"><button class="blue_btn" type="button" >Go To Leader Board</button></a>
-																			</div> : null
-																	}
+															(this.state.showGoLeaderBoardBtn) ?
+																<div class="full_btn">
+																	<a href="#/contest"><button class="blue_btn" type="button" >Go To Leader Board</button></a>
+																</div> : null
+														}
 
 													</>
 												)
@@ -1439,10 +1426,6 @@ class StartRound extends Component {
 
 											)
 										}
-
-
-
-
 									</div>
 
 								</section> : null
@@ -1701,13 +1684,6 @@ class StartRound extends Component {
 						</div>
 					</CModalBody>
 				</CModal>
-
-
-
-
-
-
-
 			</>
 		)
 	}
