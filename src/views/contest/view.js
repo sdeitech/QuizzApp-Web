@@ -387,7 +387,7 @@ class Contest extends Component {
 			                                </div>
 			                                <div class="col-md-12" style={{marginTop:'20px'}}>
 			                                    <div class="filterinline">
-			                                        <div class="lanfilter">
+			                                        {/* <div class="lanfilter">
 			                                            
 			                                            <p>Language:</p>
 			                                            <MultiSelect
@@ -395,14 +395,18 @@ class Contest extends Component {
 												        onChange={this.handleChange.bind(this, "language")}
 												        value={this.state.languageSelected}
 												      /> 
-			                                            {/*<select onChange={this.handleChange.bind(this, "language")} >
+
+													  	comment start
+			                                            <select onChange={this.handleChange.bind(this, "language")} >
 			                                            <option value="">Select</option>
 				                                            {
 				                                            	languages.languages.map((e, key) => {
 				                                                    return <option value={e.name}>{e.name} </option>;
 				                                                })
 				                                            }
-			                                            </select>*/}
+			                                            </select>
+														comment end
+														
 			                                        </div>
 			                                        <div class="lanfilter">
 			                                            
@@ -421,13 +425,15 @@ class Contest extends Component {
 														</div>
 													</ul>
 														
-			                                        {/* <MultiSelect
+													comment start
+			                                        <MultiSelect
 												        options={this.state.playerTypeList}
 												        onChange={this.handleChange.bind(this, "playerType")}
 												        value={this.state.playerTypeSelected}
 												        disableSearch={true}
 														hasSelectAll={false}
-												      />  */}
+												      /> 
+													  comment end
 
 			                                        </div>
 			                                        <div class="lanfilter">
@@ -439,17 +445,20 @@ class Contest extends Component {
 												        value={this.state.categorySelected}
 												        
 												      />
-
-			                                            {/*<select onChange={this.handleChange.bind(this, "categoryIds")} >
+														comment start
+			                                            <select onChange={this.handleChange.bind(this, "categoryIds")} >
 			                                            	<option value="">All</option>
 			                                                {
 				                                            	this.state.categoryList.map((e, key) => {
 				                                                    return <option value={e._id}>{e.name} </option>;
 				                                                })
 				                                            }
-			                                            </select>*/}
+			                                            </select>
+
+														comment end
 			                                        </div>
-			                                        {/*<div class="lanfilter" >
+													comment start
+			                                        <div class="lanfilter" >
 			                                            <p>Game Type:</p>
 
 			                                            <MultiSelect
@@ -457,7 +466,8 @@ class Contest extends Component {
 												        onChange={this.handleChange.bind(this, "categoryIds")}
 												        value={""}
 												        labelledBy={"Select"} />
-			                                        </div>*/}
+			                                        </div>
+													comment end */}
 			                                        <div class="lanfilter fil_btn" >
 			                                            <button className="blue_btn light_blue_btn" type="button" onClick={this.handleClearAllFilter.bind(this)}>Clear All</button>
 			                                            <button className="yellow_btn" type="button" onClick={this.handleApplyFilter.bind(this)}>Apply</button>

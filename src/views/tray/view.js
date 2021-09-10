@@ -658,10 +658,11 @@ class RoundTray extends Component {
                 newTime = 900
             } else if (
                 parseInt(minute) < 1 &&
-                (parseInt(seconds) === 0 || parseInt(seconds) < 10)
+                (parseInt(seconds) === 0 || parseInt(seconds) < 30)
             ) {
                 minute = "00";
-                seconds = "10";
+                seconds = "30";
+                newTime = 30
           }
 
             fields["timeLimit"] = minute + ":" + seconds;
@@ -699,10 +700,11 @@ class RoundTray extends Component {
                 newTime = 300;
             } else if (
                 parseInt(minute) < 1 &&
-                (parseInt(seconds) === 0 || parseInt(seconds) < 10)
+                (parseInt(seconds) === 0 || parseInt(seconds) < 30)
             ) {
                 minute = "00";
-                seconds = "10";
+                seconds = "30";
+                newTime = 30    
             }
 
             fields["timeLimit"] = minute + ":" + seconds;
