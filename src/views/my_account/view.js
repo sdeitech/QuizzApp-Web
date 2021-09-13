@@ -398,9 +398,17 @@ class MyAccount extends Component {
                                                         </div></a>
                                                     </div>
                                                     <div class="col-lg-4 col-md-6">
-                                                        <a href="javascript:void(0)"><div class="profile-setting">
+                                                        <a href="#/privacy_policy"><div class="profile-setting">
                                                             <img src="./murabbo/img/security.svg"/>
                                                             <h3>Privacy & Security <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
+                                                            
+                                                            <img class="position_right" src="./murabbo/img/security2.svg"/>
+                                                        </div></a>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-6">
+                                                        <a href="#/terms_conditions"><div class="profile-setting">
+                                                            <img src="./murabbo/img/security.svg"/>
+                                                            <h3>Terms & Conditions <img class="arrow-right" src="./murabbo/img/arrow-right.svg"/></h3>
                                                             
                                                             <img class="position_right" src="./murabbo/img/security2.svg"/>
                                                         </div></a>

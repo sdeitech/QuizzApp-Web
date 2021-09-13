@@ -7,6 +7,7 @@ const Brand = React.lazy(() => import("./views/brand/view"));
 // Manage Contests
 const Contest = React.lazy(() => import('./views/contest/view'))
 const StartRound = React.lazy(() => import('./views/contest/start_round'))
+const SearchRound = React.lazy(()=>import('./views/Search/view'))
 
 
 const GamesHistory = React.lazy(() => import('./views/games_history/view'))
@@ -72,6 +73,7 @@ const routes = [
     { path: '/notification', name: 'Notification', component: Notification },
     { path: '/yourfriends', name:'YourFriends', component:YourFriends},
     { path: '/contest', name: 'Contest', component: Contest },
+    { path: '/searchRound', name: 'SearchRound', component: SearchRound },
     { path: '/trending_contest', name: 'Dashboard_Trending_Contest', component: Dashboard_Trending_Contest },
     { path: '/trending_rounds', name: 'Dashboard_Trending_Rounds', component: Dashboard_Trending_Rounds },
     { path: '/contests/start_round', name: 'StartRound', component: StartRound },
