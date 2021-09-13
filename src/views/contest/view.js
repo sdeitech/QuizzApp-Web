@@ -76,7 +76,6 @@ class Contest extends Component {
 
     }
 
-
     handleNext(){
     	let fields = this.state.fieldsPlay;
 		let errors = {};

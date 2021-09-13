@@ -176,7 +176,7 @@ class TheHeaderInner extends Component {
                                         <a href="#/my_groups"><li><i class='bx bx-group'></i> My Groups</li></a>
                                         <a href="#/notification"><li><i class='bx bx-bell'></i> Notifications</li></a>
                                         <a href="#/yourfriends"><li><i class='bx bx-user'></i> Your Friends</li></a>
-                                        <a href="#/yourfriends"><li><i class='bx bx-search'></i> Search</li></a>
+                                        <a href="#/searchRound"><li><i class='bx bx-search'></i> Search</li></a>
                                         <span style={{ cursor:'pointer'}}><li><i class='bx bx-user-circle'></i> Online Friend</li></span>
 
                                         <span style={{ cursor:'pointer'}} onClick={this.handleLogout.bind(this,false)}><li><i class='bx bx-log-in' ></i> Logout</li></span>

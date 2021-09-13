@@ -720,14 +720,14 @@ class AddContest extends Component {
                 return response.json();
             }).then((data) => {
                 if (data.code === 200) {
-                this.setState({isLoading:true});
+                this.setState({isLoading:false});
 
                     this.componentDidMount();
                     fields['saveToTitle'] = '';
                     this.setState({ fieldsForSaveTo: fields, addModel: false });
                 }
                 else {
-                this.setState({isLoading:true});
+                this.setState({isLoading:false});
 
                     return toast.error(data.message);
                 }

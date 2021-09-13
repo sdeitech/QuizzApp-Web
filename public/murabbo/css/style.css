@@ -2260,6 +2260,9 @@ img.second {
     bottom: 4px;
     left: -31px;    
 }
+
+
+
 .leaderimg2 p {
     background: #56D8F1 0% 0% no-repeat padding-box;
     border: 3px solid #324B55;
@@ -4308,4 +4311,52 @@ button.blue_btn:hover {
 
 .modal-open {
     overflow: visible !important;
+}
+
+
+.memberImg_{
+    width: 75px;
+    float: left;
+    position: relative;
+    text-align: center;
+    bottom: -8px;
+    left: -3px;    
+}
+
+.user-members-detail_ {
+    display: inline-block;
+    position: relative;
+    
+    right: 0px;
+    bottom: -8;
+}
+
+._1st2-member {
+    background: #101B1D 0% 0% no-repeat padding-box;
+    border: 1px solid #FFC542;
+    border-radius: 5px;
+    margin-left: 30px;
+    float: left;
+    height:70px;
+    width: 90%;
+    margin-bottom: 0px;
+    margin-top: 20px;
+    position: relative;
+}
+._1stimg{
+    position: relative;
+
+}
+.member_details{
+    position: absolute;
+    left: 73px;
+    bottom: -42px;
+}
+
+.icons-members{
+    position: absolute;
+    right: 21px;
+    top: 15px;
+    display: flex;
+    gap: 9px;
 }

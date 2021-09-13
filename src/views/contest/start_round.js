@@ -55,7 +55,8 @@ class StartRound extends Component {
 			contestCreater: false,
 			createdBy: '',
 			isActive: '',
-			isWinnerScreenShow: false
+			isWinnerScreenShow: false,
+			openModelForMembers: false
 		};
 	}
 
@@ -951,6 +952,13 @@ class StartRound extends Component {
 											)}
 
 
+											<button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={() => {
+												this.setState({ openModelForMembers: true })
+											}}>Members</button>
+
+
+
+
 											{this.state.isBalnkRound ? (
 
 												<button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={this.getParticipants.bind(this)}>Give Score</button>
@@ -1678,6 +1686,100 @@ class StartRound extends Component {
 									)}
 
 
+
+								</div>
+							</div>
+						</div>
+					</CModalBody>
+				</CModal>
+
+
+
+				<CModal show={this.state.openModelForMembers} closeOnBackdrop={false} onClose={() => this.setState({ openModelForMembers: false })}
+					color="danger"
+					centered>
+					<CModalBody className="model-bg">
+
+						<div>
+							<div className="modal-body">
+
+								<button type="button" className="close" onClick={() => this.setState({ openModelForMembers: false })}>
+									<span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+								</button>
+								<div className="model_data">
+									<div className="model-title">
+										<h3>Members</h3>
+									</div>
+
+									<div className="container">
+										<div className="row">
+											<div className="col-md-12">
+												<div class="_1st2-member two_no">
+													<div className="_1stimg">
+														<div className="memberImg_">
+															<img style={{
+																height: "50px",
+																width: "50px",
+																borderRadius: "50%"
+															}} src="https://dev-api.murabbo.com/api/uploads/user/user_1629697346574SzqRHG.jpeg" />
+														</div>
+														<div className="member_details">
+															<h5 style={{
+																color: "#fff"
+															}}>kevin</h5>
+														</div>
+														<div className="icons-members">
+															<img src="./murabbo/img/callRight.png" width="26px" height="23px" alt="callRight" />
+															<img src="./murabbo/img/callMic.png" width="26px" height="23px" alt="callMic" />
+															<img src="./murabbo/img/callCam.png" width="26px" height="23px" alt="ccallCam" />
+														</div>
+													</div>
+												</div>
+											</div>
+											<div className="col-md-12">
+												<div class="_1st2-member two_no">
+													<div className="_1stimg">
+														<div className="memberImg_">
+															<img style={{
+																height: "50px",
+																width: "50px",
+																borderRadius: "50%"
+															}} src="https://dev-api.murabbo.com/api/uploads/user/user_1629697346574SzqRHG.jpeg" />
+														</div>
+														<div className="member_details">
+															<h5>kevin</h5>
+														</div>
+														<div className="icons-members">
+															<img src="./murabbo/img/callRight.png" width="26px" height="23px" alt="callRight" />
+															<img src="./murabbo/img/callMic.png" width="26px" height="23px" alt="callMic" />
+															<img src="./murabbo/img/callCam.png" width="26px" height="23px" alt="ccallCam" />
+														</div>
+													</div>
+												</div>
+											</div>
+											<div className="col-md-12">
+												<div class="_1st2-member two_no">
+													<div className="_1stimg">
+														<div className="memberImg_">
+															<img style={{
+																height: "50px",
+																width: "50px",
+																borderRadius: "50%"
+															}} src="https://dev-api.murabbo.com/api/uploads/user/user_1629697346574SzqRHG.jpeg" />
+														</div>
+														<div className="member_details">
+															<h5>kevin</h5>
+														</div>
+														<div className="icons-members">
+															<img src="./murabbo/img/callRight.png" width="26px" height="23px" alt="callRight" />
+															<img src="./murabbo/img/callMic.png" width="26px" height="23px" alt="callMic" />
+															<img src="./murabbo/img/callCam.png" width="26px" height="23px" alt="ccallCam" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
 
 								</div>
 							</div>
