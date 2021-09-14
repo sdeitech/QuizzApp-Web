@@ -44,7 +44,9 @@ class AddRoundQuestion extends Component {
 			profilePic: '',
 			edit_id: '',
 			fieldsForYoutube: { url: '', startMin: 0, startSec: 0, endMin: 0, endSec: 0, maxMin: 0, maxSec: 0 },
-			isSet: false
+			isSet: false,
+			searchKey:'',
+			categoryList:[]
 		};
 	}
 
@@ -134,7 +136,7 @@ class AddRoundQuestion extends Component {
 		});
 
 
-
+		this.getAllCategory();
 
 	}
 
@@ -175,6 +177,183 @@ class AddRoundQuestion extends Component {
 		this.setState({ errors: errors });
 
 	}
+
+
+
+
+	handleChangeSearch(field, e) {
+		if(e.target.value === ""){
+            this.componentDidMount();
+        }
+		this.setState({searchKey:e.target.value});
+		
+		
+		if(this.state.searchKey != ''){
+            this.setState({error : ""});
+            const filteredData = this.state.videoList.filter(element => {
+                return element.name.toLowerCase().includes(this.state.searchKey.toLowerCase());
+              });
+    
+              console.log(filteredData);
+              this.setState({videoList:filteredData})
+              
+        }else{
+                this.setState({error : "Please Enter Value"});
+        }
+
+	}
+	onChangeCategory(e){
+		console.log("d",e.target.value);
+
+		fetch(configuration.baseURL + "media?type=video&category="+e.target.value, {
+			method: "GET",
+			headers: {
+				'contentType': "application/json",
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) => {
+			return response.json();
+		}).then((data) => {
+			if (data.code === 200) {
+				console.log(data);
+					this.setState({videoList:data.data});
+					console.log("ddddddddd",data);
+					
+			}
+			else {
+				
+				return false;
+			}
+
+
+		});
+    } 
+	handleChangeSearchAudio(field, e) {
+		if(e.target.value === ""){
+            this.componentDidMount();
+        }
+		this.setState({searchKey:e.target.value});
+		
+		
+		if(this.state.searchKey != ''){
+            this.setState({error : ""});
+            const filteredData = this.state.audioList.filter(element => {
+                return element.name.toLowerCase().includes(this.state.searchKey.toLowerCase());
+              });
+    
+              console.log(filteredData);
+              this.setState({audioList:filteredData})
+              
+        }else{
+                this.setState({error : "Please Enter Value"});
+        }
+
+	}
+	onChangeCategoryAudio(e){
+		console.log("d",e.target.value);
+
+		fetch(configuration.baseURL + "media?type=audio&category="+e.target.value, {
+			method: "GET",
+			headers: {
+				'contentType': "application/json",
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) => {
+			return response.json();
+		}).then((data) => {
+			if (data.code === 200) {
+				console.log(data);
+					this.setState({audioList:data.data});
+					console.log("ddddddddd",data);
+					
+			}
+			else {
+				
+				return false;
+			}
+
+
+		});
+    }
+	handleChangeSearchImage(field, e) {
+		if(e.target.value === ""){
+            this.componentDidMount();
+        }
+		this.setState({searchKey:e.target.value});
+		
+		
+		if(this.state.searchKey != ''){
+            this.setState({error : ""});
+            const filteredData = this.state.imageList.filter(element => {
+                return element.title.toLowerCase().includes(this.state.searchKey.toLowerCase());
+              });
+    
+              console.log(filteredData);
+              this.setState({imageList:filteredData})
+              
+        }else{
+                this.setState({error : "Please Enter Value"});
+        }
+
+	}
+	onChangeCategoryImage(e){
+		console.log("d",e.target.value);
+
+		fetch(configuration.APIbaseURL + "image/image?category="+e.target.value, {
+			method: "GET",
+			headers: {
+				'contentType': "application/json",
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) => {
+			return response.json();
+		}).then((data) => {
+			if (data.code === 200) {
+				console.log(data);
+					this.setState({imageList:data.data});
+					console.log("ddddddddd",data);
+					
+			}
+			else {
+				
+				return false;
+			}
+
+
+		});
+    } 
+
+
+
+	
+
+	getAllCategory(){
+		fetch(configuration.baseURL + "category/categoryList", {
+			method: "GET",
+			headers: {
+				'contentType': "application/json",
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) => {
+			return response.json();
+		}).then((data) => {
+			if (data.code === 200) {
+				console.log(data);
+				let arr = [];
+				data.data.map((e,i)=>{
+					arr = [...arr,...e.categories]
+				})
+					this.setState({categoryList:arr})
+			}
+			else {
+				
+				return false;
+			}
+
+
+		});
+	}
+
 
 	async  setYoutubeLength(val) {
 
@@ -694,6 +873,9 @@ class AddRoundQuestion extends Component {
 		$('#start').hide();
 	}
 
+	
+	
+
 	selectAudio(data) {
 		this.setState({ subscriptionModel: false });
 		if (!configuration.checkUserHasAccess(data.subscriptionType)) {
@@ -1200,6 +1382,31 @@ class AddRoundQuestion extends Component {
 										{
 											(this.state.typeOption === 'image') ?
 												<div className="model_data row questionimage">
+													<h1 style={{color:"#fff",marginLeft:"80px"}} className="text-center">Photo Library</h1>
+													<div className="container">
+														<div className="row">
+														<div class="col-md-12">
+															<div className="search">
+																<input placeholder="Search by keywords" type="text" onChange={this.handleChangeSearchImage.bind(this, "searchKey")} value={this.state.searchKey} /><i className='bx bx-search' ></i>
+															</div>
+														</div>
+														<div className="col-md-12 mt-3">
+															<div className="dropdown">
+
+
+															<select class="custom-select" id="inputGroupSelect01" style={{backgroundColor:"#324b55",color:"#fff"}} onChange={this.onChangeCategoryImage.bind(this)}>
+																<option value={""} selected style={{color:"#fff"}}>All</option>
+																{
+																		this.state.categoryList.map((e,i)=>{
+																			return <option value={e._id}>{e.name}</option>
+																		})
+																}
+															</select>
+													
+															</div>
+														</div>
+														</div>
+													</div>
 													{
 														(this.state.imageList.length > 0) ?
 															this.state.imageList.map((e, key) => {
@@ -1239,13 +1446,43 @@ class AddRoundQuestion extends Component {
 										{
 											(this.state.typeOption === 'video') ?
 												<div className="model_data row questionvideo">
+													<h1 style={{color:"#fff",marginLeft:"80px"}} className="text-center">Video Library</h1>
+													<div className="container">
+														<div className="row">
+														<div class="col-md-12">
+															<div className="search">
+																<input placeholder="Search by keywords" type="text" onChange={this.handleChangeSearch.bind(this, "searchKey")} value={this.state.searchKey} /><i className='bx bx-search' ></i>
+															</div>
+														</div>
+														<div className="col-md-12 mt-3">
+															<div className="dropdown">
+
+
+															<select class="custom-select" id="inputGroupSelect01" style={{backgroundColor:"#324b55",color:"#fff"}} onChange={this.onChangeCategory.bind(this)}>
+																<option value={""} selected style={{color:"#fff"}}>All</option>
+																{
+																		this.state.categoryList.map((e,i)=>{
+																			return <option value={e._id}>{e.name}</option>
+																		})
+																}
+															</select>
+													
+															</div>
+														</div>
+														</div>
+													</div>
+													
 													{
 
 														(this.state.videoList.length > 0) ?
 															this.state.videoList.map((e, key) => {
 																return <div class="col-lg-6 col-md-6 col-sm-6">
 																	<div class="cate-box2" onClick={this.selectVideo.bind(this, e)} style={{ cursor: 'pointer' }} >
-																		<video width="400" className="main" controls>
+																		
+
+
+
+																		<video width="400" className="main" style={{objectFit:"cover"}} controls>
 																			<source src={e.url} type="video/mp4" />
 																			<source src={e.url} type="video/ogg" />
 																		</video>
@@ -1281,10 +1518,36 @@ class AddRoundQuestion extends Component {
 										{
 											(this.state.typeOption === 'audio') ?
 												<div className="model_data row questionaudio">
+													<h1 style={{color:"#fff",marginLeft:"80px"}} className="text-center">Audio Library</h1>
+													<div className="container">
+														<div className="row">
+														<div class="col-md-12">
+															<div className="search">
+																<input placeholder="Search by keywords" type="text" onChange={this.handleChangeSearchAudio.bind(this, "searchKey")} value={this.state.searchKey} /><i className='bx bx-search' ></i>
+															</div>
+														</div>
+														<div className="col-md-12 mt-3">
+															<div className="dropdown">
+
+
+															<select class="custom-select" id="inputGroupSelect01" style={{backgroundColor:"#324b55",color:"#fff"}} onChange={this.onChangeCategoryAudio.bind(this)}>
+																<option value={""} selected style={{color:"#fff"}}>All</option>
+																{
+																		this.state.categoryList.map((e,i)=>{
+																			return <option value={e._id}>{e.name}</option>
+																		})
+																}
+															</select>
+													
+															</div>
+														</div>
+														</div>
+													</div>
 													{
 														(this.state.audioList.length > 0) ?
 															this.state.audioList.map((e, key) => {
 																return <div class="col-lg-6 col-md-6 col-sm-6">
+																	
 																	<div class="cate-box2" onClick={this.selectAudio.bind(this, e)} style={{ cursor: 'pointer' }} >
 																		<audio className="main" controls>
 																			<source src={e.url} type="audio/ogg" />

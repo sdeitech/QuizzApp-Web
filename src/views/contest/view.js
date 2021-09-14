@@ -36,7 +36,8 @@ class Contest extends Component {
 			gameTypeArr : ['HangMan','Match It', 'Unscramble',  'Guess & Go', 'Giberish','Bingo', 'Quizz',  'Taboo'],
 			brandList: [],
             delete_id:'',
-            saveToId:''
+            saveToId:'',
+			saveToTitle:"",
 		};
 	}
 
@@ -212,9 +213,9 @@ class Contest extends Component {
         // isTrending
         var searchSaveToId = '';
         if (saveToId[1]) {
-        	searchSaveToId = saveToId[1];
+        	searchSaveToId = saveToId[1].substring(0,saveToId[1].lastIndexOf('&'));
         	if (searchSaveToId !== '') {
-	        	this.setState({saveToId:searchSaveToId});
+	        	this.setState({saveToId:searchSaveToId,saveToTitle:saveToId[1].substring(saveToId[1].lastIndexOf('&')+1)});
 	        }
         }
 
@@ -376,7 +377,8 @@ class Contest extends Component {
 			                            <div class="row">
 			                                <div class="col-md-8">
 			                                    <div class="main_title">
-			                                        <h3>{ (isTrending === '') ? "My Games" : "All Contest"}</h3>  
+			                                        {/* <h3>{ (isTrending === '') ? "My Games" : "All Contest"}</h3>   */}
+													<h3>{ (this.state.saveToTitle === '') ? "My Games" : this.state.saveToTitle}</h3>  
 			                                    </div>
 			                                </div>
 			                                <div class="col-md-4">
