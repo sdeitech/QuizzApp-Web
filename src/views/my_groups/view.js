@@ -113,9 +113,9 @@ class MyGroups extends Component {
         this.setState({'addModel':true,fields:{saveToTitle:''},errors:{saveToTitle:''}})
     }
 
-    clickHandle(saveToId)
+    clickHandle(saveToId,saveToTitle)
     {
-        this.props.history.push('/contest?'+saveToId)
+        this.props.history.push('/contest?'+saveToId+"&"+saveToTitle)
     }
 
     EditSaveGroupModel(){
@@ -235,7 +235,7 @@ class MyGroups extends Component {
                                             this.state.listData.map((e, key) => {
                                                 return <div className="col-lg-3 col-md-4 col-sm-6 groups-box-inner" >                        
                                                         <div className="addfriend box_yellow">
-                                                            <div className="inline" onClick={this.clickHandle.bind(this,e.saveToId)}>
+                                                            <div className="inline" onClick={this.clickHandle.bind(this,e.saveToId,e.saveToTitle)}>
                                                                 <h5>{e.saveToTitle}</h5>
                                                                 <small style={{marginLeft:"10px"}}>{e.contestNumber == 1 ? (e.contestNumber+' Contest'):(e.contestNumber+' Contests')}</small>
                                                             </div>

@@ -18,7 +18,7 @@ class SearchRound extends Component {
 	constructor(props) {
         super(props);
         this.state = {
-			fields:{playerType:""},
+			fields:{playerType:"",searchKey:''},
 			errors:{},
 			errorsPlay:{},
 			fieldsPlay:{display_name:'',password:''},
@@ -208,6 +208,15 @@ class SearchRound extends Component {
 		var url = window.location.href;
         saveToId =url.substring(url.lastIndexOf('/') + 1);
         saveToId = saveToId.split('?');
+		let key = ""
+		var url = window.location.href;
+        key =url.substring(url.lastIndexOf('/') + 1);
+        key = key.split('?');
+		key = key[1];
+		console.log(key);
+		let fields = this.state.fields;
+		fields['searchKey'] = key;
+		this.setState({fields})
 
         // isTrending
         var searchSaveToId = '';
@@ -366,7 +375,7 @@ class SearchRound extends Component {
 	render() {
 		return (
 			<>
-				<TheHeaderInner />				
+				<TheHeaderInner  />				
 					<main id="main"  className="filter-with-contest">
 					<ToastContainer position="top-right" autoClose={20000} style={{top:'80px'}}/>
 			            <section id="contest" class="d-flex align-items-center">
