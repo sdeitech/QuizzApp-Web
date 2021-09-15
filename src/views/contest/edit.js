@@ -1048,7 +1048,7 @@ class EditContest extends Component {
 			                                    </div>
 			                                </div>
 			                            </div>*/}
-                                    <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
+                                    <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px" style={{overflow:"hidden"}}>
                                         <div className="profile-img">
                                             <form
                                                 id="file-upload-form"
