@@ -278,10 +278,10 @@ class RoundWords extends Component {
                                         <div className="col-md-10 offset-md-1">
 
 							                <div style={{ textAlign: 'center' , float:'left',marginRight:'10px' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
+							                    <button  style={{minWidth: '150px'}}  className="blue_btn" type="button"  onClick={()=> this.setState({confirmationModel:false,delete_id:''})} >No</button>
 							                </div>
                                 			<div style={{ textAlign: 'center' , float:'left' }} className="">
-							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button"  onClick={this.deleteHandler.bind(this)} >Yes</button>
+							                    <button  style={{minWidth: '150px'}}  className="pink_btn" type="button"  onClick={this.deleteHandler.bind(this)} >Yes</button>
 							                </div>
                                         </div>
                                     </div>

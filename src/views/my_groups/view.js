@@ -234,8 +234,8 @@ class MyGroups extends Component {
                                             (this.state.listData.length > 0) ? 
                                             this.state.listData.map((e, key) => {
                                                 return <div className="col-lg-3 col-md-4 col-sm-6 groups-box-inner" >                        
-                                                        <div className="addfriend box_yellow">
-                                                            <div className="inline" onClick={this.clickHandle.bind(this,e.saveToId,e.saveToTitle)}>
+                                                        <div className="addfriend box_yellow" >
+                                                            <div className="inline" style={{width:"95%"}}onClick={this.clickHandle.bind(this,e.saveToId,e.saveToTitle)}>
                                                                 <h5>{e.saveToTitle}</h5>
                                                                 <small style={{marginLeft:"10px"}}>{e.contestNumber == 1 ? (e.contestNumber+' Contest'):(e.contestNumber+' Contests')}</small>
                                                             </div>

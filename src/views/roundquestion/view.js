@@ -9,6 +9,8 @@ import $ from "jquery";
 import RLDD from "react-list-drag-and-drop/lib/RLDD";
 let round_id, gameType;
 
+
+let maxQuestionsLimit;
 class RoundQuestion extends Component {
     constructor(props) {
         super(props);
@@ -41,6 +43,8 @@ class RoundQuestion extends Component {
                     this.props.history.push("/dashboard");
                 }
             });
+
+            this.getSettings();
     }
     handleRLDDChange(newItems) {
         this.setState({ listArr: newItems });
@@ -69,6 +73,9 @@ class RoundQuestion extends Component {
             .then((data) => {
                 this.getList(round_id);
             });
+
+
+           
     }
 
     getList(round_id) {
@@ -139,9 +146,39 @@ class RoundQuestion extends Component {
             this.setState({ delete_id: id, confirmationModel: true });
         }
     }
+    getSettings(){
+        fetch(
+            configuration.baseURL +
+                "getQuestionsLimit",
+            {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
+                },
+            }
+        )
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                
+                    console.log(data.data);
+
+                maxQuestionsLimit = data.data.maxQuestionLimit;
+            });
+    }
 
     addQuestion() {
-        this.props.history.push("/add_round_question/" + round_id);
+
+        if(this.state.listArr.length <= maxQuestionsLimit){
+            this.props.history.push("/add_round_question/" + round_id);
+        }else{
+            return toast.error(`You can't add more than ${maxQuestionsLimit} questions in a round`);
+        }
+      
     }
 
     editHandler(id) {
@@ -186,6 +223,7 @@ class RoundQuestion extends Component {
             <>
                 <TheHeaderInner />
                 <main id="main">
+                <ToastContainer position="top-right" autoClose={20000} style={{top:'80px'}}/>
                     <section id="contest" className="d-flex align-items-center">
                         <div className="container">
                             <div className="create-contest">
@@ -526,7 +564,7 @@ class RoundQuestion extends Component {
                                                         color: "#f8c84e",
                                                         fontWeight: "500",
                                                     }}
-                                                    className="btn"
+                                                    className="blue_btn"
                                                     type="button"
                                                     onClick={() =>
                                                         this.setState({
@@ -549,7 +587,7 @@ class RoundQuestion extends Component {
                                                     style={{
                                                         minWidth: "150px",
                                                     }}
-                                                    className="yellow_btn"
+                                                    className="pink_btn"
                                                     type="button"
                                                     onClick={this.deleteHandler.bind(
                                                         this

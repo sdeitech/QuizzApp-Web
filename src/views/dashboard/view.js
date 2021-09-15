@@ -574,6 +574,16 @@ class Dashboard extends Component {
                                                                 />
                                                                 <div class="cat_title2">
                                                                     <h3>
+                                                                            {this.titleSmall(
+                                                                                e.title
+                                                                            )}
+                                                                        </h3>
+                                                                    <h5 style={{
+                                                                            fontSize: "14px",
+                                                                            marginLeft: "36px",
+                                                                            color: "#c0c9ce",
+                                                                            marginBottom: "10px"
+                                                                    }}>
                                                                         {
                                                                             e.numberOfQuestions
                                                                         }{" "}
@@ -581,12 +591,8 @@ class Dashboard extends Component {
                                                                         1
                                                                             ? "Questions"
                                                                             : "Question"}
-                                                                    </h3>
-                                                                    <p>
-                                                                        {this.titleSmall(
-                                                                            e.title
-                                                                        )}
-                                                                    </p>
+                                                                    </h5>
+                                                                    
                                                                     <p className="username">
                                                                         {
                                                                             e.createdBy
