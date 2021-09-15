@@ -38,8 +38,11 @@ class AddRoundQuestion extends Component {
 			delete_id: '',
 			tosterMsg: '',
 			imageList: [],
+			imageList1: [],
 			videoList: [],
+			videoList1: [],
 			audioList: [],
+			audioList1: [],
 			typeOption: '',
 			profilePic: '',
 			edit_id: '',
@@ -52,6 +55,18 @@ class AddRoundQuestion extends Component {
 
 
 	componentDidMount() {
+		$("video").each(function () { 
+
+		
+			this.pause();
+			
+		 });
+		 $("audio").each(function () { 
+
+		
+			this.pause();
+			
+		 });
 		$('.display-profile-pic').hide();
 		var url = window.location.href;
 		round_id = url.substring(url.lastIndexOf('/') + 1);
@@ -100,6 +115,7 @@ class AddRoundQuestion extends Component {
 			if (data.data.length > 0) {
 				var data = data.data;
 				this.setState({ imageList: data });
+				this.setState({ imageList1: data });
 			}
 		});
 
@@ -116,6 +132,7 @@ class AddRoundQuestion extends Component {
 			if (data.data.length > 0) {
 				var data = data.data;
 				this.setState({ videoList: data });
+				this.setState({ videoList1: data });
 			}
 		});
 
@@ -132,6 +149,7 @@ class AddRoundQuestion extends Component {
 			if (data.data.length > 0) {
 				var data = data.data;
 				this.setState({ audioList: data });
+				this.setState({ audioList1: data });
 			}
 		});
 
@@ -177,10 +195,6 @@ class AddRoundQuestion extends Component {
 		this.setState({ errors: errors });
 
 	}
-
-
-
-
 	handleChangeSearch(field, e) {
 		if(e.target.value === ""){
             this.componentDidMount();
@@ -190,8 +204,8 @@ class AddRoundQuestion extends Component {
 		
 		if(this.state.searchKey != ''){
             this.setState({error : ""});
-            const filteredData = this.state.videoList.filter(element => {
-                return element.name.toLowerCase().includes(this.state.searchKey.toLowerCase());
+            const filteredData = this.state.videoList1.filter(element => {
+                return element.name.toLowerCase().includes(e.target.value.toLowerCase());
               });
     
               console.log(filteredData);
@@ -237,8 +251,8 @@ class AddRoundQuestion extends Component {
 		
 		if(this.state.searchKey != ''){
             this.setState({error : ""});
-            const filteredData = this.state.audioList.filter(element => {
-                return element.name.toLowerCase().includes(this.state.searchKey.toLowerCase());
+            const filteredData = this.state.audioList1.filter(element => {
+                return element.name.toLowerCase().includes(e.target.value.toLowerCase());
               });
     
               console.log(filteredData);
@@ -284,8 +298,8 @@ class AddRoundQuestion extends Component {
 		
 		if(this.state.searchKey != ''){
             this.setState({error : ""});
-            const filteredData = this.state.imageList.filter(element => {
-                return element.title.toLowerCase().includes(this.state.searchKey.toLowerCase());
+            const filteredData = this.state.imageList1.filter(element => {
+                return element.title.toLowerCase().includes(e.target.value.toLowerCase());
               });
     
               console.log(filteredData);
@@ -991,6 +1005,7 @@ class AddRoundQuestion extends Component {
 															<img className="display-profile-pic" src={this.state.profilePic} alt="" />
 															<div id="start">
 																<div><img className="profile-pic" src='./murabbo/img/upload.svg' alt="" />
+																<div id="add_image">Tab to add image, audio, video</div>
 																</div>
 															</div>
 															<div id="response" className="hidden">
@@ -1301,11 +1316,11 @@ class AddRoundQuestion extends Component {
 											<div className="col-md-10 offset-md-1">
 
 												<div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-													<button style={{ minWidth: '150px' }} className="yellow_btn" type="button" onClick={this.deleteHandler.bind(this, '')} >Yes</button>
+													<button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={this.deleteHandler.bind(this, '')} >Yes</button>
 												</div>
 												<div style={{ textAlign: 'center', float: 'left' }} className="">
 
-													<button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => this.setState({ confirmationModel: false, delete_id: '' })} >No</button>
+													<button style={{ minWidth: '150px' }} className="blue_btn" type="button" onClick={() => this.setState({ confirmationModel: false, delete_id: '' })} >No</button>
 
 												</div>
 											</div>
@@ -1345,15 +1360,15 @@ class AddRoundQuestion extends Component {
 										</div>
 
 										<div className="full_btn">
-											<button style={{ marginBottom: '15px' }} className="yellow_btn" type="button" onClick={() => { this.setState({ optionsModel: false, optionsValuesModel: true, typeOption: 'image' }) }} >Murabbo Image</button>
+											<button style={{ marginBottom: '15px' }}className="blue_btn" type="button" onClick={() => { this.setState({ optionsModel: false, optionsValuesModel: true, typeOption: 'image' }) }} >Photo Library </button>
 										</div>
 
 										<div className="full_btn">
-											<button style={{ marginBottom: '15px' }} className="blue_btn" type="button" onClick={() => { this.setState({ optionsModel: false, optionsValuesModel: true, typeOption: 'video' }) }} >Murabbo Video</button>
+											<button style={{ marginBottom: '15px' }} className="blue_btn" type="button" onClick={() => { this.setState({ optionsModel: false, optionsValuesModel: true, typeOption: 'video' }) }} >Video Library </button>
 										</div>
 
 										<div className="full_btn">
-											<button style={{ marginBottom: '15px' }} className="blue_btn light_blue_btn" type="button" onClick={() => { this.setState({ optionsModel: false, optionsValuesModel: true, typeOption: 'audio' }) }} >Murabbo Audio</button>
+											<button style={{ marginBottom: '15px' }} className="blue_btn" type="button" onClick={() => { this.setState({ optionsModel: false, optionsValuesModel: true, typeOption: 'audio' }) }} >Audio Library</button>
 										</div>
 										{/* <div className="full_btn">
 											<button style={{ marginBottom: '15px' }} className="blue_btn light_blue_btn" type="button" onClick={() => { this.setState({ optionsModel: false, optionsValuesModel: true, typeOption: 'url' }) }} >Youtube URL</button>
@@ -1366,7 +1381,11 @@ class AddRoundQuestion extends Component {
 						</CModalBody>
 					</CModal>
 
-					<CModal show={this.state.optionsValuesModel} closeOnBackdrop={false} onClose={() => this.setState({ optionsValuesModel: false })}
+					<CModal show={this.state.optionsValuesModel} closeOnBackdrop={false} onClose={() => {this.setState({ optionsValuesModel: false,searchKey:"" })
+					
+										this.componentDidMount();
+										
+				}}
 						color="danger"
 						centered>
 						<CModalBody className="model-bg">
@@ -1374,7 +1393,10 @@ class AddRoundQuestion extends Component {
 							<div>
 								<div className="modal-body optionsValuesModel">
 
-									<button type="button" className="close" onClick={() => this.setState({ optionsValuesModel: false })}>
+									<button type="button" className="close" onClick={() => {
+										this.setState({ optionsValuesModel: false,searchKey:"" })
+										this.componentDidMount();
+									}}>
 										<span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
 									</button>
 
@@ -1482,7 +1504,7 @@ class AddRoundQuestion extends Component {
 
 
 
-																		<video width="400" className="main" style={{objectFit:"cover"}} controls>
+																		<video width="400" className="main" style={{objectFit:"cover"}} controls >
 																			<source src={e.url} type="video/mp4" />
 																			<source src={e.url} type="video/ogg" />
 																		</video>

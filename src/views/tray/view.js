@@ -2115,11 +2115,11 @@ class RoundTray extends Component {
                                                 src="./murabbo/img/close_pink.png"
                                                 alt=""
                                             />
-                                            <h3>Are you sure!</h3>
-                                            <h4>
+                                            <h3>Are you sure you want to delete?</h3>
+                                            {/* <h4>
                                                 Are you sure,you want to delete
                                                 this round?
-                                            </h4>
+                                            </h4> */}
                                         </div>
                                         <img
                                             className="shape2"
@@ -2143,26 +2143,6 @@ class RoundTray extends Component {
                                                         style={{
                                                             minWidth: "150px",
                                                         }}
-                                                        className="yellow_btn"
-                                                        type="button"
-                                                        onClick={this.deleteHandler.bind(
-                                                            this
-                                                        )}
-                                                    >
-                                                        Done
-                                                    </button>
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        textAlign: "center",
-                                                        float: "left",
-                                                    }}
-                                                    className=""
-                                                >
-                                                    <button
-                                                        style={{
-                                                            minWidth: "150px",
-                                                        }}
                                                         className="blue_btn"
                                                         type="button"
                                                         onClick={() =>
@@ -2172,9 +2152,31 @@ class RoundTray extends Component {
                                                             })
                                                         }
                                                     >
-                                                        Cancel
+                                                        No
                                                     </button>
                                                 </div>
+                                                <div
+                                                    style={{
+                                                        textAlign: "center",
+                                                        float: "left",
+                                                        
+                                                    }}
+                                                    className=""
+                                                >
+                                                    <button
+                                                        style={{
+                                                            minWidth: "150px",
+                                                        }}
+                                                        className="pink_btn"
+                                                        type="button"
+                                                        onClick={this.deleteHandler.bind(
+                                                            this
+                                                        )}
+                                                    >
+                                                        Yes
+                                                    </button>
+                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
