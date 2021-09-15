@@ -163,23 +163,23 @@ class TheHeaderInner extends Component {
                                 </li>
                             </ul>
 
-                            {/* <div style={{marginRight:"22px",position:"relative"}}>
-                                        <input class="form-control form-control-sm mr-3 w-100" onChange={this.searchData.bind(this)} type="text" placeholder="Search"
-                                            aria-label="Search" />
+                            <div style={{marginRight:"22px",position:"relative"}}>
+                                        {/* <input class="form-control form-control-sm mr-3 w-100" onChange={this.searchData.bind(this)} type="text" placeholder="Search"
+                                            aria-label="Search" /> */}
 
 
-                                        <a  href={`#/searchRound?${this.state.searchKey}`}>
+                                        <a  href={`#/searchRound?${this.state.searchKey}`} style={{color:"#fff"}}>
 
-                                            <i class="fas fa-search" aria-hidden="true" style={{
+                                           Search  <i class="fas fa-search" aria-hidden="true" style={{
                                                 position: "absolute",
-                                                left: "211px",
-                                                top: "6px",
-                                                fontSize: '17px',
+                                                left: "-23px",
+                                                top: "2px",
+                                                fontSize: '18px',
                                                 cursor: "pointer"
                                             }}></i>
                                         </a>
 
-                            </div> */}
+                            </div>
 
 
                             <form class="form-inline my-2 my-lg-0">
