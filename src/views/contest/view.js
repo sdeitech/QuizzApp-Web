@@ -367,7 +367,7 @@ class Contest extends Component {
 	render() {
 		return (
 			<>
-				<TheHeaderInner />				
+				<TheHeaderInner  />				
 					<main id="main"  className="filter-with-contest">
 					<ToastContainer position="top-right" autoClose={20000} style={{top:'80px'}}/>
 			            <section id="contest" class="d-flex align-items-center">
