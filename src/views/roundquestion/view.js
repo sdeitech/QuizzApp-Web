@@ -173,7 +173,7 @@ class RoundQuestion extends Component {
 
     addQuestion() {
 
-        if(this.state.listArr.length <= maxQuestionsLimit){
+        if(this.state.listArr.length < maxQuestionsLimit){
             this.props.history.push("/add_round_question/" + round_id);
         }else{
             return toast.error(`You can't add more than ${maxQuestionsLimit} questions in a round`);
