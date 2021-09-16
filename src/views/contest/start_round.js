@@ -1079,7 +1079,7 @@ class StartRound extends Component {
 															<div style={{
 																width: "300px",
 																height: "150px",
-																marginLeft: "232px"
+																marginLeft: "334px"
 															}}>
 																<img src={this.state.listArr[this.state.indexQuestion]['file']} />
 															</div>
@@ -1105,9 +1105,10 @@ class StartRound extends Component {
 																marginLeft: "232px"
 															}}>
 																<audio controls autoplay>
-																	<source src={this.state.listArr[this.state.indexQuestion]['file']} />
+																	<source src={this.state.listArr[this.state.indexQuestion]['file']}  type="audio/mpeg" />
 																	Your browser does not support the audio element.
 																</audio>
+																
 															</div>
 														) : (null)}
 

@@ -27,7 +27,7 @@ class AddRoundQuestion extends Component {
 		this.state = {
 			isLoading: false,
 			answers: [],
-			fields: { image: '', question: '', timeLimitSeconds: 30, timeLimit: '00:30', basePoints: 0, negativeBasePoints: 0, execution_mode: 0, scoring: 1, negativeScoring: false, hint: 1, answerType: 1, onDemandNegativePoints: 0, answerTypeBoolean: false, hintText: '', fileUrl: '', fileType: '' },
+			fields: { image: '', question: '', timeLimitSeconds: 30, timeLimit: '00:30', basePoints: 100, negativeBasePoints: 50, execution_mode: 0, scoring: 1, negativeScoring: false, hint: 3, answerType: 1, onDemandNegativePoints: 25, answerTypeBoolean: false, hintText: '', fileUrl: '', fileType: '' },
 			errors: {},
 			fieldsAnswer: {},
 			errorsAnswer: {},
@@ -90,7 +90,12 @@ class AddRoundQuestion extends Component {
 					fields['gameType'] = gameType;
 					fields['answerType'] = (gameType !== 'Taboo') ? 1 : 4;
 					fields['execution_mode'] = data.execution_mode;
-					fields['negativeScoring'] = data.negativeScoring;
+					if(data.hint == 1){
+						fields['negativeScoring'] = true;
+					}else{
+						fields['negativeScoring'] = data.negativeScoring;
+					}
+					
 					fields['basePoints'] = data.basePoints;
 
 
@@ -174,8 +179,14 @@ class AddRoundQuestion extends Component {
 		if (field === 'answerType') {
 			this.setState({ answers: [], answerTypeBoolean: false });
 		}
+		if (field === 'basePoints') {
+			fields['negativeBasePoints'] = 0;
+			fields['onDemandNegativePoints'] = 0;
+			
+		}
 
 		if (field === 'negativeScoring') {
+			
 			fields[field] = e.target.checked;
 		}
 		else if (field === 'answerTypeBoolean') {
@@ -863,11 +874,24 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.image;
 		this.setState({ fields });
 		this.setState({ optionsValuesModel: false, profilePic: data.image });
+		$(".display-profile-pic").attr("src",data.image);
 		$('.display-profile-pic').show();
 		$('#start').hide();
 	}
 
 	selectVideo(data) {
+		$("video").each(function () { 
+
+		
+			this.pause();
+			
+		 });
+		 $("audio").each(function () { 
+
+		
+			this.pause();
+			
+		 });
 		this.setState({ subscriptionModel: false });
 		if (!configuration.checkUserHasAccess(data.subscriptionType)) {
 			this.setState({ optionsValuesModel: false, subscriptionModel: true });
@@ -878,6 +902,7 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({ fields });
 		this.setState({ optionsValuesModel: false, profilePic: 'avatars/play.svg' });
+		$(".display-profile-pic").attr("src", 'avatars/play.svg');
 		$('.display-profile-pic').show();
 		$('#start').hide();
 	}
@@ -891,6 +916,18 @@ class AddRoundQuestion extends Component {
 	
 
 	selectAudio(data) {
+		$("video").each(function () { 
+
+		
+			this.pause();
+			
+		 });
+		 $("audio").each(function () { 
+
+		
+			this.pause();
+			
+		 });
 		this.setState({ subscriptionModel: false });
 		if (!configuration.checkUserHasAccess(data.subscriptionType)) {
 			this.setState({ optionsValuesModel: false, subscriptionModel: true });
@@ -901,6 +938,7 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({ fields });
 		this.setState({ optionsValuesModel: false, profilePic: 'avatars/5.png' });
+		$(".display-profile-pic").attr("src", "avatars/5.png");
 		$('.display-profile-pic').show();
 		$('#start').hide();
 	}
@@ -1035,7 +1073,7 @@ class AddRoundQuestion extends Component {
 														<span className="plus" style={{ cursor: 'pointer' }}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this, "plus")} /></span>
 													</div>
 													<div style={{ margin: '0px 0 5px 0' }} className="cus_input ">
-														<label style={{ paddingLeft: '5px' }} className="cus_label">Base Points</label>
+														<label style={{ paddingLeft: '5px' }} className="cus_label">Base Points (0 - 100)</label>
 													</div>
 													<div className="range-wrap">
 														<input min="0" max="100" value={this.state.fields['basePoints']} onChange={this.handleChange.bind(this, 'basePoints')} step={configuration.sliderScore} type="range" className="range" id="range" />
@@ -1045,7 +1083,7 @@ class AddRoundQuestion extends Component {
 													<div style={{ margin: "0px 0 5px 0" }} className="cus_input ">
 														<label style={{ paddingLeft: '5px' }} className="cus_label">Negative Scoring </label>
 														<div className="button-switch">
-															<input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this, 'negativeScoring')} />
+															<input type="checkbox" id="switch-orange" className="switch" value={this.state.fields['negativeScoring']}  checked={this.state.fields['negativeScoring']} onChange={this.handleChange.bind(this, 'negativeScoring')} />
 															<label for="switch-orange" className="lbl-off"></label>
 															<label for="switch-orange" className="lbl-on"></label>
 														</div><img style={{ left: 'auto', top: '0px' }} src="./murabbo/img/info.svg" />
@@ -1056,10 +1094,22 @@ class AddRoundQuestion extends Component {
 													(this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? (
 														<div>
 															<div style={{ margin: "0px 0 5px 0" }} className="cus_input ">
-																<label style={{ paddingLeft: '5px' }} className="cus_label">Negative Base Points</label>
+																<label style={{ paddingLeft: '5px' }} className="cus_label">Negative
+                                                                            Base
+                                                                            Points
+                                                                            (0 -&nbsp;
+                                                                            {this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]})</label>
 															</div>
 															<div className="range-wrap">
-																<input min="0" max="100" step={configuration.sliderScore} type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this, 'negativeBasePoints')} />
+																<input min="0" max={this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]} step={configuration.sliderScore} type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this, 'negativeBasePoints')} />
 																<output className="bubble">{this.state.fields['negativeBasePoints']}</output>
 															</div>
 														</div>) : null
@@ -1082,10 +1132,24 @@ class AddRoundQuestion extends Component {
 												{(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
 													<div>
 														<div style={{ margin: "0px 0 5px 0" }} className="cus_input ">
-															<label style={{ paddingLeft: '5px' }} className="cus_label">On Demand Negative Points ( 0 - 100 )</label>
+															<label style={{ paddingLeft: '5px' }} className="cus_label"> On
+                                                                            Demand
+                                                                            Negative
+                                                                            Points
+                                                                            (0 -&nbsp;
+                                                                            {this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]})</label>
 														</div>
 														<div className="range-wrap">
-															<input min="0" max="100" step={configuration.sliderScore} type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this, 'onDemandNegativePoints')} />
+															<input min="0"
+															max={this
+																.state
+																.fields[
+																"basePoints"
+															]} step={configuration.sliderScore} type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this, 'onDemandNegativePoints')} />
 															<output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
 														</div>
 													</div>
@@ -1499,7 +1563,9 @@ class AddRoundQuestion extends Component {
 														(this.state.videoList.length > 0) ?
 															this.state.videoList.map((e, key) => {
 																return <div class="col-lg-6 col-md-6 col-sm-6">
-																	<div class="cate-box2" onClick={this.selectVideo.bind(this, e)} style={{ cursor: 'pointer' }} >
+																	<div class="cate-box2" onClick={()=>{
+																		this.selectVideo(e)
+																	}} style={{ cursor: 'pointer' }} >
 																		
 
 

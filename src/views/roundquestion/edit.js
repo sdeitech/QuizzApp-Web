@@ -14,6 +14,7 @@ import {
   import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import languages from '../../languages';
+import _ from "underscore";
 let round_id,contest_id;
 let question_id,gameType;
 let api_key = configuration.youtube_api_key;
@@ -114,6 +115,7 @@ class EditRoundQuestion extends Component {
 							fields['execution_mode']=newdata.execution_mode;
 							fields['scoring']=newdata.scoring;
 							fields['image'] = '';
+							
 							console.log(fields);
 							that.setState({fields});
 							that.setState({answers:data.data[0].answers})
@@ -254,6 +256,11 @@ class EditRoundQuestion extends Component {
         if (field === 'answerType') {
         	this.setState({answers:[],answerTypeBoolean:false});	
         }
+		if (field === 'basePoints') {
+			fields['negativeBasePoints'] = 0;
+			fields['onDemandNegativePoints'] = 0;
+			
+		}
 
 		if (field === 'negativeScoring') {
         	fields[field] = e.target.checked;	
@@ -302,6 +309,18 @@ class EditRoundQuestion extends Component {
 
 	}
 	onChangeCategory(e){
+		$("video").each(function () { 
+
+		
+			this.pause();
+			
+		 });
+		 $("audio").each(function () { 
+
+		
+			this.pause();
+			
+		 });
 		console.log("d",e.target.value);
 
 		fetch(configuration.baseURL + "media?type=video&category="+e.target.value, {
@@ -349,6 +368,18 @@ class EditRoundQuestion extends Component {
 
 	}
 	onChangeCategoryAudio(e){
+		$("video").each(function () { 
+
+		
+			this.pause();
+			
+		 });
+		 $("audio").each(function () { 
+
+		
+			this.pause();
+			
+		 });
 		console.log("d",e.target.value);
 
 		fetch(configuration.baseURL + "media?type=audio&category="+e.target.value, {
@@ -954,6 +985,18 @@ class EditRoundQuestion extends Component {
 	}
 
 	selectVideo(data){
+		$("video").each(function () { 
+
+		
+			this.pause();
+			
+		 });
+		 $("audio").each(function () { 
+
+		
+			this.pause();
+			
+		 });
 		this.setState({subscriptionModel:false});
 		if(!configuration.checkUserHasAccess(data.subscriptionType))
 		{
@@ -976,6 +1019,18 @@ class EditRoundQuestion extends Component {
 	}
 
 	selectAudio(data){
+		$("video").each(function () { 
+
+		
+			this.pause();
+			
+		 });
+		 $("audio").each(function () { 
+
+		
+			this.pause();
+			
+		 });
 		this.setState({subscriptionModel:false});
 		if(!configuration.checkUserHasAccess(data.subscriptionType))
 		{
@@ -1169,7 +1224,7 @@ class EditRoundQuestion extends Component {
 				                                    <span className="plus" style={{cursor:'pointer'}}><img src="./murabbo/img/plus.svg" onClick={this.btnClickHandler.bind(this,"plus")}/></span>
 				                                </div>
 				                                <div style={{margin: '0px 0 5px 0'}} className="cus_input ">
-				                                    <label style={{paddingLeft: '5px'}} className="cus_label">Base Points</label>
+				                                    <label style={{paddingLeft: '5px'}} className="cus_label">Base Points (0 - 100)</label>
 				                                </div>
 			                                    <div className="range-wrap">
 			                                      <input min="0" max="100" value={this.state.fields['basePoints']} onChange={this.handleChange.bind(this,'basePoints')}  step="1" type="range" className="range" id="range" />
@@ -1196,10 +1251,22 @@ class EditRoundQuestion extends Component {
 									                (this.state.fields['negativeScoring'] === true || this.state.fields['negativeScoring'] === 'true') ? (
 				                                		<div>
 				                                			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-							                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative Base Points</label>
+							                                    <label style={{paddingLeft: '5px'}} className="cus_label">Negative
+                                                                            Base
+                                                                            Points
+                                                                            (0 -&nbsp;
+                                                                            {this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]})</label>
 							                                </div>
 							                                <div className="range-wrap">
-							                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
+							                                  <input min="0"max={this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]} step="1" type="range" className="range" id="range" value={this.state.fields['negativeBasePoints']} onChange={this.handleChange.bind(this,'negativeBasePoints')}  />
 							                                  <output className="bubble">{this.state.fields['negativeBasePoints']}</output>
 							                                </div>
 				                                		</div> ) : null
@@ -1260,10 +1327,22 @@ class EditRoundQuestion extends Component {
 	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
 	                                <div>
                             			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
-		                                    <label style={{paddingLeft: '5px'}} className="cus_label">On Demand Negative Points  ( 0 - 100 )</label>
+		                                    <label style={{paddingLeft: '5px'}} className="cus_label"> Demand
+                                                                            Negative
+                                                                            Points
+                                                                            (0 -&nbsp;
+                                                                            {this
+                                                                                .state
+                                                                                .fields[
+                                                                                "basePoints"
+                                                                            ]})</label>
 		                                </div>
 		                                <div className="range-wrap">
-		                                  <input min="0" max="100" step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
+		                                  <input min="0" max={this
+																.state
+																.fields[
+																"basePoints"
+															]} step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
 		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
 		                                </div>
                             		</div> : null }
@@ -1566,6 +1645,21 @@ class EditRoundQuestion extends Component {
 	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
 				                                	<div class="cate-box2"  onClick={this.selectImage.bind(this,e)}  style={{ cursor:'pointer'}} >
 				                                        <img src={(e.image !== '') ? e.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
+														{
+																			(_.contains(["PRO", "PREMIUM"], e.subscriptionType)) ? ((e.subscriptionType === "PRO") ? (
+																				<div className="paid-cat">
+																					<img
+																						src="img/pro.png"
+																					/>
+																					<span className="paid-cat-color">Pro</span>
+																				</div>
+																			) : (<div className="paid-cat">
+																				<img
+																					src="img/premium.png"
+																				/>
+																				<span className="paid-cat-color">Premium</span>
+																			</div>)) : null
+																		}
 				                                        <div class="cat_title2">
 				                                            <p>{e.title}</p>
 				                                        </div>
@@ -1615,10 +1709,26 @@ class EditRoundQuestion extends Component {
 				                        	this.state.videoList.map((e, key) => {
 	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
 				                                	<div class="cate-box2"  onClick={this.selectVideo.bind(this,e)}  style={{ cursor:'pointer'}} >
-				                                		<video width="400" className="main"  style={{objectFit:"cover"}} controls>
+				                                		<video width="400" className="main"  style={{objectFit:"cover"}} controls >
 														  <source src={e.url} type="video/mp4"/>
 														  <source src={e.url} type="video/ogg"/>
 														</video>
+
+														{
+																			(_.contains(["PRO", "PREMIUM"], e.subscriptionType)) ? ((e.subscriptionType === "PRO") ? (
+																				<div className="paid-cat">
+																					<img
+																						src="img/pro.png"
+																					/>
+																					<span className="paid-cat-color">Pro</span>
+																				</div>
+																			) : (<div className="paid-cat">
+																				<img
+																					src="img/premium.png"
+																				/>
+																				<span className="paid-cat-color">Premium</span>
+																			</div>)) : null
+																		}
 				                                        <div class="cat_title2">
 				                                            <p>{e.name}</p>
 				                                        </div>
@@ -1670,6 +1780,21 @@ class EditRoundQuestion extends Component {
 														  <source src={e.url} type="audio/ogg"/>
 														  <source src={e.url} type="audio/mpeg"/>
 														</audio>
+														{
+																			(_.contains(["PRO", "PREMIUM"], e.subscriptionType)) ? ((e.subscriptionType === "PRO") ? (
+																				<div className="paid-cat">
+																					<img
+																						src="img/pro.png"
+																					/>
+																					<span className="paid-cat-color">Pro</span>
+																				</div>
+																			) : (<div className="paid-cat">
+																				<img
+																					src="img/premium.png"
+																				/>
+																				<span className="paid-cat-color">Premium</span>
+																			</div>)) : null
+																		}
 				                                        <div class="cat_title2">
 				                                            <p>{e.name}</p>
 				                                        </div>

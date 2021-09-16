@@ -21,11 +21,12 @@ class RoundTray extends Component {
                 timeLimitSeconds: 30,
                 timeLimit: "00:30",
                 execution_mode: 1,
-                onDemandNegativePoints: 0,
+                onDemandNegativePoints: 10,
                 hint: "",
                 entriesPerRound: 4,
                 type: "2",
                 noOfQuestions: 3,
+                basePoints:100
             },
             errors: {},
             openModelRoundAdd: false,
@@ -371,11 +372,20 @@ class RoundTray extends Component {
         }
 
         if (!data.basePoints) {
-            data.basePoints = 0;
+            data.basePoints = 100;
         }
 
         if (!data.negativeBasePoints) {
-            data.negativeBasePoints = 0;
+            data.negativeBasePoints = 50;
+        }
+        if (!data.onDemandNegativePoints) {
+            data.onDemandNegativePoints = 25;
+        }
+       if (data.hint == 1) {
+            data.negativeScoring= true;
+        }
+        if (data.hint == 1) {
+            data.hint=3;
         }
         if (data.gameType === "MatchIt" || data.gameType === "Bingo") {
             console.log(111);
@@ -415,6 +425,11 @@ class RoundTray extends Component {
                 fields[field] = e.target.value;
             }
         }
+        if (field === 'basePoints') {
+			fields['negativeBasePoints'] = 0;
+			fields['onDemandNegativePoints'] = 0;
+			
+		}
 
         if (field === "execution_mode" && e.target.value !== 1) {
             fields["negativeScoring"] = false;
@@ -1531,6 +1546,13 @@ class RoundTray extends Component {
                                                                             id="switch-orange"
                                                                             className="switch"
                                                                             value={
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                "negativeScoring"
+                                                                                ]
+                                                                            }
+                                                                            checked={
                                                                                 this
                                                                                     .state
                                                                                     .fields[

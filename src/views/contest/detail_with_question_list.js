@@ -908,6 +908,55 @@ class DetailContestWithQuestionList extends Component {
 											{(this.state.listArr[this.state.indexQuestion]) ?
 												<div>
 													<div class="qus" style={{ marginBottom: "30px" }}>
+
+
+													{this.state.listArr[this.state.indexQuestion]['fileType'] == "image" ? (
+															<div style={{
+																width: "300px",
+																height: "150px",
+																marginLeft: "334px"
+															}}>
+																<img src={this.state.listArr[this.state.indexQuestion]['file']} />
+															</div>
+														) : (null)}
+
+														{this.state.listArr[this.state.indexQuestion]['fileType'] == "video" ? (
+															<div style={{
+																width: "300px",
+																height: "150px",
+																marginLeft: "232px"
+															}}>
+																<video width="50" height="50" controls autoPlay>
+																	<source src={this.state.listArr[this.state.indexQuestion]['file']} type="video/mp4" />
+																	This browser doesn't support video tag.
+																</video>
+															</div>
+														) : (null)}
+
+														{this.state.listArr[this.state.indexQuestion]['fileType'] == "audio" ? (
+															<div style={{
+																width: "300px",
+																height: "150px",
+																marginLeft: "232px"
+															}}>
+																<audio controls autoplay>
+																	<source src={this.state.listArr[this.state.indexQuestion]['file']} />
+																	Your browser does not support the audio element.
+																</audio>
+															</div>
+														) : (null)}
+
+														{this.state.listArr[this.state.indexQuestion]['fileType'] == "link" ? (
+															<div style={{
+																width: "300px",
+																height: "150px",
+																marginLeft: "232px"
+															}}>
+
+																<iframe width="300" height="150" src={this.state.listArr[this.state.indexQuestion]['file']} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+															</div>
+														) : (null)}
 														<h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
 
 														{
