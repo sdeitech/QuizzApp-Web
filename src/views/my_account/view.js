@@ -31,6 +31,8 @@ class MyAccount extends Component {
             profile_picture: 'avatars/placeholder-user.png',
             availabilityStatusImg: 'img/online.png',
             name: '',
+            name1: '',
+            userStatus:"",
             editModel: false,
             changePasswordModel: false,
             fields: { availabilityStatus: 1 },
@@ -38,7 +40,8 @@ class MyAccount extends Component {
             changePasswordFields: { userId: '', oldPassword: '', password: '', confirm_password: '' },
             changePasswordErrors: {},
             tosterMsg: '',
-            isexitImage: ''
+            isexitImage: '',
+            profilepic1:''
 
         };
     }
@@ -71,7 +74,7 @@ class MyAccount extends Component {
             return response.json();
         }).then((data) => {
             var data = data.data;
-            this.setState({ fields: data });
+            this.setState({ fields: data,name1:data.name,userStatus:data.userStatus,profilepic1:data.image });
             if (data.image === '') {
                 this.setState({ profile_picture: 'avatars/placeholder-user.png' })
             }
@@ -81,18 +84,23 @@ class MyAccount extends Component {
 
             if (data.availabilityStatus === 1) {
                 this.setState({ availabilityStatusImg: 'img/online.png' })
+                this.setState({ availabilityStatusImg1: 'img/online.png' })
             }
             else if (data.availabilityStatus === 2) {
                 this.setState({ availabilityStatusImg: 'img/away.png' })
+                this.setState({ availabilityStatusImg1: 'img/away.png' })
             }
             else if (data.availabilityStatus === 3) {
                 this.setState({ availabilityStatusImg: 'img/donot-disturb.png' })
+                this.setState({ availabilityStatusImg1: 'img/donot-disturb.png' })
             }
             else if (data.availabilityStatus === 4) {
                 this.setState({ availabilityStatusImg: 'img/invisible.png' })
+                this.setState({ availabilityStatusImg1: 'img/invisible.png' })
             }
             else {
                 this.setState({ availabilityStatusImg: 'img/online.png' })
+                this.setState({ availabilityStatusImg1: 'img/online.png' })
             }
 
         });
@@ -111,6 +119,21 @@ class MyAccount extends Component {
         let fields = this.state.fields;
         if (field === 'availabilityStatus') {
             fields[field] = parseInt(e.target.value);
+            if (fields.availabilityStatus === 1) {
+                this.setState({ availabilityStatusImg: 'img/online.png' })
+            }
+            else if (fields.availabilityStatus === 2) {
+                this.setState({ availabilityStatusImg: 'img/away.png' })
+            }
+            else if (fields.availabilityStatus === 3) {
+                this.setState({ availabilityStatusImg: 'img/donot-disturb.png' })
+            }
+            else if (fields.availabilityStatus === 4) {
+                this.setState({ availabilityStatusImg: 'img/invisible.png' })
+            }
+            else {
+                this.setState({ availabilityStatusImg: 'img/online.png' })
+            }
         }
         else {
             fields[field] = e.target.value;
@@ -368,7 +391,7 @@ class MyAccount extends Component {
 
                                                     <div class="inline">
                                                         <img class="profile" src={this.state.profile_picture} />
-                                                        <img class="onlinetick" src={this.state.availabilityStatusImg} />
+                                                        <img class="onlinetick" src={this.state.availabilityStatusImg1} />
                                                     </div>
                                                     <div class="inline social-info">
                                                         <h3>{this.state.fields['name']}</h3>
@@ -449,12 +472,27 @@ class MyAccount extends Component {
                             </div>
                         </div>
                     </section>
-                    <CModal size="lg" show={this.state.editModel} onClose={() => this.setState({ editModel: !this.state.editModel })} color="danger" centered>
+                    <CModal size="lg" show={this.state.editModel} onClose={() => {
+
+let fields = this.state.fields;
+fields['name'] = this.state.name1;
+fields['userStatus'] = this.state.userStatus;
+// fields['image'] = this.state.profilepic1
+
+this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.state.availabilityStatusImg1,fields })}} color="danger" centered>
                         <CModalBody className="model-bg">
 
                             <div>
                                 <div className="modal-body">
-                                    <button type="button" className="close" onClick={() => this.setState({ editModel: false })}>
+                                <button type="button" className="close" onClick={() => {
+                                        let fields = this.state.fields;
+                                        fields['name'] = this.state.name1;
+                                        // fields['image'] = this.state.profilepic1
+                                        fields['userStatus'] = this.state.userStatus;
+                                        this.setState({ editModel: false ,availabilityStatusImg : this.state.availabilityStatusImg1,fields})}
+                                        
+                                        
+                                        }>
                                         <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
                                     </button>
                                     <div className="model_data">
@@ -509,7 +547,9 @@ class MyAccount extends Component {
                                                 </div>
                                             </div>
                                             <div className="cus_input status_input input_wrap">
-                                                <select className="floating-select" onChange={this.handleChange.bind(this, 'availabilityStatus')} value={this.state.fields['availabilityStatus']} required>
+
+                                            <div style={{margin:"40px 0px 0 3px", position:"absolute"}} ><img style={{width:"16px"}} src={this.state.availabilityStatusImg} alt="img" /></div>
+                                                <select className="floating-select" style={{paddingLeft: "30px"}} onChange={this.handleChange.bind(this, 'availabilityStatus')} value={this.state.fields['availabilityStatus']} required> 
                                                     <option value="1">Online</option>
                                                     <option value="2">Away</option>
                                                     <option value="3">Do not disturb</option>
@@ -524,6 +564,7 @@ class MyAccount extends Component {
                                                 <div className="col-lg-12 col-md-12 col-sm-12">
 
                                                     <div className="cus_input input_wrap">
+                                                    <div className="edit-pencil" style={{border:"0px"}}><img src="/img/pen.svg" /></div>
                                                         <img src="./murabbo/img/username.svg" alt="Upload" /> <input type="text" required name="" onChange={this.handleChange.bind(this, 'name')} value={this.state.fields['name']} />
                                                         <label>Name</label>
                                                     </div>
@@ -534,6 +575,7 @@ class MyAccount extends Component {
                                                     </div>
 
                                                     <div className="cus_input input_wrap">
+                                                    <div className="edit-pencil" style={{border:"0px"}}><img src="/img/pen.svg" /></div>
                                                         <img src="./murabbo/img/title.svg" alt="Upload" /> <input type="text" required onChange={this.handleChange.bind(this, 'userStatus')} name="" value={this.state.fields['userStatus']} />
                                                         <label>Status</label>
                                                     </div>

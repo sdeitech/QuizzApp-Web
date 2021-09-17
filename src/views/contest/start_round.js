@@ -241,6 +241,38 @@ class StartRound extends Component {
 		}
 
 	}
+	saveNextAnswer(index,e) {
+		if (this.state.listArr[(this.state.indexQuestion + 1)] !== undefined) {
+
+			let indexQu = this.state.indexQuestion;
+			this.setState({ indexQuestion: indexQu+1 });
+			// let fields = this.state.listArr;
+		
+
+			// fields[index]['selectAnswer'] = e._id;
+			// fields[index]['isAnswerTrue'] = false;
+			// fields[index]['readonly'] = true;
+			// this.setState({ listArr: fields });
+
+			// this.countScore(this.state.indexQuestion);
+
+			// var that = this;
+			// setTimeout(function () {
+				
+			// 	setTimeout(function () {
+			// 		that.setState({ showRound: true, currentIndexRound: that.state.currentIndexRound + 1, winnerScreen: false });
+			// 	}, 5000);
+			// }, 2000);
+		}
+		else {
+			this.setState({ saveExitAnswer: true });
+			var that = this;
+			setTimeout(function () {
+				that.setState({ winnerScreen: true, showRound: false, showGoLeaderBoardBtn: true });
+			}, 2000);
+		}
+
+	}
 
 	plusCount() {
 		var roundListArr = [];
@@ -1130,8 +1162,59 @@ class StartRound extends Component {
 
 
 
+															{/* SCORING NOT WORKING FOR FALSHCARD	 */}
 
-														<h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
+														{(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ?(
+														<>
+														<h3 style={{
+
+
+																	backgroundColor:" #68c1d3",
+																	width: "260px",
+																	margin: "auto",
+																	borderRadius: "20px 20px 0px 0px",
+																	padding: "10px",
+																	color: "#0e0e0e",
+
+														}}>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
+														
+														<ul style={{
+															color: "#0e0e0e",
+															listStyleType: "none",
+															backgroundColor: "#fff",
+															width: "260px",
+															margin: "auto",
+															position: "relative",
+															borderRadius: "0px 0px 20px 20px",
+															padding: "0"
+														}}>
+														{
+															this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+																		
+																		return <li key={key} style={{
+																					padding: "18px",
+																					textAlign: "center"
+																		}}>{e.answer}</li> 
+																	})
+
+														}
+														</ul>
+														
+
+														<div class="align-self-center" style={{ textAlign: 'center',marginTop:"18px" }}>
+															<button style={{ minWidth: '150px', marginRight: '18px' }} class="blue_btn light_blue_btn" type="button" onClick={this.saveNextAnswer.bind(this)}>Correct Answer</button>
+														</div>
+														<div class="align-self-center" style={{ textAlign: 'center', marginTop:"10px" }}>
+															<button style={{ minWidth: '150px', marginRight: '18px' }} class="pink_btn" type="button" onClick={this.saveNextAnswer.bind(this)}>Next</button>
+														</div>
+														
+														
+														
+														
+														
+														</>
+														):(<h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>)}		
+														
 
 														{
 															(this.state.listArr[this.state.indexQuestion]['hint'] === 2) ?
@@ -1271,36 +1354,36 @@ class StartRound extends Component {
 
 
 															{
-																(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ?
+																// (this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ?
 
-																	this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
-																		var forclass = e._id + key;
-																		return <p class={
-																			(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
-																				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
-																					'fancy2 highlight' :
-																					(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight'
-																				: 'fancy2'
-																		}>
-																			<label>
+																// 	this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
+																// 		var forclass = e._id + key;
+																// 		return <p class={
+																// 			(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
+																// 				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
+																// 					'fancy2 highlight' :
+																// 					(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : (e.correctAnswer === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight'
+																// 				: 'fancy2'
+																// 		}>
+																// 			<label>
 
-																				{(key === 0) ? <b class="option_ _a">A</b> : null}
-																				{(key === 1) ? <b class="option_ _b">B</b> : null}
-																				{(key === 2) ? <b class="option_ _c">C</b> : null}
-																				{(key === 3) ? <b class="option_ _d">D</b> : null}
-																				{(key === 4) ? <b class="option_ _e">E</b> : null}
-																				{(key === 5) ? <b class="option_ _f">F</b> : null}
+																// 				{(key === 0) ? <b class="option_ _a">A</b> : null}
+																// 				{(key === 1) ? <b class="option_ _b">B</b> : null}
+																// 				{(key === 2) ? <b class="option_ _c">C</b> : null}
+																// 				{(key === 3) ? <b class="option_ _d">D</b> : null}
+																// 				{(key === 4) ? <b class="option_ _e">E</b> : null}
+																// 				{(key === 5) ? <b class="option_ _f">F</b> : null}
 
-																				{(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
-																					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this, this.state.indexQuestion, e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled' : ''} /> :
-																					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this, this.state.indexQuestion, e)} value={e.answer} disabled={(e.readonly) ? 'disabled' : ''} />
-																				}
-																				<span for={forclass}>{e.answer}</span>
-																			</label>
-																		</p>
-																	})
+																// 				{(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
+																// 					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this, this.state.indexQuestion, e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled' : ''} /> :
+																// 					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleFlashcardSelectChange.bind(this, this.state.indexQuestion, e)} value={e.answer} disabled={(e.readonly) ? 'disabled' : ''} />
+																// 				}
+																// 				<span for={forclass}>{e.answer}</span>
+																// 			</label>
+																// 		</p>
+																// 	})
 
-																	: null
+																// 	: null
 															}
 
 															{
@@ -1330,6 +1413,9 @@ class StartRound extends Component {
 
 														</div>
 													</div>
+
+
+													
 													<div class="align-self-center" style={{ textAlign: 'center' }}>
 														<button style={{ minWidth: '150px', marginRight: '18px' }} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
 													</div>
