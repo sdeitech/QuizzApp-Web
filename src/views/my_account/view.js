@@ -36,6 +36,7 @@ class MyAccount extends Component {
             editModel: false,
             changePasswordModel: false,
             fields: { availabilityStatus: 1 },
+            availabilityStatus1:"",
             errors: {},
             changePasswordFields: { userId: '', oldPassword: '', password: '', confirm_password: '' },
             changePasswordErrors: {},
@@ -74,7 +75,7 @@ class MyAccount extends Component {
             return response.json();
         }).then((data) => {
             var data = data.data;
-            this.setState({ fields: data,name1:data.name,userStatus:data.userStatus,profilepic1:data.image });
+            this.setState({ fields: data,name1:data.name,userStatus:data.userStatus,profilepic1:data.image,availabilityStatus1:data.availabilityStatus });
             if (data.image === '') {
                 this.setState({ profile_picture: 'avatars/placeholder-user.png' })
             }
@@ -477,9 +478,18 @@ class MyAccount extends Component {
 let fields = this.state.fields;
 fields['name'] = this.state.name1;
 fields['userStatus'] = this.state.userStatus;
+fields['availabilityStatus'] = this.state.availabilityStatus1;
 // fields['image'] = this.state.profilepic1
 
-this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.state.availabilityStatusImg1,fields })}} color="danger" centered>
+this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.state.availabilityStatusImg1,fields })
+
+
+
+
+}} color="danger" centered>
+
+
+
                         <CModalBody className="model-bg">
 
                             <div>
@@ -489,6 +499,7 @@ this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.st
                                         fields['name'] = this.state.name1;
                                         // fields['image'] = this.state.profilepic1
                                         fields['userStatus'] = this.state.userStatus;
+                                        fields['availabilityStatus'] = this.state.availabilityStatus1;
                                         this.setState({ editModel: false ,availabilityStatusImg : this.state.availabilityStatusImg1,fields})}
                                         
                                         
