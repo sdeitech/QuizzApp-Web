@@ -27,7 +27,7 @@ class AddRoundQuestion extends Component {
 		this.state = {
 			isLoading: false,
 			answers: [],
-			fields: { image: '', question: '', timeLimitSeconds: 30, timeLimit: '00:30', basePoints: 100, negativeBasePoints: 50, execution_mode: 0, scoring: 1, negativeScoring: false, hint: 3, answerType: 1, onDemandNegativePoints: 25, answerTypeBoolean: false, hintText: '', fileUrl: '', fileType: '' },
+			fields: { image: '', question: '', timeLimitSeconds: 30, timeLimit: '00:30', basePoints: 100, negativeBasePoints: 50, execution_mode: 0, scoring: 2, negativeScoring: false, hint: 3, answerType: 1, onDemandNegativePoints: 25, answerTypeBoolean: false, hintText: '', fileUrl: '', fileType: '' },
 			errors: {},
 			fieldsAnswer: {},
 			errorsAnswer: {},

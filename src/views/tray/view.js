@@ -386,7 +386,11 @@ class RoundTray extends Component {
         }
         if (data.hint == 1) {
             data.hint=3;
+            data.scoring = 2
+
         }
+
+        
         if (data.gameType === "MatchIt" || data.gameType === "Bingo") {
             console.log(111);
             if (!data.entriesPerRound) {

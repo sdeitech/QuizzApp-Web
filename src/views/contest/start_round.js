@@ -395,6 +395,7 @@ class StartRound extends Component {
 			var data = data.data;
 			this.setState({ listArr: data, showRound: false, saveExitAnswer: false, indexRound: (indexRoundNo + 1) });
 			// console.log(this.state.listArr);
+			
 			this.startTimer();
 		});
 	}
@@ -1091,7 +1092,7 @@ class StartRound extends Component {
 																height: "150px",
 																marginLeft: "232px"
 															}}>
-																<video width="50" height="50" controls autoPlay>
+																<video width="50" height="50" controls autoPlay >
 																	<source src={this.state.listArr[this.state.indexQuestion]['file']} type="video/mp4" />
 																	This browser doesn't support video tag.
 																</video>
@@ -1104,7 +1105,10 @@ class StartRound extends Component {
 																height: "150px",
 																marginLeft: "232px"
 															}}>
-																<audio controls autoplay>
+
+
+
+																<audio controls autoPlay>
 																	<source src={this.state.listArr[this.state.indexQuestion]['file']}  type="audio/mpeg" />
 																	Your browser does not support the audio element.
 																</audio>
