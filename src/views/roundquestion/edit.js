@@ -1709,7 +1709,7 @@ class EditRoundQuestion extends Component {
 				                        	this.state.videoList.map((e, key) => {
 	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
 				                                	<div class="cate-box2"  onClick={this.selectVideo.bind(this,e)}  style={{ cursor:'pointer'}} >
-				                                		<video width="400" className="main"  style={{objectFit:"cover"}} controls >
+				                                		<video width="400"  controlsList="nodownload" className="main"  style={{objectFit:"cover"}} controls >
 														  <source src={e.url} type="video/mp4"/>
 														  <source src={e.url} type="video/ogg"/>
 														</video>
@@ -1776,7 +1776,7 @@ class EditRoundQuestion extends Component {
 				                        	this.state.audioList.map((e, key) => {
 	                                            return <div class="col-lg-6 col-md-6 col-sm-6">
 				                                	<div class="cate-box2"  onClick={this.selectAudio.bind(this,e)}  style={{ cursor:'pointer'}} >
-				                                        <audio className="main"  controls>
+				                                        <audio  controlsList="nodownload" className="main"  controls>
 														  <source src={e.url} type="audio/ogg"/>
 														  <source src={e.url} type="audio/mpeg"/>
 														</audio>

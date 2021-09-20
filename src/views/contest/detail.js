@@ -200,14 +200,14 @@ class Detail extends Component {
                                                     <div className="abc-detail">
                                                         <p>Game PIN</p>
                                                         <h3>
-                                                            {this.state.data.gamePin}
+                                                            {this.state.data.roomDetails.gamePin}
                                                         </h3>
                                                     </div>
                                                     <div className="abc-detail">
                                                         <p>Game Password</p>
                                                         <h3>
-                                                            {this.state.data.password
-                                                                ? this.state.data
+                                                            {this.state.data.roomDetails.password
+                                                                ? this.state.data.roomDetails
                                                                         .password
                                                                 : "-NA-"}
                                                         </h3>
