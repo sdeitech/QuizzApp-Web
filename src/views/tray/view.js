@@ -86,8 +86,9 @@ class RoundTray extends Component {
                 {
                     type: "Bingo",
                     name: "Bingo",
-                    src: "./murabbo/img/bingo.svg",
-                    qtyAdd: false,
+                    // this.state.gameTypeArr.splice(4,1);
+                    // this.state.gameTypeArr.splice(6,1);
+                    // this.state.gameTypeArr.splice(7,1);
                     qty: 1,
                     class: "contest-box green-bg",
                 },
@@ -124,6 +125,7 @@ class RoundTray extends Component {
         contest_id = url.substring(url.lastIndexOf("/") + 1);
         this.setState({ contest_id: contest_id });
         this.getList(contest_id);
+        this.getContest(contest_id);
     }
 
     handleRLDDChange(newItems) {
@@ -174,9 +176,52 @@ class RoundTray extends Component {
                         for (var i = 0; i < data.length; i++) {
                             data[i]["id"] = i;
                         }
+
+                        if(data.playerType == 1){
+                            console.log("Dddd");
+                        }
                         this.setState({ listArr: data });
                     } else {
                         this.setState({ listArr: [] });
+                    }
+                });
+        }
+    }
+    getContest(contest_id1) {
+        if (contest_id) {
+            fetch(
+                configuration.baseURL + "contest/contest?contestId=" + contest_id1,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization:
+                            "Bearer " + reactLocalStorage.get("clientToken"),
+                    },
+                }
+            )
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.data.length > 0) {
+                        let data1 = data.data;
+                        
+
+                        if(data1[0].playerType == 1){
+                            
+                          this.state.gameTypeArr =  this.state.gameTypeArr.filter((e,i)=>{
+
+                            return e.type == "Hangman" || e.type == "MatchIt" || e.type == "Unscramble" || e.type == "GuessAndGo" || e.type == "Quiz"  
+                            
+                          })
+                            
+                            
+                        }
+                       
+                    } else {
+                       
                     }
                 });
         }
@@ -1587,72 +1632,81 @@ class RoundTray extends Component {
                                                                 </div>
                                                             )}
 
-                                                            {this.state.fields[
-                                                                "negativeScoring"
-                                                            ] === true ? (
-                                                                <div>
-                                                                    <div
-                                                                        style={{
-                                                                            margin: "0px 0 5px 0",
-                                                                        }}
-                                                                        className="cus_input "
-                                                                    >
-                                                                        <label
-                                                                            style={{
-                                                                                paddingLeft:
-                                                                                    "5px",
-                                                                            }}
-                                                                            className="cus_label"
-                                                                        >
-                                                                            Negative
-                                                                            Base
-                                                                            Points
-                                                                            (0 -&nbsp;
-                                                                            {this
-                                                                                .state
-                                                                                .fields[
-                                                                                "basePoints"
-                                                                            ]})
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="range-wrap">
-                                                                        <input
-                                                                            min="0"
-                                                                            max={this
-                                                                                .state
-                                                                                .fields[
-                                                                                "basePoints"
-                                                                            ]}
-                                                                            step={
-                                                                                configuration.sliderScore
-                                                                            }
-                                                                            type="range"
-                                                                            className="range"
-                                                                            id="range"
-                                                                            value={
-                                                                                this
-                                                                                    .state
-                                                                                    .fields[
-                                                                                "negativeBasePoints"
-                                                                                ]
-                                                                            }
-                                                                            onChange={this.handleChange.bind(
-                                                                                this,
-                                                                                "negativeBasePoints"
-                                                                            )}
-                                                                        />
-                                                                        <output className="bubble">
-                                                                            {
-                                                                                this
-                                                                                    .state
-                                                                                    .fields[
-                                                                                "negativeBasePoints"
-                                                                                ]
-                                                                            }
-                                                                        </output>
-                                                                    </div>
-                                                                </div>
-                                                            ) : null}
+
+                                                            {this.state.fields["gameType"] === "Blank" ? null : (
+
+                                                                    this.state.fields[
+                                                                        "negativeScoring"
+                                                                    ] === true ? (
+                                                                        <div>
+                                                                            <div
+                                                                                style={{
+                                                                                    margin: "0px 0 5px 0",
+                                                                                }}
+                                                                                className="cus_input "
+                                                                            >
+                                                                                <label
+                                                                                    style={{
+                                                                                        paddingLeft:
+                                                                                            "5px",
+                                                                                    }}
+                                                                                    className="cus_label"
+                                                                                >
+                                                                                    Negative
+                                                                                    Base
+                                                                                    Points
+                                                                                    (0 -&nbsp;
+                                                                                    {this
+                                                                                        .state
+                                                                                        .fields[
+                                                                                        "basePoints"
+                                                                                    ]})
+                                                                                </label>
+                                                                            </div>
+                                                                            <div className="range-wrap">
+                                                                                <input
+                                                                                    min="0"
+                                                                                    max={this
+                                                                                        .state
+                                                                                        .fields[
+                                                                                        "basePoints"
+                                                                                    ]}
+                                                                                    step={
+                                                                                        configuration.sliderScore
+                                                                                    }
+                                                                                    type="range"
+                                                                                    className="range"
+                                                                                    id="range"
+                                                                                    value={
+                                                                                        this
+                                                                                            .state
+                                                                                            .fields[
+                                                                                        "negativeBasePoints"
+                                                                                        ]
+                                                                                    }
+                                                                                    onChange={this.handleChange.bind(
+                                                                                        this,
+                                                                                        "negativeBasePoints"
+                                                                                    )}
+                                                                                />
+                                                                                <output className="bubble">
+                                                                                    {
+                                                                                        this
+                                                                                            .state
+                                                                                            .fields[
+                                                                                        "negativeBasePoints"
+                                                                                        ]
+                                                                                    }
+                                                                                </output>
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : null
+
+
+
+                                                            )}
+
+                                                            
 
                                                             {this.state.fields[
                                                                 "gameType"
@@ -1702,76 +1756,85 @@ class RoundTray extends Component {
                                                                 }
                                                             </span>
 
-                                                            {this.state.fields[
-                                                                "hint"
-                                                            ] === 3 ||
-                                                                this.state.fields[
-                                                                "hint"
-                                                                ] === "3" ? (
-                                                                <div>
-                                                                    <div
-                                                                        style={{
-                                                                            margin: "0px 0 5px 0",
-                                                                        }}
-                                                                        className="cus_input "
-                                                                    >
-                                                                        <label
-                                                                            style={{
-                                                                                paddingLeft:
-                                                                                    "5px",
-                                                                            }}
-                                                                            className="cus_label"
-                                                                        >
-                                                                            On
-                                                                            Demand
-                                                                            Negative
-                                                                            Points
-                                                                            (0 -&nbsp;
-                                                                            {this
-                                                                                .state
-                                                                                .fields[
-                                                                                "basePoints"
-                                                                            ]})
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="range-wrap">
-                                                                        <input
-                                                                            min="0"
-                                                                            max={this
-                                                                                .state
-                                                                                .fields[
-                                                                                "basePoints"
-                                                                            ]}
-                                                                            step={
-                                                                                configuration.sliderScore
-                                                                            }
-                                                                            type="range"
-                                                                            className="range"
-                                                                            id="range"
-                                                                            value={
-                                                                                this
-                                                                                    .state
-                                                                                    .fields[
-                                                                                "onDemandNegativePoints"
-                                                                                ]
-                                                                            }
-                                                                            onChange={this.handleChange.bind(
-                                                                                this,
-                                                                                "onDemandNegativePoints"
-                                                                            )}
-                                                                        />
-                                                                        <output className="bubble">
-                                                                            {
-                                                                                this
-                                                                                    .state
-                                                                                    .fields[
-                                                                                "onDemandNegativePoints"
-                                                                                ]
-                                                                            }
-                                                                        </output>
-                                                                    </div>
-                                                                </div>
-                                                            ) : null}
+
+                                                                {this.state.fields["gameType"] == "Blank" ? null : (
+
+
+                                                                        this.state.fields[
+                                                                            "hint"
+                                                                        ] === 3 ||
+                                                                            this.state.fields[
+                                                                            "hint"
+                                                                            ] === "3" ? (
+                                                                            <div>
+                                                                                <div
+                                                                                    style={{
+                                                                                        margin: "0px 0 5px 0",
+                                                                                    }}
+                                                                                    className="cus_input "
+                                                                                >
+                                                                                    <label
+                                                                                        style={{
+                                                                                            paddingLeft:
+                                                                                                "5px",
+                                                                                        }}
+                                                                                        className="cus_label"
+                                                                                    >
+                                                                                        On
+                                                                                        Demand
+                                                                                        Negative
+                                                                                        Points
+                                                                                        (0 -&nbsp;
+                                                                                        {this
+                                                                                            .state
+                                                                                            .fields[
+                                                                                            "basePoints"
+                                                                                        ]})
+                                                                                    </label>
+                                                                                </div>
+                                                                                <div className="range-wrap">
+                                                                                    <input
+                                                                                        min="0"
+                                                                                        max={this
+                                                                                            .state
+                                                                                            .fields[
+                                                                                            "basePoints"
+                                                                                        ]}
+                                                                                        step={
+                                                                                            configuration.sliderScore
+                                                                                        }
+                                                                                        type="range"
+                                                                                        className="range"
+                                                                                        id="range"
+                                                                                        value={
+                                                                                            this
+                                                                                                .state
+                                                                                                .fields[
+                                                                                            "onDemandNegativePoints"
+                                                                                            ]
+                                                                                        }
+                                                                                        onChange={this.handleChange.bind(
+                                                                                            this,
+                                                                                            "onDemandNegativePoints"
+                                                                                        )}
+                                                                                    />
+                                                                                    <output className="bubble">
+                                                                                        {
+                                                                                            this
+                                                                                                .state
+                                                                                                .fields[
+                                                                                            "onDemandNegativePoints"
+                                                                                            ]
+                                                                                        }
+                                                                                    </output>
+                                                                                </div>
+                                                                            </div>
+                                                                        ) : null
+
+
+                                                                )}
+
+                                                            
                                                         </div>
                                                     ) : null}
 

@@ -117,11 +117,16 @@ class AddRoundQuestion extends Component {
 		}).then((response) => {
 			return response.json();
 		}).then((data) => {
-			if (data.data.length > 0) {
-				var data = data.data;
-				this.setState({ imageList: data });
-				this.setState({ imageList1: data });
+
+
+			if(data.data){
+				if (data.data.length > 0) {
+					var data = data.data;
+					this.setState({ imageList: data });
+					this.setState({ imageList1: data });
+				}
 			}
+		
 		});
 
 		fetch(configuration.baseURL + "media?type=video", {
@@ -1034,7 +1039,7 @@ class AddRoundQuestion extends Component {
 												<div className="profile-img" onClick={() => { this.setState({ optionsModel: true }) }}>
 
 
-													<form id="file-upload-form" className="uploader question-add-edit">
+													<form id="file-upload-form" className="uploader question-add-edit"  autoComplete="off">
 
 
 
@@ -1187,7 +1192,8 @@ class AddRoundQuestion extends Component {
 													<span className="error-msg">{this.state.errors["answerType"]}</span>
 
 													<div className="cus_input input_wrap">
-														<img src="./murabbo/img/info.svg" alt="Upload" /> <input type="text" required name="" onChange={this.handleChange.bind(this, 'hintText')} value={this.state.fields['hintText']} />
+														<img src="./murabbo/img/info.svg" alt="Upload" /> 
+														<input type="text" required name=""   autoComplete="off" onChange={this.handleChange.bind(this, 'hintText')} value={this.state.fields['hintText']} />
 														<label>Hint</label>
 													</div>
 													<span className="error-msg">{this.state.errors["hintText"]}</span>
@@ -1570,7 +1576,7 @@ class AddRoundQuestion extends Component {
 
 
 
-																		<video width="400" className="main" style={{objectFit:"cover"}} controls >
+																		<video width="400" className="main" style={{objectFit:"cover"}} controlsList="nodownload"  controls >
 																			<source src={e.url} type="video/mp4" />
 																			<source src={e.url} type="video/ogg" />
 																		</video>
@@ -1637,7 +1643,7 @@ class AddRoundQuestion extends Component {
 																return <div class="col-lg-6 col-md-6 col-sm-6">
 																	
 																	<div class="cate-box2" onClick={this.selectAudio.bind(this, e)} style={{ cursor: 'pointer' }} >
-																		<audio className="main" controls>
+																		<audio className="main" controls controlsList="nodownload">
 																			<source src={e.url} type="audio/ogg" />
 																			<source src={e.url} type="audio/mpeg" />
 																		</audio>

@@ -1124,7 +1124,7 @@ class StartRound extends Component {
 																height: "150px",
 																marginLeft: "232px"
 															}}>
-																<video width="50" height="50" controls autoPlay >
+																<video controlsList="nodownload" width="50" height="50" controls autoPlay >
 																	<source src={this.state.listArr[this.state.indexQuestion]['file']} type="video/mp4" />
 																	This browser doesn't support video tag.
 																</video>
@@ -1140,7 +1140,7 @@ class StartRound extends Component {
 
 
 
-																<audio controls autoPlay>
+																<audio  controlsList="nodownload" controls autoPlay>
 																	<source src={this.state.listArr[this.state.indexQuestion]['file']}  type="audio/mpeg" />
 																	Your browser does not support the audio element.
 																</audio>

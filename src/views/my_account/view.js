@@ -29,6 +29,7 @@ class MyAccount extends Component {
         super(props);
         this.state = {
             profile_picture: 'avatars/placeholder-user.png',
+            
             availabilityStatusImg: 'img/online.png',
             name: '',
             name1: '',
@@ -42,7 +43,7 @@ class MyAccount extends Component {
             changePasswordErrors: {},
             tosterMsg: '',
             isexitImage: '',
-            profilepic1:''
+            profilepic1:'avatars/placeholder-user.png'
 
         };
     }
@@ -78,8 +79,11 @@ class MyAccount extends Component {
             this.setState({ fields: data,name1:data.name,userStatus:data.userStatus,profilepic1:data.image,availabilityStatus1:data.availabilityStatus });
             if (data.image === '') {
                 this.setState({ profile_picture: 'avatars/placeholder-user.png' })
+                this.setState({ profilepic1: 'avatars/placeholder-user.png' })
+
             }
             else {
+
                 this.setState({ profile_picture: data.image })
             }
 
@@ -481,6 +485,21 @@ fields['userStatus'] = this.state.userStatus;
 fields['availabilityStatus'] = this.state.availabilityStatus1;
 // fields['image'] = this.state.profilepic1
 
+var img = this.state.profilepic1;
+if(img!='avatars/placeholder-user.png'){
+    fields["image"] = img
+}
+$(document).ready(function () {
+    if(img!='avatars/placeholder-user.png'){
+
+        $('#start').hide();
+        $(".display-profile-pic").attr("src", `${img}`);
+        $(".display-profile-pic").show();    
+    }
+    $(".profile").attr("src", `${img}`);
+    // $(".file-upload").val("");
+});
+
 this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.state.availabilityStatusImg1,fields })
 
 
@@ -498,6 +517,26 @@ this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.st
                                         let fields = this.state.fields;
                                         fields['name'] = this.state.name1;
                                         // fields['image'] = this.state.profilepic1
+
+
+                                        var img = this.state.profilepic1;
+                                        if(img!='avatars/placeholder-user.png'){
+                                            fields["image"] = img
+                                        }
+                                        $(document).ready(function () {
+                                            if(img!='avatars/placeholder-user.png'){
+                
+                                                $('#start').hide();
+                                                $(".display-profile-pic").attr("src", `${img}`);
+                                                $(".display-profile-pic").show();    
+                                            }
+                                            $(".profile").attr("src", `${img}`);
+                                            // $(".file-upload").val("");
+                                        });
+
+
+
+
                                         fields['userStatus'] = this.state.userStatus;
                                         fields['availabilityStatus'] = this.state.availabilityStatus1;
                                         this.setState({ editModel: false ,availabilityStatusImg : this.state.availabilityStatusImg1,fields})}
@@ -538,9 +577,9 @@ this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.st
 
                                                                 <img className="display-profile-pic" src={this.state.fields['image']} alt="" />
                                                                 <div id="start" style={{ height: "100px", width: "100px" }}>
-                                                                    {(this.state.fields['image'] === '') ? <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt="" />
+                                                                    {(this.state.fields['image'] === '') ? <div><img className="profile-pic" style={{paddingTop:"38px"}} src='./murabbo/img/upload.svg' alt="" />
 
-                                                                        <div id="add_image">Add Image</div></div> : null}
+                                                                        </div> : null}
 
                                                                 </div>
                                                                 <div id="response" className="hidden">
@@ -560,6 +599,7 @@ this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.st
                                             <div className="cus_input status_input input_wrap">
 
                                             <div style={{margin:"40px 0px 0 3px", position:"absolute"}} ><img style={{width:"16px"}} src={this.state.availabilityStatusImg} alt="img" /></div>
+                                            
                                                 <select className="floating-select" style={{paddingLeft: "30px"}} onChange={this.handleChange.bind(this, 'availabilityStatus')} value={this.state.fields['availabilityStatus']} required> 
                                                     <option value="1">Online</option>
                                                     <option value="2">Away</option>
@@ -581,8 +621,11 @@ this.setState({ editModel: !this.state.editModel,availabilityStatusImg : this.st
                                                     </div>
                                                     <span className="error-msg">{this.state.errors["name"]}</span>
                                                     <div className="cus_input input_wrap">
-                                                        <img src="./murabbo/img/email.svg" alt="Upload" /> <input type="text" required name="" value={this.state.fields['email']} readonly />
-                                                        <label>Email</label>
+                                                        <img src="./murabbo/img/email.svg" alt="Upload" /> <input type="text" required name="" value={this.state.fields['email']} readonly  style={{opacity:"0.3"}} disabled />
+                                                        <label style={{
+                                                        position: "absolute",
+                                                        top: "-22px"
+                                                        }}>Email</label>
                                                     </div>
 
                                                     <div className="cus_input input_wrap">

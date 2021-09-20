@@ -926,7 +926,7 @@ class DetailContestWithQuestionList extends Component {
 																height: "150px",
 																marginLeft: "232px"
 															}}>
-																<video width="50" height="50" controls autoPlay>
+																<video width="50" height="50" controls autoPlay controlsList="nodownload">
 																	<source src={this.state.listArr[this.state.indexQuestion]['file']} type="video/mp4" />
 																	This browser doesn't support video tag.
 																</video>
@@ -939,7 +939,7 @@ class DetailContestWithQuestionList extends Component {
 																height: "150px",
 																marginLeft: "232px"
 															}}>
-																<audio controls autoplay>
+																<audio controls autoPlay controlsList="nodownload">
 																	<source src={this.state.listArr[this.state.indexQuestion]['file']} />
 																	Your browser does not support the audio element.
 																</audio>

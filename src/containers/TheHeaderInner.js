@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Session from '../session';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import configuration from '../config';
+import { ToastContainer, toast } from "react-toastify";
+
 import {
     CModal,
     CModalBody,
@@ -58,6 +60,8 @@ class TheHeaderInner extends Component {
                 this.setState({ profile_picture: data.image, name: data.name })
             }
         });
+
+        console.log("checkkkkk",this.props);
     }
 
 
@@ -92,36 +96,38 @@ class TheHeaderInner extends Component {
         }
 
         this.setState({ errorsPlay: errors });
-        if (formIsValid) {
-            this.setState({ playNewContestModel: false });
-            return false;
-            //  const data = new FormData();
-            //  data.append('displayName',fields["display_name"]);
-            //  data.append('password',fields["password"]);
-            //  data.append('createdBy',JSON.parse(reactLocalStorage.get('userData')).userId);
-            //  data.append('contestId',fields["contestId"]) ;
+        // if (formIsValid) {
+        //     this.setState({ playNewContestModel: false });
+            
+        //      const data = new FormData();
+        //      data.append('gamePin',fields["display_name"]);
+        //      data.append('password',fields["password"]);
+        //      data.append('createdBy',JSON.parse(reactLocalStorage.get('userData')).userId);
+        //      data.append('contestId',fields["contestId"]) ;
 
-            //  fetch(configuration.baseURL+"room/room", {
-            //      method: "post",
-            //      headers: {
-            //          'contentType': "application/json",
-            //          'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
-            //      },
-            //      body:data
-            //  }).then((response) => {
-            //      return response.json();
-            //  }).then((data) => {
-            //      if(data.code === 200){
-            //          this.props.history.push('/detail-contest/'+fields["contestId"]+'?'+data.data._id);
-            //      }
-            //      else
-            //      {
-            //          return toast.error(data.message);
-            //      }
+        //      fetch(configuration.baseURL+"room/pinPassword?gamePin="+fields["display_name"]+"&password="+fields["password"]+"", {
+        //          method: "GET",
+        //          headers: {
+        //              'contentType': "application/json",
+        //              'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+        //          }
+        //      }).then((response) => {
+        //          return response.json();
+        //      }).then((data) => {
+        //          if(data.code === 200){
 
-            //  });
+        //             console.log("checkkkkk",this.props);
 
-        }
+        //              this.props.history.push('/detail-contest/'+data.data[0].contestDetails.parentId+'?'+data.data[0]._id);
+        //          }
+        //          else
+        //          {
+        //              return toast.error(data.message);
+        //          }
+
+        //      });
+
+        // }
     }
     searchData(e){
         this.setState({searchKey:e.target.value})
