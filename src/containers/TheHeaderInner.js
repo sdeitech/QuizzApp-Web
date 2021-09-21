@@ -20,7 +20,9 @@ class TheHeaderInner extends Component {
             errorsPlay: {},
             fieldsPlay: { display_name: '', password: '' },
             playNewContestModel: false,
-            searchKey:''
+            searchKey:'',
+            hiddenPassword:true,
+
         };
     }
 
@@ -81,6 +83,9 @@ class TheHeaderInner extends Component {
         this.setState({ errorsPlay: errors });
     }
 
+    toggleShowPassword() {
+        this.setState({ hiddenPassword: !this.state.hiddenPassword });
+      }
 
     handleNext() {
         let fields = this.state.fieldsPlay;
@@ -252,8 +257,16 @@ class TheHeaderInner extends Component {
 
                                             <div className="cus_input input_wrap">
                                                 <img src="./murabbo/img/password.svg" />
-                                                <input required type="text" onChange={this.handleChangePlay.bind(this, "password")} value={this.state.fieldsPlay["password"]} />
+                                                <input required type={this.state.hiddenPassword ? "password": "text"} onChange={this.handleChangePlay.bind(this, "password")} value={this.state.fieldsPlay["password"]} />
                                                 <label>Game Password</label>
+                                                <span style={{
+                                                position: "absolute",
+                                                right: "27px",
+                                                top: "47px"
+                                                    }}>
+                                                
+                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
+                                            </span>
                                             </div>
                                             <span className="error-msg">{this.state.errorsPlay["password"]}</span>
                                         </div>
@@ -296,10 +309,10 @@ class TheHeaderInner extends Component {
                                         <div className="col-md-10 offset-md-1">
 
                                             <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-                                                <button style={{ minWidth: '150px' }} className="yellow_btn" type="button" onClick={this.handleLogout.bind(this, true)} >Logout</button>
+                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={this.handleLogout.bind(this, true)} >Logout</button>
                                             </div>
                                             <div style={{ textAlign: 'center', float: 'left' }} className="">
-                                                <button style={{ minWidth: '150px', color: '#f8c84e', fontWeight: '500' }} className="btn" type="button" onClick={() => this.setState({ confirmationModel: false })} >Cancel</button>
+                                                <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => this.setState({ confirmationModel: false })} >Cancel</button>
                                             </div>
                                         </div>
                                     </div>
