@@ -4,7 +4,7 @@ var jwt = require('jsonwebtoken');
 
 const config = {
     appName: 'Murabbo',
-    fbAppId: "218767566802676",
+    fbAppId: "407986900535598",
     youtube_api_key: process.env.REACT_APP_YOUTUBE_API_KEY,
     // baseURL: 'http://localhost:9002/api/app/',
     // APIbaseURL: 'http://localhost:9002/api/',
