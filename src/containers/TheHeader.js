@@ -715,7 +715,11 @@ class TheHeader extends Component {
                     console.log(payload);
                     window.location.href = "/#/dashboard";
                 });
-            } else {
+            } else if(data.code  === 409){
+            
+                    this.setState({tosterMsg:data.message})
+            
+            }else {
                 this.setState({
                     openModelRegister: true,
                     openModelLogin: false,
