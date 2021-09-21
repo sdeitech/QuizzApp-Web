@@ -276,7 +276,7 @@ class MyGroups extends Component {
                                 </div>
                             </div>
                         </section>
-                        <CModal show={this.state.addModel}  closeOnBackdrop={false}  onClose={()=> this.setState({addModel:false})}
+                        <CModal show={this.state.addModel}  closeOnBackdrop={false}  onClose={()=> this.setState({addModel:false,isEditMode:false})}
                     color="danger" 
                     centered>
                         <CModalBody className="model-bg">
@@ -284,7 +284,7 @@ class MyGroups extends Component {
                         <div>
                             <div className="modal-body">
                                 
-                                <button type="button" className="close" onClick={()=> this.setState({addModel:false})}>
+                                <button type="button" className="close" onClick={()=> this.setState({addModel:false,isEditMode:false})}>
                                     <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
                                 </button>
                                 <div className="model_data">
@@ -326,7 +326,7 @@ class MyGroups extends Component {
  (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Add")}</button>
 
                                         )}
-                                        <button style={{minWidth: '150px',marginRight:'10px'}} className="pink_btn" type="button"  onClick={() => this.setState({'addModel':false,fields:{saveToTitle:''},errors:{saveToTitle:''}})} >Cancel</button>
+                                        <button style={{minWidth: '150px',marginRight:'10px'}} className="pink_btn" type="button"  onClick={() => this.setState({'addModel':false,isEditMode:false,fields:{saveToTitle:''},errors:{saveToTitle:''}})} >Cancel</button>
                                     </div>
                                 </div>
                             </div>
