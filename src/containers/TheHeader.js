@@ -1010,8 +1010,8 @@ class TheHeader extends Component {
                                             </div>
 
                                             <div className="social-login">
-                                                <FacebookLogin
-                                                    appId="1355959991407151"
+                                                {/* <FacebookLogin
+                                                    appId={configuration.fbAppId}
                                                     // autoLoad
                                                     fields="name,email,picture"
                                                     callback={this.responseFacebook.bind(
@@ -1026,9 +1026,9 @@ class TheHeader extends Component {
                                                             <img src="./murabbo/img/facebook.svg" className="cursor"/>
                                                         </span>
                                                     )}
-                                                />
+                                                /> */}
 
-                                                <GoogleLogin
+                                                {/* <GoogleLogin
                                                     clientId="118148468529-v1147npplqkpe9gmjf0pvgb03q4pg1i5.apps.googleusercontent.com"
                                                     buttonText="Login"
                                                     render={(renderProps) => (
@@ -1047,7 +1047,7 @@ class TheHeader extends Component {
                                                     cookiePolicy={'single_host_origin'}
                                                     onSuccess={this.responseGoogle.bind(this)}
                                                     onFailure={this.responseGoogle.bind(this)}
-                                                />
+                                                /> */}
                                             </div>
 
                                             <div className="full_btn mt50">
@@ -1233,7 +1233,7 @@ class TheHeader extends Component {
                                                 </div>
                                                 <div className="social-login">
                                                     <FacebookLogin
-                                                        appId="218767566802676"
+                                                        appId={configuration.fbAppId}
                                                         // autoLoad
                                                         fields="name,email,picture"
                                                         callback={this.responseFacebookForLogin.bind(
