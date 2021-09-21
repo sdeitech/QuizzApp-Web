@@ -385,7 +385,7 @@ class SearchRound extends Component {
 			                            <div class="row">
 			                                <div class="col-md-8">
 			                                    <div class="main_title">
-			                                        <h3>Search Rounds</h3>  
+			                                        <h3>Search</h3>  
 			                                    </div>
 			                                </div>
 			                                <div class="col-md-4">
