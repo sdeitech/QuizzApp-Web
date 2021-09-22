@@ -1233,7 +1233,7 @@ class StartRound extends Component {
 
 																	this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
 																		var forclass = e._id + key;
-																		return <p class={
+																		return <p className={
 																			(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
 																				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
 																					'fancy2 highlight' :
@@ -1279,7 +1279,7 @@ class StartRound extends Component {
 																						: tempcls;
 																					// var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
 																					var inputclass = "input_" + key;
-																					return <p class={pcalss}>
+																					return <p className={pcalss}>
 																						<label>
 
 																							{(key === 0) ? <b class="option_ _a">A</b> : null}
@@ -1323,7 +1323,7 @@ class StartRound extends Component {
 																					var innnerpclass = "fancy2 highlight fancy2_" + key;
 																					var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2 highlight";
 																					var inputclass = "input_" + key;
-																					return <p class={pcalss}>
+																					return <p className={pcalss}>
 																						<label>
 
 																							{(key === 0) ? <b class="option_ _a">A</b> : null}
@@ -1358,7 +1358,7 @@ class StartRound extends Component {
 
 																// 	this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
 																// 		var forclass = e._id + key;
-																// 		return <p class={
+																// 		return <p className={
 																// 			(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
 																// 				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
 																// 					'fancy2 highlight' :
@@ -1390,15 +1390,15 @@ class StartRound extends Component {
 																(this.state.listArr[this.state.indexQuestion]['answerType'] === 5) ?
 
 																	<div>
-																		<p class={(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ?
+																		<p className={(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ?
 																			(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' : (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' : (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ? 'fancy2 pinkhighlight' : 'fancy2'}>
 																			<label >
-																				<b class="option_ _a">A</b>
+																				<b className="option_ _a">A</b>
 																				<input id="trueFalse1" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this, this.state.indexQuestion, true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled' : ''} />
 																				<span for="trueFalse1">True</span>
 																			</label>
 																		</p>
-																		<p class={(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ?
+																		<p className={(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === false) ?
 																			(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 highlight' : 'fancy2 pinkhighlight' : (this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 highlight' : (this.state.listArr[this.state.indexQuestion]['selectAnswer'] === true) ? 'fancy2 pinkhighlight' : 'fancy2'}>
 																			<label >
 																				<b class="option_ _b">B</b>

@@ -385,22 +385,22 @@ const Room = props => {
 
     return (
         <Container>
-            <div class="app-container">
-                <div class="app-main">
-                    <div class="video-call-wrapper">
-                        <div class="video-participant">
-                            <div class="participant-actions">
+            <div className="app-container">
+                <div className="app-main">
+                    <div className="video-call-wrapper">
+                        <div className="video-participant">
+                            <div className="participant-actions">
                                 <button
-                                    class={
+                                    className={
                                         isAudioMuted === true
                                             ? "btn-mute"
                                             : "btn-mute"
                                     }
                                     onClick={muteAudio}
                                 ></button>
-                                <button class="btn-camera"></button>
+                                <button className="btn-camera"></button>
                             </div>
-                            <a href="#" class="name-tag">
+                            <a href="#" className="name-tag">
                                 Andy Will
                             </a>
 
@@ -415,15 +415,15 @@ const Room = props => {
                         {otherStreams.map((item, index) => {
                             console.log("other streams => ", item);
                             return (
-                                <div class="video-participant">
-                                    <div class="participant-actions">
+                                <div className="video-participant">
+                                    <div className="participant-actions">
                                         <button
-                                            class="btn-mute"
+                                            className="btn-mute"
                                             onClick={muteAudio}
                                         ></button>
-                                        <button class="btn-camera"></button>
+                                        <button className="btn-camera"></button>
                                     </div>
-                                    <a href="#" class="name-tag">
+                                    <a href="#" className="name-tag">
                                         Tina Cate
                                     </a>
                                     <Video key={index.toString()} item={item} />
@@ -431,10 +431,10 @@ const Room = props => {
                             );
                         })}
                     </div>
-                    <div class="video-call-actions ">
-                        <button class="video-action-button mic"></button>
-                        <button class="video-action-button camera"></button>
-                        <button class="video-action-button endcall">
+                    <div className="video-call-actions ">
+                        <button className="video-action-button mic"></button>
+                        <button className="video-action-button camera"></button>
+                        <button className="video-action-button endcall">
                             Leave
                         </button>
                     </div>

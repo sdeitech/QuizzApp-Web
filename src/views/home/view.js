@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {
     TheFooter,
+	TheFooterInner,
     TheHeader
 } from '../../containers/index'
 
@@ -22,7 +23,7 @@ class Home extends Component {
 		                </div>
 		            </section>
 		        </main>
-		        <TheFooter />
+		        < TheFooterInner/>
 		    </>
 		)
 	}

@@ -15,7 +15,7 @@ class TheFooter extends Component {
                             <div class="first_col">
                                 <div style={{color:'#fff'}} class="link">
                                     <a href="#/dashboard">Home</a>  
-                                    <a href="javascript:void(0);">About Us</a> 
+                                    <a href="#/about_us">About Us</a> 
                                     <a href="#/privacy_policy">Privacy Policy</a> 
                                     <a href="#/terms_conditions">Terms & Conditions</a> 
                                 </div>

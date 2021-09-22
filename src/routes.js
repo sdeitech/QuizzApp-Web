@@ -1,5 +1,8 @@
 import React from "react";
 
+
+
+const AboutUs = React.lazy(() => import("./views/cms/about_us"));
 const Home = React.lazy(() => import("./views/home/view"));
 const Category = React.lazy(() => import("./views/category/view"));
 const Brand = React.lazy(() => import("./views/brand/view"));
@@ -98,6 +101,7 @@ const routes = [
     { path: '/play-game', name: 'StartGame', component: StartGame },    
     { path: '/my_account', name: 'MyAccount', component: MyAccount },
     { path: '/privacy_policy', name: 'PrivacyPolicy', component: PrivacyPolicy },
+    { path: '/about_us', name: 'AboutUs', component: AboutUs },
     { path: '/terms_conditions', name: 'TermsConditions', component: TermsConditions },
     { path: '/my_groups', name: 'MyGroups', component: MyGroups },
     { path: '/leaderboard', name: 'Leaderboard', component: Leaderboard },

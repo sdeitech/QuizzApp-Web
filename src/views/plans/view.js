@@ -227,7 +227,7 @@ class Plans extends Component {
                                     {
                                         this.state.plans.map((val1, ckey1) => {
                                             return <div class="col-lg-4 col-md-6 col-sm-6">
-                                                <div class={"main_plan "+ val1.subscriptionCode.toLowerCase()}>
+                                                <div className={"main_plan "+ val1.subscriptionCode.toLowerCase()}>
                                                     <h3>{val1.title}</h3>
                                                     <h5>{(val1.price > 0) ? '$'+val1.price : 'Free' }</h5>
                                                     <p>{val1.description}</p>
