@@ -976,7 +976,7 @@ class DetailContestWithQuestionList extends Component {
 
 																	this.state.listArr[this.state.indexQuestion]['answers'].map((e, key) => {
 																		var forclass = e._id + key;
-																		return <p class={
+																		return <p className={
 																			(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
 																				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
 																					'fancy2 highlight' :
@@ -985,12 +985,12 @@ class DetailContestWithQuestionList extends Component {
 																		}>
 																			<label>
 
-																				{(key === 0) ? <b class="option_ _a">A</b> : null}
-																				{(key === 1) ? <b class="option_ _b">B</b> : null}
-																				{(key === 2) ? <b class="option_ _c">C</b> : null}
-																				{(key === 3) ? <b class="option_ _d">D</b> : null}
-																				{(key === 4) ? <b class="option_ _e">E</b> : null}
-																				{(key === 5) ? <b class="option_ _f">F</b> : null}
+																				{(key === 0) ? <b className="option_ _a">A</b> : null}
+																				{(key === 1) ? <b className="option_ _b">B</b> : null}
+																				{(key === 2) ? <b className="option_ _c">C</b> : null}
+																				{(key === 3) ? <b className="option_ _d">D</b> : null}
+																				{(key === 4) ? <b className="option_ _e">E</b> : null}
+																				{(key === 5) ? <b className="option_ _f">F</b> : null}
 
 																				{(this.state.listArr[this.state.indexQuestion]['selectAnswer'] === e._id && e.correctAnswer === true) ?
 																					<input id={forclass} name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleSingleSelectChange.bind(this, this.state.indexQuestion, e)} value={e.answer} checked="checked" disabled={(e.readonly) ? 'disabled' : ''} /> :
@@ -1019,7 +1019,7 @@ class DetailContestWithQuestionList extends Component {
 																					var innnerpclass = "fancy2 fancy2_" + key;
 																					var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
 																					var inputclass = "input_" + key;
-																					return <p class={pcalss}>
+																					return <p className={pcalss}>
 																						<label>
 
 																							{(key === 0) ? <b class="option_ _a">A</b> : null}
@@ -1067,7 +1067,7 @@ class DetailContestWithQuestionList extends Component {
 																					var innnerpclass = "fancy2 fancy2_" + key;
 																					var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
 																					var inputclass = "input_" + key;
-																					return <p class={pcalss}>
+																					return <p className={pcalss}>
 																						<label>
 
 																							{(key === 0) ? <b class="option_ _a">A</b> : null}
@@ -1100,18 +1100,18 @@ class DetailContestWithQuestionList extends Component {
 																(this.state.listArr[this.state.indexQuestion]['answerType'] === 5) ?
 
 																	<div>
-																		<p class={(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
+																		<p className={(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
 																			(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ?
 																				'fancy2 highlight' :
 																				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ? 'fancy2 pinkhighlight' : 'fancy2'
 																			: 'fancy2'}>
 																			<label >
-																				<b class="option_ _a">A</b>
+																				<b className="option_ _a">A</b>
 																				<input id="trueFalse" name={this.state.listArr[this.state.indexQuestion]['_id']} type="radio" onChange={this.handleTrueFalseSelectChange.bind(this, this.state.indexQuestion, true)} value='true' disabled={(this.state.listArr[this.state.indexQuestion]['readonly']) ? 'disabled' : ''} />
 																				<span for="trueFalse">True</span>
 																			</label>
 																		</p>
-																		<p class={(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
+																		<p className={(this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
 																			(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === false) ?
 																				'fancy2 highlight' :
 																				(this.state.listArr[this.state.indexQuestion]['isAnswerTrue'] === true) ? 'fancy2 pinkhighlight' : 'fancy2'

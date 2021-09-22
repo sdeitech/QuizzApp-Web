@@ -151,37 +151,37 @@ class TheHeaderInner extends Component {
     }
     render() {
         return (
-            <header id="header" class="fixed-top">
+            <header id="header" className="fixed-top">
                 <Session />
-                <div class="container align-items-center">
-                    <nav class="navbar navbar-expand-lg navbar-dark">
-                        <h1 class="logo mr-auto">
+                <div className="container align-items-center">
+                    <nav className="navbar navbar-expand-lg navbar-dark">
+                        <h1 className="logo mr-auto">
                             <a href="#/dashboard">
                                 <img src="./murabbo/img/logo.png" alt="logo" />
                             </a>
                         </h1>
-                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
+                        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav mr-auto">
+                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul className="navbar-nav mr-auto">
 
-                                <li style={{ width: '100%' }} class="nav-item">
-                                    {/*<div class="search">
-                                <input placeholder="Search by keywords" type="text" /><i class='bx bx-search'></i>
+                                <li style={{ width: '100%' }} className="nav-item">
+                                    {/*<div className="search">
+                                <input placeholder="Search by keywords" type="text" /><i className='bx bx-search'></i>
                             </div>*/}
                                     
                                 </li>
                             </ul>
 
                             <div style={{marginRight:"22px",position:"relative"}}>
-                                        {/* <input class="form-control form-control-sm mr-3 w-100" onChange={this.searchData.bind(this)} type="text" placeholder="Search"
+                                        {/* <input className="form-control form-control-sm mr-3 w-100" onChange={this.searchData.bind(this)} type="text" placeholder="Search"
                                             aria-label="Search" /> */}
 
 
                                         <a  href={`#/searchRound?${this.state.searchKey}`} style={{color:"#fff"}}>
 
-                                           Search  <i class="fas fa-search" aria-hidden="true" style={{
+                                           Search  <i className="fas fa-search" aria-hidden="true" style={{
                                                 position: "absolute",
                                                 left: "-23px",
                                                 top: "2px",
@@ -193,34 +193,34 @@ class TheHeaderInner extends Component {
                             </div>
 
 
-                            <form class="form-inline my-2 my-lg-0">
-                                <ul class="navbar-nav mr-auto">
-                                    <div class="dropdown">
-                                        <div class="dropdown-toggle cus_img" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <form className="form-inline my-2 my-lg-0">
+                                <ul className="navbar-nav mr-auto">
+                                    <div className="dropdown">
+                                        <div className="dropdown-toggle cus_img" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <img src={this.state.profile_picture} alt="Team" /> {this.state.name}
                                         </div>
-                                        <div class="dropdown-menu drop_menu" aria-labelledby="dropdownMenu2">
-                                            <a href="#/my_account"><li><i class='bx bx-user'></i> My Account</li></a>
-                                            <a href="#/dashboard"><li><i class='bx bx-abacus'></i> Dashboard</li></a>
-                                            <a href="#/contest"><li><i class='bx bx-game'></i> My Games</li></a>
-                                            <a href="#/games_history"><li><i class='bx bx-calendar-star'></i> Games History</li></a>
-                                            <a href="#/leaderboard"><li><i class='bx bx-bookmark'></i> Leaderboard</li></a>
-                                            <a href="#/my_groups"><li><i class='bx bx-group'></i> My Groups</li></a>
-                                            <a href="#/notification"><li><i class='bx bx-bell'></i> Notifications</li></a>
-                                            <a href="#/yourfriends"><li><i class='bx bx-user'></i> Your Friends</li></a>
+                                        <div className="dropdown-menu drop_menu" aria-labelledby="dropdownMenu2">
+                                            <a href="#/my_account"><li><i className='bx bx-user'></i> My Account</li></a>
+                                            <a href="#/dashboard"><li><i className='bx bx-abacus'></i> Dashboard</li></a>
+                                            <a href="#/contest"><li><i className='bx bx-game'></i> My Games</li></a>
+                                            <a href="#/games_history"><li><i className='bx bx-calendar-star'></i> Games History</li></a>
+                                            <a href="#/leaderboard"><li><i className='bx bx-bookmark'></i> Leaderboard</li></a>
+                                            <a href="#/my_groups"><li><i className='bx bx-group'></i> My Groups</li></a>
+                                            <a href="#/notification"><li><i className='bx bx-bell'></i> Notifications</li></a>
+                                            <a href="#/yourfriends"><li><i className='bx bx-user'></i> Your Friends</li></a>
 
-                                            <span style={{ cursor: 'pointer' }}><li><i class='bx bx-user-circle'></i> Online Friend</li></span>
+                                            <span style={{ cursor: 'pointer' }}><li><i className='bx bx-user-circle'></i> Online Friend</li></span>
 
-                                            <span style={{ cursor: 'pointer' }} onClick={this.handleLogout.bind(this, false)}><li><i class='bx bx-log-in' ></i> Logout</li></span>
+                                            <span style={{ cursor: 'pointer' }} onClick={this.handleLogout.bind(this, false)}><li><i className='bx bx-log-in' ></i> Logout</li></span>
                                         </div>
                                     </div>
 
-                                    <li class="nav-item">
-                                        <button class="yellow_btn" type="button" onClick={() => this.setState({ playNewContestModel: true })}><img src="./murabbo/img/pin.svg" alt="Pin" /> Enter Pin</button>
+                                    <li className="nav-item">
+                                        <button className="yellow_btn" type="button" onClick={() => this.setState({ playNewContestModel: true })}><img src="./murabbo/img/pin.svg" alt="Pin" /> Enter Pin</button>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="#/add_contest">
-                                            <button class="blue_btn" type="button"><img src="./murabbo/img/create.svg" alt="Create" /> Create</button>
+                                    <li className="nav-item">
+                                        <a className="nav-link " href="#/add_contest">
+                                            <button className="blue_btn" type="button"><img src="./murabbo/img/create.svg" alt="Create" /> Create</button>
                                         </a>
                                     </li>
                                 </ul>

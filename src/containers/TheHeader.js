@@ -34,15 +34,12 @@ class TheHeader extends Component {
 
         };
     }
-
-
     toggleShowPassword() {
         this.setState({ hiddenPassword: !this.state.hiddenPassword });
-      }
-
-      toggleShowConfirmPassword(){
-        this.setState({ hiddenConfirmPassword: !this.state.hiddenConfirmPassword });
-      }
+    }
+    toggleShowConfirmPassword(){
+    this.setState({ hiddenConfirmPassword: !this.state.hiddenConfirmPassword });
+    }
     toggle(type) {
         if (type === "login") {
             this.setState({
@@ -54,7 +51,6 @@ class TheHeader extends Component {
             });
         }
     }
-
     handleClick(stateName, value, stateName1, value1, e) {
         $("body").addClass("modal-open");
         this.setState({
@@ -88,7 +84,7 @@ class TheHeader extends Component {
         this.setState({ tosterMsg: "" });
     }
 
-    handleCloseClick(e) {
+  handleCloseClick(e) {
         $("body").removeClass("modal-open");
 
         this.setState({

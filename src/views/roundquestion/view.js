@@ -262,7 +262,7 @@ class RoundQuestion extends Component {
                                                     <div className="col-lg-12 col-md-12 col-sm-12">
                                                         <div className="accordion-wrapper">
                                                             <div
-                                                                class={
+                                                                className={
                                                                     className
                                                                 }
                                                                 onClick={this.toggleHandler.bind(
