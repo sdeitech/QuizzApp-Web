@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-
 import {
 	TheFooter,
 	TheHeaderInner
@@ -94,6 +93,7 @@ class AddRoundQuestion extends Component {
 						fields['negativeScoring'] = true;
 					}else{
 						fields['negativeScoring'] = data.negativeScoring;
+						fields['hint'] =  data.hint;
 					}
 					
 					fields['basePoints'] = data.basePoints;
@@ -353,10 +353,6 @@ class AddRoundQuestion extends Component {
 		});
     } 
 
-
-
-	
-
 	getAllCategory(){
 		fetch(configuration.baseURL + "category/categoryList", {
 			method: "GET",
@@ -599,9 +595,6 @@ class AddRoundQuestion extends Component {
 		this.setState({ optionsValuesModel: false, isSet: false })
 
 	}
-
-
-
 	addHandler(e, type = '') {
 		let fields = this.state.fields;
 		let formIsValid = true;
@@ -661,7 +654,7 @@ class AddRoundQuestion extends Component {
 				data.append('onDemandNegativePoints', this.state.fields.onDemandNegativePoints);
 			}
 			else {
-				data.append('hint', 1);
+				data.append('hint', this.state.fields.hint);
 				data.append('onDemandNegativePoints', 0);
 			}
 			if (this.state.fields.image !== 'undefined' && this.state.fields.image === 'image') {
@@ -703,8 +696,6 @@ class AddRoundQuestion extends Component {
 			});
 		}
 	}
-
-
 	changeTime(sec) {
 		var fields = this.state.fields;
 		var currentTime = parseInt(fields.timeLimitSeconds),
@@ -743,8 +734,6 @@ class AddRoundQuestion extends Component {
 		fields['timeLimitSeconds'] = newTime;
 		this.setState({ fields });
 	}
-
-
 	handleUploadProfile(type, ev) {
 		var type = this.uploadInput.files[0].type.split('/');
 		let fields = this.state.fields;
@@ -761,8 +750,6 @@ class AddRoundQuestion extends Component {
 
 
 	}
-
-
 	deleteHandler(key = '', e) {
 		if (this.state.delete_id !== '') {
 			let answers = this.state.answers;
@@ -779,11 +766,9 @@ class AddRoundQuestion extends Component {
 
 		}
 	}
-
 	editHandler(val, key, e) {
 		this.setState({ fieldsAnswer: { answer: val.answer, correctAnswer: val.correctAnswer }, errorsAnswer: { answer: '' }, openModel: true, edit_id: key });
 	}
-
 
 	openModel() {
 		this.setState({ fieldsAnswer: { answer: '', correctAnswer: false }, errorsAnswer: { answer: '' }, openModel: true, edit_id: '' });

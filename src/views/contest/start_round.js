@@ -467,7 +467,7 @@ class StartRound extends Component {
 						minute = "0" + minute;
 					}
 
-					fields[that.state.indexQuestion]['displaytimeLimit'] = minute + ":" + seconds;
+					fields[that.state.indexQuestion]['displaytimeLimit'] = minute + " : " + seconds;
 					fields[that.state.indexQuestion]['timeLimit'] = newTime;
 					that.setState({ listArr: fields });
 					// console.log(fields[that.state.indexQuestion]['displaytimeLimit'])
@@ -1114,7 +1114,11 @@ class StartRound extends Component {
 																height: "150px",
 																marginLeft: "334px"
 															}}>
-																<img src={this.state.listArr[this.state.indexQuestion]['file']} />
+																<img src={this.state.listArr[this.state.indexQuestion]['file']} style={{
+
+																height: "145px",
+																marginLeft: "-66px"
+																}} />
 															</div>
 														) : (null)}
 

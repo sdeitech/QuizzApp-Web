@@ -409,7 +409,7 @@ class DetailContestWithQuestionList extends Component {
 						minute = "0" + minute;
 					}
 
-					fields[that.state.indexQuestion]['displaytimeLimit'] = minute + ":" + seconds;
+					fields[that.state.indexQuestion]['displaytimeLimit'] = minute + " : " + seconds;
 					fields[that.state.indexQuestion]['timeLimit'] = newTime;
 					that.setState({ listArr: fields });
 

@@ -1478,6 +1478,7 @@ class RoundTray extends Component {
                                                                 </span>
                                                                 <input
                                                                     type="text"
+                                                                    style={{letterSpacing:"4px"}}
                                                                     value={
                                                                         this
                                                                             .state
