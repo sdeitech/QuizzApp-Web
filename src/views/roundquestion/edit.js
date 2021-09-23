@@ -25,7 +25,7 @@ class EditRoundQuestion extends Component {
 			isLoading: false,
         	isexitImage:"",
         	answers:[],
-        	fields:{image:'',question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0,scoring:1, negativeScoring:false,hint:1,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
+        	fields:{image:'',question:'',timeLimitSeconds:30,timeLimit:'00:30',basePoints:0,negativeBasePoints:0,execution_mode:0,scoring:1, negativeScoring:false,hint:3,answerType:1,onDemandNegativePoints:0,answerTypeBoolean:false,hintText:'',fileUrl:'',fileType:''},
 			errors:{},
 			fieldsAnswer:{},
 			errorsAnswer:{},
@@ -91,7 +91,9 @@ class EditRoundQuestion extends Component {
 		    }).then((newdata)=> {
 		    	if (newdata.data.length > 0) {	
 		    		var that = this;
+					let  roundData = newdata.data[0];
 					var newdata = newdata.data[0];
+					
 					gameType = newdata.gameType;
 					contest_id = newdata.contestId;
 						
@@ -115,6 +117,7 @@ class EditRoundQuestion extends Component {
 							fields['execution_mode']=newdata.execution_mode;
 							fields['scoring']=newdata.scoring;
 							fields['image'] = '';
+							fields['hint'] =  roundData.hint;
 							
 							console.log(fields);
 							that.setState({fields});
@@ -753,7 +756,7 @@ class EditRoundQuestion extends Component {
         	}
         	else
         	{
-        		data.append('hint',1);
+        		data.append('hint',this.state.fields.hint);
 	        	data.append('onDemandNegativePoints',0);
         	}
 
@@ -1324,7 +1327,9 @@ class EditRoundQuestion extends Component {
 											<span  className="error-msg">{this.state.errors["hint"]}</span>
 										</div> : null }
 
-	                                {(this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
+
+
+										{this.state.fields['execution_mode'] === 2 || this.state.fields['execution_mode'] === "2" ?  ((this.state.fields['hint'] === 3 || this.state.fields['hint'] === "3") ?
 	                                <div>
                             			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
 		                                    <label style={{paddingLeft: '5px'}} className="cus_label"> Demand
@@ -1345,7 +1350,9 @@ class EditRoundQuestion extends Component {
 															]} step="1" type="range" className="range" id="range" value={this.state.fields['onDemandNegativePoints']} onChange={this.handleChange.bind(this,'onDemandNegativePoints')}  />
 		                                  <output className="bubble">{this.state.fields['onDemandNegativePoints']}</output>
 		                                </div>
-                            		</div> : null }
+                            		</div> : null ): null}
+
+	                                
                             		{(this.state.fields['answerType'] === 5 || this.state.fields['answerType'] === "5") ? 
                             		<div>
 	                        			<div style={{ margin: "0px 0 5px 0"}} className="cus_input ">
