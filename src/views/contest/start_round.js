@@ -510,7 +510,15 @@ class StartRound extends Component {
 
 				var newTime = 0;
 				if (fields !== undefined && fields['timeLimit'] !== undefined) {
-					var currentTime = parseInt(fields['timeLimit']);
+
+					if(parseInt(fields['timeLimit']) === 0){
+						var currentTime = 30;
+					}else{
+						var currentTime = parseInt(fields['timeLimit']);
+					}
+
+				 
+					
 
 					if (fields['timeAlloted'] === undefined) {
 						fields['timeAlloted'] = currentTime;
@@ -1482,6 +1490,9 @@ class StartRound extends Component {
 
 														<h3 style={{ textAlign: 'center' }}>Contest completed</h3>
 														<br />
+														<br />
+														<br />
+														
 
 														{
 															(this.state.showGoLeaderBoardBtn) ?
