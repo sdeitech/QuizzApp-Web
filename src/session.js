@@ -9,8 +9,33 @@ class ViewSession extends Component {
         this.state = {};
     }
 
+
+    //  checkLogin(){
+
+    //     try {
+    //         if(reactLocalStorage.get('is_login') === 'true'){
+    //             window.location.href = '/#/dashboard'
+    //             return true;
+                
+    //         }else{
+    //             reactLocalStorage.set('is_login','false');
+	// 			window.location.href = '/#/'
+    //             return false;
+	// 		}
+    //     } catch(err) {
+            
+    //         reactLocalStorage.set('is_login','false');
+    //        window.location.href = '/#/'
+    //        return false;
+    //     }
+    // }
+
     componentDidMount(){
         try {
+            // let check = this.checkLogin();
+            // if(check){
+            //     return;
+            // }
             if(reactLocalStorage.get('is_login') === 'true'){
                 var token = reactLocalStorage.get('token');
                 jwt.verify(token, configuration.appName , function (err, decoded){
@@ -22,7 +47,8 @@ class ViewSession extends Component {
                 });
             }else{
                 reactLocalStorage.set('is_login','false');
-				window.location.href = '/#/'
+				window.location.href = '/#/';
+                window.location.reload();
 			}
         } catch(err) {
             reactLocalStorage.set('is_login','false');

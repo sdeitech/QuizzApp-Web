@@ -30,15 +30,15 @@ class TheHeader extends Component {
             checkbox: false,
             tosterMsg: "",
             hiddenPassword: true,
-            hiddenConfirmPassword:true
+            hiddenConfirmPassword: true
 
         };
     }
     toggleShowPassword() {
         this.setState({ hiddenPassword: !this.state.hiddenPassword });
     }
-    toggleShowConfirmPassword(){
-    this.setState({ hiddenConfirmPassword: !this.state.hiddenConfirmPassword });
+    toggleShowConfirmPassword() {
+        this.setState({ hiddenConfirmPassword: !this.state.hiddenConfirmPassword });
     }
     toggle(type) {
         if (type === "login") {
@@ -83,8 +83,7 @@ class TheHeader extends Component {
         }
         this.setState({ tosterMsg: "" });
     }
-
-  handleCloseClick(e) {
+    handleCloseClick(e) {
         $("body").removeClass("modal-open");
 
         this.setState({
@@ -152,7 +151,6 @@ class TheHeader extends Component {
 
         this.setState({ errors: errors });
     }
-
     handleChangeLogin(field, e) {
         let loginFields = this.state.loginFields;
         loginFields[field] = e.target.value;
@@ -187,7 +185,6 @@ class TheHeader extends Component {
 
         this.setState({ loginErrors: errors });
     }
-
     handleChangeForgotPassword(field, e) {
         let forgotFields = this.state.forgotFields;
         forgotFields[field] = e.target.value;
@@ -218,7 +215,6 @@ class TheHeader extends Component {
         }
         this.setState({ forgotErrors: errors });
     }
-
     handleChangeResetPassword(field, e) {
         let resetFields = this.state.resetFields;
         resetFields[field] = e.target.value;
@@ -263,7 +259,6 @@ class TheHeader extends Component {
 
         this.setState({ resetErrors: errors });
     }
-
     handleResetPasswordSubmit() {
         this.setState({ tosterMsg: "" });
         let fields = this.state.resetFields;
@@ -309,7 +304,7 @@ class TheHeader extends Component {
         if (formIsValid) {
             fields.roleId = "2";
             fields.email = reactLocalStorage.get("forgot_email");
-            this.setState({ resetFields: fields ,isLoading:true});
+            this.setState({ resetFields: fields, isLoading: true });
             fetch(configuration.baseURL + "user/resetPassword", {
                 method: "post",
                 headers: {
@@ -328,23 +323,22 @@ class TheHeader extends Component {
                             openModelForgot: false,
                             openModelReset: false,
                             openModelCongratulation: true,
-                            isLoading:false
+                            isLoading: false
                         });
                         fields.otp = "";
                         fields.password = "";
                         fields.confirm_password = "";
                         this.setState({ resetFields: fields });
                     } else if (data.code === 400) {
-                        this.setState({ tosterMsg: "Invalid OTP!",isLoading:false });
+                        this.setState({ tosterMsg: "Invalid OTP!", isLoading: false });
                         return false;
                     } else {
-                        this.setState({ tosterMsg: data.message,isLoading:false });
+                        this.setState({ tosterMsg: data.message, isLoading: false });
                         return false;
                     }
                 });
         }
     }
-
     handleForgotPasswordSubmit() {
         this.setState({ tosterMsg: "" });
         let fields = this.state.forgotFields;
@@ -372,7 +366,7 @@ class TheHeader extends Component {
         this.setState({ forgotErrors: errors });
         if (formIsValid) {
             fields.roleId = "2";
-            this.setState({ forgotFields: fields,isLoading:true });
+            this.setState({ forgotFields: fields, isLoading: true });
 
 
             fetch(configuration.baseURL + "user/forgotPassword", {
@@ -389,7 +383,7 @@ class TheHeader extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.handleCloseClick();
-                        this.setState({ resetFields: {}, resetErrors: {},isLoading:false });
+                        this.setState({ resetFields: {}, resetErrors: {}, isLoading: false });
                         this.setState({
                             openModelForgot: !this.state.openModelForgot,
                             openModelReset: true,
@@ -397,13 +391,12 @@ class TheHeader extends Component {
                         fields.email = "";
                         this.setState({ forgotFields: fields });
                     } else {
-                        this.setState({ tosterMsg: data.message,isLoading:false });
+                        this.setState({ tosterMsg: data.message, isLoading: false });
                         return false;
                     }
                 });
         }
     }
-
     handleLoginSubmit() {
         this.setState({ tosterMsg: "" });
         let fields = this.state.loginFields;
@@ -438,7 +431,7 @@ class TheHeader extends Component {
         if (formIsValid) {
             fields.roleId = "2";
             fields['timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            this.setState({ loginFields: fields,isLoading:true });
+            this.setState({ loginFields: fields, isLoading: true });
 
 
             fetch(configuration.baseURL + "user/userLogin", {
@@ -455,7 +448,7 @@ class TheHeader extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.setState({
-                            openModelLogin: !this.state.openModelLogin,isLoading:false
+                            openModelLogin: !this.state.openModelLogin, isLoading: false
                         });
                         fields.password = "";
                         fields.email = "";
@@ -469,13 +462,12 @@ class TheHeader extends Component {
                             }
                         );
                     } else {
-                        this.setState({ tosterMsg: data.message,isLoading:false });
+                        this.setState({ tosterMsg: data.message, isLoading: false });
                         return false;
                     }
                 });
         }
     }
-
     handleRegisterSubmit() {
         this.setState({ tosterMsg: "" });
         let fields = this.state.fields;
@@ -570,7 +562,6 @@ class TheHeader extends Component {
                 });
         }
     }
-
     responseFacebook = (socialResponse) => {
         console.log("socialResponse Login");
         console.log(socialResponse);
@@ -592,12 +583,11 @@ class TheHeader extends Component {
                 });
             }
 
-            this.callAPI(socialResponse.id,postData,socialResponse.profileObj, "facebook");
+            this.callAPI(socialResponse.id, postData, socialResponse.profileObj, "facebook");
         }
     };
-
     responseGoogle = (socialResponse) => {
-    	console.log("Google login call");
+        console.log("Google login call");
         console.log(socialResponse);
         if (socialResponse.googleId) {
             var social_id = socialResponse.googleId;
@@ -617,14 +607,14 @@ class TheHeader extends Component {
             if (postData) {
                 this.setState({
                     fields: {
-                    	social_id: postData.social_id,
+                        social_id: postData.social_id,
                         name: postData.name,
                         email: postData.email,
                     },
                 });
             }
 
-            this.callAPI(socialResponse.googleId,postData,socialResponse.profileObj, "google");
+            this.callAPI(socialResponse.googleId, postData, socialResponse.profileObj, "google");
         }
     };
     responseFacebookForLogin = (socialResponse) => {
@@ -648,7 +638,7 @@ class TheHeader extends Component {
                 });
             }
 
-            this.callAPI(socialResponse.id,postData,socialResponse.profileObj, "facebook"); 
+            this.callAPI(socialResponse.id, postData, socialResponse.profileObj, "facebook");
         }
     };
 
@@ -680,42 +670,42 @@ class TheHeader extends Component {
         }
     };
 
-    callAPI(social_id,postData,profileObj,registerType){
+    callAPI(social_id, postData, profileObj, registerType) {
         console.log("call API Header: ");
-        console.log("social_id : "+social_id);
+        console.log("social_id : " + social_id);
         console.log(postData);
-        fetch(configuration.baseURL+"user/checkSocial", {
+        fetch(configuration.baseURL + "user/checkSocial", {
             method: "post",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body:JSON.stringify({socialId:social_id,email:postData.email,registerType,roleId:2})
+            body: JSON.stringify({ socialId: social_id, email: postData.email, registerType, roleId: 2 })
         }).then((response) => {
             return response.json();
         }).then((data) => {
             console.log(data);
-            if(data.code === 404){
+            if (data.code === 404) {
                 this.setState({
                     openModelRegister: true,
                     openModelLogin: false,
                 });
-            } else if(data.code === 200){
+            } else if (data.code === 200) {
                 this.setState({
                     openModelRegister: false,
                     openModelLogin: false,
                 });
                 console.log("Good to go for login");
                 let that = this;
-                configuration.saveTokenData(data.data,function(payload){
+                configuration.saveTokenData(data.data, function (payload) {
                     console.log(payload);
                     window.location.href = "/#/dashboard";
                 });
-            } else if(data.code  === 409){
-            
-                    this.setState({tosterMsg:data.message})
-            
-            }else {
+            } else if (data.code === 409) {
+
+                this.setState({ tosterMsg: data.message })
+
+            } else {
                 this.setState({
                     openModelRegister: true,
                     openModelLogin: false,
@@ -733,7 +723,7 @@ class TheHeader extends Component {
                     style={{ top: "80px" }}
                 />
 
-                <header id="header" className="fixed-top">y
+                <header id="header" className="fixed-top">
                     <div className="container align-items-center">
                         <nav className="navbar navbar-expand-lg navbar-dark">
                             <h1 className="logo mr-auto">
@@ -895,7 +885,7 @@ class TheHeader extends Component {
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                            "name"
+                                                        "name"
                                                         ]
                                                     }
                                                 />
@@ -915,7 +905,7 @@ class TheHeader extends Component {
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                            "email"
+                                                        "email"
                                                         ]
                                                     }
                                                 />
@@ -937,24 +927,24 @@ class TheHeader extends Component {
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                            "password"
+                                                        "password"
                                                         ]
                                                     }
                                                 />
                                                 <label>Password</label>
-                                              
-                                                
+
+
                                                 <span style={{
-                                                position: "absolute",
-                                                right: "27px",
-                                                top: "47px"
-                                                    }}>
-                                                
-                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
-                                            </span>
-                                                
+                                                    position: "absolute",
+                                                    right: "27px",
+                                                    top: "47px"
+                                                }}>
+
+                                                    {this.state.hiddenPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />)}
+                                                </span>
+
                                             </div>
-                                            
+
                                             <span className="error-msg">
                                                 {this.state.errors["password"]}
                                             </span>
@@ -970,25 +960,25 @@ class TheHeader extends Component {
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                            "confirm_password"
+                                                        "confirm_password"
                                                         ]
                                                     }
                                                 />
                                                 <label>Confirm Password</label>
                                                 <span style={{
-                                                position: "absolute",
-                                                right: "28px",
-                                                top: "47px"
+                                                    position: "absolute",
+                                                    right: "28px",
+                                                    top: "47px"
                                                 }}>
-                                                
-                                                {this.state.hiddenConfirmPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)}  />)}
-                                            </span>
+
+                                                    {this.state.hiddenConfirmPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />)}
+                                                </span>
                                             </div>
-                                            
+
                                             <span className="error-msg">
                                                 {
                                                     this.state.errors[
-                                                        "confirm_password"
+                                                    "confirm_password"
                                                     ]
                                                 }
                                             </span>
@@ -1154,7 +1144,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .loginFields[
-                                                                "email"
+                                                            "email"
                                                             ]
                                                         }
                                                     />
@@ -1163,7 +1153,7 @@ class TheHeader extends Component {
                                                 <span className="error-msg">
                                                     {
                                                         this.state.loginErrors[
-                                                            "email"
+                                                        "email"
                                                         ]
                                                     }
                                                 </span>
@@ -1180,7 +1170,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .loginFields[
-                                                                "password"
+                                                            "password"
                                                             ]
                                                         }
                                                     />
@@ -1189,16 +1179,16 @@ class TheHeader extends Component {
                                                         position: "absolute",
                                                         right: "27px",
                                                         top: "47px"
-                                                        }}>
-                                                
-                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
-                                              </span>
+                                                    }}>
+
+                                                        {this.state.hiddenPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />)}
+                                                    </span>
                                                 </div>
-                                                
+
                                                 <span className="error-msg">
                                                     {
                                                         this.state.loginErrors[
-                                                            "password"
+                                                        "password"
                                                         ]
                                                     }
                                                 </span>
@@ -1211,8 +1201,8 @@ class TheHeader extends Component {
                                                             this
                                                         )}
                                                     >
-                                                       {this.state.isLoading ? 
- (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Login")}
+                                                        {this.state.isLoading ?
+                                                            (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Login")}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">
@@ -1247,7 +1237,7 @@ class TheHeader extends Component {
                                                                     renderProps.onClick
                                                                 }
                                                             >
-                                                                <img src="./murabbo/img/facebook.svg" className="cursor"/>
+                                                                <img src="./murabbo/img/facebook.svg" className="cursor" />
                                                             </span>
                                                         )}
                                                     />
@@ -1270,7 +1260,7 @@ class TheHeader extends Component {
                                                                     renderProps.onClick
                                                                 }
                                                             >
-                                                                <img src="./murabbo/img/google.svg" className="cursor"/>
+                                                                <img src="./murabbo/img/google.svg" className="cursor" />
                                                             </span>
                                                         )}
                                                         cookiePolicy={'single_host_origin'}
@@ -1380,7 +1370,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .forgotFields[
-                                                                "email"
+                                                            "email"
                                                             ]
                                                         }
                                                     />
@@ -1389,7 +1379,7 @@ class TheHeader extends Component {
                                                 <span className="error-msg">
                                                     {
                                                         this.state.forgotErrors[
-                                                            "email"
+                                                        "email"
                                                         ]
                                                     }
                                                 </span>
@@ -1402,8 +1392,8 @@ class TheHeader extends Component {
                                                             this
                                                         )}
                                                     >
-                                                         {this.state.isLoading ? 
- (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Reset")}
+                                                        {this.state.isLoading ?
+                                                            (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Reset")}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">
@@ -1511,7 +1501,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .resetFields[
-                                                                "otp"
+                                                            "otp"
                                                             ]
                                                         }
                                                     />
@@ -1520,7 +1510,7 @@ class TheHeader extends Component {
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
-                                                            "otp"
+                                                        "otp"
                                                         ]
                                                     }
                                                 </span>
@@ -1538,25 +1528,25 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .resetFields[
-                                                                "password"
+                                                            "password"
                                                             ]
                                                         }
                                                     />
                                                     <label>Password</label>
                                                     <span style={{
-                                                position: "absolute",
-                                                right: "27px",
-                                                top: "47px"
-                                                }}>
-                                                
-                                                {this.state.hiddenPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)}  />)}
-                                              </span>
+                                                        position: "absolute",
+                                                        right: "27px",
+                                                        top: "47px"
+                                                    }}>
+
+                                                        {this.state.hiddenPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />)}
+                                                    </span>
                                                 </div>
-                                                
+
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
-                                                            "password"
+                                                        "password"
                                                         ]
                                                     }
                                                 </span>
@@ -1573,7 +1563,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .resetFields[
-                                                                "confirm_password"
+                                                            "confirm_password"
                                                             ]
                                                         }
                                                     />
@@ -1581,20 +1571,20 @@ class TheHeader extends Component {
                                                         Confirm Password
                                                     </label>
 
-                                              <span style={{
-                                                position: "absolute",
-                                                right: "27px",
-                                                top: "46px"
-                                                }}>
-                                                
-                                                {this.state.hiddenConfirmPassword  ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />):(<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)}  />)}
-                                              </span>
+                                                    <span style={{
+                                                        position: "absolute",
+                                                        right: "27px",
+                                                        top: "46px"
+                                                    }}>
+
+                                                        {this.state.hiddenConfirmPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />)}
+                                                    </span>
                                                 </div>
-                                                
+
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
-                                                            "confirm_password"
+                                                        "confirm_password"
                                                         ]
                                                     }
                                                 </span>
@@ -1608,8 +1598,8 @@ class TheHeader extends Component {
                                                             this
                                                         )}
                                                     >
-                                                         {this.state.isLoading ? 
- (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Submit")}
+                                                        {this.state.isLoading ?
+                                                            (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Submit")}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">

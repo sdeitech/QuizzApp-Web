@@ -47,15 +47,7 @@ class AboutUs extends Component {
 		
 	}
 
-    componentWillUnmount(){
-        console.log("ComponentWilUnmount");
-    }
-    componentDidUpdate(){
-        console.log("componentDidUpdate");
-    }
-    componentDidCatch(){
-        console.log("componentDidCatch");
-    }
+
     
 
 
@@ -68,22 +60,22 @@ class AboutUs extends Component {
 				<ToastContainer position="top-right" autoClose={25000} style={{top:'80px'}}/>		
 				<main id="main">
 			            <section>
-			            <div class="container">
-			                    <div class="create-contest">
-			                        <div class="contest-title">
-			                            <div class="row">
-			                                <div class="col-md-12">
-			                                    <div class="main_title">
+			            <div className="container">
+			                    <div className="create-contest">
+			                        <div className="contest-title">
+			                            <div className="row">
+			                                <div className="col-md-12">
+			                                    <div className="main_title">
 			                                        <h3>About us</h3>  
 			                                    </div> 
 			                                </div>
 			                            </div>
 			                        </div>
 			                    </div>
-			                    <div class="contest-info">
-			                        <div class="row cms_box">
-			                            <div class="col-12">
-			                               <div class="text" dangerouslySetInnerHTML={this.createMarkup()} />
+			                    <div className="contest-info">
+			                        <div className="row cms_box">
+			                            <div className="col-12">
+			                               <div className="text" dangerouslySetInnerHTML={this.createMarkup()} />
 			                            </div>
 			                        </div>
 			                    </div>
