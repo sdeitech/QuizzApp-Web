@@ -65,6 +65,8 @@ class EditRoundQuestion extends Component {
 			
 		 });
 		$('.display-profile-pic').hide();
+		$('#video_here').hide();
+		$('#audio_here').hide();
 		var url = window.location.href;
         round_id =url.substring(url.lastIndexOf('/') + 1);
         round_id = round_id.split('?');
@@ -141,8 +143,13 @@ class EditRoundQuestion extends Component {
 										let fields = this.state.fields;
 										fields['fileType'] = 'video';
 										fields['fileUrl'] = data.data[0].file;
-										this.setState({fields});	
-										that.setState({profilePic:'avatars/play.svg'});
+										this.setState({fields});
+										let $source = $('#video_here');
+  										$source[0].src = data.data[0].file;
+										$source.show();	
+										$("#audio_here").hide();
+										$('.display-profile-pic').hide();
+										// that.setState({profilePic:'avatars/play.svg'});
 										$('#start').hide();	
 									}
 									else if (data.data[0].fileType === 'audio') {
@@ -150,7 +157,12 @@ class EditRoundQuestion extends Component {
 										fields['fileType'] = 'audio';
 										fields['fileUrl'] = data.data[0].file;
 										this.setState({fields});
-										that.setState({profilePic:'avatars/5.png'});
+										let $source = $('#audio_here');
+  										$source[0].src = data.data[0].file;
+										$source.show();
+										$("#video_here").hide();
+										$('.display-profile-pic').hide();	
+										// that.setState({profilePic:'avatars/5.png'});
 										$('#start').hide();	
 									}else if (data.data[0].fileType === 'link') {
 										let fields = this.state.fields;
@@ -839,23 +851,67 @@ class EditRoundQuestion extends Component {
 
     
     handleUploadProfile(type, ev) {
-    	var type = this.uploadInput.files[0].type.split('/');
-        let fields = this.state.fields;
-        fields['image'] = 'image';
-        fields['fileType'] = type[0];
-        this.setState({fields});
-        this.setState({optionsModel:false,optionsValuesModel:false});
-        if (type[0] === 'video') {
-        	this.setState({profilePic:'avatars/play.svg'});
-        }
-        else if (type[0] === 'audio') {
-        	this.setState({profilePic:'avatars/5.png'});
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').hide();
+		var type = this.uploadInput.files[0].type.split('/');
+		let fields = this.state.fields;
+		fields['image'] = 'image';
+		fields['fileType'] = type[0];
+		this.setState({ fields });
+		this.setState({ optionsModel: false, optionsValuesModel: false });
+		if (type[0] === 'video') {
+		let $source = $('#video_here');
+  			$source[0].src = URL.createObjectURL(this.uploadInput.files[0]);
+			$source.show();
+			$(".display-profile-pic").attr("src", "");
+			$(".display-profile-pic").hide();
+			$('#start').hide();
+				
+			// this.setState({ profilePic: 'avatars/play.svg' });
+		}
+		else if (type[0] === 'audio') {
+			console.log()
+			let $source = $('#audio_here');
+  			$source[0].src = URL.createObjectURL(this.uploadInput.files[0]);
+			$source.show();
+			$(".display-profile-pic").attr("src", "");
+			$(".display-profile-pic").hide();
+			$('#start').hide();
         }else if (type[0] === 'link') {
         	this.setState({profilePic:'avatars/play.svg'});
         }
        
         
-    }		
+    }	
+	
+	checkVideoDuration(metadata){
+		var myVideoPlayer = document.getElementById('video_here');
+    	var durations = myVideoPlayer.duration;
+	console.log("duration")
+	console.log(durations)
+	if(durations>30){
+		this.removeImage();
+		$(".file-upload").val("");	
+		this.setState({tosterMsg:"not 30 sec" });
+	}
+    
+	}
+
+	checkAudioDuration(metadata){
+		var myVideoPlayer = document.getElementById('audio_here');
+    	var durations = myVideoPlayer.duration;
+	console.log("duration")
+	console.log(durations)
+	if(durations>30){
+		this.removeImage();
+		$(".file-upload").val("");
+
+		this.setState({tosterMsg:"not 30 sec" });
+	}
+    
+	}
+
 
     deleteHandler(key = '',e)
 	{	
@@ -972,6 +1028,9 @@ class EditRoundQuestion extends Component {
 	}
 
 	selectImage(data){
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').hide();
 		this.setState({subscriptionModel:false});
 		if(!configuration.checkUserHasAccess(data.subscriptionType))
 		{
@@ -988,6 +1047,10 @@ class EditRoundQuestion extends Component {
 	}
 
 	selectVideo(data){
+		this.setState({tosterMsg:"" });
+		$('#video_here').show();
+		$('#audio_here').hide();
+		
 		$("video").each(function () { 
 
 		
@@ -1010,18 +1073,30 @@ class EditRoundQuestion extends Component {
 		fields['fileType'] = 'video';
 		fields['fileUrl'] = data.url;
 		this.setState({fields});
-		this.setState({optionsValuesModel:false,profilePic:'avatars/play.svg'});
-		$('.display-profile-pic').show();
+		this.setState({optionsValuesModel:false});
+		// $('.display-profile-pic').show();
+		let $source = $('#video_here');
+  			$source[0].src =data.url;
+			$source.show();
+		$('.display-profile-pic').hide();
+		$(".display-profile-pic").attr("src", "");
 		$('#start').hide();
 	}
 
 	selectYoutube(){
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').hide();
 		this.setState({profilePic:'avatars/play.svg'});
 		$('.display-profile-pic').show();
 		$('#start').hide();
 	}
 
 	selectAudio(data){
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').show();
+		
 		$("video").each(function () { 
 
 		
@@ -1044,8 +1119,13 @@ class EditRoundQuestion extends Component {
 		fields['fileType'] = 'audio';
 		fields['fileUrl'] = data.url;
 		this.setState({fields});
-		this.setState({optionsValuesModel:false,profilePic:'avatars/5.png'});
-		$('.display-profile-pic').show();
+		this.setState({optionsValuesModel:false,});
+		// $('.display-profile-pic').show();
+		let $source = $('#audio_here');
+  			$source[0].src =data.url;
+			  $source.show();
+		$('.display-profile-pic').hide();
+		$(".display-profile-pic").attr("src", "");
 		$('#start').hide();
 	}
 
@@ -1091,12 +1171,18 @@ class EditRoundQuestion extends Component {
 
 
 	removeImage(event) {
-		event.stopPropagation();
+		// event.stopPropagation();
 		$(document).ready(function () {
         $(".display-profile-pic").attr("src", "");
 	    $(".display-profile-pic").hide();
 		$(".file-upload").val("");
 		$("#start").show();
+		$('#video_here').hide();
+			let $source = $('#video_here');
+  			$source[0].src = "";
+			$('#audio_here').hide();
+			let $source1 = $('#audio_here');
+  			$source1[0].src = "";
      	});
 		var fields = this.state.fields;
 		if($(".display-profile-pic").attr("src") !== ""){
@@ -1124,9 +1210,23 @@ class EditRoundQuestion extends Component {
 						var type = input.files[0].type.split('/');
 						if (type[0] === 'image') {							
 							$('.display-profile-pic').attr('src', e.target.result);
-							
+							$('.display-profile-pic').show();
+							// $('#audio_here').hide();
+							// $('#video_here').hide();
+
 						}
-						$('.display-profile-pic').show();
+						// if (type[0] === 'video') {							
+						// 	$('#video_here').attr('src', e.target.result);
+						// 	$('#audio_here').hide();
+						// 	$('#video_here').show();
+						// 	$('.display-profile-pic').hide();
+						// }
+						// if (type[0] === 'audio') {							
+						// 	$('#audio_here').attr('src', e.target.result);
+						// 	$('.display-profile-pic').hide();
+						// 	$('#audio_here').show();
+						// 	$('#video_here').hide();
+						// }
 						$('#start').hide();
 					}
 					reader.readAsDataURL(input.files[0]);
@@ -1184,6 +1284,7 @@ class EditRoundQuestion extends Component {
 									<img
 										className="close_svg"
 										src="./murabbo/img/close_dark.svg"
+										style = {{zIndex : "2"}}
 										onClick={this.removeImage.bind(
 											this
 										)}
@@ -1197,6 +1298,13 @@ class EditRoundQuestion extends Component {
 	                                      <label id="file-drag">
 	                                        <img id="file-image"   src="#" alt="Preview" className="hidden"/>
 	                                        <img className="display-profile-pic" src={this.state.profilePic} alt=""  />
+											<video className="video1 video-width"  id="video_here"  controlsList="nodownload" onLoadedMetadata = {this.checkVideoDuration.bind(this)}  controls >
+																			<source src="" type="video/mp4" />
+																			{/* <source src="" type="video/ogg" /> */}
+															</video>
+															<audio className="video-width" style={{marginTop:"80px"}} id="audio_here" onLoadedMetadata = {this.checkAudioDuration.bind(this)} controls controlsList="nodownload">
+																<source src="" type="audio/ogg" />
+															</audio>
 	                                        <div id="start">
 		                                        <div><img className="profile-pic" src='./murabbo/img/upload.svg' alt=""  />
 												<div id="add_image">Tab to add image, audio, video</div>

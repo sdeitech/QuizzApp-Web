@@ -67,6 +67,8 @@ class AddRoundQuestion extends Component {
 			
 		 });
 		$('.display-profile-pic').hide();
+		$('#video_here').hide();
+		$('#audio_here').hide();
 		var url = window.location.href;
 		round_id = url.substring(url.lastIndexOf('/') + 1);
 
@@ -735,6 +737,9 @@ class AddRoundQuestion extends Component {
 		this.setState({ fields });
 	}
 	handleUploadProfile(type, ev) {
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').hide();
 		var type = this.uploadInput.files[0].type.split('/');
 		let fields = this.state.fields;
 		fields['image'] = 'image';
@@ -742,14 +747,58 @@ class AddRoundQuestion extends Component {
 		this.setState({ fields });
 		this.setState({ optionsModel: false, optionsValuesModel: false });
 		if (type[0] === 'video') {
-			this.setState({ profilePic: 'avatars/play.svg' });
+		let $source = $('#video_here');
+  			$source[0].src = URL.createObjectURL(this.uploadInput.files[0]);
+			$source.show();
+			$(".display-profile-pic").attr("src", "");
+			$(".display-profile-pic").hide();
+			$('#start').hide();
+				
+			// this.setState({ profilePic: 'avatars/play.svg' });
 		}
 		else if (type[0] === 'audio') {
-			this.setState({ profilePic: 'avatars/5.png' });
+			console.log()
+			let $source = $('#audio_here');
+  			$source[0].src = URL.createObjectURL(this.uploadInput.files[0]);
+			$source.show();
+			$(".display-profile-pic").attr("src", "");
+			$(".display-profile-pic").hide();
+			$('#start').hide();
 		}
 
 
 	}
+
+	checkVideoDuration(metadata){
+		var myVideoPlayer = document.getElementById('video_here');
+    	var durations = myVideoPlayer.duration;
+	console.log("duration")
+	console.log(durations)
+	if(durations>30){
+		this.removeImage();
+		$(".file-upload").val("");
+		// $('#video_here').hide();
+		// $("#start").show();
+		this.setState({tosterMsg:"not 30 sec" });
+	}
+    
+	}
+
+	checkAudioDuration(metadata){
+		var myVideoPlayer = document.getElementById('audio_here');
+    	var durations = myVideoPlayer.duration;
+	console.log("duration")
+	console.log(durations)
+	if(durations>30){
+		this.removeImage();
+		$(".file-upload").val("");
+		// $('#video_here').hide();
+		// $("#start").show();
+		this.setState({tosterMsg:"not 30 sec" });
+	}
+    
+	}
+
 	deleteHandler(key = '', e) {
 		if (this.state.delete_id !== '') {
 			let answers = this.state.answers;
@@ -854,6 +903,9 @@ class AddRoundQuestion extends Component {
 
 
 	selectImage(data) {
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').hide();
 		this.setState({ subscriptionModel: false });
 		if (!configuration.checkUserHasAccess(data.subscriptionType)) {
 			this.setState({ optionsValuesModel: false, subscriptionModel: true });
@@ -870,6 +922,9 @@ class AddRoundQuestion extends Component {
 	}
 
 	selectVideo(data) {
+		this.setState({tosterMsg:"" });
+		$('#video_here').show();
+		$('#audio_here').hide();
 		$("video").each(function () { 
 
 		
@@ -892,11 +947,16 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({ fields });
 		this.setState({ optionsValuesModel: false, profilePic: 'avatars/play.svg' });
-		$(".display-profile-pic").attr("src", 'avatars/play.svg');
-		$('.display-profile-pic').show();
+		let $source = $('#video_here');
+  			$source[0].src =data.url;
+		// $(".display-profile-pic").attr("src", 'avatars/play.svg');
+		$('.display-profile-pic').hide();
 		$('#start').hide();
 	}
 	selectYoutube() {
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').hide();
 		this.setState({ profilePic: 'avatars/play.svg' });
 		$('.display-profile-pic').show();
 		$('#start').hide();
@@ -906,6 +966,9 @@ class AddRoundQuestion extends Component {
 	
 
 	selectAudio(data) {
+		this.setState({tosterMsg:"" });
+		$('#video_here').hide();
+		$('#audio_here').show();
 		$("video").each(function () { 
 
 		
@@ -928,8 +991,10 @@ class AddRoundQuestion extends Component {
 		fields['fileUrl'] = data.url;
 		this.setState({ fields });
 		this.setState({ optionsValuesModel: false, profilePic: 'avatars/5.png' });
-		$(".display-profile-pic").attr("src", "avatars/5.png");
-		$('.display-profile-pic').show();
+		let $source = $('#audio_here');
+  			$source[0].src =data.url;
+		// $(".display-profile-pic").attr("src", "avatars/5.png");
+		$('.display-profile-pic').hide();
 		$('#start').hide();
 	}
 
@@ -939,6 +1004,12 @@ class AddRoundQuestion extends Component {
 			$(".display-profile-pic").hide();
 			$(".file-upload").val("");
 			$("#start").show();
+			$('#video_here').hide();
+			let $source = $('#video_here');
+  			$source[0].src = "";
+			$('#audio_here').hide();
+			let $source1 = $('#audio_here');
+  			$source1[0].src = "";
 		});
 		// let fields = this.state.fields;
 		// fields["image"] = "";
@@ -955,6 +1026,7 @@ class AddRoundQuestion extends Component {
 				if (input.files && input.files[0]) {
 					var reader = new FileReader();
 					reader.onload = function (e) {
+						if(input.files[0].type != undefined){
 						var type = input.files[0].type.split('/');
 						if (type[0] === 'image') {
 							$('.display-profile-pic').attr('src', e.target.result);
@@ -966,6 +1038,7 @@ class AddRoundQuestion extends Component {
 					reader.readAsDataURL(input.files[0]);
 				}
 			}
+		}
 			$(".file-upload").on('change', function () {
 				readURL(this);
 			});
@@ -1013,6 +1086,7 @@ class AddRoundQuestion extends Component {
 													<span aria-hidden="true">
 														<img
 															className="close_svg"
+															style = {{zIndex : "2"}}
 															src="./murabbo/img/close_dark.svg"
 															onClick={this.removeImage.bind(
 																this
@@ -1031,6 +1105,13 @@ class AddRoundQuestion extends Component {
 														<label id="file-drag">
 															<img id="file-image" src="#" alt="Preview" className="hidden" />
 															<img className="display-profile-pic" src={this.state.profilePic} alt="" />
+															<video className="video1 video-width"  id="video_here"  controlsList="nodownload" onLoadedMetadata = {this.checkVideoDuration.bind(this)}  controls >
+																			<source src="" type="video/mp4" />
+																			{/* <source src="" type="video/ogg" /> */}
+															</video>
+															<audio className="video-width" style={{marginTop:"80px"}} id="audio_here" onLoadedMetadata = {this.checkAudioDuration.bind(this)} controls controlsList="nodownload">
+																<source src="" type="audio/ogg" />
+															</audio>
 															<div id="start">
 																<div><img className="profile-pic" src='./murabbo/img/upload.svg' alt="" />
 																<div id="add_image">Tab to add image, audio, video</div>
@@ -1401,7 +1482,7 @@ class AddRoundQuestion extends Component {
 
 										<div className="profile-img" style={{ marginTop: '15px' }}>
 											<form id="file-upload-form" className="uploader">
-												<input id="file-upload" type="file" name="fileUpload" className="file-upload" onChange={this.handleUploadProfile.bind(this, 'image')} ref={(ref) => { this.uploadInput = ref; }} />
+											<input id="file-upload" accept="video/mp4,audio/mp3,image/gif,image/jpeg,image/png,.gif,.jpeg,.jpg,.png" type="file" name="fileUpload" className="file-upload" onChange={this.handleUploadProfile.bind(this, 'image')} ref={(ref) => { this.uploadInput = ref; }} />
 
 												<label for="file-upload" id="file-drag">
 													Gallery

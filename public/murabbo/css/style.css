@@ -4257,3 +4257,9 @@ button.blue_btn:hover {
     display: flex;
     gap: 9px;
 }
+
+.video-width{
+    max-width: 340px;
+    max-height: 200px;
+}
+
