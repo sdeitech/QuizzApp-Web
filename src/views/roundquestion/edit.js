@@ -1067,6 +1067,8 @@ class EditRoundQuestion extends Component {
 		if(!configuration.checkUserHasAccess(data.subscriptionType))
 		{
 			this.setState({optionsValuesModel:false,subscriptionModel:true});
+			this.removeImage();
+			$(".file-upload").val("");
 			return false;	
 		}
 		var fields = this.state.fields;
@@ -1113,6 +1115,8 @@ class EditRoundQuestion extends Component {
 		if(!configuration.checkUserHasAccess(data.subscriptionType))
 		{
 			this.setState({optionsValuesModel:false,subscriptionModel:true});
+			this.removeImage();
+			$(".file-upload").val("");
 			return false;	
 		}
 		var fields = this.state.fields;

@@ -33,6 +33,8 @@ class TheHeader extends Component {
             hiddenConfirmPassword: true
 
         };
+        reactLocalStorage.set('redirect',"true");
+        reactLocalStorage.set('reload',"false");
     }
     toggleShowPassword() {
         this.setState({ hiddenPassword: !this.state.hiddenPassword });
@@ -717,6 +719,7 @@ class TheHeader extends Component {
     render() {
         return (
             <div>
+                <Session/>
                 <ToastContainer
                     position="top-right"
                     autoClose={25000}

@@ -24,6 +24,7 @@ class TheHeaderInner extends Component {
             hiddenPassword:true,
 
         };
+        reactLocalStorage.set('reload',"true");
     }
 
     componentDidMount() {
@@ -35,6 +36,8 @@ class TheHeaderInner extends Component {
                 reactLocalStorage.set('token', '');
                 reactLocalStorage.set('userData', '');
                 reactLocalStorage.set('is_login', 'false');
+                reactLocalStorage.set('reload',"true");
+                reactLocalStorage.set('redirect',"false");
                 window.location.href = '/#/'
             }
             if (decoded) {
@@ -143,6 +146,8 @@ class TheHeaderInner extends Component {
             reactLocalStorage.set('token', '');
             reactLocalStorage.set('userData', '');
             reactLocalStorage.set('is_login', 'false');
+            reactLocalStorage.set('reload',"true");
+            reactLocalStorage.set('redirect',"false");
             window.location.href = '/#/'
         }
         else {
