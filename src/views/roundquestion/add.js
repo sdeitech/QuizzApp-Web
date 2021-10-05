@@ -901,7 +901,7 @@ class AddRoundQuestion extends Component {
 		return (str.length > n) ? str.substr(0, n - 1) + '...' : str;
 	};
 
-
+	
 	selectImage(data) {
 		this.setState({tosterMsg:"" });
 		$('#video_here').hide();
@@ -940,6 +940,8 @@ class AddRoundQuestion extends Component {
 		this.setState({ subscriptionModel: false });
 		if (!configuration.checkUserHasAccess(data.subscriptionType)) {
 			this.setState({ optionsValuesModel: false, subscriptionModel: true });
+			this.removeImage();
+			$(".file-upload").val("");
 			return false;
 		}
 		var fields = this.state.fields;
@@ -984,6 +986,8 @@ class AddRoundQuestion extends Component {
 		this.setState({ subscriptionModel: false });
 		if (!configuration.checkUserHasAccess(data.subscriptionType)) {
 			this.setState({ optionsValuesModel: false, subscriptionModel: true });
+			this.removeImage();
+			$(".file-upload").val("");
 			return false;
 		}
 		var fields = this.state.fields;

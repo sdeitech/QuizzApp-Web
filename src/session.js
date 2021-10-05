@@ -44,14 +44,32 @@ class ViewSession extends Component {
                         reactLocalStorage.set('is_login','false');
                         window.location.href = '/#/'
                     }
+                    if(decoded)
+                    {
+                        if(reactLocalStorage.get('redirect')== "true"){
+                            window.location.href = '/#/dashboard'
+                            reactLocalStorage.set('redirect','false');
+                        }
+                        // reactLocalStorage.set('is_login','false');
+                    }
                 });
             }else{
-                reactLocalStorage.set('is_login','false');
+                // reactLocalStorage.set('is_login','false');
+                reactLocalStorage.set('token', '');
+                reactLocalStorage.set('userData', '');
+                reactLocalStorage.set('is_login', 'false');
 				window.location.href = '/#/';
-                window.location.reload();
+                if(reactLocalStorage.get('reload') === 'true'){
+                    window.location.reload();
+                    reactLocalStorage.set('reload', 'false');
+                }
+
 			}
         } catch(err) {
-            reactLocalStorage.set('is_login','false');
+            // reactLocalStorage.set('is_login','false');
+            reactLocalStorage.set('token', '');
+            reactLocalStorage.set('userData', '');
+            reactLocalStorage.set('is_login', 'false');
            window.location.href = '/#/'
         }
         

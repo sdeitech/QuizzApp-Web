@@ -120,10 +120,12 @@ class EditRoundWord extends Component {
 	      if (parseInt(minute) === 5 || parseInt(minute) > 5) {
 	      	minute = '05';
 	      	seconds = '00';
+			newTime = 300;  
 	      }
-	      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 10)) {
+	      else if (parseInt(minute) < 1 && (parseInt(seconds) === 0 || parseInt(seconds) < 30)) {
 	      	minute = '00';
-	      	seconds = '10';
+	      	seconds = '30';
+			newTime = 30;
 	      }
 
 		  console.log('minute--->',minute);			

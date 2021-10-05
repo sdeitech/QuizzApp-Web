@@ -70,6 +70,7 @@ class StartRound extends Component {
 				reactLocalStorage.set('token', '');
 				reactLocalStorage.set('userData', '');
 				reactLocalStorage.set('is_login', 'false');
+				reactLocalStorage.set('reload',"true");
 				window.location.href = '/#/'
 			}
 			if (decoded) {

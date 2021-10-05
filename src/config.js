@@ -25,6 +25,8 @@ const config = {
         reactLocalStorage.set('clientToken', data.accessToken);
         reactLocalStorage.set('userData', JSON.stringify(data));
         reactLocalStorage.set('is_login', 'true');
+        reactLocalStorage.set('redirect',"false");
+        reactLocalStorage.set('reload',"true");
 
         if(data.userId)
         {
