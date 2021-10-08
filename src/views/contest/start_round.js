@@ -246,6 +246,7 @@ class StartRound extends Component {
 	}
 
 	saveExitAnswer(isLast = 0) {
+		this.setState({indexQuestion:(this.state.listArr.length+1)})
 		if (this.state.roundListArr[(this.state.currentIndexRound + 1)] !== undefined) {
 			this.setState({ saveExitAnswer: true });
 
@@ -493,8 +494,9 @@ class StartRound extends Component {
 			if(index == (arr.length-1)){
 				this.setState({indexForUnscrambleAns:0});
 				this.unscrambleAnswerSubmit(true,str);
+			}else{
+				this.setState({indexForUnscrambleAns: index+1});
 			}
-			this.setState({indexForUnscrambleAns: index+1});
 			
 		}else{
 			
@@ -516,18 +518,14 @@ class StartRound extends Component {
 		this.countScore(this.state.indexQuestion);
 		var that = this;
 		setTimeout(function () {
-			if (that.state.indexQuestion < that.state.listArr.length) {
-				that.setState({ indexQuestion: that.state.indexQuestion + 1 })
-			}
-			else {
-				that.saveNextAnswer();
-			}
+			that.setState({ indexQuestion: that.state.indexQuestion + 1 })
 		}, 2000);
 	}
 
 	startTimer() {
 		let fields = this.state.listArr;
 		var that = this;
+		let roundIndexIncrease = true;
 		if (this.state.listArr.length > 0 && fields[that.state.indexQuestion] !== undefined) {
 			setTimeout(function () {
 

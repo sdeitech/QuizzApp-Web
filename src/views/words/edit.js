@@ -47,9 +47,10 @@ class EditRoundWord extends Component {
 					return response.json();
 				}).then((data)=> {
 					if (data.data.length > 0) {	
-						var data = data.data[0];
+						let data = data.data[0];
 						gameType = data.gameType;
 						contest_id = data.contestId;
+
 						
 							var that = this;
 							if(gameType){
@@ -70,6 +71,7 @@ class EditRoundWord extends Component {
 										fields['execution_mode']=data.execution_mode;
 										fields['negativeScoring']=data.negativeScoring;
 										fields['scoring']=data.scoring;
+										fields['hint'] =  data.hint;
 										that.setState({fields});										
 										setTimeout(function () {
 											that.changeTime(0);
@@ -188,7 +190,7 @@ class EditRoundWord extends Component {
         	}
         	else
         	{
-        		data.append('hint',1);
+        		data.append('hint',this.state.fields.hint);
 	        	data.append('onDemandNegativePoints',0);
         	}
             fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
