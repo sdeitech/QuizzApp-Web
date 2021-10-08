@@ -56,7 +56,10 @@ class StartRound extends Component {
 			createdBy: '',
 			isActive: '',
 			isWinnerScreenShow: false,
-			openModelForMembers: false
+			openModelForMembers: false,
+			unscrambleArr: [],
+			item:[],
+			indexForUnscrambleAns:0,
 		};
 	}
 
@@ -101,6 +104,27 @@ class StartRound extends Component {
 			}
 		});
 		this.getList(contestId);
+
+		// if(this.state.roundListArr[this.state.indexRound] !== undefined){
+		// 	if(this.state.roundListArr[this.state.indexRound].gameType === "Unscramble"){
+		// 		var wordsArr = this.state.unscrambleArr[this.state.indexQuestion];
+		// 		var length = wordsArr.length;
+		// 		var row = Math.ceil(length/4);
+		// 		var item=[];
+		// 		for(let k=0;k<row;k++){
+		// 			var insideItem=[];
+		// 			var l = length - k*4;
+		// 			for(let j=0;j<l;j++){
+		// 				var a = wordsArr[j+k*4];
+		// 				insideItem.push(<div className="flexbox" >{a}</div>);
+		// 			}
+		// 			item.push(<div className="flexboxbox" >{insideItem}</div>)
+		// 		} 
+		// 		this.setState({item:item})
+		// 	}
+		// }
+
+		
 
 
 
@@ -427,10 +451,78 @@ class StartRound extends Component {
 		}).then((data) => {
 			var data = data.data;
 			this.setState({ listArr: data, showRound: false, saveExitAnswer: false, indexRound: (indexRoundNo + 1) });
-			// console.log(this.state.listArr);
-			
-			this.startTimer();
+			if(this.state.roundListArr[indexRoundNo].gameType === "Unscramble"){
+				console.log("in get Question");
+				this.unscrambleWords();
+			}else{
+				this.startTimer();
+			}
 		});
+	}
+	
+	unscrambleWords(){
+		let questionarr = this.state.listArr
+		
+		for(let x in questionarr){
+			var str = (questionarr[x].question).toUpperCase();
+			var arr = str.split('');
+			var n = arr.length;
+
+			for(var i=0 ; i<n-1 ; ++i) {
+				var j = Math.floor(Math.random()*n); 
+				var temp = arr[i];             
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+			var setarr = this.state.unscrambleArr
+			setarr[setarr.length] = arr;
+			console.log(setarr,"unsramble")
+
+			this.setState({unscrambleArr: setarr})
+		}
+		this.startTimer();
+	}
+
+	unscrambleAnswerCheck(ans,id){
+		var str = (this.state.listArr[this.state.indexQuestion].question).toUpperCase();
+		let arr = str.split("");
+		let index = this.state.indexForUnscrambleAns; 		
+		if(arr[index] === ans){
+			$(`#idd${index}`).text(ans);
+			$(`#${id}`).prop('disabled',true);
+			if(index == (arr.length-1)){
+				this.setState({indexForUnscrambleAns:0});
+				this.unscrambleAnswerSubmit(true,str);
+			}
+			this.setState({indexForUnscrambleAns: index+1});
+			
+		}else{
+			
+			var arrslice = arr.slice(0,index-1)
+			str = ""+arrslice+ans;
+			$(`#${id}`).addClass('flexboxred')
+			$(`.flexbox`).prop('disabled',true);
+			this.unscrambleAnswerSubmit(false,str);
+		}
+
+	}
+
+	unscrambleAnswerSubmit(ans,selectAnswer){
+		let fields = this.state.listArr;
+		fields[this.state.indexQuestion]['isAnswerTrue'] = ans;
+		fields[this.state.indexQuestion]['selectAnswer'] = selectAnswer;
+		fields[this.state.indexQuestion]['readonly'] = true;
+		this.setState({ listArr: fields });
+		this.countScore(this.state.indexQuestion);
+		var that = this;
+		setTimeout(function () {
+			if (that.state.indexQuestion < that.state.listArr.length) {
+				that.setState({ indexQuestion: that.state.indexQuestion + 1 })
+			}
+			else {
+				that.saveNextAnswer();
+			}
+		}, 2000);
 	}
 
 	startTimer() {
@@ -966,6 +1058,7 @@ class StartRound extends Component {
 	}
 
 	render() {
+		
 		return (
 			<>
 				<TheHeaderInner />
@@ -1113,20 +1206,55 @@ class StartRound extends Component {
 
 
 											(this.state.listArr[this.state.indexQuestion]) ? (
-												<div>
+												<div className="flexxxxx">
+													{(this.state.roundListArr[this.state.currentIndexRound].gameType === "Unscramble") ? (
+													<>														
+													<div className="flexboxbox" >
+														{ 	
+														this.state.unscrambleArr.map((i,index)=> {
+															console.log(this.state.indexQuestion,"qqqqqqq")
+															if(index == this.state.indexQuestion){
+																return i.map((e,index)=>{
+																	var id = `id${index}`
+																	return	<button className="flexbox" id={id} onClick={this.unscrambleAnswerCheck.bind(this,e,id)} > {e} </button>
+																})
+															}
+															
+														})}
+													</div>
+													<div className="flexboxbox" >
+														{
+														this.state.unscrambleArr.map((i,index)=> {
+															if(index == this.state.indexQuestion){
+																return i.map((e,index)=>{
+																	var id = `idd${index}`;
+																	return	<div className="flexbox2"><p id={id}> </p></div>
+																})
+															}
+															return;
+														})}
+													</div>
+													{
+															(this.state.listArr[this.state.indexQuestion]['hint'] === 2) ?
+																<p className="hintText"><span>Hint - </span>{this.state.listArr[this.state.indexQuestion]['hintText']}</p> :
+																(this.state.listArr[this.state.indexQuestion]['hint'] === 3) ?
+																	<p className="hintText">{(this.state.listArr[this.state.indexQuestion]['hintTextStyle'] !== undefined && this.state.listArr[this.state.indexQuestion]['hintTextStyle'] === true) ? this.state.listArr[this.state.indexQuestion]['hintText'] : <button class="blue_btn" onClick={this.changeOnDemand.bind(this)}>Show Hint</button>}</p> : null
 
+														}
+													</>
+													):(
 													<div class="qus" style={{ marginBottom: "30px" }}>
 
 														{this.state.listArr[this.state.indexQuestion]['fileType'] == "image" ? (
 															<div style={{
-																width: "300px",
-																height: "150px",
-																marginLeft: "334px"
+																width: "100%",
+    															alignContent: "center",
+    															textAlign: "center",
+																marginBottom: "25px",
 															}}>
 																<img src={this.state.listArr[this.state.indexQuestion]['file']} style={{
 
 																height: "145px",
-																marginLeft: "-66px"
 																}} />
 															</div>
 														) : (null)}
@@ -1428,9 +1556,9 @@ class StartRound extends Component {
 													</div>
 
 
-													
-													<div class="align-self-center" style={{ textAlign: 'center' }}>
-														<button style={{ minWidth: '150px', marginRight: '18px' }} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
+													)}
+													<div class="align-self-center" style={{ textAlign: 'center',width: "100%",float: "left" }}>
+														<button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
 													</div>
 
 												</div>)

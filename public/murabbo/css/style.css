@@ -4267,3 +4267,51 @@ button.blue_btn:hover {
     max-height: 200px;
 }
 
+
+.flexboxbox{
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    float: left;
+}
+
+.flexbox{
+    background-color: #0b3833;
+    border: 2px solid #489696;
+    color: #47959a;
+    width: 40px;
+    height: 40px;
+    line-height: 34px;
+    border-radius: 10px;
+    display: inline-block;
+    font-size: 20px;
+    margin: 20px 10px;
+}
+.flexboxred{
+    background-color: #860000 !important; 
+}
+
+
+.flexbox2{
+    border-bottom: 2px solid white;
+    color: #47959a;
+    line-height: 34px;
+    display: inline-block;
+    margin: 7px 10px;
+    width: 33px;
+    position: relative;
+    height: 40px;
+}
+
+.flexxxxx{
+    width: 100%;
+    float: left;
+}
+.flexbox2 p {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 20px;
+    transform: translateY(-50%) translateX(-50%);
+}

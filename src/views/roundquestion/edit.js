@@ -736,6 +736,11 @@ class EditRoundQuestion extends Component {
                  return false;
 	        }
 
+			if(this.state.fields["gameType"]==="GuessAndGo" && this.state.fields['fileType'] === ''){
+				this.setState({tosterMsg:"Please add image,audio,video"})
+				return false;
+			}
+
 	        if (parseInt(this.state.fields['answerType']) !== 5) {
 	        	let answers = this.state.answers;
 				var that =this;
@@ -824,6 +829,7 @@ class EditRoundQuestion extends Component {
 				
 			}
 			this.setState({isLoading:true});
+
             fetch(configuration.baseURL+"roundQuestion/roundQuestion/"+question_id, {
                 method: "PUT",
                 headers: {

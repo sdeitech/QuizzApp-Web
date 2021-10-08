@@ -620,6 +620,11 @@ class AddRoundQuestion extends Component {
 				this.setState({ tosterMsg: (this.state.fields['gameType'] !== 'Taboo') ? 'Please add at least one answer' : 'Please add at least one taboo' });
 				return false;
 			}
+ 
+			if(this.state.fields["gameType"]==="GuessAndGo" && this.state.fields['fileType'] === ''){
+				this.setState({tosterMsg:"Please add image,audio,video"})
+				return false;
+			}
 
 			if (parseInt(this.state.fields['answerType']) !== 5) {
 				let answers = this.state.answers;
