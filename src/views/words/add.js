@@ -42,8 +42,14 @@ class AddRoundQuestion extends Component {
 					contest_id = data.contestId;
 					let fields = this.state.fields;
 					fields['execution_mode']=data.execution_mode;
-					fields['negativeScoring']=data.negativeScoring;
+					fields['basePoints'] = data.basePoints;
 					fields['scoring']=data.scoring;
+					if(data.hint == 1){
+						fields['negativeScoring'] = true;
+					}else{
+						fields['negativeScoring'] = data.negativeScoring;
+						fields['hint'] =  data.hint;
+					}
 			   		this.setState({fields});
 		    	}
 			});	
@@ -152,7 +158,7 @@ class AddRoundQuestion extends Component {
         	}
         	else
         	{
-        		data.append('hint',1);
+        		data.append('hint',this.state.fields.hint);
 	        	data.append('onDemandNegativePoints',0);
         	}
 

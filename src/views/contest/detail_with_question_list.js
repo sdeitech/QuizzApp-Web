@@ -41,7 +41,10 @@ class DetailContestWithQuestionList extends Component {
 			freeTextAnswer: '',
 			saveExitAnswer: false,
 			numberArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
-			alphabetArray: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+			alphabetArray: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+			unscrambleArr: [],
+			item:[],
+			indexForUnscrambleAns:0,
 		};
 	}
 
@@ -300,12 +303,81 @@ class DetailContestWithQuestionList extends Component {
 				data[index]['wrong_words'] = [];
 			}
 			this.setState({ listArr: data, showQuestion: true, indexQuestion: 0 });
-			this.startTimer();
+			if(this.state.roundData[this.state.indexRound].gameType === "Unscramble"){
+				console.log("in get Question");
+				this.unscrambleWords();
+			}else{
+				this.startTimer();
+			}
 		});
-
-
-
 		
+	}
+
+
+
+	unscrambleWords(){
+		let questionarr = this.state.listArr
+		
+		for(let x in questionarr){
+			var str = (questionarr[x].question).toUpperCase();
+			var arr = str.split('');
+			var n = arr.length;
+
+			for(var i=0 ; i<n-1 ; ++i) {
+				var j = Math.floor(Math.random()*n); 
+				var temp = arr[i];             
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+			var setarr = this.state.unscrambleArr
+			setarr[setarr.length] = arr;
+			console.log(setarr,"unsramble")
+
+			this.setState({unscrambleArr: setarr})
+		}
+		this.startTimer();
+	}
+
+	unscrambleAnswerCheck(ans,id){
+		var str = (this.state.listArr[this.state.indexQuestion].question).toUpperCase();
+		let arr = str.split("");
+		let index = this.state.indexForUnscrambleAns; 		
+		if(arr[index] === ans){
+			$(`#idd${index}`).text(ans);
+			$(`#${id}`).prop('disabled',true);
+			if(index == (arr.length-1)){
+				this.setState({indexForUnscrambleAns:0});
+				this.unscrambleAnswerSubmit(true,str);
+			}
+			this.setState({indexForUnscrambleAns: index+1});
+			
+		}else{
+			
+			var arrslice = arr.slice(0,index-1)
+			str = ""+arrslice+ans;
+			$(`#${id}`).addClass('flexboxred')
+			$(`.flexbox`).prop('disabled',true);
+			this.unscrambleAnswerSubmit(false,str);
+		}
+
+	}
+
+	unscrambleAnswerSubmit(ans,selectAnswer){
+		let fields = this.state.listArr;
+		fields[this.state.indexQuestion]['isAnswerTrue'] = ans;
+		fields[this.state.indexQuestion]['selectAnswer'] = selectAnswer;
+		fields[this.state.indexQuestion]['readonly'] = true;
+		this.setState({ listArr: fields });
+		this.countScore(this.state.indexQuestion);
+		var that = this;
+		setTimeout(function () {
+			if (that.state.indexQuestion < that.state.listArr.length) {
+				that.setState({ indexQuestion: that.state.indexQuestion + 1 })
+			}
+			else {
+				that.saveExitAnswer();
+			}
+		}, 2000);
 	}
 
 	startTimer() {
@@ -820,7 +892,7 @@ class DetailContestWithQuestionList extends Component {
 								}
 
 								{
-								  (this.state.roundData[this.state.indexRound].gameType === 'Quiz') ?
+								  (this.state.roundData[this.state.indexRound].gameType === 'Quiz' ||this.state.roundData[this.state.indexRound].gameType === 'GuessAndGo') ?
 									<section id="hero" class="d-flex align-items-center">
 										<div class="quizz-game" style={{ marginTop: '35px' }}>
 
@@ -1142,6 +1214,127 @@ class DetailContestWithQuestionList extends Component {
 									</section> : null
 										
 								 }
+
+
+{
+    (this.state.roundData[this.state.indexRound].gameType === 'Unscramble') ?
+      <section id="hero" class="d-flex align-items-center">
+          <div class="quizz-game" style={{ marginTop: '35px' }}>
+
+              <div className="dropdown show" style={{ float: "right" }}>
+                  <a className="btn btn-secondary dropdown-toggle toggle-arrow" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                  </a>
+
+                  <div className="dropdown-menu drop-btn-menu" aria-labelledby="dropdownMenuLink">
+
+
+                      {this.state.contestCreater ? (null) : (
+                          <button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={() => {
+                              this.setState({ openModel: true })
+                          }}>Report</button>
+
+                      )}
+                  </div>
+              </div>
+              <h3>{this.state.contestData.title}</h3>
+              <p>{this.state.roundData[this.state.indexRound].gameType}</p>
+              <div class="quizz-quas">
+                  {(this.state.listArr[this.state.indexQuestion]) ?
+                      <h4>Question {this.state.indexQuestion + 1}/{this.state.listArr.length}</h4>
+                      :
+                      <h4>Question {this.state.listArr.length}/{this.state.listArr.length}</h4>
+                  }
+
+
+                  {
+                      this.state.listArr.map((e, key) => {
+                          let classname = (key === this.state.indexQuestion) ? "step_progress yellow_" :
+                              (typeof e.selectAnswer !== 'undefined') ? ((e.isAnswerTrue) ? "step_progress blue_" : "step_progress pink_") : "step_progress";
+                          return <div className={classname}></div>
+                      })
+                  }
+                  <div id="app">
+                      <div class="base-timer">
+                          <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                              <g class="base-timer__circle">
+                                  <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+                                  <span id="base-timer-label" class="base-timer__label"></span>
+                                  <path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
+                    M 50, 50
+                    m -45, 0
+                    a 45,45 0 1,0 90,0
+                    a 45,45 0 1,0 -90,0
+                  "></path>
+
+                              </g>
+                          </svg>
+                          {(this.state.listArr[this.state.indexQuestion]) ?
+                              <span id="base-timer-label" class="base-timer__label">{(this.state.listArr[this.state.indexQuestion]['displaytimeLimit']) ? this.state.listArr[this.state.indexQuestion]['displaytimeLimit'] : '00:00'}</span>
+                              :
+                              <span id="base-timer-label" class="base-timer__label">00:00</span>
+                          }
+
+                      </div>
+                  </div>
+              </div>
+              {(this.state.listArr[this.state.indexQuestion]) ?
+                  <div>
+                      <div class="qus" style={{ marginBottom: "30px" }}>
+
+                          {/* <h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3> */}
+
+                          {
+                              (this.state.listArr[this.state.indexQuestion]['hint'] === 2) ?
+                                  <p className="hintText"><span>Hint - </span>{this.state.listArr[this.state.indexQuestion]['hintText']}</p> :
+                                  (this.state.listArr[this.state.indexQuestion]['hint'] === 3) ?
+                                      <p className="hintText">{(this.state.listArr[this.state.indexQuestion]['hintTextStyle'] !== undefined && this.state.listArr[this.state.indexQuestion]['hintTextStyle'] === true) ? this.state.listArr[this.state.indexQuestion]['hintText'] : <button class="blue_btn" onClick={this.changeOnDemand.bind(this)}>Show Hint</button>}</p> : null
+
+                          }
+
+                          <div class="answer-option">
+
+
+                                                     <div className="flexboxbox" >
+														{ 	
+														this.state.unscrambleArr.map((i,index)=> {
+															if(index == this.state.indexQuestion){
+																return i.map((e,index)=>{
+																	var id = `id${index}`
+																	return	<button className="flexbox" id={id} onClick={this.unscrambleAnswerCheck.bind(this,e,id)} > {e} </button>
+																})
+															}
+															
+														})}
+													</div>
+													<div className="flexboxbox" >
+														{
+														this.state.unscrambleArr.map((i,index)=> {
+															if(index == this.state.indexQuestion){
+																return i.map((e,index)=>{
+																	var id = `idd${index}`;
+																	return	<div className="flexbox2"><p id={id}> </p></div>
+																})
+															}
+															return;
+														})}
+													</div>
+
+                          </div>
+
+
+                      </div>
+                      <div class="align-self-center" style={{ textAlign: 'center' }}>
+                          <button style={{ minWidth: '150px' }} class="pink_btn" type="button" onClick={this.saveExitAnswer.bind(this)}>Exit</button>
+                      </div>
+                  </div>
+                  :
+                  null
+              }
+          </div>
+      </section> : null
+          
+   }
 
                                  {/* {
 								  (this.state.roundData[this.state.indexRound].gameType === 'Blank') ?
