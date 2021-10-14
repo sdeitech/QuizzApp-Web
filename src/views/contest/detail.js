@@ -158,6 +158,10 @@ class Detail extends Component {
     {
         this.props.history.push('/contests/start_round/'+contestId+'?'+roomId);
     }
+    playWithVideo()
+    {
+        this.props.history.push('/videoChat/6163d78cdfa8fc1f8d64477f');
+    }
     render() {
         return (
             <>
@@ -174,8 +178,8 @@ class Detail extends Component {
 
 						<div class="row">
 						
-							<div class="col-lg-12 col-md-1 col-12">
-								<div class="cate-box2" >
+							<div class="col-lg-12 col-md-12 col-12">
+								<div style={{height: '82vh'}} class="cate-box2" >
                                     <img src='img/undo.svg' className="undo_btn" onClick={() => {this.props.history.push('/dashboard')}}/>
 									<img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
 									<div class="cat_title2">
@@ -216,7 +220,7 @@ class Detail extends Component {
                                             </div>
                                             
 											<div style={{ marginBottom: '50px', textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button">Play</button>
+							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play</button>
 							                </div>
 					                        <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play without video</button>

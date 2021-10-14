@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import Room from "../chat/view"
 import {
 	TheFooter,
 	TheHeaderInner
@@ -13,12 +14,86 @@ import {
 	CModalBody,
 } from '@coreui/react';
 import $ from 'jquery';
+import io from "socket.io-client";
+import socket from 'socket.io-client/lib/socket';
 var jwt = require('jsonwebtoken');
 
 let contestId, roundId, roomId, parentContestId;
+
+///socket////
+// const API_URI_2 = `https://dev-api.murabbo.com`;
+//const API_URI_2 = `http://localhost:5000`;
+// let socket_2;
+
+var connectionOptions =  {
+	"force new connection" : true,
+	"reconnectionAttempts": "Infinity", 
+	"timeout" : 10000,                  
+	"transports" : ['websocket', 'polling', 'flashsocket']
+};
+
+// const API_URI_2 = `https://dev-api.murabbo.com`;
+// const API_URI_2 = `https://safe-badlands-06778.herokuapp.com`;
+// const API_URI_2 = `http://192.168.1.27:9002`;
+const API_URI_2 = `http://localhost:9002`;
+
+ var socket_2  = io(API_URI_2, {
+	forceNew: true,
+});
+let playContestss;
+console.log("socket_2",socket_2);
+
+// socket_2.on("startQuestion", async (data) => {
+// 	console.log("start question => socket => ", JSON.stringify(data));
+// 	// this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
+// 	this.playContest.bind(this); 
+// 	playContestss = true;    
+// });
+
+
+// if (!socket_2) {
+// 	// socket_2= IO(API_URI_2,{
+// 	// 	transports : ['flashsocket'],
+//     // // 	auth: {
+//     // //     token: 'Bearer ' + reactLocalStorage.get('clientToken')
+//     // // }
+// 	// });
+
+// 	socket_2  = IO(API_URI_2, {
+	//                 forceNew: true,
+	//                 transports: ["polling"]
+	//             });
+	//     // socket_2 = IO(API_URI_2, {forceNew: true });
+	// 	// socket_2= IO(API_URI_2,{
+		// 	// 	extraHeaders: {
+// 	// 	Authorization: 'Bearer ' + reactLocalStorage.get('clientToken')
+// 	//   }}
+// 	//   );
+// }
+
+// console.log("socket_2",socket_2)
+
+// socket_2.on('Connection', () => {
+// 	console.log('Connection for 2');
+// });
+
+
+
+//////////////
+
+
+
+
+
+
+
+
+
 class StartRound extends Component {
 	constructor(props) {
 		super(props);
+		let roomUrl = window.location.href;
+    	const roomId1 = roomUrl.substring(roomUrl.lastIndexOf("?") + 1);
 		this.state = {
 			profile_picture: 'avatars/placeholder-user.png',
 			name: '',
@@ -35,6 +110,7 @@ class StartRound extends Component {
 			indexRound: 0,
 			gameId: '',
 			roomId: '',
+			roomIdd: roomId1,
 			freeTextAnswer: '',
 			saveExitAnswer: false,
 			showRound: true,
@@ -61,9 +137,53 @@ class StartRound extends Component {
 			item:[],
 			indexForUnscrambleAns:0,
 		};
+		this.socketRef = React.createRef();
+		this.playContest = this.playContest.bind(this);
+	}
+	
+	componentWillUnmount(){
+		socket_2.on("startQuestion", async (data) => {
+			console.log("start question => socket => ", JSON.stringify(data));
+			// this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
+			this.playContest(); 
+			// playContestss = true;    
+		});
 	}
 
 	componentDidMount() {
+
+		//////////socket//////
+
+
+		if(playContestss){
+			this.playContest();
+		}
+		
+		socket_2.on('connect', () => {
+			console.log('Connection for 2');
+		});
+		
+		socket_2.on("user-connected-game", ({userId,username})=>{
+			console.log("userconnected",username);
+		});
+
+
+
+		socket_2.on("startQuestion", async (data) => {
+		    console.log("start question => socket => ", JSON.stringify(data));
+			this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
+			this.playContest();     
+		});
+
+		// var roomid = this.state.roomIdd;
+		// var userid = JSON.parse(reactLocalStorage.get('userData')).userId;
+		// this.socketRef.current.emit("join-game-room",({roomid,userid}))
+		
+
+
+		//////////socket-end//////
+
+
 
 		let that = this;
 		var token = reactLocalStorage.get('token');
@@ -129,6 +249,47 @@ class StartRound extends Component {
 
 
 	}
+
+
+	///////////////socket.......
+
+
+	joinroom(){
+		var that = this;
+		var roomID = this.state.roomIdd;
+		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+
+		socket_2.emit("join-game-room", {
+			userId,
+			roomID,
+		});
+
+
+
+		// this.socketRef.current.emit("join-game-room",({roomid,userid}))
+	}
+
+
+	_startRoundModerator(){
+
+		var that = this;
+
+		const gameInfo = {
+            questionIndex:that.state.indexQuestion,
+            roundIndex:that.state.currentIndexRound,
+            userId:JSON.parse(reactLocalStorage.get('userData')).userId,
+        };
+		const roomID = this.state.roomIdd;
+		socket_2.emit('startRound', ({ roomID, gameInfo }));
+
+	}
+
+	
+
+
+
+
+	///////socket-end.......
 
 
 	getList(contest_id1) {
@@ -1062,13 +1223,14 @@ class StartRound extends Component {
 				<TheHeaderInner />
 				<ToastContainer position="top-right" autoClose={10000} style={{ top: '80px' }} />
 				<main id="main">
+					<Room/>
 
 
 
 					{(this.state.showRound === false) ?
 						(this.state.saveExitAnswer === false) ?
 							<section id="hero" class="d-flex align-items-center">
-								<div className="quizz-game" style={{ marginTop: '35px' }}>
+								<div className="quizz-game quizz-game2" style={{ marginTop: '35px' }}>
 									<div className="dropdown show" style={{ float: "right" }}>
 										<a className="btn btn-secondary dropdown-toggle toggle-arrow" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<i class="fas fa-ellipsis-v"></i>
@@ -1571,7 +1733,7 @@ class StartRound extends Component {
 							:
 							(this.state.winnerScreen) ?
 								<section id="hero" class="d-flex align-items-center">
-									<div class="quizz-game width40">
+									<div class="quizz-game width40 cus_quizz">
 										<p></p><br />
 										{
 
