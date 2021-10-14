@@ -1918,6 +1918,24 @@ li.nav-item button {
     border-radius: 5px;
     padding: 20px;
 }
+.quizz-game2 {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    left: auto;
+    transform: none;
+    width: 51%;
+    background: #324b55 0% 0% no-repeat padding-box;
+    border-radius: 5px;
+    padding: 20px;
+    height: 84vh;
+    overflow-y: scroll;
+}
+.cus_quizz{
+    transform: translate(18%, 0%) !important;
+    width: 35%;
+    top: 95px !important;
+}
 .quizz-game h3 {
     font: normal normal normal 24px Montserrat;
     letter-spacing: 0px;
@@ -3449,11 +3467,14 @@ p.fancy2 ._f {
 }
 
 .app-container {
-    background-color: #eaebf5;
+    background-color: #111b20;
     width: 100%;
     height: 100%;
     display: flex;
-    transition: 0.2s;
+    flex-direction: column;
+    align-items: center;
+    /* transition: 0.2s; */
+    flex: 1;
 }
 
 .icon svg {
@@ -3474,7 +3495,6 @@ p.fancy2 ._f {
 
 .video-call-wrapper {
     width: 100%;
-    height: 100%;
     /* border-radius: 16px; */
     overflow: hidden;
     display: flex;
@@ -3482,8 +3502,11 @@ p.fancy2 ._f {
 }
 
 .video-participant {
-    width: 33%;
-    height: 100%;
+    width: 100%;
+    position: relative;
+}
+.video-participants {
+    width: 50%;
     position: relative;
 }
 .video-participant img {
@@ -3491,10 +3514,7 @@ p.fancy2 ._f {
     height: 100%;
     object-fit: cover;
 }
-video {
-    width: 100% !important;
-    height: 100% !important;
-}
+
 .name-tag {
     position: absolute;
     bottom: 12px;
@@ -3535,10 +3555,12 @@ video {
 }
 
 .video-call-actions {
+    bottom: 30px;
+    position: absolute;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 64px;
+    /* padding-top: 64px; */
     max-width: 500px;
 }
 
@@ -3841,7 +3863,8 @@ img.undo_btn {
 }
 
 .video-participant video {
-    object-fit: cover;
+    object-fit: contain;
+    object-position: top;
 }
 
 /* css */
