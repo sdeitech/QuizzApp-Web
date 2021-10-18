@@ -169,7 +169,8 @@ class DetailContest extends Component {
     }
 
 	joinRoomHandler(data){
-		this.props.history.push('/detail-contest/'+contestId+'?'+data._id);	
+		// this.props.history.push('/detail-contest/'+contestId+'?'+data._id);
+		this.props.history.push('/contests/start_round/'+contestId+'?'+data._id);	
 	}
 
 	joinRoomContest(data)
@@ -380,8 +381,11 @@ class DetailContest extends Component {
 														<span style={{width: "100%",float: "right", font: 'normal normal 300 14px Montserrat',letterSpacing: '0px',color: '#FFFFFF'}}>{e.createdByName}</span></p>
 														</div>		
 														<div class="col-md-2">
-															<button class="blue_btn" type="button" onClick={this.joinRoomContest.bind(this,e)}>Video</button>
+															<button class="blue_btn" type="button" onClick={this.joinRoomHandler.bind(this,e)}>Video</button>
 														</div> 
+														{/* <div class="col-md-2">
+															<button class="blue_btn" type="button" onClick={this.joinRoomContest.bind(this,e)}>Video</button>
+														</div>  */}
 														<div className="col-md-4">
 															<button type="button" className="yellow_btn" style={{float: 'right'}} onClick={this.joinRoomHandler.bind(this,e)}>Join</button>
 														</div></div>
