@@ -3,6 +3,11 @@ import io from "socket.io-client";
 import Peer from "peerjs";
 import styled from "styled-components";
 import { reactLocalStorage } from "reactjs-localstorage";
+import { useHistory } from "react-router-dom";
+import {
+    CModal,
+    CModalBody,
+} from '@coreui/react';
 
 const Container = styled.div`
 padding: 20px;
@@ -36,6 +41,7 @@ const videoConstraints = {
 };
 
 const Room = props => {
+    const history = useHistory();
     
     // const [peers, setPeers] = useState([]);
     const socketRef = useRef();
@@ -57,6 +63,7 @@ const Room = props => {
     const roomId = roomUrl.substring(roomUrl.lastIndexOf("?") + 1);
     // const roomId = "roomtestingsocket";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
+    const [confirmationModel,setconfirmationModel]= useState(false);
 
 
     
@@ -89,6 +96,9 @@ const Room = props => {
             setAudioMute(true);
             userMuteVoice();
         }
+    };
+    const handleExit = () => {
+         history.push('/dashboard');
     };
 
 
@@ -550,10 +560,50 @@ const Room = props => {
                             );
                         })}
                     </div>
+
+
+                    <CModal show={confirmationModel} closeOnBackdrop={false} onClose={() => setconfirmationModel(false)}
+                    color="danger"
+                    centered>
+                    <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <img src='./murabbo/img/exit.png' alt="" />
+                                        <h3>Exit</h3>
+                                        <h4>Do you want to Exit?</h4>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg" />
+                                    <img className="shape3" src="./murabbo/img/shape3.svg" />
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+
+                                            <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
+                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={handleExit} >Exit</button>
+                                            </div>
+                                            <div style={{ textAlign: 'center', float: 'left' }} className="">
+                                                <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => setconfirmationModel(false)} >Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CModalBody>
+                </CModal>
+
+
+
+
                     <div className="video-call-actions ">
                         <button className="video-action-button mic" onClick={muteAudio}></button>
                         <button className="video-action-button camera" onClick={cameraOff} ></button>
-                        <button className="video-action-button endcall">
+                        <button className="video-action-button endcall" onClick={() => setconfirmationModel(true)} >
                             Leave
                         </button>
                     </div>
@@ -563,3 +613,5 @@ const Room = props => {
 };
 
 export default Room;
+
+

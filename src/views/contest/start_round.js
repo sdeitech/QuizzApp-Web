@@ -33,15 +33,15 @@ var connectionOptions =  {
 };
 
 // const API_URI_2 = `https://dev-api.murabbo.com`;
-// const API_URI_2 = `https://safe-badlands-06778.herokuapp.com`;
-// const API_URI_2 = `http://192.168.1.27:9002`;
-const API_URI_2 = `http://localhost:9002`;
+// // const API_URI_2 = `https://safe-badlands-06778.herokuapp.com`;
+// // const API_URI_2 = `http://192.168.1.27:9002`;
+// // const API_URI_2 = `http://localhost:9002`;
 
- var socket_2  = io(API_URI_2, {
-	forceNew: true,
-});
-let playContestss;
-console.log("socket_2",socket_2);
+//  var socket_2  = io(API_URI_2, {
+// 	forceNew: true,
+// });
+// let playContestss;
+// console.log("socket_2",socket_2);
 
 // socket_2.on("startQuestion", async (data) => {
 // 	console.log("start question => socket => ", JSON.stringify(data));
@@ -136,44 +136,77 @@ class StartRound extends Component {
 			unscrambleArr: [],
 			item:[],
 			indexForUnscrambleAns:0,
+			roomActive:false,
 		};
 		this.socketRef = React.createRef();
 		this.playContest = this.playContest.bind(this);
 	}
 	
 	componentWillUnmount(){
-		socket_2.on("startQuestion", async (data) => {
-			console.log("start question => socket => ", JSON.stringify(data));
-			// this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
-			this.playContest(); 
-			// playContestss = true;    
-		});
+		// socket_2.on("startQuestion", async (data) => {
+		// 	console.log("start question => socket => ", JSON.stringify(data));
+		// 	// this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
+		// 	this.playContest(); 
+		// 	// playContestss = true;    
+		// });
 	}
 
 	componentDidMount() {
 
+		if(this.state.roomActive === false){
+			var url = window.location.href;
+			roomId = url.substring(url.lastIndexOf('/') + 1);
+			roomId = roomId.substring(roomId.lastIndexOf('?') + 1);
+
+			var postData = {};
+			postData.isActive = true;
+
+		fetch(configuration.baseURL + "room/room/"+roomId, {
+			method: "put",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			},
+			body: JSON.stringify(postData)
+		}).then((response) => {
+			return response.json();
+		}).then((data) => {
+			if (data.code === 200) {
+				this.setState({roomActive:true}); 
+			}
+			else {
+				return toast.error(data.message);
+			}
+		});
+		}
+
+		
+
+
+
 		//////////socket//////
 
 
-		if(playContestss){
-			this.playContest();
-		}
+		// if(playContestss){
+		// 	this.playContest();
+		// }
 		
-		socket_2.on('connect', () => {
-			console.log('Connection for 2');
-		});
+		// socket_2.on('connect', () => {
+		// 	console.log('Connection for 2');
+		// });
 		
-		socket_2.on("user-connected-game", ({userId,username})=>{
-			console.log("userconnected",username);
-		});
+		// socket_2.on("user-connected-game", ({userId,username})=>{
+		// 	console.log("userconnected",username);
+		// });
 
 
 
-		socket_2.on("startQuestion", async (data) => {
-		    console.log("start question => socket => ", JSON.stringify(data));
-			this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
-			this.playContest();     
-		});
+		// socket_2.on("startQuestion", async (data) => {
+		//     console.log("start question => socket => ", JSON.stringify(data));
+		// 	this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
+		// 	this.playContest();     
+		// });
 
 		// var roomid = this.state.roomIdd;
 		// var userid = JSON.parse(reactLocalStorage.get('userData')).userId;
@@ -259,10 +292,10 @@ class StartRound extends Component {
 		var roomID = this.state.roomIdd;
 		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
-		socket_2.emit("join-game-room", {
-			userId,
-			roomID,
-		});
+		// socket_2.emit("join-game-room", {
+		// 	userId,
+		// 	roomID,
+		// });
 
 
 
@@ -280,7 +313,7 @@ class StartRound extends Component {
             userId:JSON.parse(reactLocalStorage.get('userData')).userId,
         };
 		const roomID = this.state.roomIdd;
-		socket_2.emit('startRound', ({ roomID, gameInfo }));
+		// socket_2.emit('startRound', ({ roomID, gameInfo }));
 
 	}
 
