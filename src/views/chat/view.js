@@ -9,25 +9,9 @@ import {
     CModalBody,
 } from '@coreui/react';
 
-const Container = styled.div`
-padding: 20px;
-display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    height: 90vh;
-    width: 50%;
-    margin: 0;
-    -webkit-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    float: left;
-}
-`;
-
 const StyledVideo = styled.video`
-    height: auto;
-    width: 100%;
+height: auto;
+width: 100%;
 `;
 
 let peerServer;
@@ -63,6 +47,23 @@ const Room = props => {
     const roomId = roomUrl.substring(roomUrl.lastIndexOf("?") + 1);
     // const roomId = "roomtestingsocket";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
+    
+    const Container = styled.div`
+    padding: 20px;
+    display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        height: 90vh;
+        position: relative;
+        width: ${props.width};
+        margin: 0;
+        -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        float: left;
+    }
+    `;
     const [confirmationModel,setconfirmationModel]= useState(false);
 
 
@@ -97,9 +98,7 @@ const Room = props => {
             userMuteVoice();
         }
     };
-    const handleExit = () => {
-         history.push('/dashboard');
-    };
+
 
 
    
@@ -195,6 +194,7 @@ const Room = props => {
         console.log(roomId, userId);
 
         socketRef.current.emit("leave-room", { roomId, userId });
+        history.push('/dashboard');
     };
     useEffect(() => {
         console.log("my room Id => ", roomId);
@@ -584,7 +584,7 @@ const Room = props => {
                                         <div className="col-md-10 offset-md-1">
 
                                             <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={handleExit} >Exit</button>
+                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={logout} >Exit</button>
                                             </div>
                                             <div style={{ textAlign: 'center', float: 'left' }} className="">
                                                 <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => setconfirmationModel(false)} >Cancel</button>
