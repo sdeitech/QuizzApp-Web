@@ -227,6 +227,8 @@ class DetailContest extends Component {
 	}
 
 
+
+
 	search(term){
 		if (term !== '') {
     		term = term.target.value;
@@ -248,6 +250,29 @@ class DetailContest extends Component {
 		// });
 		
 	}
+
+	handleRoomList(){
+		fetch(configuration.baseURL+"room/room?contestId="+contestId+"&page="+this.state.page+"&size="+this.state.size, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) =>{
+			return response.json();
+		}).then((data)=> {
+			if (data.data.length > 0) {
+				this.setState({RoomListArr:data.data});
+			}else{
+				this.setState({RoomListArr:[]});
+			}
+			this.setState({playContestModel:false,playOldContestModel:true})
+		});
+
+	}
+
+
 
 	render() {
 		return (
@@ -336,7 +361,7 @@ class DetailContest extends Component {
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
                                 			<div style={{ textAlign: 'center'}} className="">
-							                    <button  style={{minWidth: '250px',marginBottom: '10px'}}  className="blue_btn light_blue_btn" type="button" onClick={()=> this.setState({playContestModel:false,playOldContestModel:true})}>Pick a Room</button>
+							                    <button  style={{minWidth: '250px',marginBottom: '10px'}}  className="blue_btn light_blue_btn" type="button" onClick={this.handleRoomList.bind(this)}>Pick a Room</button>
 							                </div>
 							                <div style={{ textAlign: 'center'}} className="">
 							                   	<button  style={{minWidth: '250px',marginBottom: '10px'}}  className="yellow_btn" type="button"  onClick={()=> this.setState({playContestModel:false,playNewContestModel:true})}>Play New</button>

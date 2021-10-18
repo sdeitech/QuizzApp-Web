@@ -137,6 +137,8 @@ class StartRound extends Component {
 			item:[],
 			indexForUnscrambleAns:0,
 			roomActive:false,
+			togglemodel:true,
+			width:"50%"
 		};
 		this.socketRef = React.createRef();
 		this.playContest = this.playContest.bind(this);
@@ -1249,6 +1251,24 @@ class StartRound extends Component {
 
 	}
 
+
+	togglemodel(){
+		const targetDiv = document.getElementById("exampleModalCenter");
+		if(this.state.togglemodel===true){
+			// targetDiv.style.cssText= `display: none;
+			// transition: opacity 2s ease-out;
+			// opacity:0;`
+			$("#exampleModalCenter").hide();
+			this.setState({togglemodel:false,width:"100%"});
+		}else{
+			// targetDiv.style.cssText= `display: contents;
+			// transition: opacity 20s ease-in 4s;
+			// opacity:0;`
+			$("#exampleModalCenter").show();
+			this.setState({togglemodel:true,width:"50%"});
+		}
+	}
+
 	render() {
 		
 		return (
@@ -1256,10 +1276,15 @@ class StartRound extends Component {
 				<TheHeaderInner />
 				<ToastContainer position="top-right" autoClose={10000} style={{ top: '80px' }} />
 				<main id="main">
-					<Room/>
+					<Room  width={this.state.width}/>
+					<button type="button" class="btn btn-primary" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
+						{(this.state.togglemodel)?
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>:
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>}
+					</button>
 
 
-
+					<div className="ff" id="exampleModalCenter"  >
 					{(this.state.showRound === false) ?
 						(this.state.saveExitAnswer === false) ?
 							<section id="hero" class="d-flex align-items-center">
@@ -1946,6 +1971,7 @@ class StartRound extends Component {
 
 
 					}
+					</div>
 				</main>
 
 
