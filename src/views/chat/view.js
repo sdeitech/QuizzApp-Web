@@ -14,6 +14,23 @@ height: auto;
 width: 100%;
 `;
 
+const Container = styled.div`
+padding: 20px;
+display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    height: 90vh;
+    position: relative;
+    width: 50%;
+    margin: 0;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    float: left;
+}
+`;
+
 let peerServer;
 
 let peers = {};
@@ -43,27 +60,14 @@ const Room = props => {
     const [isVideoMuted, setVideoMuted] = useState(false);
     const [cameraOffStreamID, setcameraOffStreamID] = useState([]);
     const [muteStreamID, setmuteStreamID] = useState([]);
+    const [forcerender, setforcerender] = useState(0);
+    const [cName, setcName] = useState("video-person1");
+
     let roomUrl = window.location.href;
     const roomId = roomUrl.substring(roomUrl.lastIndexOf("?") + 1);
     // const roomId = "roomtestingsocket";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
     
-    const Container = styled.div`
-    padding: 20px;
-    display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        height: 90vh;
-        position: relative;
-        width: ${props.width};
-        margin: 0;
-        -webkit-flex-wrap: wrap;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        float: left;
-    }
-    `;
     const [confirmationModel,setconfirmationModel]= useState(false);
 
 
@@ -76,7 +80,7 @@ const Room = props => {
             ref.current.srcObject = props.item;
         }, []);
     
-        return <StyledVideo playsInline autoPlay  ref={ref} />;
+        return <video ref={ref} autoPlay="true" />;
     };
     const cameraOff = () =>{
         if(isVideoMuted){
@@ -384,6 +388,7 @@ const Room = props => {
                             var arr = muteStreamID;
                             arr.push(streamId);
                             setmuteStreamID(arr);
+                            setforcerender(forcerender+1);
                         });
                         
                         
@@ -392,6 +397,7 @@ const Room = props => {
                         var arr = cameraOffStreamID;
                         arr.push(streamId);
                         setcameraOffStreamID(arr);
+                        setforcerender(forcerender+1);
                     });
 
 
@@ -401,6 +407,7 @@ const Room = props => {
                         var streams = cameraOffStreamID;
                         streams.map(item => item !== streamId);
                         setcameraOffStreamID(streams);
+                        setforcerender(forcerender+1);
                     });
 
                     socketRef.current.on("user-unmuted",({ userId, streamId }) => {
@@ -408,6 +415,7 @@ const Room = props => {
                             var streams = muteStreamID;
                         streams.map(item => item !== streamId);
                         setmuteStreamID(streams);
+                        setforcerender(forcerender+1);
                         });
                     
                 });
@@ -429,6 +437,9 @@ const Room = props => {
                     streamId: myStream.id
                 });
             });
+
+
+
         } catch (error) {
             console.log(error);
         }
@@ -480,135 +491,133 @@ const Room = props => {
     console.log("my totle streams => ", otherStreams);
 
     return (
-        <Container>
-            <div className="app-container">
-                
-                    <div className="video-call-wrapper">
-                        <div className="video-participants">
-                            <div className="participant-actions">
-                            {isAudioMuted?
-                                <button
-                                    className={
-                                        isAudioMuted === true
-                                            ? "btn-mute"
-                                            : "btn-mute"
-                                    }
-                                    onClick={muteAudio}
-                                ></button>:null}
-                                {isVideoMuted?
-                                <button className="btn-camera"></button>:null}
-                            </div>
-                            <a href="#" className="name-tag">
-                                Andy Will
-                            </a>
-                            <StyledVideo
-                            muted={isAudioMuted}
-                            ref={userVideo}
-                            autoPlay
-                            playsInline
-                            />
+        <section className="video-main" style={{display:"block",width:props.width}}>
+        <div class="video-wrapper">
+            <div class="video-previe video-center">
+
+                <div class={cName}>
+                    <div class="video-inner-wrap video-center">
+                        <video ref={userVideo} autoPlay="true" /> 
+                    </div>
+                </div>
+
+                {otherStreams.map((item, index,array) => {
+                let buttoncamera = false;
+                let buttonmute = false;
+                    for(let i=0;i < cameraOffStreamID.length;i++){
+                        if(item.id === cameraOffStreamID[i]){
+                            buttoncamera = true;
                             
+                        }else{
+                            buttoncamera = false;
+                        }
+                    }
+                    for(let j=0; j < muteStreamID.length; j++){
+                        if(item.id === muteStreamID[j]){
+                            buttonmute =  true;
+                        }else{
+                            buttonmute =false;
+                        }
+                    }
+
+                var length = array.length;
+                if(length==0){
+                    if(cName!="video-person1"){
+                        setcName("video-person1");
+                    }
+                }else if(length==1){
+                    if(cName!="video-person2"){
+                        setcName("video-person2");
+                    }
+                }else if(length>=2){
+                    if(cName!="video-person3"){
+                        setcName("video-person3");
+                    }
+                }
+                console.log("other streams => ", item);
+                return (
+                    <div class={cName}>
+                        <div class="video-inner-wrap video-center">
+                            <Video key={index.toString()} item={item} />
+                            {
+                                (buttonmute)?<a><img alt="" src="img/mute(1).png"/></a>:<a><img alt="" src="img/mic1.png"/></a>
+                            }
+                            {
+                                (buttoncamera)?<a style={{right:"50px"}}><img alt="" src="img/camera-off(1).png"/></a>:<a style={{right:"50px"}}><img alt="" src="img/camera.png"/></a>
+                            }
                         </div>
-                        
-                        {otherStreams.map((item, index,array) => {
-                            let buttoncamera = false;
-                            let buttonmute = false;
-                                for(let i=0;i < cameraOffStreamID.length;i++){
-                                    console.log(i,"i")
-                                    if(item.id === cameraOffStreamID[i]){
-                                        buttoncamera = true;
-                                        
-                                    }else{
-                                        buttoncamera = false;
-                                    }
-                                }
-                                for(let j=0; j < muteStreamID.length; j++){
-                                    if(item.id === muteStreamID[j]){
-                                        buttonmute =  true;
-                                    }else{
-                                        buttonmute =false;
-                                    }
-                                }
-
-                            // var length = array.length;
-                            // if(length>0){
-                            //     if(cName==="video-participant"){
-                            //         setcName("video-participants");
-                            //     }
-                            // }else{
-                            //     if(cName==="video-participants"){
-                            //         setcName("video-participant");
-                            //     }
-                            // }
-                            console.log("other streams => ", item);
-                            return (
-                                <div className="video-participants">
-                                    <div className="participant-actions">
-                                        {
-                                            (buttonmute)?<button className="btn-mute" onClick={muteAudio}></button>:null
-                                        }
-                                        
-                                        {
-                                            (buttoncamera)?<button className="btn-camera"></button>:null
-                                        }
-                                    </div>
-                                    <a href="#" className="name-tag">
-                                        Tina Cate
-                                    </a>
-                                    <Video key={index.toString()} item={item} muted={isAudioMuted} />
-                                </div>
-                            );
-                        })}
                     </div>
+                );})}
 
 
-                    <CModal show={confirmationModel} closeOnBackdrop={false} onClose={() => setconfirmationModel(false)}
-                    color="danger"
-                    centered>
-                    <CModalBody className="model-bg">
 
-                        <div>
-                            <div className="modal-body">
-                                <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
-                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                                </button>
-                                <div className="model_data">
-                                    <div className="model-title">
-                                        <img src='./murabbo/img/exit.png' alt="" />
-                                        <h3>Exit</h3>
-                                        <h4>Do you want to Exit?</h4>
-                                    </div>
-                                    <img className="shape2" src="./murabbo/img/shape2.svg" />
-                                    <img className="shape3" src="./murabbo/img/shape3.svg" />
-                                    <div className="row">
-                                        <div className="col-md-10 offset-md-1">
+                
+            </div>            
+        </div>
+        <div className="video-bottom-bar" style={{width:props.width}}>
+            <div className="video-wrapper video-center">
+                <a  onClick={cameraOff} >
+                    {
+                        (isVideoMuted) ? 
+                        <img alt="" src="img/camera-off.png"/> 
+                        : <img alt="" src="img/camera.png"/>
+                    }
+                    </a>
+                <a onClick={muteAudio} >
+                    {
+                        (isAudioMuted) ? 
+                        <img alt="" src="img/mute.png"/>
+                        : <img alt="" src="img/mic1.png"/>
+                    }
+                    </a>   
+                <a  onClick={() => setconfirmationModel(true)}><img className="video-end" alt="" src="img/call-end.png"/></a>
+            </div>
+        </div>   
 
-                                            <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={logout} >Exit</button>
-                                            </div>
-                                            <div style={{ textAlign: 'center', float: 'left' }} className="">
-                                                <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => setconfirmationModel(false)} >Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
+
+
+
+    <CModal show={confirmationModel} closeOnBackdrop={false} onClose={() => setconfirmationModel(false)}
+        color="danger"
+        centered>
+        <CModalBody className="model-bg">
+
+            <div>
+                <div className="modal-body">
+                    <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
+                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                    </button>
+                    <div className="model_data">
+                        <div className="model-title">
+                            <img src='./murabbo/img/exit.png' alt="" />
+                            <h3>Exit</h3>
+                            <h4>Do you want to Exit?</h4>
+                        </div>
+                        <img className="shape2" src="./murabbo/img/shape2.svg" />
+                        <img className="shape3" src="./murabbo/img/shape3.svg" />
+                        <div className="row">
+                            <div className="col-md-10 offset-md-1">
+
+                                <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
+                                    <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={logout} >Exit</button>
+                                </div>
+                                <div style={{ textAlign: 'center', float: 'left' }} className="">
+                                    <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => setconfirmationModel(false)} >Cancel</button>
                                 </div>
                             </div>
                         </div>
-                    </CModalBody>
-                </CModal>
-
-
-
-
-                    <div className="video-call-actions ">
-                        <button className="video-action-button mic" onClick={muteAudio}></button>
-                        <button className="video-action-button camera" onClick={cameraOff} ></button>
-                        <button className="video-action-button endcall" onClick={() => setconfirmationModel(true)} >
-                            Leave
-                        </button>
                     </div>
+                </div>
             </div>
-        </Container>
+        </CModalBody>
+    </CModal>
+
+    </section>
+
+    
+
+
+
     );
 };
 
