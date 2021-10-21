@@ -20,73 +20,9 @@ var jwt = require('jsonwebtoken');
 
 let contestId, roundId, roomId, parentContestId;
 
-///socket////
 // const API_URI_2 = `https://dev-api.murabbo.com`;
-//const API_URI_2 = `http://localhost:5000`;
+// const API_URI_2 = `http://localhost:9002`;
 // let socket_2;
-
-var connectionOptions =  {
-	"force new connection" : true,
-	"reconnectionAttempts": "Infinity", 
-	"timeout" : 10000,                  
-	"transports" : ['websocket', 'polling', 'flashsocket']
-};
-
-// const API_URI_2 = `https://dev-api.murabbo.com`;
-// // const API_URI_2 = `https://safe-badlands-06778.herokuapp.com`;
-// // const API_URI_2 = `http://192.168.1.27:9002`;
-// // const API_URI_2 = `http://localhost:9002`;
-
-//  var socket_2  = io(API_URI_2, {
-// 	forceNew: true,
-// });
-// let playContestss;
-// console.log("socket_2",socket_2);
-
-// socket_2.on("startQuestion", async (data) => {
-// 	console.log("start question => socket => ", JSON.stringify(data));
-// 	// this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
-// 	this.playContest.bind(this); 
-// 	playContestss = true;    
-// });
-
-
-// if (!socket_2) {
-// 	// socket_2= IO(API_URI_2,{
-// 	// 	transports : ['flashsocket'],
-//     // // 	auth: {
-//     // //     token: 'Bearer ' + reactLocalStorage.get('clientToken')
-//     // // }
-// 	// });
-
-// 	socket_2  = IO(API_URI_2, {
-	//                 forceNew: true,
-	//                 transports: ["polling"]
-	//             });
-	//     // socket_2 = IO(API_URI_2, {forceNew: true });
-	// 	// socket_2= IO(API_URI_2,{
-		// 	// 	extraHeaders: {
-// 	// 	Authorization: 'Bearer ' + reactLocalStorage.get('clientToken')
-// 	//   }}
-// 	//   );
-// }
-
-// console.log("socket_2",socket_2)
-
-// socket_2.on('Connection', () => {
-// 	console.log('Connection for 2');
-// });
-
-
-
-//////////////
-
-
-
-
-
-
-
 
 
 class StartRound extends Component {
@@ -129,7 +65,7 @@ class StartRound extends Component {
 			},
 			newTime: 0,
 			contestCreater: false,
-			createdBy: '',
+			createdBy:'',
 			isActive: '',
 			isWinnerScreenShow: false,
 			openModelForMembers: false,
@@ -138,20 +74,15 @@ class StartRound extends Component {
 			indexForUnscrambleAns:0,
 			roomActive:false,
 			togglemodel:true,
-			width:"50%"
+			width:"50%",
+			userId:JSON.parse(reactLocalStorage.get('userData')).userId,
+			connectedUserList:[],
+			currentAssignedUser:"",
 		};
 		this.socketRef = React.createRef();
 		this.playContest = this.playContest.bind(this);
 	}
 	
-	componentWillUnmount(){
-		// socket_2.on("startQuestion", async (data) => {
-		// 	console.log("start question => socket => ", JSON.stringify(data));
-		// 	// this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
-		// 	this.playContest(); 
-		// 	// playContestss = true;    
-		// });
-	}
 
 	componentDidMount() {
 
@@ -190,33 +121,45 @@ class StartRound extends Component {
 		//////////socket//////
 
 
-		// if(playContestss){
-		// 	this.playContest();
-		// }
+		// if (!socket_2) {
+		// 	socket_2  = io(API_URI_2, {
+		// 					forceNew: true,
+		// 				});}
 		
-		// socket_2.on('connect', () => {
+		// console.log("socket_2",socket_2)
+		
+		// socket_2.on('Connection', () => {
 		// 	console.log('Connection for 2');
 		// });
-		
-		// socket_2.on("user-connected-game", ({userId,username})=>{
-		// 	console.log("userconnected",username);
+
+		// var roomID = this.state.roomIdd;
+		// var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+
+		// socket_2.emit("join-game-room", {
+		// 	userId,
+		// 	roomID,
+		// });
+		// console.log("new data emit => enter join room => ");
+
+
+		// // after some user connected for same game room 
+		// // it will call only for moderator
+		// socket_2.on("user-connected-game", ({ userId, username }) => {
+		// 	//not finished.
+		// 	this.setState({connectedUserList:[...this.state.connectedUserList,userId]})
+		// 	console.log("user-connected-game in",username);
 		// });
 
 
+		// // get socket data if moderator click on start any question
 
 		// socket_2.on("startQuestion", async (data) => {
 		//     console.log("start question => socket => ", JSON.stringify(data));
-		// 	this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex});
+		// 	this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex,currentAssignedUser:data.userId});
 		// 	this.playContest();     
 		// });
 
-		// var roomid = this.state.roomIdd;
-		// var userid = JSON.parse(reactLocalStorage.get('userData')).userId;
-		// this.socketRef.current.emit("join-game-room",({roomid,userid}))
-		
-
-
-		//////////socket-end//////
+		// // //////////socket-end//////
 
 
 
@@ -289,35 +232,60 @@ class StartRound extends Component {
 	///////////////socket.......
 
 
-	joinroom(){
-		var that = this;
-		var roomID = this.state.roomIdd;
-		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+	// joinGameRoom(){
+	// 	var that = this;
+	// 	var roomID = this.state.roomIdd;
+	// 	var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
-		// socket_2.emit("join-game-room", {
-		// 	userId,
-		// 	roomID,
-		// });
-
-
-
-		// this.socketRef.current.emit("join-game-room",({roomid,userid}))
-	}
+	// 	socket_2.emit("join-game-room", {
+	// 		userId,
+	// 		roomID,
+	// 	});
+	// 	console.log("new data emit => enter join room => ");
+	// }
 
 
-	_startRoundModerator(){
+	// _startRoundModerator(){
+	// 	//still not finish
+	// 	const currentAssignedUser = this.state.currentAssignedUser;
+	// 	const userList = this.state.connectedUserList;
 
-		var that = this;
+	// 	let newUserIdIndex = userList.findIndex(x => x === currentAssignedUser);
 
-		const gameInfo = {
-            questionIndex:that.state.indexQuestion,
-            roundIndex:that.state.currentIndexRound,
-            userId:JSON.parse(reactLocalStorage.get('userData')).userId,
-        };
-		const roomID = this.state.roomIdd;
-		// socket_2.emit('startRound', ({ roomID, gameInfo }));
+	// 	console.log("user id for assign new question => index => old => ", newUserIdIndex);
+    //     console.log("user id for assign new question => id => old => ", currentAssignedUser);
 
-	}
+    //     if (newUserIdIndex === (userList.length - 1)) {
+    //         newUserIdIndex = 0;
+    //     } else {
+    //         newUserIdIndex = newUserIdIndex + 1;
+    //     }
+
+	// 	const userId = userList[newUserIdIndex];
+
+	// 	var that = this;
+
+	// 	const gameInfo = {
+    //         questionIndex:that.state.indexQuestion,
+    //         roundIndex:that.state.currentIndexRound,
+    //         userId:userId,
+    //     };
+
+	// 	const roomID = this.state.roomIdd;
+	// 	socket_2.emit('startRound', ({ roomID, gameInfo }));
+	// 	this.playContest();
+
+	// }
+
+	// nextQuestion(){
+	// 	this._startRoundModerator.bind(this);
+	// }
+
+	// // moderator leave room
+	// _moderatorLeaveRoom(){
+	// 	const roomID = this.state.roomIdd;   
+	//     socket_2.emit('disconnect-room', ({ roomID }));
+	// 	}
 
 	
 
@@ -451,6 +419,7 @@ class StartRound extends Component {
 				that.setState({ winnerScreen: true });
 				setTimeout(function () {
 					that.setState({ showRound: true, currentIndexRound: that.state.currentIndexRound + 1, winnerScreen: false });
+					// that.nextQuestion.bind(that);
 				}, 5000);
 			}, 2000);
 		}
@@ -1227,8 +1196,8 @@ class StartRound extends Component {
 			})
 			.then((data) => {
 				if (data.data.length > 0) {
-					// let createdBy = data.data[0].createdById;
-					// this.setState({ createdBy: createdBy });
+					let createdBy = data.data[0].createdById;
+					this.setState({ createdBy: createdBy });
 
 				}
 			});
@@ -1255,9 +1224,6 @@ class StartRound extends Component {
 	togglemodel(){
 		const targetDiv = document.getElementById("exampleModalCenter");
 		if(this.state.togglemodel===true){
-			// targetDiv.style.cssText= `display: none;
-			// transition: opacity 2s ease-out;
-			// opacity:0;`
 			$("#exampleModalCenter").hide();
 			this.setState({togglemodel:false,width:"100%"});
 		}else{
@@ -1280,15 +1246,15 @@ class StartRound extends Component {
 					<button type="button" class="btn btn-primary" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
 						{(this.state.togglemodel)?
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>:
-					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>}
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Show</span>}
 					</button>
 
 
-					<div className="ff" id="exampleModalCenter"  >
+					<section className="ff" id="exampleModalCenter"   style={{float:"right",position:"relative",width:'50%',top:"30px"}}>
 					{(this.state.showRound === false) ?
 						(this.state.saveExitAnswer === false) ?
 							<section id="hero" class="d-flex align-items-center">
-								<div className="quizz-game quizz-game2" style={{ marginTop: '35px' }}>
+								<div className="quizz-game2" style={{ marginTop: '35px' }}>
 									<div className="dropdown show" style={{ float: "right" }}>
 										<a className="btn btn-secondary dropdown-toggle toggle-arrow" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 											<i class="fas fa-ellipsis-v"></i>
@@ -1522,7 +1488,7 @@ class StartRound extends Component {
 
 
 															{/* SCORING NOT WORKING FOR FALSHCARD	 */}
-
+															
 														{(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ?(
 														<>
 														<h3 style={{
@@ -1770,7 +1736,7 @@ class StartRound extends Component {
 																	: null
 															}
 
-														</div>
+														</div>													
 													</div>
 
 
@@ -1791,7 +1757,7 @@ class StartRound extends Component {
 							:
 							(this.state.winnerScreen) ?
 								<section id="hero" class="d-flex align-items-center">
-									<div class="quizz-game width40 cus_quizz">
+									<div class="quizz-game2" style={{marginTop:"35px"}}>
 										<p></p><br />
 										{
 
@@ -1941,7 +1907,10 @@ class StartRound extends Component {
 
 																				):(null)} */}
 
-
+																								{/* {(this.state.userId==this.state.createdBy)?
+																								<button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this._startRoundModerator.bind(this)}>Start Round</button>
+																								: null} */}
+																								
 																								<button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
 
 
@@ -1971,7 +1940,7 @@ class StartRound extends Component {
 
 
 					}
-					</div>
+					</section>
 				</main>
 
 
