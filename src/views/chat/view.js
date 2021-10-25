@@ -9,27 +9,6 @@ import {
     CModalBody,
 } from '@coreui/react';
 
-const StyledVideo = styled.video`
-height: auto;
-width: 100%;
-`;
-
-const Container = styled.div`
-padding: 20px;
-display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    height: 90vh;
-    position: relative;
-    width: 50%;
-    margin: 0;
-    -webkit-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    float: left;
-}
-`;
 
 let peerServer;
 
@@ -65,12 +44,11 @@ const Room = props => {
 
     let roomUrl = window.location.href;
     const roomId = roomUrl.substring(roomUrl.lastIndexOf("?") + 1);
-    // const roomId = "roomtestingsocket";
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
     
     const [confirmationModel,setconfirmationModel]= useState(false);
 
-
+    socketRef.current = props.socket;
     
 
     const Video = props => {
@@ -202,13 +180,13 @@ const Room = props => {
     };
     useEffect(() => {
         console.log("my room Id => ", roomId);
-        if (!socketRef.current) {
-            socketRef.current = io(`https://safe-badlands-06778.herokuapp.com`, {
-                forceNew: true,
-                transports: ["polling"]
-            });
-        }
-        console.log(socketRef.current);
+        // if (!socketRef.current) {
+        //     socketRef.current = io(`http://localhost:9002`, {
+        //         forceNew: true,
+        //         transports: ["polling"]
+        //     });
+        // }
+        // console.log(socketRef.current);
         // socketRef.current = io("http://localhost:8000");
         try {
             navigator.mediaDevices
@@ -257,7 +235,8 @@ const Room = props => {
                         });
                     });
 
-                    socketRef.current.on("user-connected", userId => {
+                    socketRef.current.on("user-connected", roomDetails => {
+                        var userId = roomDetails.userId; 
                         // connectToNewUser(userId, stream, dispatch);
                         console.log("user connected => ", userId);
 
@@ -497,7 +476,7 @@ const Room = props => {
 
                 <div class={cName}>
                     <div class="video-inner-wrap video-center">
-                        <video ref={userVideo} autoPlay="true" /> 
+                        <video ref={userVideo} muted="true"  autoPlay="true" /> 
                     </div>
                 </div>
 
