@@ -20,9 +20,14 @@ var jwt = require('jsonwebtoken');
 
 let contestId, roundId, roomId, parentContestId;
 
-// const API_URI_2 = `https://dev-api.murabbo.com`;
+const API_URI_2 = `https://dev-api.murabbo.com`;
 // const API_URI_2 = `http://localhost:9002`;
-// let socket_2;
+let socket_2;
+if (!socket_2) {
+	socket_2  = io(API_URI_2, {
+					forceNew: true,
+				});}
+
 
 
 class StartRound extends Component {
@@ -78,6 +83,8 @@ class StartRound extends Component {
 			userId:JSON.parse(reactLocalStorage.get('userData')).userId,
 			connectedUserList:[],
 			currentAssignedUser:"",
+			roomJoined:false,
+			isModerator:false,
 		};
 		this.socketRef = React.createRef();
 		this.playContest = this.playContest.bind(this);
@@ -85,6 +92,7 @@ class StartRound extends Component {
 	
 
 	componentDidMount() {
+		// this.getRoomDetails();
 
 		if(this.state.roomActive === false){
 			var url = window.location.href;
@@ -126,38 +134,63 @@ class StartRound extends Component {
 		// 					forceNew: true,
 		// 				});}
 		
-		// console.log("socket_2",socket_2)
+		console.log("socket_2",socket_2)
 		
-		// socket_2.on('Connection', () => {
-		// 	console.log('Connection for 2');
-		// });
+		socket_2.on('Connection', () => {
+			console.log('Connection for 2');
+		});
 
-		// var roomID = this.state.roomIdd;
-		// var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+		var roomID = this.state.roomIdd;
+		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
-		// socket_2.emit("join-game-room", {
-		// 	userId,
-		// 	roomID,
-		// });
-		// console.log("new data emit => enter join room => ");
-
-
-		// // after some user connected for same game room 
-		// // it will call only for moderator
-		// socket_2.on("user-connected-game", ({ userId, username }) => {
-		// 	//not finished.
-		// 	this.setState({connectedUserList:[...this.state.connectedUserList,userId]})
-		// 	console.log("user-connected-game in",username);
-		// });
+		if(!this.state.roomJoined){
+			socket_2.emit("join-game-room", {
+				userId,
+				roomID,
+			});
+			console.log("new data emit => enter join room => ");
+			this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
+			this.setState({roomJoined:true});
+		}
 
 
-		// // get socket data if moderator click on start any question
+		// after some user connected for same game room 
+		// it will call only for moderator
+		socket_2.on("user-connected-game", ({ userId, username }) => {
+			//not finished.
+			if(this.state.isModerator){
+				this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
+			}
+			console.log("user-connected-game in",username);
+		});
 
-		// socket_2.on("startQuestion", async (data) => {
-		//     console.log("start question => socket => ", JSON.stringify(data));
-		// 	this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex,currentAssignedUser:data.userId});
-		// 	this.playContest();     
-		// });
+
+		// get socket data if moderator click on start any question
+
+		socket_2.on("startQuestion", async (data) => {
+		    console.log("start question => socket => ", JSON.stringify(data));
+			this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex,currentAssignedUser:data.userId});
+			if(data.questionIndex===0){
+				this.playContest();
+			}else{
+				this.saveExitAnswer();
+			}
+		});
+
+		///when someone leaves the room
+		//still remain somework here
+		socket_2.on("user-disconnected",({userId})=>{
+			var userList =  this.state.connectedUserList;
+			userList =  userList.map((item)=> item != userId);
+			this.setState({connectedUserList:userList});
+		})
+
+		socket_2.on("resultQuestion",({resultInfo})=>{
+			if(this.state.isModerator){
+				this._startRoundModerator.bind(this);
+			}
+		})
+
 
 		// // //////////socket-end//////
 
@@ -231,61 +264,100 @@ class StartRound extends Component {
 
 	///////////////socket.......
 
+	componentWillUnmount(){
+		window.addEventListener("beforeunload", event => {
+			// Cancel the event as stated by the standard.
+			event.preventDefault();
+			// Chrome requires returnValue to be set.
+			event.returnValue = "";
+			let userId = this.state.userId;
+			let roomId = this.state.roomIdd;
 
-	// joinGameRoom(){
-	// 	var that = this;
-	// 	var roomID = this.state.roomIdd;
-	// 	var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
-
-	// 	socket_2.emit("join-game-room", {
-	// 		userId,
-	// 		roomID,
-	// 	});
-	// 	console.log("new data emit => enter join room => ");
-	// }
+			console.log("close page");
+			console.log("leaving room for => ", userId);
+			socket_2.emit("disconnect-user", {
+				userId,
+				roomId,
+			});
+		});
+	}
 
 
-	// _startRoundModerator(){
-	// 	//still not finish
-	// 	const currentAssignedUser = this.state.currentAssignedUser;
-	// 	const userList = this.state.connectedUserList;
 
-	// 	let newUserIdIndex = userList.findIndex(x => x === currentAssignedUser);
+	joinGameRoom(){
+		var that = this;
+		var roomID = this.state.roomIdd;
+		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
-	// 	console.log("user id for assign new question => index => old => ", newUserIdIndex);
-    //     console.log("user id for assign new question => id => old => ", currentAssignedUser);
+		socket_2.emit("join-game-room", {
+			userId,
+			roomID,
+		});
+		console.log("new data emit => enter join room => ");
+	}
 
-    //     if (newUserIdIndex === (userList.length - 1)) {
-    //         newUserIdIndex = 0;
-    //     } else {
-    //         newUserIdIndex = newUserIdIndex + 1;
-    //     }
 
-	// 	const userId = userList[newUserIdIndex];
+	_startRoundModerator(){
+		//still not finish
+		const currentAssignedUser = this.state.currentAssignedUser;
+		const userList = this.state.connectedUserList;
 
-	// 	var that = this;
+		let newUserIdIndex = userList.findIndex(x => x === currentAssignedUser);
 
-	// 	const gameInfo = {
-    //         questionIndex:that.state.indexQuestion,
-    //         roundIndex:that.state.currentIndexRound,
-    //         userId:userId,
-    //     };
+		console.log("user id for assign new question => index => old => ", newUserIdIndex);
+        console.log("user id for assign new question => id => old => ", currentAssignedUser);
 
-	// 	const roomID = this.state.roomIdd;
-	// 	socket_2.emit('startRound', ({ roomID, gameInfo }));
-	// 	this.playContest();
+        if (newUserIdIndex === (userList.length - 1)) {
+            newUserIdIndex = 0;
+        } else {
+            newUserIdIndex = newUserIdIndex + 1;
+        }
 
-	// }
+		const userId = userList[newUserIdIndex];
 
-	// nextQuestion(){
-	// 	this._startRoundModerator.bind(this);
-	// }
+		if(this.state.roundListArr[this.state.currentIndexRound] !== undefined){
 
-	// // moderator leave room
-	// _moderatorLeaveRoom(){
-	// 	const roomID = this.state.roomIdd;   
-	//     socket_2.emit('disconnect-room', ({ roomID }));
-	// 	}
+		}
+		if(this.state.listArr[(this.state.indexQuestion)] == undefined){
+			this.setState({indexQuestion:0});
+			var questionIndex = 0;
+		}else{
+			var questionIndex = that.state.indexQuestion;
+		}
+
+		var that = this;
+
+		const gameInfo = {
+            questionIndex:questionIndex,
+            roundIndex:that.state.currentIndexRound,
+            userId:userId,
+        };
+
+		const roomID = this.state.roomIdd;
+		socket_2.emit('startRound', ({ roomID, gameInfo }));
+		if(this.state.indexQuestion === 0){
+			this.playContest();
+		}else{
+			this.saveExitAnswer();
+		}
+
+	}
+
+	nextQuestion(){
+		let roomId = this.state.roomIdd;
+		const resultInfo = {
+            questionIndex:1,
+            roundIndex:1,
+            resultStatus:1,
+        };
+		socket_2.emit("submitQuestion",{roomId,resultInfo})
+	}
+
+	// moderator leave room
+	_moderatorLeaveRoom(){
+		const roomID = this.state.roomIdd;   
+	    socket_2.emit('disconnect-room', ({ roomID }));
+		}
 
 	
 
@@ -419,7 +491,9 @@ class StartRound extends Component {
 				that.setState({ winnerScreen: true });
 				setTimeout(function () {
 					that.setState({ showRound: true, currentIndexRound: that.state.currentIndexRound + 1, winnerScreen: false });
-					// that.nextQuestion.bind(that);
+					// if(this.state.currentAssignedUser === this.state.userId){
+					// 	that.nextQuestion.bind(that);
+					// }
 				}, 5000);
 			}, 2000);
 		}
@@ -744,6 +818,7 @@ class StartRound extends Component {
 					}
 					else {
 						that.saveExitAnswer();
+						// that.nextQuestion();
 					}
 				}
 				else {
@@ -754,6 +829,7 @@ class StartRound extends Component {
 		}
 		else {
 			that.saveExitAnswer();
+			// that.nextQuestion();
 		}
 	}
 
@@ -1197,7 +1273,11 @@ class StartRound extends Component {
 			.then((data) => {
 				if (data.data.length > 0) {
 					let createdBy = data.data[0].createdById;
-					this.setState({ createdBy: createdBy });
+					let userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+					this.setState({ roomCreatedBy: createdBy });
+					if(createdBy===userId){
+						this.setState({isModerator:true});
+					}
 
 				}
 			});
@@ -1242,7 +1322,7 @@ class StartRound extends Component {
 				<TheHeaderInner />
 				<ToastContainer position="top-right" autoClose={10000} style={{ top: '80px' }} />
 				<main id="main">
-					<Room  width={this.state.width}/>
+					<Room  width={this.state.width} socket={socket_2}/>
 					<button type="button" class="btn btn-primary" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
 						{(this.state.togglemodel)?
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>:
@@ -1488,6 +1568,10 @@ class StartRound extends Component {
 
 
 															{/* SCORING NOT WORKING FOR FALSHCARD	 */}
+
+															{/* {
+																(this.state.isModerator)? */}
+															
 															
 														{(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ?(
 														<>
@@ -1736,7 +1820,11 @@ class StartRound extends Component {
 																	: null
 															}
 
-														</div>													
+														</div> 
+														{/* :(null) */}
+
+
+
 													</div>
 
 
