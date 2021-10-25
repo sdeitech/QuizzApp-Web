@@ -32,6 +32,7 @@ const Room = props => {
     const otherStreamRef = useRef([]);
     
     const [otherStreams, setotherStreams] = useState([]);
+    const [otherUser, setotherUser] = useState([]);
     otherStreamRef.current = otherStreams;
     const [videoStream, setvideoStream] = useState([]);
 
@@ -267,7 +268,9 @@ const Room = props => {
                                 streams = streams.filter(
                                     x => x.id !== resStreamId
                                 );
+                                var user =   otherUser.map((item => item.stream.id !== resStreamId ))
                                 setotherStreams(streams);
+                                setotherUser(streams);
                                 console.log("otherStreams",otherStreams);
                             }
                         });
