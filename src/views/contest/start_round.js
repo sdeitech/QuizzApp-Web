@@ -19,6 +19,7 @@ import socket from 'socket.io-client/lib/socket';
 var jwt = require('jsonwebtoken');
 
 let contestId, roundId, roomId, parentContestId;
+let userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
 const API_URI_2 = `https://dev-api.murabbo.com`;
 // const API_URI_2 = `http://localhost:9002`;
@@ -1322,7 +1323,7 @@ class StartRound extends Component {
 				<TheHeaderInner />
 				<ToastContainer position="top-right" autoClose={10000} style={{ top: '80px' }} />
 				<main id="main">
-					<Room  width={this.state.width} socket={socket_2}/>
+					<Room  width={this.state.width} socket={socket_2} userId={userId}/>
 					<button type="button" class="btn btn-primary" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
 						{(this.state.togglemodel)?
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>:
