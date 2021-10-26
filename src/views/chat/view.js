@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Peer from "peerjs";
+import $ from 'jquery';
 import styled from "styled-components";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { useHistory } from "react-router-dom";
@@ -8,6 +9,7 @@ import {
     CModal,
     CModalBody,
 } from '@coreui/react';
+import socket from "socket.io-client/lib/socket";
 
 
 let peerServer;
@@ -43,11 +45,13 @@ const Room = props => {
     const [forcerender, setforcerender] = useState(0);
     const [cName, setcName] = useState("video-person1");
 
-    let roomUrl = window.location.href;
-    const roomId = roomUrl.substring(roomUrl.lastIndexOf("?") + 1);
+    const roomId = props.roomId; 
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
     
     const [confirmationModel,setconfirmationModel]= useState(false);
+    const [requestModel,setrequestModel]= useState(false);
+    const [requestSender,setrequestSender]= useState("");
+    const [reqSenderSocketId,setreqSenderSocketId]= useState();
 
     socketRef.current = props.socket;
     
@@ -172,6 +176,23 @@ const Room = props => {
     }
 
 
+    const moderatorResponse = (status)=>{
+        socket.emit("join-room-response-from-moderator",{
+            roomID:roomId, socketId:reqSenderSocketId, status 
+        });
+    }
+
+
+    const joinroomreq = ()=>{
+        socket.emit('join-room-req',{
+            roomId,
+            // userId,
+            joinedUserId:userId,
+            // stream,
+            // isModerator = false,
+        });}
+
+
     const logout = () => {
         console.log("logout");
         console.log(roomId, userId);
@@ -181,6 +202,21 @@ const Room = props => {
     };
     useEffect(() => {
         console.log("my room Id => ", roomId);
+        // if(props.joinroomreq){
+        //     $("#video").hide();
+        //     $("#wait").show();
+        // }
+
+        if(props.isModerator){
+            socketRef.current.on("user-request-moderator", ({userdata,socketId}) =>{
+                setrequestSender(userdata.name);
+                setrequestModel(true);
+                setreqSenderSocketId(socketId);
+                console.log("reqest from ",userdata.name);
+            });
+        }
+
+
         // if (!socketRef.current) {
         //     socketRef.current = io(`http://localhost:9002`, {
         //         forceNew: true,
@@ -227,13 +263,20 @@ const Room = props => {
                     currentStream.current = stream;
                     console.log("USERID ::", userId, stream);
 
+                    
                     peerServer.on("open", peerUserId => {
                         userVideoPeerId.current = peerUserId;
-                        console.log("open join room", roomId);
-                        socketRef.current.emit("join-room", {
-                            userId: peerUserId,
-                            roomId
-                        });
+
+                        // if(props.isModerator){
+                            console.log("open join room", roomId);
+                            socketRef.current.emit("join-room", {
+                                userId: peerUserId,
+                                roomId,
+                                stream,
+                                joinedUserId: userId,
+                                isModerator: props.isModerator,
+                            });
+                        // }
                     });
 
                     socketRef.current.on("user-connected", roomDetails => {
@@ -473,7 +516,9 @@ const Room = props => {
     console.log("my totle streams => ", otherStreams);
 
     return (
-        <section className="video-main" style={{display:"block",width:props.width}}>
+        <>
+        <section className="video-main" id="video" style={{width:props.width}}>
+        <div className="video-main">
         <div class="video-wrapper">
             <div class="video-previe video-center">
 
@@ -522,10 +567,10 @@ const Room = props => {
                         <div class="video-inner-wrap video-center">
                             <Video key={index.toString()} item={item} />
                             {
-                                (buttonmute)?<a><img alt="" src="img/mute(1).png"/></a>:<a><img alt="" src="img/mic1.png"/></a>
+                                (buttonmute)?<a><img alt="" src="img/mute.png"/></a>:<a><img alt="" src="img/mic1.png"/></a>
                             }
                             {
-                                (buttoncamera)?<a style={{right:"50px"}}><img alt="" src="img/camera-off(1).png"/></a>:<a style={{right:"50px"}}><img alt="" src="img/camera.png"/></a>
+                                (buttoncamera)?<a style={{right:"50px"}}><img alt="" src="img/camera-off.png"/></a>:<a style={{right:"50px"}}><img alt="" src="img/camera.png"/></a>
                             }
                         </div>
                     </div>
@@ -541,20 +586,22 @@ const Room = props => {
                 <a  onClick={cameraOff} >
                     {
                         (isVideoMuted) ? 
-                        <img alt="" src="img/camera-off.png"/> 
+                        <img alt="" src="img/camera-off(1).png"/> 
                         : <img alt="" src="img/camera.png"/>
                     }
                     </a>
                 <a onClick={muteAudio} >
                     {
                         (isAudioMuted) ? 
-                        <img alt="" src="img/mute.png"/>
+                        <img alt="" src="img/mute(1).png"/>
                         : <img alt="" src="img/mic1.png"/>
                     }
                     </a>   
+                <a><img alt="" src="img/group.png"/></a>   
                 <a  onClick={() => setconfirmationModel(true)}><img className="video-end" alt="" src="img/call-end.png"/></a>
             </div>
-        </div>   
+        </div> 
+        </div>  
 
 
 
@@ -594,10 +641,53 @@ const Room = props => {
         </CModalBody>
     </CModal>
 
+
+
+
+
+
+    <CModal show={requestModel} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
+        color="danger"
+        centered>
+        <CModalBody className="model-bg">
+
+            <div>
+                <div className="modal-body">
+                    <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
+                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                    </button>
+                    <div className="model_data">
+                        <div className="model-title">
+                            <img src='./murabbo/img/exit.png' alt="" />
+                            <h3>Join Request</h3>
+                            <h4>{requestSender} wants to join the Room</h4>
+                        </div>
+                        <img className="shape2" src="./murabbo/img/shape2.svg" />
+                        <img className="shape3" src="./murabbo/img/shape3.svg" />
+                        <div className="row">
+                            <div className="col-md-10 offset-md-1">
+
+                                <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
+                                    <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => moderatorResponse(false)} >Decline</button>
+                                </div>
+                                <div style={{ textAlign: 'center', float: 'left' }} className="">
+                                    <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => moderatorResponse(true)} >Accept</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </CModalBody>
+    </CModal>
     </section>
 
-    
+    <section className="video-main" id="wait" >
 
+        </section>
+
+    
+</>
 
 
     );

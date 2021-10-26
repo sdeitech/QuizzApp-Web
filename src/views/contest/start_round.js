@@ -16,6 +16,7 @@ import {
 import $ from 'jquery';
 import io from "socket.io-client";
 import socket from 'socket.io-client/lib/socket';
+import { indexOf } from 'underscore';
 var jwt = require('jsonwebtoken');
 
 let contestId, roundId, roomId, parentContestId;
@@ -35,7 +36,12 @@ class StartRound extends Component {
 	constructor(props) {
 		super(props);
 		let roomUrl = window.location.href;
-    	const roomId1 = roomUrl.substring(roomUrl.lastIndexOf("?") + 1);
+		let roomId1 = roomUrl.substring(roomUrl.indexOf('?') + 1);
+		let joinroomreq = false;
+		if(roomId1.indexOf("?") !== -1){
+			roomId1 = roomId1.substring(0,roomId1.indexOf('?'));
+			joinroomreq = true;
+		}
 		this.state = {
 			profile_picture: 'avatars/placeholder-user.png',
 			name: '',
@@ -86,6 +92,7 @@ class StartRound extends Component {
 			currentAssignedUser:"",
 			roomJoined:false,
 			isModerator:false,
+			joinroomreq:joinroomreq,
 		};
 		this.socketRef = React.createRef();
 		this.playContest = this.playContest.bind(this);
@@ -94,16 +101,29 @@ class StartRound extends Component {
 
 	componentDidMount() {
 		// this.getRoomDetails();
+		var roomID = this.state.roomIdd;
+		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+
+		// if(this.state.joinroomreq){
+		// 	$("#exampleModalCenter").hide();
+		// 	$("#hideButton").hide();
+		// 	socket_2.emit("join-room-req",{roomId:this.state.roomIdd, joinedUserId:userId})
+		// }
+				// socket_2.on("req-response-from-server",({status})=>{
+		// 	if(status){
+		// 		socket_2.emit("join-room")
+		// 	}
+		// })
+
+
+
+
 
 		if(this.state.roomActive === false){
-			var url = window.location.href;
-			roomId = url.substring(url.lastIndexOf('/') + 1);
-			roomId = roomId.substring(roomId.lastIndexOf('?') + 1);
-
 			var postData = {};
 			postData.isActive = true;
 
-		fetch(configuration.baseURL + "room/room/"+roomId, {
+		fetch(configuration.baseURL + "room/room/"+this.state.roomIdd, {
 			method: "put",
 			headers: {
 				'Accept': 'application/json',
@@ -141,8 +161,7 @@ class StartRound extends Component {
 			console.log('Connection for 2');
 		});
 
-		var roomID = this.state.roomIdd;
-		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+		
 
 		if(!this.state.roomJoined){
 			socket_2.emit("join-game-room", {
@@ -215,7 +234,7 @@ class StartRound extends Component {
 
 		var url = window.location.href;
 		contestId = url.substring(url.lastIndexOf('/') + 1);
-		contestId = contestId.substring(0, contestId.lastIndexOf('?'));
+		contestId = contestId.substring(0, contestId.indexOf('?'));
 		fetch(configuration.baseURL + "contest/contest?contestId=" + contestId + "&v=" + 1, {
 			method: "GET",
 			headers: {
@@ -418,10 +437,8 @@ class StartRound extends Component {
 
 	playContest() {
 		let gameTypeObj = "";
-		var url = window.location.href;
-		roomId = url.substring(url.lastIndexOf('/') + 1);
-		roomId = roomId.substring(roomId.lastIndexOf('?') + 1);
-
+		roomId = this.state.roomIdd;
+		
 		this.getRoomDetails();
 		// if (this.state.contestData.playerType === 1) {
 		// console.log(this.state.roundListArr[this.state.currentIndexRound]);
@@ -1317,14 +1334,21 @@ class StartRound extends Component {
 	}
 
 	render() {
-		
 		return (
 			<>
 				<TheHeaderInner />
 				<ToastContainer position="top-right" autoClose={10000} style={{ top: '80px' }} />
 				<main id="main">
-					<Room  width={this.state.width} socket={socket_2} userId={userId}/>
-					<button type="button" class="btn btn-primary" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
+					<Room
+					width={this.state.width}
+					socket={socket_2}
+					userId={userId}
+					isModerator={this.state.isModerator}
+					joinroomreq={this.state.joinroomreq}
+					roomId={this.state.roomIdd}
+					/>
+
+					<button type="button" class="btn btn-primary" id="hideButton" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
 						{(this.state.togglemodel)?
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>:
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Show</span>}
@@ -2030,6 +2054,8 @@ class StartRound extends Component {
 
 					}
 					</section>
+
+					<section className="video-main" id="wait" ></section>
 				</main>
 
 

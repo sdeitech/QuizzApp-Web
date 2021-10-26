@@ -170,7 +170,7 @@ class DetailContest extends Component {
 
 	joinRoomHandler(data){
 		// this.props.history.push('/detail-contest/'+contestId+'?'+data._id);
-		this.props.history.push('/contests/start_round/'+contestId+'?'+data._id);	
+		this.props.history.push('/contests/start_round/'+contestId+'?'+data._id+"?1");	
 	}
 
 	joinRoomContest(data)
