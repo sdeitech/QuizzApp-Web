@@ -6,8 +6,8 @@ import styled from "styled-components";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { ToastContainer, toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import {useDispatch, useSelector} from 'react-redux';
-import { joinRoomReqSend,setWaitScreen,setOtherUserStreams,RemoveOtherUserStreams,updateOthetUserStream,setSocket } from '../../actions/socketAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { joinRoomReqSend, setWaitScreen, setOtherUserStreams, RemoveOtherUserStreams, updateOthetUserStream, setSocket, setMuteUnmute } from '../../actions/socketAction';
 import {
     CModal,
     CModalBody,
@@ -40,7 +40,7 @@ const Room = props => {
     //     moderator = true;
     // }
     // const isModerator = !joinRoomReq;
-    
+
     // const [peers, setPeers] = useState([]);
     const socketRef = useRef();
     const currentStream = useRef();
@@ -49,7 +49,7 @@ const Room = props => {
     const userVideo = useRef();
     const otherStreamRef = useRef([]);
     const myRef = useRef([]);
-    socketRef.current =  useSelector((state) => state.socketReducers.socket);
+    socketRef.current = useSelector((state) => state.socketReducers.socket);
     const [otherStreams, setotherStreams] = useState([]);
     const [otherUser, setotherUser] = useState([]);
     otherStreamRef.current = otherUserSteams;
@@ -63,78 +63,78 @@ const Room = props => {
     const [joinuser, setjoinuser] = useState([]);
 
     // const roomId = props.roomId; 
-    
-    const [confirmationModel,setconfirmationModel]= useState(false);
-    const [requestModel,setrequestModel]= useState(false);
-    const [moderatorLeave,setmoderatorLeave]= useState(false);
-    const [openModelForMembers,setopenModelForMembers]= useState(false);
-    const [requestSender,setrequestSender]= useState("");
-    const [reqSenderSocketId,setreqSenderSocketId]= useState();
+
+    const [confirmationModel, setconfirmationModel] = useState(false);
+    const [requestModel, setrequestModel] = useState(false);
+    const [moderatorLeave, setmoderatorLeave] = useState(false);
+    const [openModelForMembers, setopenModelForMembers] = useState(false);
+    const [requestSender, setrequestSender] = useState("");
+    const [reqSenderSocketId, setreqSenderSocketId] = useState();
 
     // socketRef.current = props.socket;
-    
+
 
     const Video = props => {
         const ref = useRef();
-        console.log("video",props.item)
-    
+        console.log("video", props.item)
+
         useEffect(() => {
             ref.current.srcObject = props.item;
         }, []);
-    
+
         return <video ref={ref} autoPlay="true" />;
     };
-    const cameraOff = () =>{
-        if(isVideoMuted){
+    const cameraOff = () => {
+        if (isVideoMuted) {
             setVideoMuted(false);
-            userVideoUnMuteVoice(); 
-        }else{
+            userVideoUnMuteVoice();
+        } else {
             setVideoMuted(true);
             userVideoMuteVoice();
         }
     }
 
     const muteAudio = () => {
-        
+
         if (isAudioMuted) {
             setAudioMute(false);
-            userUnMuteVoice();     
+            userUnMuteVoice();
         } else {
             setAudioMute(true);
             userMuteVoice();
         }
     };
 
-   
-    const userVideoMuteVoice = () => {
-        try {        
-            const userIdd = userVideoPeerId.current;
-            const myStream = userVideoStream.current;
-            socketRef.current.emit("mute-video-user", ({  roomId, userId:userIdd, streamId: myStream.id }));
 
-            if(myStream){
+    const userVideoMuteVoice = () => {
+        try {
+            const joinedUserId = userId;
+            const myStream = userVideoStream.current;
+            socketRef.current.emit("mute-video-user", ({ roomId, userId: userVideoPeerId.current, joinedUserId, streamId: myStream.id }));
+
+            if (myStream) {
                 myStream.getVideoTracks().forEach((track) => {
                     track.enabled = false;
                 });
             }
             console.log("camera off");
-    
+
             // dispatch({ type: actionTypes.MY_STREAM, payload: myStream });
             // dispatch({ type: actionTypes.TOGGLE_MUTE_USER, payload: streamsData });
         } catch (error) {
             console.log("toggleMuteVoice error => ", error);
         }
     }
-    
+
     const userVideoUnMuteVoice = () => {
         try {
             // clone main data
-            const userIdd = userVideoPeerId.current;
+            const joinedUserId = userId;
             const myStream = userVideoStream.current;
-            console.log(myStream,"myStream");
-            socketRef.current.emit("unmute-video-user", ({ userIdd, roomId, streamId: myStream.id }));
+            console.log(myStream, "myStream");
+            socketRef.current.emit("unmute-video-user", ({ joinedUserId, userId: userVideoPeerId.current, roomId, streamId: myStream.id }));
             // var videoTrack = myStream.getVideoTracks();
-            if(myStream){
+            if (myStream) {
                 myStream.getVideoTracks().forEach((track) => {
                     track.enabled = true;
                 });
@@ -151,11 +151,11 @@ const Room = props => {
     const userMuteVoice = () => {
         try {
             // clone main data
-            const userIdd = userVideoPeerId.current;
+            const joinedUserId = userId;
             const myStream = userVideoStream.current;
-            socketRef.current.emit("mute-user", ({ userIdd, roomId, streamId: myStream.id }));
-    
-            if(myStream){
+            socketRef.current.emit("mute-user", ({ joinedUserId, userId: userVideoPeerId.current, roomId, streamId: myStream.id }));
+
+            if (myStream) {
                 myStream.getAudioTracks().forEach((track) => {
                     track.enabled = false;
                 });
@@ -168,22 +168,22 @@ const Room = props => {
             console.log("toggleMuteVoice error => ", error);
         }
     }
-    
+
     const userUnMuteVoice = () => {
         try {
             // clone main data
-            const userIdd = userVideoPeerId.current;
+            const joinedUserId = userId;
             const myStream = userVideoStream.current;
-            socketRef.current.emit("unmute-user", ({ userIdd, roomId, streamId: myStream.id }));
-    
-            if(myStream){
+            socketRef.current.emit("unmute-user", ({ joinedUserId, userId: userVideoPeerId.current, roomId, streamId: myStream.id }));
+
+            if (myStream) {
                 myStream.getAudioTracks().forEach((track) => {
                     track.enabled = true;
                 });
             }
 
             console.log("audio unmuted");
-    
+
             // dispatch({ type: actionTypes.MY_STREAM, payload: myStream });
             // dispatch({ type: actionTypes.TOGGLE_MUTE_USER, payload: streamsData });
         } catch (error) {
@@ -191,63 +191,67 @@ const Room = props => {
         }
     }
 
-    const moderatorResponse = (status)=>{
-        socketRef.current.emit("join-room-response-from-moderator",{
-            roomID:roomId, socketId:reqSenderSocketId, status 
+    const moderatorResponse = (status) => {
+        socketRef.current.emit("join-room-response-from-moderator", {
+            roomID: roomId, socketId: reqSenderSocketId, status
         });
         setrequestSender("");
         setrequestModel(false);
         setreqSenderSocketId("");
-        console.log("response send is ",status );
+        console.log("response send is ", status);
 
     }
 
     const logout = () => {
         console.log("logout");
-        otherStreamRef.current=[];
+        otherStreamRef.current = [];
         setjoinuser([]);
-        history.push('/dashboard',{state:null});
+        history.push('/dashboard', { state: null });
     };
 
-    const handleDisqualify = (joinedUserId,qualify) => {
-        if(isModerator){
-            console.log("moderator Disqualify",joinedUserId,qualify,roomId)
-            socketRef.current.emit("Disqualify",{joinedUserId,qualify,roomId})    
+    const handleDisqualify = (joinedUserId, qualify) => {
+        let data = {
+            joinedUserId,
+            field: "qualify",
+            value: qualify
         }
+        dispatch(setMuteUnmute(data));
+        console.log("moderator Disqualify", joinedUserId, qualify, roomId);
+        socketRef.current.emit("Disqualify", { joinedUserId, qualify, roomId });
     }
 
 
     useEffect(() => {
-        console.log("isModerator",isModerator)
-        if(isModerator){
-            socketRef.current.on("user-request-moderator", ({userdata,socketId}) =>{
+        console.log("isModerator", isModerator)
+        if (isModerator) {
+            socketRef.current.on("user-request-moderator", ({ userdata, socketId }) => {
                 setrequestSender(userdata.name);
                 setrequestModel(true);
                 setreqSenderSocketId(socketId);
-                console.log("reqest from ",userdata.name);
+                console.log("reqest from ", userdata.name);
             });
         }
-          //////moderator reponse from server;
+        //////moderator reponse from server;
 
-          socketRef.current.on("req-response-from-server", status => {
-              console.log("req response..........................")
-            if(status){
+        socketRef.current.on("req-response-from-server", status => {
+            console.log("req response..........................")
+            if (status) {
                 const myStream = userVideoStream.current;
                 socketRef.current.emit("join-room", {
                     userId: userVideoPeerId.current,
                     roomId,
-                    stream:myStream,
+                    stream: myStream,
                     joinedUserId: userId,
                     isModerator: isModerator,
                 });
                 dispatch(setWaitScreen(false));
                 dispatch(joinRoomReqSend(false));
-            }else{
+            } else {
                 console.log("request decline");
                 toast.error("request decline");
-                setTimeout(()=>{
+                setTimeout(() => {
                     history.push('/dashboard');
-                },3000)
+                }, 3000)
             }
         });
         try {
@@ -289,49 +293,45 @@ const Room = props => {
 
 
                     ///send join room request
-                    if(joinroomreq){
-                        socketRef.current.emit("join-room-req",{roomId:roomId, joinedUserId:userId})
-                        console.log("join room request send ",roomId,userId);
+                    if (joinroomreq) {
+                        socketRef.current.emit("join-room-req", { roomId: roomId, joinedUserId: userId })
+                        console.log("join room request send ", roomId, userId);
                         dispatch(joinRoomReqSend(false));
                     }
 
-                    
+
                     peerServer.on("open", peerUserId => {
                         userVideoPeerId.current = peerUserId;
                         const myStream = userVideoStream.current;
 
-                        if(isModerator){
+                        if (isModerator) {
                             console.log("open join room", roomId);
                             socketRef.current.emit("join-room", {
                                 userId: peerUserId,
                                 roomId,
-                                stream:myStream,
+                                stream: myStream,
                                 joinedUserId: userId,
                                 isModerator: isModerator,
                             });
                         }
                     });
-                    
-                  
+
+
 
                     ////user disQualifiy by moderator
 
-                    socketRef.current.on("user-Disqualify",({joinedUserId, qualify})=>{
-                        console.log(joinedUserId, qualify,"user-Disqualify")
-                        let users = otherUserSteams.map(item => {
-                            if(item.userData._id == joinedUserId ){
-                                item.qualify = qualify;
-                                return item;
-                            }else{
-                                return item;
-                            }
-                        });
-                        dispatch(updateOthetUserStream(users)); 
-
+                    socketRef.current.on("user-Disqualify", ({ joinedUserId, qualify }) => {
+                        console.log(joinedUserId, qualify, "user-Disqualify")
+                        let data = {
+                            joinedUserId,
+                            field: "qualify",
+                            value: qualify
+                        }
+                        dispatch(setMuteUnmute(data));
                     })
 
 
-                    socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify }) => {
+                    socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify, Video, Audio }) => {
                         try {
                             // connectToNewUser(userId, stream, dispatch);
                             console.log("user connected => ", userId);
@@ -342,21 +342,26 @@ const Room = props => {
                             const call = peerServer.call(userId, stream);
                             console.log("peerservercall after");
 
-                            if(otherUserSteams.find(item => item.joinedUserId = joinedUserId)){
-                                console.log("already exist")
-                            }else{
-                                call.on("stream", (remoteVideoStream) => {
-                                    if (remoteVideoStream) {
-                                        resStreamId = remoteVideoStream?.id;
-                                        setTimeout(() => {
-                                            console.log(remoteVideoStream, "line 344");
-                                            _addStream(remoteVideoStream,joinedUserId,userData,qualify);
-                                            // dispatch({ type: actionTypes.ADD_STREAM, payload: remoteVideoStream });
-                                        }, 400);
-                                    }
-                                });
-                            }
-                            
+                            call.on("stream", (remoteVideoStream) => {
+                                if (remoteVideoStream) {
+                                    resStreamId = remoteVideoStream?.id;
+                                    setTimeout(() => {
+                                        console.log(remoteVideoStream, "line 344");
+                                        let data = {
+                                            stream: remoteVideoStream,
+                                            joinedUserId,
+                                            userData,
+                                            qualify,
+                                            Video,
+                                            Audio
+                                        }
+                                        dispatch(setOtherUserStreams(data));
+                                        // _addStream(remoteVideoStream,joinedUserId,userData,qualify);
+                                        // dispatch({ type: actionTypes.ADD_STREAM, payload: remoteVideoStream });
+                                    }, 400);
+                                }
+                            });
+
                             call.on("close", () => {
                                 console.log(
                                     "peer close for this id => outside => "
@@ -394,28 +399,36 @@ const Room = props => {
                     socketRef.current.on("previous-users", (users) => {
                         // connectToNewUser(userId, stream, dispatch);
                         console.log("user connected prev users => from server :: ", users);
-                
+
                         if (users) {
                             users.forEach(user => {
-                                const userId  = user.userId;
+                                const userId = user.userId;
                                 const joinedUserId = user.userData._id;
                                 const userData = user.userData;
                                 const qualify = user.qualify;
-                
+                                const Video = user.Video;
+                                const Audio = user.Audio;
+
                                 const call = peerServer.call(userId, stream);
-                
+
                                 console.log("user connected prev users => ", userId);
-                      
-                      
-                                if(otherUserSteams.find(item => item.joinedUserId = joinedUserId)){
-                                    console.log("already exist")
-                                }else{
-                                    call.on('stream', (remoteVideoStream) => {
-                                        console.log("line 400");
-                                        console.log("user connected prev users => :: ", remoteVideoStream);
-                                        _addStream(remoteVideoStream,joinedUserId,userData,qualify);
-                                    });
-                                }
+
+                                call.on('stream', (remoteVideoStream) => {
+                                    console.log("line 400");
+                                    console.log("user connected prev users => :: ", remoteVideoStream);
+
+                                    let data = {
+                                        stream: remoteVideoStream,
+                                        joinedUserId,
+                                        userData,
+                                        qualify,
+                                        Video,
+                                        Audio
+                                    }
+                                    dispatch(setOtherUserStreams(data));
+
+                                    // _addStream(remoteVideoStream,joinedUserId,userData,qualify);
+                                });
                             });
                         }
                     });
@@ -429,9 +442,9 @@ const Room = props => {
 
                         // stream back the call
                         call.on("stream", resstream => {
-                            if(resstream){
+                            if (resstream) {
                                 resStreamId = resstream.id;
-                                console.log(resstream,"line 419");
+                                console.log(resstream, "line 419");
                             }
                         });
 
@@ -440,7 +453,7 @@ const Room = props => {
                                 "peer close for this id => outside => "
                             );
                             if (resStreamId) {
-                                console.log("peer close for this id => inside => ",resStreamId );
+                                console.log("peer close for this id => inside => ", resStreamId);
                                 dispatch(RemoveOtherUserStreams(resStreamId));
                             }
                         });
@@ -450,131 +463,176 @@ const Room = props => {
                                 "peer error for this id => outside => "
                             );
                             if (resStreamId) {
-                                console.log("peer error for this id => inside => ",resStreamId);
+                                console.log("peer error for this id => inside => ", resStreamId);
                                 dispatch(RemoveOtherUserStreams(resStreamId));
                             }
                         });
                     });
 
-                    socketRef.current.on("user-disconnected",({ userId, streamId,isModerator,username }) => {
-                            try {
-                                if(isModerator){
-                                    console.log("Moderator disconnected");
-                                    setmoderatorLeave(true);
-                                }else{
-                                    console.log("user disconnected",username);
-                                    toast.error(`${username} left from room`);
-                                }
-
-                                let streams = otherUserSteams;
-                                console.log("all removed streams => ", streams);
-                                                    
-                                const  removedStream  = streams.find(x => x.stream.id == streamId);
-
-                                if (removedStream) {
-                                    removedStream.getTracks().forEach(track => track.stop());
-                                    removedStream.release();
-                                }
-
-                                dispatch(RemoveOtherUserStreams(streamId));
-
-                                if (peers[userId]){peers[userId].close();} 
-                            } catch (error) {
-                                console.log("disconnected error => ", error);
+                    socketRef.current.on("user-disconnected", ({ userId, streamId, isModerator, username }) => {
+                        try {
+                            if (isModerator) {
+                                console.log("Moderator disconnected");
+                                setmoderatorLeave(true);
+                            } else {
+                                console.log("user disconnected", username);
+                                toast.error(`${username} left from room`);
                             }
+
+                            let streams = otherUserSteams;
+                            console.log("all removed streams => ", streams);
+
+                            const removedStream = streams.find(x => x.stream.id == streamId);
+
+                            if (removedStream) {
+                                removedStream.getTracks().forEach(track => track.stop());
+                                removedStream.release();
+                            }
+
+                            dispatch(RemoveOtherUserStreams(streamId));
+
+                            if (peers[userId]) { peers[userId].close(); }
+                        } catch (error) {
+                            console.log("disconnected error => ", error);
                         }
+                    }
                     );
 
-                    socketRef.current.on("user-muted",({ userId, streamId }) => {
-                        const otherUserSteams = otherStreamRef.current;
-                        
-                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        console.log("muteindex....", index);
-                        if(otherUserSteams[index]){
-                            if(otherUserSteams[index].stream.getAudioTracks()){
-                                otherUserSteams[index].stream.getAudioTracks().forEach((track) =>{
-                                    track.enabled = false;
-                                })}}
+                    socketRef.current.on("user-muted", ({ userId, joinedUserId, streamId }) => {
+                        let data = {
+                            joinedUserId,
+                            field: "Audio",
+                            value: false
+                        }
 
-                        dispatch(updateOthetUserStream(otherUserSteams));
+                        console.log("user-muted>>>>>>>>>", data);
+                        dispatch(setMuteUnmute(data));
 
 
-                            console.log("user-muted => ", userId, streamId);
-                            var arr = muteStreamID;
-                            arr.push(streamId);
-                            setmuteStreamID(arr);
-                            setforcerender(forcerender+1);
-                        });
-                        
-                    socketRef.current.on("user-unmuted",({ userId, streamId }) => {
-                        const otherUserSteams = otherStreamRef.current;
-                        
-                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        console.log("unmuteindex....", index);
-                        myRef.current = otherUserSteams[index]; 
-                        myRef.current.streams.getAudioTracks().forEach((track) =>{
-                            track.enabled = true;
-                        })
+                        // const otherUserSteams = otherStreamRef.current;
 
-                        dispatch(updateOthetUserStream(otherUserSteams));
+                        // console.log("line 491 userArray",otherUserSteams);
 
-                        console.log("user-unmuted => ", userId, streamId);
-                        var streams = muteStreamID;
-                        streams.map(item => item !== streamId);
-                        setmuteStreamID(streams);
-                        setforcerender(forcerender+1);
-                        });
-                        
-                    socketRef.current.on("user-video-muted", ({ userId, streamId }) => {
-                        console.log("user-video-muted => ", userId, streamId);
+                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        // console.log("muteindex....", index);
+                        // if(otherUserSteams[index]){
+
+                        //     if(otherUserSteams[index].stream.getAudioTracks()){
+                        //         otherUserSteams[index].stream.getAudioTracks().forEach((track) =>{
+                        //             track.enabled = false;
+                        //         })}}
+
+                        //         console.log("user-muted  array.......=> ",otherUserSteams);
+                        // dispatch(updateOthetUserStream(otherUserSteams));
 
 
-                        const otherUserSteams = otherStreamRef.current;
-                        
-                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        console.log("video-muteindex....", index);
+                        //     console.log("user-muted => ", userId, streamId);
+                        //     var arr = muteStreamID;
+                        //     arr.push(streamId);
+                        //     setmuteStreamID(arr);
+                        //     setforcerender(forcerender+1);
+                    });
 
-                        dispatch(updateOthetUserStream(otherUserSteams));
-                        myRef.current = otherUserSteams[index]; 
-                        myRef.current.streams.getVideoTracks().forEach((track) =>{
-                            track.enabled = false;
-                        })
+                    socketRef.current.on("user-unmuted", ({ userId, joinedUserId, streamId }) => {
+
+                        let data = {
+                            joinedUserId,
+                            field: "Audio",
+                            value: true
+                        }
+                        console.log("user-unmuted>>>>>>>>>", data);
+                        dispatch(setMuteUnmute(data));
 
 
-                        var arr = cameraOffStreamID;
-                        arr.push(streamId);
-                        setcameraOffStreamID(arr);
-                        setforcerender(forcerender+1);
+
+
+                        // const otherUserSteams = otherStreamRef.current;
+
+                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        // console.log("unmuteindex....", index);
+                        // myRef.current = otherUserSteams[index]; 
+                        // myRef.current.streams.getAudioTracks().forEach((track) =>{
+                        //     track.enabled = true;
+                        // })
+
+                        // dispatch(updateOthetUserStream(otherUserSteams));
+
+                        // console.log("user-unmuted => ", userId, streamId);
+                        // var streams = muteStreamID;
+                        // streams.map(item => item !== streamId);
+                        // setmuteStreamID(streams);
+                        // setforcerender(forcerender+1);
+                    });
+
+                    socketRef.current.on("user-video-muted", ({ userId, joinedUserId, streamId }) => {
+                        console.log("user-video-muted => ", joinedUserId, streamId);
+
+                        let data = {
+                            joinedUserId,
+                            field: "Video",
+                            value: false
+                        }
+                        console.log("user-video-muted>>>>>>>>>", data);
+                        dispatch(setMuteUnmute(data));
+
+
+
+                        // const otherUserSteams = otherStreamRef.current;
+
+                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        // console.log("video-muteindex....", index);
+
+                        // dispatch(updateOthetUserStream(otherUserSteams));
+                        // myRef.current = otherUserSteams[index]; 
+                        // myRef.current.streams.getVideoTracks().forEach((track) =>{
+                        //     track.enabled = false;
+                        // })
+
+
+                        // var arr = cameraOffStreamID;
+                        // arr.push(streamId);
+                        // setcameraOffStreamID(arr);
+                        // setforcerender(forcerender+1);
                     });
 
 
-                    
-                    socketRef.current.on("user-video-unmuted", ({ userId, streamId }) => {
-                        console.log("user-video-unmuted => ", userId, streamId);
-                        const otherUserSteams = otherStreamRef.current;
-                        
-                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        console.log("video-unmuteindex....", index);
-                        myRef.current = otherUserSteams[index]; 
-                        myRef.current.streams.getVideoTracks().forEach((track) =>{
-                            track.enabled = true;
-                        })
 
-                        dispatch(updateOthetUserStream(otherUserSteams));
-                        
-                        var streams = cameraOffStreamID;
-                        streams.map(item => item !== streamId);
-                        setcameraOffStreamID(streams);
-                        setforcerender(forcerender+1);
+                    socketRef.current.on("user-video-unmuted", ({ userId, joinedUserId, streamId }) => {
+                        let data = {
+                            joinedUserId,
+                            field: "Video",
+                            value: true
+                        }
+                        console.log("user-video-unmuted>>>>>>>>>", data);
+                        dispatch(setMuteUnmute(data));
+
+
+
+
+                        // const otherUserSteams = otherStreamRef.current;
+
+                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        // console.log("video-unmuteindex....", index);
+                        // myRef.current = otherUserSteams[index]; 
+                        // myRef.current.streams.getVideoTracks().forEach((track) =>{
+                        //     track.enabled = true;
+                        // })
+
+                        // dispatch(updateOthetUserStream(otherUserSteams));
+
+                        // var streams = cameraOffStreamID;
+                        // streams.map(item => item !== streamId);
+                        // setcameraOffStreamID(streams);
+                        // setforcerender(forcerender+1);
                     });
 
-                    
+
                 });
 
-            
-                window.addEventListener('popstate', function(event) {
-                    window.history.pushState(null, document.title, window.location.href);
-                  });
+
+            window.addEventListener('popstate', function (event) {
+                window.history.pushState(null, document.title, window.location.href);
+            });
 
             window.addEventListener("beforeunload", event => {
                 // Cancel the event as stated by the standard.
@@ -614,12 +672,12 @@ const Room = props => {
                     userId: streamUserId,
                     roomId,
                     streamId: myStream.id,
-                    isModerator:isModerator,
+                    isModerator: isModerator,
                 });
                 if (myStream) {
                     myStream.getTracks().forEach(track => track.stop());
                 }
-                socketRef.current.emit('end');
+                // socketRef.current.emit('end');
                 setSocket("");
                 otherStreamRef.current = [];
             });
@@ -633,9 +691,9 @@ const Room = props => {
                     userId: streamUserId,
                     roomId,
                     streamId: myStream.id,
-                    isModerator:isModerator
+                    isModerator: isModerator
                 });
-                socketRef.current.emit('end');
+                // socketRef.current.emit('end');
                 setSocket("");
                 otherStreamRef.current = [];
 
@@ -646,268 +704,250 @@ const Room = props => {
         };
     }, []);
 
-    const _addStream = (resstream,joinedUserId,userData,qualify) => {
-         
+    // const _addStream = (resstream,joinedUserId,userData,qualify) => {
 
-        let data={stream:resstream,joinedUserId,userData,qualify}
-        if (otherUserSteams.findIndex(x => x.userData._id == joinedUserId) == -1) {
-            dispatch(setOtherUserStreams(data));
-        }
-        console.log(otherUserSteams,"otherUserSteams");
-    };
 
-    console.log("my totle streams =>",otherUserSteams);
+    //     let data={stream:resstream,joinedUserId,userData,qualify}
+    //     if (otherUserSteams.findIndex(x => x.userData._id == joinedUserId) == -1) {
+    //         dispatch(setOtherUserStreams(data));
+    //     }
+    //     console.log(otherUserSteams,"otherUserSteams");
+    // };
+
+    console.log("my totle streams =>", otherUserSteams);
 
     return (
         <>
-        <section className="" id="video" style={{width:props.width}}>
-        <ToastContainer
-                        position="top-right"
-                        autoClose={5000}
-                        style={{ top: "80px" }}
-                    />
-        <div className="">
-        <div class="video-wrapper">
-            <div class="video-previe video-center">
+            <section className="" id="video" style={{ width: props.width }}>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    style={{ top: "80px" }}
+                />
+                <div className="">
+                    <div class="video-wrapper">
+                        <div class="video-previe video-center">
 
-                <div class={otherUserSteams.length==0?"video-person1":otherUserSteams.length==1?"video-person2":"video-person3"}>
-                    <div class="video-inner-wrap video-center">
-                        <video ref={userVideo} muted="true"  autoPlay="true" /> 
+                            <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
+                                <div class="video-inner-wrap video-center">
+                                    <video ref={userVideo} muted="true" autoPlay="true" />
+                                </div>
+                            </div>
+
+                            {otherUserSteams.map((item, index, array) => {
+                                return (
+                                    <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
+                                        <div class="video-inner-wrap video-center">
+                                            <Video key={index.toString()} item={item.stream} />
+                                            <a><img alt="" src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} /></a>
+                                            <a style={{ right: "50px" }}><img alt="" src={(item.Video) ? "img/camera.png" : "img/camera-off(1).png"} /></a>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className="video-bottom-bar" style={{ width: props.width }}>
+                        <div className="video-wrapper video-center">
+                            <a onClick={cameraOff} >
+                                <img alt="" src={(isVideoMuted) ? "img/camera-off(1).png" : "img/camera.png"} />
+                            </a>
+                            <a onClick={muteAudio} >
+                                <img alt="" src={(isAudioMuted) ? "img/mute(1).png" : "img/mic1.png"} />
+                            </a>
+                            <a onClick={() => setopenModelForMembers(true)} ><img alt="" src="img/group.png" /></a>
+                            <a onClick={() => setconfirmationModel(true)}><img className="video-end" alt="" src="img/call-end.png" /></a>
+                        </div>
                     </div>
                 </div>
 
-                {otherUserSteams.map((item, index,array) => {
-                     let camera = true;
-                     let mute = true;
-                    
-                     camera = item.stream.getVideoTracks()?.find((track) => track.kind === 'audio')?.enabled;
-                     mute = item.stream.getAudioTracks()?.find((track) => track.kind === 'video')?.enabled;
-                return (
-                    <div class={otherUserSteams.length==0?"video-person1":otherUserSteams.length==1?"video-person2":"video-person3"}>
-                        <div class="video-inner-wrap video-center">
-                        <Video key={index.toString()} item={item.stream} />
-                            {
-                                (mute)?<a><img alt="" src="img/mute.png"/></a>:<a><img alt="" src="img/mic1.png"/></a>
-                            }
-                            {
-                                (camera)?<a style={{right:"50px"}}><img alt="" src="img/camera.png"/></a>:<a style={{right:"50px"}}><img alt="" src="img/camera-off.png"/></a>
-                            }
-                        </div>
-                    </div>
-                );})}
 
 
 
-                
-            </div>            
-        </div>
-        <div className="video-bottom-bar" style={{width:props.width}}>
-            <div className="video-wrapper video-center">
-                <a  onClick={cameraOff} >
-                    {
-                        (isVideoMuted) ? 
-                        <img alt="" src="img/camera-off(1).png"/> 
-                        : <img alt="" src="img/camera.png"/>
-                    }
-                    </a>
-                <a onClick={muteAudio} >
-                    {
-                        (isAudioMuted) ? 
-                        <img alt="" src="img/mute(1).png"/>
-                        : <img alt="" src="img/mic1.png"/>
-                    }
-                    </a>   
-                <a onClick={() => setopenModelForMembers(true)} ><img alt="" src="img/group.png"/></a>   
-                <a  onClick={() => setconfirmationModel(true)}><img className="video-end" alt="" src="img/call-end.png"/></a>
-            </div>
-        </div> 
-        </div>  
+                <CModal show={confirmationModel} closeOnBackdrop={false} onClose={() => setconfirmationModel(false)}
+                    color="danger"
+                    centered>
+                    <CModalBody className="model-bg">
 
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <img src='./murabbo/img/exit.png' alt="" />
+                                        <h3>Exit</h3>
+                                        <h4>Do you want to Exit?</h4>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg" />
+                                    <img className="shape3" src="./murabbo/img/shape3.svg" />
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
 
-
-
-    <CModal show={confirmationModel} closeOnBackdrop={false} onClose={() => setconfirmationModel(false)}
-        color="danger"
-        centered>
-        <CModalBody className="model-bg">
-
-            <div>
-                <div className="modal-body">
-                    <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
-                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                    </button>
-                    <div className="model_data">
-                        <div className="model-title">
-                            <img src='./murabbo/img/exit.png' alt="" />
-                            <h3>Exit</h3>
-                            <h4>Do you want to Exit?</h4>
-                        </div>
-                        <img className="shape2" src="./murabbo/img/shape2.svg" />
-                        <img className="shape3" src="./murabbo/img/shape3.svg" />
-                        <div className="row">
-                            <div className="col-md-10 offset-md-1">
-
-                                <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-                                    <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={logout} >Exit</button>
-                                </div>
-                                <div style={{ textAlign: 'center', float: 'left' }} className="">
-                                    <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => setconfirmationModel(false)} >Cancel</button>
+                                            <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
+                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={logout} >Exit</button>
+                                            </div>
+                                            <div style={{ textAlign: 'center', float: 'left' }} className="">
+                                                <button style={{ minWidth: '150px' }} className="blue_btn" type="button" onClick={() => setconfirmationModel(false)} >Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </CModalBody>
-    </CModal>
+                    </CModalBody>
+                </CModal>
 
 
 
 
 
 
-    <CModal show={requestModel} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
-        color="danger"
-        centered>
-        <CModalBody className="model-bg">
+                <CModal show={requestModel} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
+                    color="danger"
+                    centered>
+                    <CModalBody className="model-bg">
 
-            <div>
-                <div className="modal-body">
-                    <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
-                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                    </button>
-                    <div className="model_data">
-                        <div className="model-title">
-                            <img src='./murabbo/img/exit.png' alt="" />
-                            <h3>Join Request</h3>
-                            <h4>{requestSender} wants to join the Room</h4>
-                        </div>
-                        <img className="shape2" src="./murabbo/img/shape2.svg" />
-                        <img className="shape3" src="./murabbo/img/shape3.svg" />
-                        <div className="row">
-                            <div className="col-md-10 offset-md-1">
+                        <div>
+                            <div className="modal-body">
+                                <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <img src='./murabbo/img/exit.png' alt="" />
+                                        <h3>Join Request</h3>
+                                        <h4>{requestSender} wants to join the Room</h4>
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg" />
+                                    <img className="shape3" src="./murabbo/img/shape3.svg" />
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
 
-                                <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-                                    <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => moderatorResponse(false)} >Decline</button>
-                                </div>
-                                <div style={{ textAlign: 'center', float: 'left' }} className="">
-                                    <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={() => moderatorResponse(true)} >Accept</button>
+                                            <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
+                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => moderatorResponse(false)} >Decline</button>
+                                            </div>
+                                            <div style={{ textAlign: 'center', float: 'left' }} className="">
+                                                <button style={{ minWidth: '150px' }} className="blue_btn" type="button" onClick={() => moderatorResponse(true)} >Accept</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </CModalBody>
-    </CModal>
+                    </CModalBody>
+                </CModal>
 
 
-    <CModal show={moderatorLeave} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
-        color="danger"
-        centered>
-        <CModalBody className="model-bg">
+                <CModal show={moderatorLeave} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
+                    color="danger"
+                    centered>
+                    <CModalBody className="model-bg">
 
-            <div>
-                <div className="modal-body">
-                    {/* <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
+                        <div>
+                            <div className="modal-body">
+                                {/* <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
                         <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
                     </button> */}
-                    <div className="model_data">
-                        <div className="model-title">
-                            <img src='./murabbo/img/exit.png' alt="" />
-                            <h3>Moderator has left the Room</h3>
-                            {/* <h4>{requestSender} wants to join the Room</h4> */}
-                        </div>
-                        <img className="shape2" src="./murabbo/img/shape2.svg" />
-                        <img className="shape3" src="./murabbo/img/shape3.svg" />
-                        <div className="row">
-                            <div className="col-md-10 offset-md-1">
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <img src='./murabbo/img/exit.png' alt="" />
+                                        <h3>Moderator has left the Room</h3>
+                                        {/* <h4>{requestSender} wants to join the Room</h4> */}
+                                    </div>
+                                    <img className="shape2" src="./murabbo/img/shape2.svg" />
+                                    <img className="shape3" src="./murabbo/img/shape3.svg" />
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
 
-                                {/* <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
+                                            {/* <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
                                     <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => moderatorResponse(false)} >Decline</button>
                                 </div> */}
-                                <div style={{ textAlign: 'center'}} className="">
-                                    <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={logout} >Exit</button>
+                                            <div style={{ textAlign: 'center' }} className="">
+                                                <button style={{ minWidth: '150px' }} className="blue_btn" type="button" onClick={logout} >Exit</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </CModalBody>
-    </CModal>
+                    </CModalBody>
+                </CModal>
+
+                <CModal show={openModelForMembers} closeOnBackdrop={true} onClose={() => setopenModelForMembers(false)}
+                    color="danger"
+                    centered>
+                    <CModalBody className="model-bg">
+
+                        <div>
+                            <div className="modal-body">
+
+                                <button type="button" className="close" onClick={() => setopenModelForMembers(false)}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <h3>Members</h3>
+                                    </div>
+
+                                    <div className="container">
+                                        <div className="row">
+                                            {otherUserSteams.map(item => {
+                                                return (
+                                                    <div className="col-md-12">
+                                                        <div class="_1st2-member two_no">
+                                                            <div className="_1stimg">
+                                                                <div className="memberImg_">
+                                                                    <img style={{
+                                                                        height: "50px",
+                                                                        width: "50px",
+                                                                        borderRadius: "50%"
+                                                                    }} src={item.userData.image == "" ? "avatars/placeholder-user.png" : item.userData.image} />
+                                                                </div>
+                                                                <div className="member_details">
+                                                                    <h5 style={{
+                                                                        color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
+                                                                    }}>{item.userData.name}</h5>
+                                                                </div>
+                                                                <div className="icons-members" style={{
+                                                                    top: "18px !important"
+                                                                }}>
+                                                                    {
+                                                                        isModerator ?
+                                                                            item.qualify ?
+                                                                                <a onClick={() => handleDisqualify(item.userData._id, false)}>
+                                                                                    <img src="img/correct-green.png" width="26px" height="23px" alt="callRight" style={{ position: "relative", top: "5px" }} />
+                                                                                </a>
+                                                                                :
+                                                                                <a onClick={() => handleDisqualify(item.userData._id, true)}>
+                                                                                    <img src="img/close.png" width="26px" height="23px" style={{ position: "relative", top: "5px" }} />
+                                                                                </a>
+                                                                            :
+                                                                            null
+                                                                    }
+                                                                    <img src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} width="33px" alt="callMic" />
+                                                                    <img src={(item.Video) ? "img/camera.png" : "img/camera-off.png"} width="33px" alt="ccallCam" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </CModalBody>
+                </CModal>
 
 
-    <CModal show={openModelForMembers} closeOnBackdrop={false} onClose={() => setopenModelForMembers(false)}
-					color="danger"
-					centered>
-					<CModalBody className="model-bg">
 
-						<div>
-							<div className="modal-body">
-
-								<button type="button" className="close" onClick={() => setopenModelForMembers(false)}>
-									<span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-								</button>
-								<div className="model_data">
-									<div className="model-title">
-										<h3>Members</h3>
-									</div>
-
-									<div className="container">
-										<div className="row">
-                                            {otherUserSteams.map(item =>{
-                                                return(
-											        <div className="col-md-12">
-												<div class="_1st2-member two_no">
-													<div className="_1stimg">
-														<div className="memberImg_">
-															<img style={{
-																height: "50px",
-																width: "50px",
-																borderRadius: "50%"
-															}} src={item.userData.image == ""? "avtars/placeholder-user.png" :item.userData.image} />
-														</div>
-														<div className="member_details">
-															<h5 style={{
-																color: "#fff"
-															}}>{item.userData.name}</h5>
-														</div>
-														<div className="icons-members">
-                                                            {
-                                                            item.qualify?
-                                                            <a onClick={()=> handleDisqualify(item.userData._id,false)}>
-                                                                <img src="./murabbo/img/callRight.png" width="26px" height="23px" alt="callRight"  />
-                                                            </a>
-                                                            :
-                                                            <a onClick={()=> handleDisqualify(item.userData._id,true)}>
-                                                            <img src="./murabbo/img/close.svg" width="26px" height="23px" />
-                                                            </a>
-                                                            }
-															<img src="./murabbo/img/callMic.png" width="26px" height="23px" alt="callMic" />
-															<img src="./murabbo/img/callCam.png" width="26px" height="23px" alt="ccallCam" />
-														</div>
-													</div>
-												</div>
-											        </div>
-                                                );})}
-
-
-										</div>
-									</div>
-
-								</div>
-							</div>
-						</div>
-					</CModalBody>
-				</CModal>
-
-
-
-
-
-    </section>
-</>
+            </section>
+        </>
 
 
     );
