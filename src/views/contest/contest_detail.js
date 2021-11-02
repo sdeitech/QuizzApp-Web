@@ -12,8 +12,43 @@ import {
     CModal,
     CModalBody,
   } from '@coreui/react';
+import { addToken, addClientToken, addUserData, add_is_login, addRedirect, addReload, subscription, forgot_email } from '../../actions/index';
+import { joinRoomReqSend,setRoomCreatorId,setWaitScreen,setModerator,clearOthetUserStream,setRoomId,setSocket } from '../../actions/socketAction';
+import { connect } from "react-redux";
 import $ from 'jquery';
 let contestId;
+
+
+const mapStateToProps = (state) => {
+	return {
+		token : state.authReducers.token,
+		clientToken : state.authReducers.clientToken,
+		forgot_email : state.authReducers.forgot_email,
+		is_login : state.authReducers.is_login,
+		redirect: state.authReducers.redirect,
+		reload: state.authReducers.reload,
+		userData: state.authReducers.userData,
+	};
+ };
+ const mapDispatchToProps = dispatch => {
+	return {
+	addToken: (data) => dispatch(addToken(data)),
+	addClientToken: (data) => dispatch(addClientToken(data)),
+	addUserData: (data) => dispatch(addUserData(data)),
+	add_is_login: (data) => dispatch(add_is_login(data)),
+	addRedirect: (data) => dispatch(addRedirect(data)),
+	addReload: (data) => dispatch(addReload(data)),
+	subscription: (data) => dispatch(subscription(data)),
+	forgot_email: (data) => dispatch(forgot_email(data)),
+	joinRoomReqSend: (date) => dispatch(joinRoomReqSend(date)),
+	setRoomCreatorId: (date) => dispatch(setRoomCreatorId(date)),
+	setWaitScreen: (date) => dispatch(setWaitScreen(date)),
+	setModerator: (date) => dispatch(setModerator(date)),
+	clearOthetUserStream: (date) => dispatch(clearOthetUserStream(date)),
+	setRoomId: (date) => dispatch(setRoomId(date)),
+	setSocket: (date) => dispatch(setSocket(date)),
+ }};
+
 class DetailContest extends Component {
 	constructor(props) {
         super(props);
@@ -170,7 +205,14 @@ class DetailContest extends Component {
 
 	joinRoomHandler(data){
 		// this.props.history.push('/detail-contest/'+contestId+'?'+data._id);
-		this.props.history.push('/contests/start_round/'+contestId+'?'+data._id+"?1");	
+		this.props.setSocket("");
+		this.props.joinRoomReqSend(true);
+		this.props.setRoomId(data._id);
+		this.props.setWaitScreen(true);
+		this.props.setModerator(false);
+		this.props.clearOthetUserStream();
+		
+		this.props.history.push('/contests/start_round/'+contestId+'?'+data._id);	
 	}
 
 	joinRoomContest(data)
@@ -213,6 +255,7 @@ class DetailContest extends Component {
             }).then((data) => {
                 if(data.code === 200){
 					this.setState({isLoading:false});
+					this.props.setRoomCreatorId(data.data.createdBy)
 					this.props.history.push('/detail-contest/'+fields["contestId"]+'?'+data.data._id);
                 }
                 else
@@ -499,5 +542,4 @@ class DetailContest extends Component {
 		)
 	}
 }
-
-export default DetailContest
+export default connect(mapStateToProps,mapDispatchToProps)(DetailContest);

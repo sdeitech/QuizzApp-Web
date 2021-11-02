@@ -17,21 +17,59 @@ import $ from 'jquery';
 import io from "socket.io-client";
 import socket from 'socket.io-client/lib/socket';
 import { indexOf } from 'underscore';
+import { addToken, addClientToken, addUserData, add_is_login, addRedirect, addReload, subscription, forgot_email } from '../../actions/index';
+import { joinRoomReqSend,setModerator,setSocket } from '../../actions/socketAction';
+import { connect } from "react-redux";
+import { Socket } from 'dgram';
 var jwt = require('jsonwebtoken');
+
+
 
 let contestId, roundId, roomId, parentContestId;
 let userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
+
+
 const API_URI_2 = `https://dev-api.murabbo.com`;
 // const API_URI_2 = `http://localhost:9002`;
 let socket_2;
-if (!socket_2) {
-	socket_2  = io(API_URI_2, {
-					forceNew: true,
-				});}
+// if (!socket_2) {
+// 	socket_2  = io(API_URI_2, {
+// 					forceNew: true,
+// 				});}
 
 
-
+				
+	const mapStateToProps = (state) => {
+		return {
+			token : state.authReducers.token,
+			clientToken : state.authReducers.clientToken,
+			forgot_email : state.authReducers.forgot_email,
+			is_login : state.authReducers.is_login,
+			redirect: state.authReducers.redirect,
+			reload: state.authReducers.reload,
+			userData: state.authReducers.userData,
+			joinRoomReq: state.socketReducers.joinRoomReq,
+			isModerator: state.socketReducers.isModerator,
+			waitScreen: state.socketReducers.waitScreen,
+			socket: state.socketReducers.socket,
+			
+		};
+	 };
+	 const mapDispatchToProps = dispatch => ({
+	
+		addToken: (data) => dispatch(addToken(data)),
+		addClientToken: (data) => dispatch(addClientToken(data)),
+		addUserData: (data) => dispatch(addUserData(data)),
+		add_is_login: (data) => dispatch(add_is_login(data)),
+		addRedirect: (data) => dispatch(addRedirect(data)),
+		addReload: (data) => dispatch(addReload(data)),
+		subscription: (data) => dispatch(subscription(data)),
+		forgot_email: (data) => dispatch(forgot_email(data)),
+		joinRoomReqSend: (date) => dispatch(joinRoomReqSend(date)),
+		setModerator: (date) => dispatch(setModerator(date)),
+		setSocket: (date) => dispatch(setSocket(date)),
+	 });
 class StartRound extends Component {
 	constructor(props) {
 		super(props);
@@ -93,32 +131,48 @@ class StartRound extends Component {
 			roomJoined:false,
 			isModerator:false,
 			joinroomreq:joinroomreq,
+			questionPart:true,
 		};
 		this.socketRef = React.createRef();
 		this.playContest = this.playContest.bind(this);
+
+		socket_2 = this.props.socket; 
+		if (!socket_2) {
+			socket_2  = io(API_URI_2, {
+							forceNew: true,
+						});
+					
+						this.props.setSocket(socket_2);
+					}
+		
+
+		if (window.performance) {
+            if (performance.navigation.type == 1) {
+                this.props.history.push('/dashboard',{state:null});
+                window.location.reload();
+                return false;
+            }else{
+				if (!socket_2) {
+					socket_2  = io(API_URI_2);}
+			} 
+          }
 	}
+
+	componentWillUnmount() {
+        window.removeEventListener("beforeunload", this._confirm);
+        window.onpopstate = () => { console.log("hello peter..........") }
+    }
 	
 
 	componentDidMount() {
-		// this.getRoomDetails();
+
+		
+
+
+		this.getRoomDetails();
 		var roomID = this.state.roomIdd;
 		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
-
-		// if(this.state.joinroomreq){
-		// 	$("#exampleModalCenter").hide();
-		// 	$("#hideButton").hide();
-		// 	socket_2.emit("join-room-req",{roomId:this.state.roomIdd, joinedUserId:userId})
-		// }
-				// socket_2.on("req-response-from-server",({status})=>{
-		// 	if(status){
-		// 		socket_2.emit("join-room")
-		// 	}
-		// })
-
-
-
-
-
+		
 		if(this.state.roomActive === false){
 			var postData = {};
 			postData.isActive = true;
@@ -148,12 +202,6 @@ class StartRound extends Component {
 
 
 		//////////socket//////
-
-
-		// if (!socket_2) {
-		// 	socket_2  = io(API_URI_2, {
-		// 					forceNew: true,
-		// 				});}
 		
 		console.log("socket_2",socket_2)
 		
@@ -163,15 +211,15 @@ class StartRound extends Component {
 
 		
 
-		if(!this.state.roomJoined){
-			socket_2.emit("join-game-room", {
-				userId,
-				roomID,
-			});
-			console.log("new data emit => enter join room => ");
-			this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
-			this.setState({roomJoined:true});
-		}
+		// if(!this.state.roomJoined){
+		// 	socket_2.emit("join-game-room", {
+		// 		userId,
+		// 		roomID,
+		// 	});
+		// 	console.log("new data emit => enter join room => ");
+		// 	this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
+		// 	this.setState({roomJoined:true});
+		// }
 
 
 		// after some user connected for same game room 
@@ -284,23 +332,23 @@ class StartRound extends Component {
 
 	///////////////socket.......
 
-	componentWillUnmount(){
-		window.addEventListener("beforeunload", event => {
-			// Cancel the event as stated by the standard.
-			event.preventDefault();
-			// Chrome requires returnValue to be set.
-			event.returnValue = "";
-			let userId = this.state.userId;
-			let roomId = this.state.roomIdd;
+	// componentWillUnmount(){
+	// 	window.addEventListener("beforeunload", event => {
+	// 		// Cancel the event as stated by the standard.
+	// 		event.preventDefault();
+	// 		// Chrome requires returnValue to be set.
+	// 		event.returnValue = "";
+	// 		let userId = this.state.userId;
+	// 		let roomId = this.state.roomIdd;
 
-			console.log("close page");
-			console.log("leaving room for => ", userId);
-			socket_2.emit("disconnect-user", {
-				userId,
-				roomId,
-			});
-		});
-	}
+	// 		console.log("close page");
+	// 		console.log("leaving room for => ", userId);
+	// 		socket_2.emit("disconnect-user", {
+	// 			userId,
+	// 			roomId,
+	// 		});
+	// 	});
+	// }
 
 
 
@@ -1277,7 +1325,7 @@ class StartRound extends Component {
 
 
 	getRoomDetails() {
-		fetch(configuration.baseURL + "room/room/?roomId=" + roomId, {
+		fetch(configuration.baseURL + "room/room/?roomId=" + this.state.roomIdd, {
 			method: "GET",
 			headers: {
 				Accept: "application/json",
@@ -1294,6 +1342,7 @@ class StartRound extends Component {
 					let userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 					this.setState({ roomCreatedBy: createdBy });
 					if(createdBy===userId){
+						this.props.setModerator(true);
 						this.setState({isModerator:true});
 					}
 
@@ -1347,8 +1396,9 @@ class StartRound extends Component {
 					joinroomreq={this.state.joinroomreq}
 					roomId={this.state.roomIdd}
 					/>
-
-					<button type="button" class="btn btn-primary" id="hideButton" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
+					{(!this.props.waitScreen) ? (
+						<>
+							<button type="button" class="btn btn-primary" id="hideButton" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
 						{(this.state.togglemodel)?
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>:
 					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Show</span>}
@@ -2054,8 +2104,21 @@ class StartRound extends Component {
 
 					}
 					</section>
+						</>
+					) :
+					<>
+					<section className="ff" id="exampleModalCenter"   style={{float:"right",position:"relative",width:'50%',top:"30px"}}>
+						<div className="quizz-game2 waiting_screen">
+							<h3>Asking to Join</h3>
+							<p>You'll Join the Room</p>
+							<span className="waiting_spinner spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+						</div>
+					</section>
+					</>
 
-					<section className="video-main" id="wait" ></section>
+					}
+					
+
 				</main>
 
 
@@ -2328,5 +2391,4 @@ class StartRound extends Component {
 		)
 	}
 }
-
-export default StartRound
+export default connect(mapStateToProps,mapDispatchToProps)(StartRound);
