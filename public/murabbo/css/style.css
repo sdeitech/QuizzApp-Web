@@ -4378,3 +4378,14 @@ button.blue_btn:hover {
 @media only screen and (max-width: 1150px) {
     .video-wrapper{width: 100%; margin: 0;}
   }
+
+  .quizz-game2.waiting_screen {
+    background: #22343c 0% 0% no-repeat padding-box;
+    height: 60vh;
+    text-align: center;
+    padding-top: 20%;
+    top: -15px;
+}
+.waiting_spinner {
+    color: #fff !important;
+}

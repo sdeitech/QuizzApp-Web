@@ -4,7 +4,10 @@ import Peer from "peerjs";
 import $ from 'jquery';
 import styled from "styled-components";
 import { reactLocalStorage } from "reactjs-localstorage";
+import { ToastContainer, toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux';
+import { joinRoomReqSend,setWaitScreen,setOtherUserStreams,RemoveOtherUserStreams,updateOthetUserStream,setSocket } from '../../actions/socketAction';
 import {
     CModal,
     CModalBody,
@@ -23,7 +26,20 @@ const videoConstraints = {
 };
 
 const Room = props => {
+    const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
     const history = useHistory();
+    const dispatch = useDispatch();
+    const joinroomreq = useSelector((state) => state.socketReducers.joinRoomReq);
+    const isModerator = useSelector((state) => state.socketReducers.isModerator);
+    const roomCreatorId = useSelector((state) => state.socketReducers.roomCreatorId);
+    const joinRoomReq = useSelector((state) => state.socketReducers.joinRoomReq);
+    const otherUserSteams = useSelector((state) => state.socketReducers.otherUserSteams);
+    const roomId = useSelector((state) => state.socketReducers.roomId);
+    // let moderator = false;
+    // if(roomCreatorId==userId){
+    //     moderator = true;
+    // }
+    // const isModerator = !joinRoomReq;
     
     // const [peers, setPeers] = useState([]);
     const socketRef = useRef();
@@ -32,10 +48,11 @@ const Room = props => {
     const userVideoStream = useRef();
     const userVideo = useRef();
     const otherStreamRef = useRef([]);
-    
+    const myRef = useRef([]);
+    socketRef.current =  useSelector((state) => state.socketReducers.socket);
     const [otherStreams, setotherStreams] = useState([]);
     const [otherUser, setotherUser] = useState([]);
-    otherStreamRef.current = otherStreams;
+    otherStreamRef.current = otherUserSteams;
     const [videoStream, setvideoStream] = useState([]);
 
     const [isAudioMuted, setAudioMute] = useState(false);
@@ -43,21 +60,23 @@ const Room = props => {
     const [cameraOffStreamID, setcameraOffStreamID] = useState([]);
     const [muteStreamID, setmuteStreamID] = useState([]);
     const [forcerender, setforcerender] = useState(0);
-    const [cName, setcName] = useState("video-person1");
+    const [joinuser, setjoinuser] = useState([]);
 
-    const roomId = props.roomId; 
-    const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
+    // const roomId = props.roomId; 
     
     const [confirmationModel,setconfirmationModel]= useState(false);
     const [requestModel,setrequestModel]= useState(false);
+    const [moderatorLeave,setmoderatorLeave]= useState(false);
+    const [openModelForMembers,setopenModelForMembers]= useState(false);
     const [requestSender,setrequestSender]= useState("");
     const [reqSenderSocketId,setreqSenderSocketId]= useState();
 
-    socketRef.current = props.socket;
+    // socketRef.current = props.socket;
     
 
     const Video = props => {
         const ref = useRef();
+        console.log("video",props.item)
     
         useEffect(() => {
             ref.current.srcObject = props.item;
@@ -86,14 +105,12 @@ const Room = props => {
         }
     };
 
-
-
    
     const userVideoMuteVoice = () => {
         try {        
             const userIdd = userVideoPeerId.current;
             const myStream = userVideoStream.current;
-            socketRef.current.emit("mute-video-user", ({ userIdd, roomId, streamId: myStream.id }));
+            socketRef.current.emit("mute-video-user", ({  roomId, userId:userIdd, streamId: myStream.id }));
 
             if(myStream){
                 myStream.getVideoTracks().forEach((track) => {
@@ -155,7 +172,6 @@ const Room = props => {
     const userUnMuteVoice = () => {
         try {
             // clone main data
-
             const userIdd = userVideoPeerId.current;
             const myStream = userVideoStream.current;
             socketRef.current.emit("unmute-user", ({ userIdd, roomId, streamId: myStream.id }));
@@ -175,39 +191,35 @@ const Room = props => {
         }
     }
 
-
     const moderatorResponse = (status)=>{
-        socket.emit("join-room-response-from-moderator",{
+        socketRef.current.emit("join-room-response-from-moderator",{
             roomID:roomId, socketId:reqSenderSocketId, status 
         });
+        setrequestSender("");
+        setrequestModel(false);
+        setreqSenderSocketId("");
+        console.log("response send is ",status );
+
     }
-
-
-    const joinroomreq = ()=>{
-        socket.emit('join-room-req',{
-            roomId,
-            // userId,
-            joinedUserId:userId,
-            // stream,
-            // isModerator = false,
-        });}
-
 
     const logout = () => {
         console.log("logout");
-        console.log(roomId, userId);
-
-        socketRef.current.emit("leave-room", { roomId, userId });
-        history.push('/dashboard');
+        otherStreamRef.current=[];
+        setjoinuser([]);
+        history.push('/dashboard',{state:null});
     };
-    useEffect(() => {
-        console.log("my room Id => ", roomId);
-        // if(props.joinroomreq){
-        //     $("#video").hide();
-        //     $("#wait").show();
-        // }
 
-        if(props.isModerator){
+    const handleDisqualify = (joinedUserId,qualify) => {
+        if(isModerator){
+            console.log("moderator Disqualify",joinedUserId,qualify,roomId)
+            socketRef.current.emit("Disqualify",{joinedUserId,qualify,roomId})    
+        }
+    }
+
+
+    useEffect(() => {
+        console.log("isModerator",isModerator)
+        if(isModerator){
             socketRef.current.on("user-request-moderator", ({userdata,socketId}) =>{
                 setrequestSender(userdata.name);
                 setrequestModel(true);
@@ -215,16 +227,29 @@ const Room = props => {
                 console.log("reqest from ",userdata.name);
             });
         }
+          //////moderator reponse from server;
 
-
-        // if (!socketRef.current) {
-        //     socketRef.current = io(`http://localhost:9002`, {
-        //         forceNew: true,
-        //         transports: ["polling"]
-        //     });
-        // }
-        // console.log(socketRef.current);
-        // socketRef.current = io("http://localhost:8000");
+          socketRef.current.on("req-response-from-server", status => {
+              console.log("req response..........................")
+            if(status){
+                const myStream = userVideoStream.current;
+                socketRef.current.emit("join-room", {
+                    userId: userVideoPeerId.current,
+                    roomId,
+                    stream:myStream,
+                    joinedUserId: userId,
+                    isModerator: isModerator,
+                });
+                dispatch(setWaitScreen(false));
+                dispatch(joinRoomReqSend(false));
+            }else{
+                console.log("request decline");
+                toast.error("request decline");
+                setTimeout(()=>{
+                    history.push('/dashboard');
+                },3000)
+            }
+        });
         try {
             navigator.mediaDevices
                 .getUserMedia({ video: videoConstraints, audio: true })
@@ -255,89 +280,146 @@ const Room = props => {
                         });
                     }
 
-                    peerServer.on("error", error =>
-                        console.log("peer error => ", error)
-                    );
+                    peerServer.on("error", (error) => console.log("peer error => ", error));
+
                     userVideo.current.srcObject = stream;
                     userVideoStream.current = stream;
                     currentStream.current = stream;
                     console.log("USERID ::", userId, stream);
 
+
+                    ///send join room request
+                    if(joinroomreq){
+                        socketRef.current.emit("join-room-req",{roomId:roomId, joinedUserId:userId})
+                        console.log("join room request send ",roomId,userId);
+                        dispatch(joinRoomReqSend(false));
+                    }
+
                     
                     peerServer.on("open", peerUserId => {
                         userVideoPeerId.current = peerUserId;
+                        const myStream = userVideoStream.current;
 
-                        // if(props.isModerator){
+                        if(isModerator){
                             console.log("open join room", roomId);
                             socketRef.current.emit("join-room", {
                                 userId: peerUserId,
                                 roomId,
-                                stream,
+                                stream:myStream,
                                 joinedUserId: userId,
-                                isModerator: props.isModerator,
+                                isModerator: isModerator,
                             });
-                        // }
+                        }
+                    });
+                    
+                  
+
+                    ////user disQualifiy by moderator
+
+                    socketRef.current.on("user-Disqualify",({joinedUserId, qualify})=>{
+                        console.log(joinedUserId, qualify,"user-Disqualify")
+                        let users = otherUserSteams.map(item => {
+                            if(item.userData._id == joinedUserId ){
+                                item.qualify = qualify;
+                                return item;
+                            }else{
+                                return item;
+                            }
+                        });
+                        dispatch(updateOthetUserStream(users)); 
+
+                    })
+
+
+                    socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify }) => {
+                        try {
+                            // connectToNewUser(userId, stream, dispatch);
+                            console.log("user connected => ", userId);
+
+                            let resStreamId;
+
+                            console.log("peerservercall before");
+                            const call = peerServer.call(userId, stream);
+                            console.log("peerservercall after");
+
+                            if(otherUserSteams.find(item => item.joinedUserId = joinedUserId)){
+                                console.log("already exist")
+                            }else{
+                                call.on("stream", (remoteVideoStream) => {
+                                    if (remoteVideoStream) {
+                                        resStreamId = remoteVideoStream?.id;
+                                        setTimeout(() => {
+                                            console.log(remoteVideoStream, "line 344");
+                                            _addStream(remoteVideoStream,joinedUserId,userData,qualify);
+                                            // dispatch({ type: actionTypes.ADD_STREAM, payload: remoteVideoStream });
+                                        }, 400);
+                                    }
+                                });
+                            }
+                            
+                            call.on("close", () => {
+                                console.log(
+                                    "peer close for this id => outside => "
+                                );
+                                if (resStreamId) {
+                                    console.log(
+                                        "peer close for this id => inside => ",
+                                        resStreamId
+                                    );
+
+                                    dispatch(RemoveOtherUserStreams(resStreamId));
+                                }
+                            });
+
+                            call.on("error", () => {
+                                console.log(
+                                    "peer error for this id => outside => "
+                                );
+                                if (resStreamId) {
+                                    console.log(
+                                        "peer error for this id => inside => ",
+                                        resStreamId
+                                    );
+                                    dispatch(RemoveOtherUserStreams(resStreamId));
+                                }
+                            });
+
+                            peers[userId] = call;
+                        } catch (error) {
+                            console.log("user-connected error", error);
+                        }
                     });
 
-                    socketRef.current.on("user-connected", roomDetails => {
-                        var userId = roomDetails.userId; 
+
+                    socketRef.current.on("previous-users", (users) => {
                         // connectToNewUser(userId, stream, dispatch);
-                        console.log("user connected => ", userId);
-
-                        let resStreamId;
-
-                        const call = peerServer.call(userId, stream);
-
-                        call.on("stream", remoteVideoStream => {
-                            if (remoteVideoStream) {
-                                resStreamId = remoteVideoStream?.id;
-                                setTimeout(() => {
-                                    _addStream(remoteVideoStream);
-                                    // dispatch({ type: actionTypes.ADD_STREAM, payload: remoteVideoStream });
-                                }, 400);
-                            }
-                        });
-
-                        call.on("close", () => {
-                            console.log(
-                                "peer close for this id => outside => "
-                            );
-                            if (resStreamId) {
-                                console.log(
-                                    "peer close for this id => inside => ",
-                                    resStreamId
-                                );
-                                let streams = [...otherStreams];
-                                streams = streams.filter(
-                                    x => x.id !== resStreamId
-                                );
-                                var user =   otherUser.map((item => item.stream.id !== resStreamId ))
-                                setotherStreams(streams);
-                                setotherUser(streams);
-                                console.log("otherStreams",otherStreams);
-                            }
-                        });
-
-                        call.on("error", () => {
-                            console.log(
-                                "peer error for this id => outside => "
-                            );
-                            if (resStreamId) {
-                                console.log(
-                                    "peer error for this id => inside => ",
-                                    resStreamId
-                                );
-                                let streams = [...otherStreams];
-                                streams = streams.filter(
-                                    x => x.id !== resStreamId
-                                );
-                                setotherStreams(streams);
-                                console.log("otherStreams",otherStreams);
-                            }
-                        });
-
-                        peers[userId] = call;
+                        console.log("user connected prev users => from server :: ", users);
+                
+                        if (users) {
+                            users.forEach(user => {
+                                const userId  = user.userId;
+                                const joinedUserId = user.userData._id;
+                                const userData = user.userData;
+                                const qualify = user.qualify;
+                
+                                const call = peerServer.call(userId, stream);
+                
+                                console.log("user connected prev users => ", userId);
+                      
+                      
+                                if(otherUserSteams.find(item => item.joinedUserId = joinedUserId)){
+                                    console.log("already exist")
+                                }else{
+                                    call.on('stream', (remoteVideoStream) => {
+                                        console.log("line 400");
+                                        console.log("user connected prev users => :: ", remoteVideoStream);
+                                        _addStream(remoteVideoStream,joinedUserId,userData,qualify);
+                                    });
+                                }
+                            });
+                        }
                     });
+
 
                     // receive a call
                     peerServer.on("call", call => {
@@ -347,10 +429,10 @@ const Room = props => {
 
                         // stream back the call
                         call.on("stream", resstream => {
-                            resStreamId = resstream?.id;
-
-                            _addStream(resstream);
-                            // dispatch({ type: actionTypes.ADD_STREAM, payload: resstream });
+                            if(resstream){
+                                resStreamId = resstream.id;
+                                console.log(resstream,"line 419");
+                            }
                         });
 
                         call.on("close", () => {
@@ -358,16 +440,8 @@ const Room = props => {
                                 "peer close for this id => outside => "
                             );
                             if (resStreamId) {
-                                console.log(
-                                    "peer close for this id => inside => ",
-                                    resStreamId
-                                );
-                                let streams = [...otherStreams];
-                                streams = streams.filter(
-                                    x => x.id !== resStreamId
-                                );
-                                setotherStreams(streams);
-                                console.log("otherStreams",otherStreams);
+                                console.log("peer close for this id => inside => ",resStreamId );
+                                dispatch(RemoveOtherUserStreams(resStreamId));
                             }
                         });
 
@@ -376,32 +450,35 @@ const Room = props => {
                                 "peer error for this id => outside => "
                             );
                             if (resStreamId) {
-                                console.log(
-                                    "peer error for this id => inside => ",
-                                    resStreamId
-                                );
-                                let streams = [...otherStreams];
-                                streams = streams.filter(
-                                    x => x.id !== resStreamId
-                                );
-                                setotherStreams(streams);
-                                console.log("otherStreams",otherStreams);
+                                console.log("peer error for this id => inside => ",resStreamId);
+                                dispatch(RemoveOtherUserStreams(resStreamId));
                             }
                         });
                     });
 
-                    socketRef.current.on(
-                        "user-disconnected",
-                        ({ userId, streamId }) => {
+                    socketRef.current.on("user-disconnected",({ userId, streamId,isModerator,username }) => {
                             try {
-                                let streams = [...otherStreams];
-                                console.log("all removed streams => ", streams);
-                                streams = streams.filter(
-                                    x => x.id !== streamId
-                                );
-                                setotherStreams(streams);
+                                if(isModerator){
+                                    console.log("Moderator disconnected");
+                                    setmoderatorLeave(true);
+                                }else{
+                                    console.log("user disconnected",username);
+                                    toast.error(`${username} left from room`);
+                                }
 
-                                if (peers[userId]) peers[userId].close();
+                                let streams = otherUserSteams;
+                                console.log("all removed streams => ", streams);
+                                                    
+                                const  removedStream  = streams.find(x => x.stream.id == streamId);
+
+                                if (removedStream) {
+                                    removedStream.getTracks().forEach(track => track.stop());
+                                    removedStream.release();
+                                }
+
+                                dispatch(RemoveOtherUserStreams(streamId));
+
+                                if (peers[userId]){peers[userId].close();} 
                             } catch (error) {
                                 console.log("disconnected error => ", error);
                             }
@@ -409,6 +486,19 @@ const Room = props => {
                     );
 
                     socketRef.current.on("user-muted",({ userId, streamId }) => {
+                        const otherUserSteams = otherStreamRef.current;
+                        
+                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        console.log("muteindex....", index);
+                        if(otherUserSteams[index]){
+                            if(otherUserSteams[index].stream.getAudioTracks()){
+                                otherUserSteams[index].stream.getAudioTracks().forEach((track) =>{
+                                    track.enabled = false;
+                                })}}
+
+                        dispatch(updateOthetUserStream(otherUserSteams));
+
+
                             console.log("user-muted => ", userId, streamId);
                             var arr = muteStreamID;
                             arr.push(streamId);
@@ -416,9 +506,41 @@ const Room = props => {
                             setforcerender(forcerender+1);
                         });
                         
+                    socketRef.current.on("user-unmuted",({ userId, streamId }) => {
+                        const otherUserSteams = otherStreamRef.current;
+                        
+                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        console.log("unmuteindex....", index);
+                        myRef.current = otherUserSteams[index]; 
+                        myRef.current.streams.getAudioTracks().forEach((track) =>{
+                            track.enabled = true;
+                        })
+
+                        dispatch(updateOthetUserStream(otherUserSteams));
+
+                        console.log("user-unmuted => ", userId, streamId);
+                        var streams = muteStreamID;
+                        streams.map(item => item !== streamId);
+                        setmuteStreamID(streams);
+                        setforcerender(forcerender+1);
+                        });
                         
                     socketRef.current.on("user-video-muted", ({ userId, streamId }) => {
                         console.log("user-video-muted => ", userId, streamId);
+
+
+                        const otherUserSteams = otherStreamRef.current;
+                        
+                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        console.log("video-muteindex....", index);
+
+                        dispatch(updateOthetUserStream(otherUserSteams));
+                        myRef.current = otherUserSteams[index]; 
+                        myRef.current.streams.getVideoTracks().forEach((track) =>{
+                            track.enabled = false;
+                        })
+
+
                         var arr = cameraOffStreamID;
                         arr.push(streamId);
                         setcameraOffStreamID(arr);
@@ -429,42 +551,50 @@ const Room = props => {
                     
                     socketRef.current.on("user-video-unmuted", ({ userId, streamId }) => {
                         console.log("user-video-unmuted => ", userId, streamId);
+                        const otherUserSteams = otherStreamRef.current;
+                        
+                        let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
+                        console.log("video-unmuteindex....", index);
+                        myRef.current = otherUserSteams[index]; 
+                        myRef.current.streams.getVideoTracks().forEach((track) =>{
+                            track.enabled = true;
+                        })
+
+                        dispatch(updateOthetUserStream(otherUserSteams));
+                        
                         var streams = cameraOffStreamID;
                         streams.map(item => item !== streamId);
                         setcameraOffStreamID(streams);
                         setforcerender(forcerender+1);
                     });
 
-                    socketRef.current.on("user-unmuted",({ userId, streamId }) => {
-                            console.log("user-unmuted => ", userId, streamId);
-                            var streams = muteStreamID;
-                        streams.map(item => item !== streamId);
-                        setmuteStreamID(streams);
-                        setforcerender(forcerender+1);
-                        });
                     
                 });
+
+            
+                window.addEventListener('popstate', function(event) {
+                    window.history.pushState(null, document.title, window.location.href);
+                  });
 
             window.addEventListener("beforeunload", event => {
                 // Cancel the event as stated by the standard.
                 event.preventDefault();
+                console.log(event)
                 // Chrome requires returnValue to be set.
                 event.returnValue = "";
 
-                console.log("close page");
-                const streamUserId = userVideoPeerId.current;
-                const myStream = userVideoStream.current;
+                console.log("close page LISTENER");
+                // const streamUserId = userVideoPeerId.current;
+                // const myStream = userVideoStream.current;
 
-                console.log("leaving room for => ", streamUserId);
-                socketRef.current.emit("leave-room", {
-                    userId: streamUserId,
-                    roomId,
-                    streamId: myStream.id
-                });
+                // console.log("leaving room for => ", streamUserId);
+                // socketRef.current.emit("leave-room", {
+                //     userId: streamUserId,
+                //     roomId,
+                //     streamId: myStream.id,
+                //     isModerator: isModerator,
+                // });
             });
-
-
-
         } catch (error) {
             console.log(error);
         }
@@ -475,7 +605,7 @@ const Room = props => {
                 // Chrome requires returnValue to be set.
                 event.returnValue = "";
 
-                console.log("close page");
+                console.log("close page  REMOVELISTENER");
                 const streamUserId = userVideoPeerId.current;
                 const myStream = userVideoStream.current;
 
@@ -483,8 +613,15 @@ const Room = props => {
                 socketRef.current.emit("leave-room", {
                     userId: streamUserId,
                     roomId,
-                    streamId: myStream.id
+                    streamId: myStream.id,
+                    isModerator:isModerator,
                 });
+                if (myStream) {
+                    myStream.getTracks().forEach(track => track.stop());
+                }
+                socketRef.current.emit('end');
+                setSocket("");
+                otherStreamRef.current = [];
             });
             console.log("close page");
             const streamUserId = userVideoPeerId.current;
@@ -495,8 +632,12 @@ const Room = props => {
                 socketRef.current.emit("leave-room", {
                     userId: streamUserId,
                     roomId,
-                    streamId: myStream.id
+                    streamId: myStream.id,
+                    isModerator:isModerator
                 });
+                socketRef.current.emit('end');
+                setSocket("");
+                otherStreamRef.current = [];
 
                 if (myStream) {
                     myStream.getTracks().forEach(track => track.stop());
@@ -505,72 +646,51 @@ const Room = props => {
         };
     }, []);
 
-    const _addStream = stream => {
-        const otherStreams = otherStreamRef.current;
-        if (otherStreams.findIndex(x => x.id === stream.id) === -1) {
-            setotherStreams(prev => [...prev, stream]);
+    const _addStream = (resstream,joinedUserId,userData,qualify) => {
+         
+
+        let data={stream:resstream,joinedUserId,userData,qualify}
+        if (otherUserSteams.findIndex(x => x.userData._id == joinedUserId) == -1) {
+            dispatch(setOtherUserStreams(data));
         }
-        console.log(otherStreams,"otherStreams");
+        console.log(otherUserSteams,"otherUserSteams");
     };
 
-    console.log("my totle streams => ", otherStreams);
+    console.log("my totle streams =>",otherUserSteams);
 
     return (
         <>
-        <section className="video-main" id="video" style={{width:props.width}}>
-        <div className="video-main">
+        <section className="" id="video" style={{width:props.width}}>
+        <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        style={{ top: "80px" }}
+                    />
+        <div className="">
         <div class="video-wrapper">
             <div class="video-previe video-center">
 
-                <div class={cName}>
+                <div class={otherUserSteams.length==0?"video-person1":otherUserSteams.length==1?"video-person2":"video-person3"}>
                     <div class="video-inner-wrap video-center">
                         <video ref={userVideo} muted="true"  autoPlay="true" /> 
                     </div>
                 </div>
 
-                {otherStreams.map((item, index,array) => {
-                let buttoncamera = false;
-                let buttonmute = false;
-                    for(let i=0;i < cameraOffStreamID.length;i++){
-                        if(item.id === cameraOffStreamID[i]){
-                            buttoncamera = true;
-                            
-                        }else{
-                            buttoncamera = false;
-                        }
-                    }
-                    for(let j=0; j < muteStreamID.length; j++){
-                        if(item.id === muteStreamID[j]){
-                            buttonmute =  true;
-                        }else{
-                            buttonmute =false;
-                        }
-                    }
-
-                var length = array.length;
-                if(length==0){
-                    if(cName!="video-person1"){
-                        setcName("video-person1");
-                    }
-                }else if(length==1){
-                    if(cName!="video-person2"){
-                        setcName("video-person2");
-                    }
-                }else if(length>=2){
-                    if(cName!="video-person3"){
-                        setcName("video-person3");
-                    }
-                }
-                console.log("other streams => ", item);
+                {otherUserSteams.map((item, index,array) => {
+                     let camera = true;
+                     let mute = true;
+                    
+                     camera = item.stream.getVideoTracks()?.find((track) => track.kind === 'audio')?.enabled;
+                     mute = item.stream.getAudioTracks()?.find((track) => track.kind === 'video')?.enabled;
                 return (
-                    <div class={cName}>
+                    <div class={otherUserSteams.length==0?"video-person1":otherUserSteams.length==1?"video-person2":"video-person3"}>
                         <div class="video-inner-wrap video-center">
-                            <Video key={index.toString()} item={item} />
+                        <Video key={index.toString()} item={item.stream} />
                             {
-                                (buttonmute)?<a><img alt="" src="img/mute.png"/></a>:<a><img alt="" src="img/mic1.png"/></a>
+                                (mute)?<a><img alt="" src="img/mute.png"/></a>:<a><img alt="" src="img/mic1.png"/></a>
                             }
                             {
-                                (buttoncamera)?<a style={{right:"50px"}}><img alt="" src="img/camera-off.png"/></a>:<a style={{right:"50px"}}><img alt="" src="img/camera.png"/></a>
+                                (camera)?<a style={{right:"50px"}}><img alt="" src="img/camera.png"/></a>:<a style={{right:"50px"}}><img alt="" src="img/camera-off.png"/></a>
                             }
                         </div>
                     </div>
@@ -597,7 +717,7 @@ const Room = props => {
                         : <img alt="" src="img/mic1.png"/>
                     }
                     </a>   
-                <a><img alt="" src="img/group.png"/></a>   
+                <a onClick={() => setopenModelForMembers(true)} ><img alt="" src="img/group.png"/></a>   
                 <a  onClick={() => setconfirmationModel(true)}><img className="video-end" alt="" src="img/call-end.png"/></a>
             </div>
         </div> 
@@ -680,13 +800,113 @@ const Room = props => {
             </div>
         </CModalBody>
     </CModal>
+
+
+    <CModal show={moderatorLeave} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
+        color="danger"
+        centered>
+        <CModalBody className="model-bg">
+
+            <div>
+                <div className="modal-body">
+                    {/* <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
+                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                    </button> */}
+                    <div className="model_data">
+                        <div className="model-title">
+                            <img src='./murabbo/img/exit.png' alt="" />
+                            <h3>Moderator has left the Room</h3>
+                            {/* <h4>{requestSender} wants to join the Room</h4> */}
+                        </div>
+                        <img className="shape2" src="./murabbo/img/shape2.svg" />
+                        <img className="shape3" src="./murabbo/img/shape3.svg" />
+                        <div className="row">
+                            <div className="col-md-10 offset-md-1">
+
+                                {/* <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
+                                    <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => moderatorResponse(false)} >Decline</button>
+                                </div> */}
+                                <div style={{ textAlign: 'center'}} className="">
+                                    <button style={{ minWidth: '150px'}} className="blue_btn" type="button" onClick={logout} >Exit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </CModalBody>
+    </CModal>
+
+
+    <CModal show={openModelForMembers} closeOnBackdrop={false} onClose={() => setopenModelForMembers(false)}
+					color="danger"
+					centered>
+					<CModalBody className="model-bg">
+
+						<div>
+							<div className="modal-body">
+
+								<button type="button" className="close" onClick={() => setopenModelForMembers(false)}>
+									<span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+								</button>
+								<div className="model_data">
+									<div className="model-title">
+										<h3>Members</h3>
+									</div>
+
+									<div className="container">
+										<div className="row">
+                                            {otherUserSteams.map(item =>{
+                                                return(
+											        <div className="col-md-12">
+												<div class="_1st2-member two_no">
+													<div className="_1stimg">
+														<div className="memberImg_">
+															<img style={{
+																height: "50px",
+																width: "50px",
+																borderRadius: "50%"
+															}} src={item.userData.image == ""? "avtars/placeholder-user.png" :item.userData.image} />
+														</div>
+														<div className="member_details">
+															<h5 style={{
+																color: "#fff"
+															}}>{item.userData.name}</h5>
+														</div>
+														<div className="icons-members">
+                                                            {
+                                                            item.qualify?
+                                                            <a onClick={()=> handleDisqualify(item.userData._id,false)}>
+                                                                <img src="./murabbo/img/callRight.png" width="26px" height="23px" alt="callRight"  />
+                                                            </a>
+                                                            :
+                                                            <a onClick={()=> handleDisqualify(item.userData._id,true)}>
+                                                            <img src="./murabbo/img/close.svg" width="26px" height="23px" />
+                                                            </a>
+                                                            }
+															<img src="./murabbo/img/callMic.png" width="26px" height="23px" alt="callMic" />
+															<img src="./murabbo/img/callCam.png" width="26px" height="23px" alt="ccallCam" />
+														</div>
+													</div>
+												</div>
+											        </div>
+                                                );})}
+
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</CModalBody>
+				</CModal>
+
+
+
+
+
     </section>
-
-    <section className="video-main" id="wait" >
-
-        </section>
-
-    
 </>
 
 

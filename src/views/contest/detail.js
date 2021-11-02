@@ -6,7 +6,22 @@ import languages from "../../languages";
 import configuration from "../../config";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { CModal, CModalBody } from "@coreui/react";
+import { joinRoomReqSend,setModerator,clearOthetUserStream,setRoomId, setSocket } from '../../actions/socketAction';
+import { connect } from "react-redux";
 let contestId, roomId;
+
+
+const mapStateToProps = (state) => {
+    return {
+        isModerator: state.socketReducers.isModerator,		
+    };
+ };
+ const mapDispatchToProps = dispatch => ({
+    setModerator: (date) => dispatch(setModerator(date)),
+    clearOthetUserStream: (date) => dispatch(clearOthetUserStream(date)),
+    setRoomId: (date) => dispatch(setRoomId(date)),
+    setSocket: (date) => dispatch(setSocket(date)),
+});
 class Detail extends Component {
     constructor(props) {
         super(props);
@@ -156,7 +171,11 @@ class Detail extends Component {
 
     playWithoutVideo()
     {
-        this.props.history.push('/contests/start_round/'+contestId+'?'+roomId);
+        this.props.setModerator(true);
+        this.props.clearOthetUserStream();
+        this.props.setRoomId(roomId);
+        this.props.setSocket("");
+        this.props.history.replace('/contests/start_round/'+contestId+'?'+roomId,{state:null});
     }
     playWithVideo()
     {
@@ -696,5 +715,4 @@ class Detail extends Component {
         );
     }
 }
-
-export default Detail;
+export default connect(mapStateToProps,mapDispatchToProps)(Detail);
