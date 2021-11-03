@@ -730,7 +730,7 @@ const Room = props => {
 
                             <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
                                 <div class="video-inner-wrap video-center">
-                                    <video ref={userVideo} muted="true" autoPlay="true" />
+                                        <video ref={userVideo} muted="true" autoPlay="true" /> :
                                 </div>
                             </div>
 
@@ -738,7 +738,11 @@ const Room = props => {
                                 return (
                                     <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
                                         <div class="video-inner-wrap video-center">
-                                            <Video key={index.toString()} item={item.stream} />
+                                            {/* {
+                                                item.Video ? */}
+                                                <Video key={index.toString()} item={item.stream} /> :
+                                                {/* <img  src="avatars/placeholder-user.png" />
+                                            } */}
                                             <a><img alt="" src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} /></a>
                                             <a style={{ right: "50px" }}><img alt="" src={(item.Video) ? "img/camera.png" : "img/camera-off(1).png"} /></a>
                                         </div>
