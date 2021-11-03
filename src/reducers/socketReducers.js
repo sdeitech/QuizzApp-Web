@@ -33,7 +33,7 @@ const socketReducers = (state = initialData, action) => {
 		case 'SET_OTHER_USER_STREAM':
 			let userData = action.data;
 			let prevMember = [...state.otherUserSteams]
-			let findInprevarr = prevMember.find(item => item.joinedUserId = userData.joinedUserId);
+			let findInprevarr = prevMember.find(item => item.joinedUserId == userData.joinedUserId);
 			let memberArr
 			if(findInprevarr){
 				 memberArr = [...state.otherUserSteams];	
