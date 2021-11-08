@@ -18,6 +18,7 @@ import socket from "socket.io-client/lib/socket";
 let peerServer;
 
 let peers = {};
+let bgcolor = ["#25afff","#b525ff","#31a56a"];
 
 
 const videoConstraints = {
@@ -35,6 +36,7 @@ const Room = props => {
     const joinRoomReq = useSelector((state) => state.socketReducers.joinRoomReq);
     const otherUserSteams = useSelector((state) => state.socketReducers.otherUserSteams);
     const roomId = useSelector((state) => state.socketReducers.roomId);
+    let string = "kevin";
     // let moderator = false;
     // if(roomCreatorId==userId){
     //     moderator = true;
@@ -730,21 +732,24 @@ const Room = props => {
 
                             <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
                                 <div class="video-inner-wrap video-center">
-                                        <video ref={userVideo} muted="true" autoPlay="true" /> :
+                                    <video ref={userVideo} muted="true" autoPlay="true" /> 
                                 </div>
                             </div>
+
 
                             {otherUserSteams.map((item, index, array) => {
                                 return (
                                     <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
-                                        <div class="video-inner-wrap video-center">
-                                            {/* {
-                                                item.Video ? */}
-                                                <Video key={index.toString()} item={item.stream} /> :
-                                                {/* <img  src="avatars/placeholder-user.png" />
-                                            } */}
+                                        <div class={item.Video ? "video-inner-wrap video-center" : "video-inner-wrap video-center circle-body"}>
+                                            {
+                                                item.Video ?
+                                                    <Video key={index.toString()} item={item.stream} /> :
+                                                    <div class="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
+                                                        <span class="initials">{item.userData.name.charAt(0).toUpperCase()}</span>
+                                                    </div>
+                                            }
                                             <a><img alt="" src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} /></a>
-                                            <a style={{ right: "50px" }}><img alt="" src={(item.Video) ? "img/camera.png" : "img/camera-off(1).png"} /></a>
+                                            {/* <a style={{ right: "50px" }}><img alt="" src={(item.Video) ? "img/camera.png" : "img/camera-off(1).png"} /></a> */}
                                         </div>
                                     </div>
                                 );
@@ -851,23 +856,15 @@ const Room = props => {
 
                         <div>
                             <div className="modal-body">
-                                {/* <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
-                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                    </button> */}
                                 <div className="model_data">
                                     <div className="model-title">
                                         <img src='./murabbo/img/exit.png' alt="" />
                                         <h3>Moderator has left the Room</h3>
-                                        {/* <h4>{requestSender} wants to join the Room</h4> */}
                                     </div>
                                     <img className="shape2" src="./murabbo/img/shape2.svg" />
                                     <img className="shape3" src="./murabbo/img/shape3.svg" />
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
-
-                                            {/* <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-                                    <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => moderatorResponse(false)} >Decline</button>
-                                </div> */}
                                             <div style={{ textAlign: 'center' }} className="">
                                                 <button style={{ minWidth: '150px' }} className="blue_btn" type="button" onClick={logout} >Exit</button>
                                             </div>
@@ -931,7 +928,7 @@ const Room = props => {
                                                                             null
                                                                     }
                                                                     <img src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} width="33px" alt="callMic" />
-                                                                    <img src={(item.Video) ? "img/camera.png" : "img/camera-off.png"} width="33px" alt="ccallCam" />
+                                                                    <img src={(item.Video) ? "img/camera.png" : "img/camera-off(1).png"} width="33px" alt="ccallCam" />
                                                                 </div>
                                                             </div>
                                                         </div>
