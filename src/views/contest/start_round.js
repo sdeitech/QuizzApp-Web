@@ -158,11 +158,6 @@ class StartRound extends Component {
           }
 	}
 
-	componentWillUnmount() {
-        window.removeEventListener("beforeunload", this._confirm);
-        window.onpopstate = () => { console.log("hello peter..........") }
-    }
-	
 
 	componentDidMount() {
 
@@ -237,7 +232,7 @@ class StartRound extends Component {
 
 		socket_2.on("startQuestion", async (data) => {
 		    console.log("start question => socket => ", JSON.stringify(data));
-			this.setState({currentIndexRound:data.questionIndex,indexQuestion:data.roundIndex,currentAssignedUser:data.userId});
+			this.setState({currentIndexRound:data.roundIndex,indexQuestion:data.questionIndex,currentAssignedUser:data.userId});
 			if(data.questionIndex===0){
 				this.playContest();
 			}else{
@@ -1551,7 +1546,6 @@ class StartRound extends Component {
 													<div className="flexboxbox" >
 														{ 	
 														this.state.unscrambleArr.map((i,index)=> {
-															console.log(this.state.indexQuestion,"qqqqqqq")
 															if(index == this.state.indexQuestion){
 																return i.map((e,index)=>{
 																	var id = `id${index}`
@@ -2070,11 +2064,11 @@ class StartRound extends Component {
 
 																				):(null)} */}
 
-																								{/* {(this.state.userId==this.state.createdBy)?
+																								{this.props.isModerator?
 																								<button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this._startRoundModerator.bind(this)}>Start Round</button>
-																								: null} */}
+																								: null}
 																								
-																								<button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button>
+																								{/* <button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button> */}
 
 
 																							</div>) : null
