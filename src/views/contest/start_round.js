@@ -161,9 +161,9 @@ class StartRound extends Component {
 
 	componentDidMount() {
 
+	
+
 		
-
-
 		this.getRoomDetails();
 		var roomID = this.state.roomIdd;
 		var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
@@ -758,7 +758,7 @@ class StartRound extends Component {
 			}else{
 				this.startTimer();
 			}
-		});
+		});	
 	}
 	
 	unscrambleWords(){
@@ -876,6 +876,7 @@ class StartRound extends Component {
 						that.countScore(that.state.indexQuestion);
 						that.setState({ indexQuestion: that.state.indexQuestion + 1 })
 						that.startTimer();
+						// socket_2.emit("submitQuestion",{roomID:this.state.roomIdd,resultInfo: 50})
 					}
 					else {
 						that.saveExitAnswer();

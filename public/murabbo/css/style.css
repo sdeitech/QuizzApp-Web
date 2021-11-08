@@ -4431,3 +4431,12 @@ button.blue_btn:hover {
     justify-content: center;
     margin: 0;
   }
+
+
+ .profile11 {
+width: 95px;
+  border-radius: 100%;
+  border: 3px solid #39636d;
+  margin-right: 20px;
+  height: 95px;
+}

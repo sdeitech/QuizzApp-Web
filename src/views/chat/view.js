@@ -28,6 +28,8 @@ const videoConstraints = {
 
 const Room = props => {
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
+    const username = JSON.parse(reactLocalStorage.get("userData")).name;
+    const profilePic = JSON.parse(reactLocalStorage.get("userData")).profilePic;
     const history = useHistory();
     const dispatch = useDispatch();
     const joinroomreq = useSelector((state) => state.socketReducers.joinRoomReq);
@@ -358,8 +360,6 @@ const Room = props => {
                                             Audio
                                         }
                                         dispatch(setOtherUserStreams(data));
-                                        // _addStream(remoteVideoStream,joinedUserId,userData,qualify);
-                                        // dispatch({ type: actionTypes.ADD_STREAM, payload: remoteVideoStream });
                                     }, 400);
                                 }
                             });
@@ -428,8 +428,6 @@ const Room = props => {
                                         Audio
                                     }
                                     dispatch(setOtherUserStreams(data));
-
-                                    // _addStream(remoteVideoStream,joinedUserId,userData,qualify);
                                 });
                             });
                         }
@@ -509,30 +507,6 @@ const Room = props => {
 
                         console.log("user-muted>>>>>>>>>", data);
                         dispatch(setMuteUnmute(data));
-
-
-                        // const otherUserSteams = otherStreamRef.current;
-
-                        // console.log("line 491 userArray",otherUserSteams);
-
-                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        // console.log("muteindex....", index);
-                        // if(otherUserSteams[index]){
-
-                        //     if(otherUserSteams[index].stream.getAudioTracks()){
-                        //         otherUserSteams[index].stream.getAudioTracks().forEach((track) =>{
-                        //             track.enabled = false;
-                        //         })}}
-
-                        //         console.log("user-muted  array.......=> ",otherUserSteams);
-                        // dispatch(updateOthetUserStream(otherUserSteams));
-
-
-                        //     console.log("user-muted => ", userId, streamId);
-                        //     var arr = muteStreamID;
-                        //     arr.push(streamId);
-                        //     setmuteStreamID(arr);
-                        //     setforcerender(forcerender+1);
                     });
 
                     socketRef.current.on("user-unmuted", ({ userId, joinedUserId, streamId }) => {
@@ -544,26 +518,6 @@ const Room = props => {
                         }
                         console.log("user-unmuted>>>>>>>>>", data);
                         dispatch(setMuteUnmute(data));
-
-
-
-
-                        // const otherUserSteams = otherStreamRef.current;
-
-                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        // console.log("unmuteindex....", index);
-                        // myRef.current = otherUserSteams[index]; 
-                        // myRef.current.streams.getAudioTracks().forEach((track) =>{
-                        //     track.enabled = true;
-                        // })
-
-                        // dispatch(updateOthetUserStream(otherUserSteams));
-
-                        // console.log("user-unmuted => ", userId, streamId);
-                        // var streams = muteStreamID;
-                        // streams.map(item => item !== streamId);
-                        // setmuteStreamID(streams);
-                        // setforcerender(forcerender+1);
                     });
 
                     socketRef.current.on("user-video-muted", ({ userId, joinedUserId, streamId }) => {
@@ -576,25 +530,6 @@ const Room = props => {
                         }
                         console.log("user-video-muted>>>>>>>>>", data);
                         dispatch(setMuteUnmute(data));
-
-
-
-                        // const otherUserSteams = otherStreamRef.current;
-
-                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        // console.log("video-muteindex....", index);
-
-                        // dispatch(updateOthetUserStream(otherUserSteams));
-                        // myRef.current = otherUserSteams[index]; 
-                        // myRef.current.streams.getVideoTracks().forEach((track) =>{
-                        //     track.enabled = false;
-                        // })
-
-
-                        // var arr = cameraOffStreamID;
-                        // arr.push(streamId);
-                        // setcameraOffStreamID(arr);
-                        // setforcerender(forcerender+1);
                     });
 
 
@@ -607,25 +542,6 @@ const Room = props => {
                         }
                         console.log("user-video-unmuted>>>>>>>>>", data);
                         dispatch(setMuteUnmute(data));
-
-
-
-
-                        // const otherUserSteams = otherStreamRef.current;
-
-                        // let index = otherUserSteams.findIndex(item => item.stream.id === streamId);
-                        // console.log("video-unmuteindex....", index);
-                        // myRef.current = otherUserSteams[index]; 
-                        // myRef.current.streams.getVideoTracks().forEach((track) =>{
-                        //     track.enabled = true;
-                        // })
-
-                        // dispatch(updateOthetUserStream(otherUserSteams));
-
-                        // var streams = cameraOffStreamID;
-                        // streams.map(item => item !== streamId);
-                        // setcameraOffStreamID(streams);
-                        // setforcerender(forcerender+1);
                     });
 
 
@@ -706,18 +622,6 @@ const Room = props => {
         };
     }, []);
 
-    // const _addStream = (resstream,joinedUserId,userData,qualify) => {
-
-
-    //     let data={stream:resstream,joinedUserId,userData,qualify}
-    //     if (otherUserSteams.findIndex(x => x.userData._id == joinedUserId) == -1) {
-    //         dispatch(setOtherUserStreams(data));
-    //     }
-    //     console.log(otherUserSteams,"otherUserSteams");
-    // };
-
-    console.log("my totle streams =>", otherUserSteams);
-
     return (
         <>
             <section className="" id="video" style={{ width: props.width }}>
@@ -730,26 +634,47 @@ const Room = props => {
                     <div class="video-wrapper">
                         <div class="video-previe video-center">
 
-                            <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
-                                <div class="video-inner-wrap video-center">
+                            <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
+                                <div class="video-inner-wrap video-center circle-body" style={{position: "relative"}}>
                                     <video ref={userVideo} muted="true" autoPlay="true" /> 
                                 </div>
+                                {
+                                                isVideoMuted ?
+                                                <div class="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width: `${otherUserSteams.length == 0 ?"96%":"92%"}`}}>
+                                                   { profilePic?
+                                                <img className="profile11" src={profilePic}></img>
+                                                
+                                                :
+                                                <>
+                                                <img className="profile11" src={`https://ui-avatars.com/api/?name=${username}&background=random`} ></img>
+                                                    {/* <div class="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
+                                                        
+                                                        <span class="initials">{username.charAt(0).toUpperCase()}</span> */}
+                                                    {/* </div> */}
+                                                     </>}
+                                                    </div>: null
+                                            }
                             </div>
 
 
                             {otherUserSteams.map((item, index, array) => {
                                 return (
-                                    <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"}>
-                                        <div class={item.Video ? "video-inner-wrap video-center" : "video-inner-wrap video-center circle-body"}>
+                                    <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
+                                        <div class={item.Video ? "video-inner-wrap video-center" : "video-inner-wrap video-center circle-body"} style={{position: "relative"}}>
+                                            <Video key={index.toString()} item={item.stream} /> 
                                             {
-                                                item.Video ?
-                                                    <Video key={index.toString()} item={item.stream} /> :
-                                                    <div class="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
-                                                        <span class="initials">{item.userData.name.charAt(0).toUpperCase()}</span>
+                                                item.Video ?null:
+                                                <div class="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width:"92"}}>
+                                                        <img className="profile11" src={item.userData.image}></img>
+                                                        {/* :
+                                                        <img className="profile11" src={`https://ui-avatars.com/api/?name=${item.userData.name}&background=random`} ></img>
+                                                    // <div class="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
+                                                    //     <span class="initials">{item.userData.name.charAt(0).toUpperCase()}</span>
+                                                    // </div> 
+                                                    } */}
                                                     </div>
                                             }
                                             <a><img alt="" src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} /></a>
-                                            {/* <a style={{ right: "50px" }}><img alt="" src={(item.Video) ? "img/camera.png" : "img/camera-off(1).png"} /></a> */}
                                         </div>
                                     </div>
                                 );
