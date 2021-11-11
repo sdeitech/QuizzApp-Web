@@ -21,10 +21,15 @@ let peers = {};
 let bgcolor = ["#25afff","#b525ff","#31a56a"];
 
 
+// const videoConstraints = {
+//     height: window.innerHeight / 2,
+//     width: window.innerWidth / 2
+// };
+
 const videoConstraints = {
-    height: window.innerHeight / 2,
-    width: window.innerWidth / 2
-};
+    width: { min: 22 },
+    height: { min: 33 }
+}
 
 const Room = props => {
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
@@ -80,7 +85,6 @@ const Room = props => {
 
     const Video = props => {
         const ref = useRef();
-        console.log("video", props.item)
 
         useEffect(() => {
             ref.current.srcObject = props.item;
@@ -337,14 +341,11 @@ const Room = props => {
 
                     socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify, Video, Audio }) => {
                         try {
-                            // connectToNewUser(userId, stream, dispatch);
                             console.log("user connected => ", userId);
 
                             let resStreamId;
 
-                            console.log("peerservercall before");
                             const call = peerServer.call(userId, stream);
-                            console.log("peerservercall after");
 
                             call.on("stream", (remoteVideoStream) => {
                                 if (remoteVideoStream) {
@@ -416,7 +417,6 @@ const Room = props => {
                                 console.log("user connected prev users => ", userId);
 
                                 call.on('stream', (remoteVideoStream) => {
-                                    console.log("line 400");
                                     console.log("user connected prev users => :: ", remoteVideoStream);
 
                                     let data = {
