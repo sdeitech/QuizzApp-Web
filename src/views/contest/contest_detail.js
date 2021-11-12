@@ -448,9 +448,9 @@ class DetailContest extends Component {
 													return <div className="row" style={{marginTop:'10px',paddingBottom: '10px',borderBottom: '1px solid #fff'}}><div className="col-md-6"><p style={{color:"#FFC542"}}>{e.displayName}
 														<span style={{width: "100%",float: "right", font: 'normal normal 300 14px Montserrat',letterSpacing: '0px',color: '#FFFFFF'}}>{e.createdByName}</span></p>
 														</div>		
-														<div class="col-md-2">
+														{/* <div class="col-md-2">
 															<button class="blue_btn" type="button" onClick={this.joinRoomHandler.bind(this,e)}>Video</button>
-														</div> 
+														</div>  */}
 														{/* <div class="col-md-2">
 															<button class="blue_btn" type="button" onClick={this.joinRoomContest.bind(this,e)}>Video</button>
 														</div>  */}

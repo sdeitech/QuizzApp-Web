@@ -7,7 +7,7 @@ import { reactLocalStorage } from "reactjs-localstorage";
 import { ToastContainer, toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { joinRoomReqSend, setWaitScreen, setOtherUserStreams, RemoveOtherUserStreams, updateOthetUserStream, setSocket, setMuteUnmute } from '../../actions/socketAction';
+import { joinRoomReqSend, setWaitScreen, setOtherUserStreams, RemoveOtherUserStreams, updateOthetUserStream, setSocket, setMuteUnmute, setrequestSender,removerequestSender } from '../../actions/socketAction';
 import {
     CModal,
     CModalBody,
@@ -31,7 +31,22 @@ const videoConstraints = {
     height: { min: 33 }
 }
 
-const Room = props => {
+ const Video = React.memo((props)  => {
+    const ref = useRef();
+
+    useEffect(() => {
+        ref.current.srcObject = props.item;
+    }, []);
+
+    return <video ref={ref} autoPlay="true" />;
+});
+
+
+
+
+
+
+const Room = React.memo(props => {
     const userId = JSON.parse(reactLocalStorage.get("userData")).userId;
     const username = JSON.parse(reactLocalStorage.get("userData")).name;
     const profilePic = JSON.parse(reactLocalStorage.get("userData")).profilePic;
@@ -43,14 +58,7 @@ const Room = props => {
     const joinRoomReq = useSelector((state) => state.socketReducers.joinRoomReq);
     const otherUserSteams = useSelector((state) => state.socketReducers.otherUserSteams);
     const roomId = useSelector((state) => state.socketReducers.roomId);
-    let string = "kevin";
-    // let moderator = false;
-    // if(roomCreatorId==userId){
-    //     moderator = true;
-    // }
-    // const isModerator = !joinRoomReq;
-
-    // const [peers, setPeers] = useState([]);
+    const requestSender = useSelector((state) => state.socketReducers.requestSender);
     const socketRef = useRef();
     const currentStream = useRef();
     const userVideoPeerId = useRef();
@@ -77,21 +85,13 @@ const Room = props => {
     const [requestModel, setrequestModel] = useState(false);
     const [moderatorLeave, setmoderatorLeave] = useState(false);
     const [openModelForMembers, setopenModelForMembers] = useState(false);
-    const [requestSender, setrequestSender] = useState("");
+    // const [requestSender, setrequestSender] = useState([]);
     const [reqSenderSocketId, setreqSenderSocketId] = useState();
 
     // socketRef.current = props.socket;
 
 
-    const Video = props => {
-        const ref = useRef();
-
-        useEffect(() => {
-            ref.current.srcObject = props.item;
-        }, []);
-
-        return <video ref={ref} autoPlay="true" />;
-    };
+   
     const cameraOff = () => {
         if (isVideoMuted) {
             setVideoMuted(false);
@@ -199,13 +199,15 @@ const Room = props => {
         }
     }
 
-    const moderatorResponse = (status) => {
+    const moderatorResponse = (socketId,status) => {
         socketRef.current.emit("join-room-response-from-moderator", {
-            roomID: roomId, socketId: reqSenderSocketId, status
+            roomID: roomId, socketId: socketId, status
         });
-        setrequestSender("");
-        setrequestModel(false);
-        setreqSenderSocketId("");
+        dispatch(removerequestSender(socketId))
+        // setrequestSender(requestSender.filter(item => item.socketId != socketId));
+        if(requestSender.length == 0){
+            setrequestModel(false);
+        }
         console.log("response send is ", status);
 
     }
@@ -233,10 +235,12 @@ const Room = props => {
         console.log("isModerator", isModerator)
         if (isModerator) {
             socketRef.current.on("user-request-moderator", ({ userdata, socketId }) => {
-                setrequestSender(userdata.name);
+                dispatch(setrequestSender({userdata:userdata , socketId:socketId}))
+                // setrequestSender([...requestSender,{ userdata:userdata , socketId:socketId}]);
                 setrequestModel(true);
-                setreqSenderSocketId(socketId);
-                console.log("reqest from ", userdata.name);
+                // setreqSenderSocketId(socketId);
+                setforcerender(forcerender+1)
+                console.log("reqest from ", requestSender);
             });
         }
         //////moderator reponse from server;
@@ -631,25 +635,25 @@ const Room = props => {
                     style={{ top: "80px" }}
                 />
                 <div className="">
-                    <div class="video-wrapper">
-                        <div class="video-previe video-center">
+                    <div className="video-wrapper">
+                        <div className="video-previe video-center">
 
-                            <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
-                                <div class="video-inner-wrap video-center circle-body" style={{position: "relative"}}>
-                                    <video ref={userVideo} muted="true" autoPlay="true" /> 
+                            <div className={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
+                                <div className="video-inner-wrap video-center circle-body" style={{position: "relative"}}>
+                                    <video ref={userVideo} muted autoPlay /> 
                                 </div>
                                 {
                                                 isVideoMuted ?
-                                                <div class="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width: `${otherUserSteams.length == 0 ?"96%":"92%"}`}}>
+                                                <div className="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width: `${otherUserSteams.length == 0 ?"96%":"92%"}`}}>
                                                    { profilePic?
                                                 <img className="profile11" src={profilePic}></img>
                                                 
                                                 :
                                                 <>
                                                 <img className="profile11" src={`https://ui-avatars.com/api/?name=${username}&background=random`} ></img>
-                                                    {/* <div class="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
+                                                    {/* <div className="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
                                                         
-                                                        <span class="initials">{username.charAt(0).toUpperCase()}</span> */}
+                                                        <span className="initials">{username.charAt(0).toUpperCase()}</span> */}
                                                     {/* </div> */}
                                                      </>}
                                                     </div>: null
@@ -659,17 +663,17 @@ const Room = props => {
 
                             {otherUserSteams.map((item, index, array) => {
                                 return (
-                                    <div class={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
-                                        <div class={item.Video ? "video-inner-wrap video-center" : "video-inner-wrap video-center circle-body"} style={{position: "relative"}}>
+                                    <div className={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
+                                        <div className={item.Video ? "video-inner-wrap video-center" : "video-inner-wrap video-center circle-body"} style={{position: "relative"}}>
                                             <Video key={index.toString()} item={item.stream} /> 
                                             {
                                                 item.Video ?null:
-                                                <div class="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width:"92"}}>
+                                                <div className="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width:"92"}}>
                                                         <img className="profile11" src={item.userData.image}></img>
                                                         {/* :
                                                         <img className="profile11" src={`https://ui-avatars.com/api/?name=${item.userData.name}&background=random`} ></img>
-                                                    // <div class="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
-                                                    //     <span class="initials">{item.userData.name.charAt(0).toUpperCase()}</span>
+                                                    // <div className="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
+                                                    //     <span className="initials">{item.userData.name.charAt(0).toUpperCase()}</span>
                                                     // </div> 
                                                     } */}
                                                     </div>
@@ -738,40 +742,61 @@ const Room = props => {
 
 
 
-                <CModal show={requestModel} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
-                    color="danger"
-                    centered>
-                    <CModalBody className="model-bg">
+                <CModal show={requestModel} closeOnBackdrop={true} onClose={() => setrequestModel(false)}
+                color="danger"
+                centered>
+                <CModalBody className="model-bg">
 
-                        <div>
-                            <div className="modal-body">
-                                <button type="button" className="close" onClick={() => setconfirmationModel(false)}>
-                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                                </button>
-                                <div className="model_data">
-                                    <div className="model-title">
-                                        <img src='./murabbo/img/exit.png' alt="" />
-                                        <h3>Join Request</h3>
-                                        <h4>{requestSender} wants to join the Room</h4>
-                                    </div>
-                                    <img className="shape2" src="./murabbo/img/shape2.svg" />
-                                    <img className="shape3" src="./murabbo/img/shape3.svg" />
+                    <div>
+                        <div className="modal-body">
+
+                            <button type="button" className="close" onClick={() => setrequestModel(false)}>
+                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                            </button>
+                            <div className="model_data">
+                                <div className="model-title">
+                                    <h3>Join Request</h3>
+                                </div>
+
+                                <div className="container">
                                     <div className="row">
-                                        <div className="col-md-10 offset-md-1">
+                                    {requestSender.map(item => {
+                                            return (
+                                                <div className="col-md-12">
+                                                    <div className="_1st2-member two_no">
+                                                        <div className="_1stimg">
+                                                            <div className="memberImg_">
+                                                                <img style={{
+                                                                    height: "50px",
+                                                                    width: "50px",
+                                                                    borderRadius: "50%"
+                                                                }} src={item.userdata.image == "" ? "avatars/placeholder-user.png" : item.userdata.image} />
+                                                            </div>
+                                                            <div className="member_details">
+                                                                <h5 style={{
+                                                                    color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
+                                                                }}>{item.userdata.name}</h5>
+                                                            </div>
+                                                            <div className="icons-members" style={{
+                                                                top: "18px !important"
+                                                            }}>
+                                                                <img src="img/correct-green.png" width="26px" height="23px" alt="callRight" onClick={() => moderatorResponse(item.socketId,true)} style={{ position: "relative", top: "5px" }}/>
+                                                                <img src="img/close.png" width="26px" height="23px" onClick={() => moderatorResponse(item.socketId,false)} style={{ position: "relative", top: "5px" }} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
 
-                                            <div style={{ textAlign: 'center', float: 'left', marginRight: '10px' }} className="">
-                                                <button style={{ minWidth: '150px' }} className="pink_btn" type="button" onClick={() => moderatorResponse(false)} >Decline</button>
-                                            </div>
-                                            <div style={{ textAlign: 'center', float: 'left' }} className="">
-                                                <button style={{ minWidth: '150px' }} className="blue_btn" type="button" onClick={() => moderatorResponse(true)} >Accept</button>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
-                    </CModalBody>
-                </CModal>
+                    </div>
+                </CModalBody>
+            </CModal>
 
 
                 <CModal show={moderatorLeave} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
@@ -822,7 +847,7 @@ const Room = props => {
                                             {otherUserSteams.map(item => {
                                                 return (
                                                     <div className="col-md-12">
-                                                        <div class="_1st2-member two_no">
+                                                        <div className="_1st2-member two_no">
                                                             <div className="_1stimg">
                                                                 <div className="memberImg_">
                                                                     <img style={{
@@ -877,7 +902,7 @@ const Room = props => {
 
 
     );
-};
+});
 
 export default Room;
 
