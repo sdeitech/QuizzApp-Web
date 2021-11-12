@@ -1,5 +1,5 @@
 import { data } from 'jquery';
-import _, { values } from 'underscore';
+import _ from "underscore";
 
 
 const initialData = {
@@ -8,6 +8,7 @@ const initialData = {
 	waitScreen:false,
 	roomCreatorId:"",
 	otherUserSteams:[],
+	requestSender:[],
 	roomId:"",
 	socket:"",
 };
@@ -29,6 +30,16 @@ const socketReducers = (state = initialData, action) => {
 		case 'SOCKET': return { ...state, socket: action.data }
 
 		case 'UPDATE_OTHER_USER_STREAM': return { ...state, otherUserSteams: action.data }
+
+		case 'REQUEST_SENDER':
+			let rs = [...state.requestSender];
+			rs = _.reject(rs, function(item){ return item.userdata._id == action.data.userdata._id; });
+			return { ...state, requestSender: [...rs,action.data] }
+			
+			case 'REMOVE_REQUEST_SENDER':
+				let req = [...state.requestSender];
+				req = req.filter(item => item.socketId != action.data);
+			 return { ...state, requestSender: req }
 
 		case 'SET_OTHER_USER_STREAM':
 			let userData = action.data;

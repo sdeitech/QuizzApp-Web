@@ -241,9 +241,9 @@ class Detail extends Component {
 											<div style={{ marginBottom: '50px', textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play</button>
 							                </div>
-					                        <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
+					                        {/* <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play without video</button>
-							                </div>
+							                </div> */}
 						                    <div style={{ marginBottom: '50px', textAlign: 'center', float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button className="yellow_btn" type="button">Play in-person</button>
 							                </div>  

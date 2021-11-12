@@ -9,3 +9,5 @@ export const updateOthetUserStream = (data) => ({ type: "UPDATE_OTHER_USER_STREA
 export const setRoomId = (data) => ({ type: "SET_ROOMID", data: data });
 export const setSocket = (data) => ({ type: "SOCKET", data: data });
 export const setMuteUnmute = (data) => ({ type: "USER_MUTE_UNMUTE", data: data });
+export const setrequestSender = (data) => ({ type: "REQUEST_SENDER", data: data });
+export const removerequestSender = (data) => ({ type: "REMOVE_REQUEST_SENDER", data: data });
