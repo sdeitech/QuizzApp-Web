@@ -21,15 +21,15 @@ let peers = {};
 let bgcolor = ["#25afff","#b525ff","#31a56a"];
 
 
-// const videoConstraints = {
-//     height: window.innerHeight / 2,
-//     width: window.innerWidth / 2
-// };
-
 const videoConstraints = {
-    width: { min: 22 },
-    height: { min: 33 }
-}
+    height: window.innerHeight ,
+    width: window.innerWidth 
+};
+
+// const videoConstraints = {
+//     width: { min: 22 },
+//     height: { min: 33 }
+// }
 
  const Video = React.memo((props)  => {
     const ref = useRef();
