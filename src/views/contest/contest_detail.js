@@ -13,9 +13,10 @@ import {
     CModalBody,
   } from '@coreui/react';
 import { addToken, addClientToken, addUserData, add_is_login, addRedirect, addReload, subscription, forgot_email } from '../../actions/index';
-import { joinRoomReqSend,setRoomCreatorId,setWaitScreen,setModerator,clearOthetUserStream,setRoomId,setSocket } from '../../actions/socketAction';
+import { flush,joinRoomReqSend,setRoomCreatorId,setWaitScreen,setModerator,clearOthetUserStream,setRoomId,setSocket } from '../../actions/socketAction';
 import { connect } from "react-redux";
 import $ from 'jquery';
+import InfiniteScroll from "react-infinite-scroll-component";
 let contestId;
 
 
@@ -47,6 +48,7 @@ const mapStateToProps = (state) => {
 	clearOthetUserStream: (date) => dispatch(clearOthetUserStream(date)),
 	setRoomId: (date) => dispatch(setRoomId(date)),
 	setSocket: (date) => dispatch(setSocket(date)),
+	flush: (date) => dispatch(flush(date)),
  }};
 
 class DetailContest extends Component {
@@ -70,6 +72,8 @@ class DetailContest extends Component {
 			size:2,
 			subscriptionModel:false,
 			hiddenPassword: true,
+			currentPage:0,
+			hasmore:true,
 		};
 	}
 
@@ -94,8 +98,9 @@ class DetailContest extends Component {
 		});
 		
 		
-		this.roomList();
+		// this.roomList();
 		this.getList(contestId);
+		this.props.flush();
 	}
 	
 
@@ -272,11 +277,42 @@ class DetailContest extends Component {
 
 
 
-	search(term){
-		if (term !== '') {
+	fetchMoreData(){
+
+	}
+
+
+
+
+
+async search(term){
+	 if (term !== '') {
     		term = term.target.value;
-    		this.setState({searchTerm: term});
+    		await this.setState({searchTerm: term});
     	}
+
+		this.setState({isLoading:true})
+		fetch(configuration.baseURL+"room/room?contestId="+contestId+"&page="+this.state.currentPage+"&size=2"+"&searchKey="+this.state.searchTerm, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+			}
+		}).then((response) =>{
+			return response.json();
+		}).then((data)=> {
+		
+				this.setState({
+					RoomListArr: data.data,
+					isLoading:false
+				  });
+			this.setState({playContestModel:false,playOldContestModel:true})
+		});
+
+
+
+
 
 		// fetch(configuration.baseURL+"category/categoryList", {
 		// 		method: "GET",
@@ -295,7 +331,8 @@ class DetailContest extends Component {
 	}
 
 	handleRoomList(){
-		fetch(configuration.baseURL+"room/room?contestId="+contestId+"&page="+this.state.page+"&size="+this.state.size, {
+		this.setState({isLoading:true})
+		fetch(configuration.baseURL+"room/room?contestId="+contestId+"&page="+this.state.currentPage+"&size=2", {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json',
@@ -305,11 +342,24 @@ class DetailContest extends Component {
 		}).then((response) =>{
 			return response.json();
 		}).then((data)=> {
-			if (data.data.length > 0) {
-				this.setState({RoomListArr:data.data});
-			}else{
-				this.setState({RoomListArr:[]});
-			}
+			// if (data.data.length > 0) {
+
+				this.setState({
+					RoomListArr: data.data,
+					isLoading:false
+				  });
+				// this.setState({
+				// 	RoomListArr: this.state.RoomListArr.concat(data.data),
+				// 	currentPage:this.state.currentPage+1,
+				// 	hasmore:(data.data.length > 0) ? true : false,
+				// 	isLoading:false
+				//   });
+
+
+				// this.setState({RoomListArr:data.data});
+			// }else{
+			// 	this.setState({RoomListArr:[]});
+			// }
 			this.setState({playContestModel:false,playOldContestModel:true})
 		});
 
@@ -421,7 +471,7 @@ class DetailContest extends Component {
                         </CModalBody>
                     </CModal>
 					
-					<CModal show={this.state.playOldContestModel}  closeOnBackdrop={false}  onClose={()=> this.setState({playOldContestModel:false})}
+					<CModal show={this.state.playOldContestModel}  scrollable closeOnBackdrop={false}  onClose={()=> this.setState({playOldContestModel:false})}
                     color="danger" 
                     centered>
                         <CModalBody className="model-bg">
@@ -440,9 +490,14 @@ class DetailContest extends Component {
                                     <div class="row search" style={{marginBottom:'20px'}}>
 										<input type="text" placeholder="Search"  value={this.state.searchTerm} onChange={this.search.bind(this)}  />
 										<i className='bx bx-search' ></i>
-									</div>                              	
-										{ 
-											(this.state.RoomListArr.length > 0) ?
+									</div>
+									{this.state.isLoading ? 
+ 									(<><span className="spinner-border spinner-border-sm mr-2" style={{color:"white"}} role="status" aria-hidden="true"></span>Loading...</>)
+									:
+									<> 
+
+											{
+												(this.state.RoomListArr.length > 0) ?
 												
 												this.state.RoomListArr.map((e, key) => {
 													return <div className="row" style={{marginTop:'10px',paddingBottom: '10px',borderBottom: '1px solid #fff'}}><div className="col-md-6"><p style={{color:"#FFC542"}}>{e.displayName}
@@ -462,7 +517,14 @@ class DetailContest extends Component {
 												(
 													<div style={{color:'white',width: '100%',textAlign:'center',marginTop:"85px",marginBottom:"85px"}} className="flex"><p className="item-author text-color">No have any room</p></div>
 												)
-										}
+											}
+
+
+																   
+										
+										
+
+										</>}
                                 </div>
                             </div>
                             </div>
