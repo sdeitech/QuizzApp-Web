@@ -38,7 +38,7 @@ const socketReducers = (state = initialData, action) => {
 			
 			case 'REMOVE_REQUEST_SENDER':
 				let req = [...state.requestSender];
-				req = req.filter(item => item.socketId != action.data);
+				req = req.filter(item => item.socketId != action.data.socketId);
 			 return { ...state, requestSender: req }
 
 		case 'SET_OTHER_USER_STREAM':

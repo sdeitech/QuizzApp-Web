@@ -22,9 +22,9 @@ let bgcolor = ["#25afff","#b525ff","#31a56a"];
 
 
 const videoConstraints = {
-    height: window.innerHeight ,
-    width: window.innerWidth 
-};
+    width: { min: 1024, ideal: 1280, max: 1920 },
+    height: { min: 576, ideal: 720, max: 1080 },
+}
 
 // const videoConstraints = {
 //     width: { min: 22 },
@@ -203,7 +203,7 @@ const Room = React.memo(props => {
         socketRef.current.emit("join-room-response-from-moderator", {
             roomID: roomId, socketId: socketId, status
         });
-        dispatch(removerequestSender(socketId));
+        dispatch(removerequestSender({socketId:socketId}));
         // setrequestSender(requestSender.filter(item => item.socketId != socketId));
         if(requestSender.length == 0){
             setrequestModel(false);
@@ -502,9 +502,11 @@ const Room = React.memo(props => {
                             setforcerender(forcerender+1)
                             console.log("reqest from ", requestSender);
                         });
-
+                        
                         socketRef.current.on("requested-user-disconnected",(socketId) =>{
-                            dispatch(removerequestSender({socketId:socketId}))
+                            console.log("reqest disconnecty from ", socketId);
+                            
+                            dispatch(removerequestSender(socketId));
                         });;
     
 
