@@ -6,7 +6,7 @@ import languages from "../../languages";
 import configuration from "../../config";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { CModal, CModalBody } from "@coreui/react";
-import { joinRoomReqSend,setModerator,clearOthetUserStream,setRoomId, setSocket } from '../../actions/socketAction';
+import { joinRoomReqSend,setModerator,clearOthetUserStream,setRoomId, setSocket,flush } from '../../actions/socketAction';
 import { connect } from "react-redux";
 let contestId, roomId;
 
@@ -21,6 +21,7 @@ const mapStateToProps = (state) => {
     clearOthetUserStream: (date) => dispatch(clearOthetUserStream(date)),
     setRoomId: (date) => dispatch(setRoomId(date)),
     setSocket: (date) => dispatch(setSocket(date)),
+    flush: (date) => dispatch(flush(date)),
 });
 class Detail extends Component {
     constructor(props) {
@@ -33,10 +34,27 @@ class Detail extends Component {
             inviteFriendsModel: false,
             inviteModel: false,
             inviteUsersModel: false,
+            playBottom:false,
         };
     }
 
     componentDidMount() {
+
+        var that = this;
+
+        navigator.getMedia = ( navigator.getUserMedia || // use the proper vendor prefix
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia);
+
+        navigator.getMedia({video: true}, function() {
+        that.setState({playBottom:true});
+    }, function() {
+        that.setState({playBottom:false});
+        });
+
+
+
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
 
         var url = window.location.href;
@@ -171,6 +189,7 @@ class Detail extends Component {
 
     playWithoutVideo()
     {
+        this.props.flush();
         this.props.setModerator(true);
         this.props.clearOthetUserStream();
         this.props.setRoomId(roomId);
@@ -237,13 +256,16 @@ class Detail extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+                                            {
+                                                this.state.playBottom ?  
 											<div style={{ marginBottom: '50px', textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play</button>
 							                </div>
-					                        {/* <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
+                                            : null
+                                            }
+					                        <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play without video</button>
-							                </div> */}
+							                </div>
 						                    <div style={{ marginBottom: '50px', textAlign: 'center', float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button className="yellow_btn" type="button">Play in-person</button>
 							                </div>  

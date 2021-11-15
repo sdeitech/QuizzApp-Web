@@ -11,3 +11,4 @@ export const setSocket = (data) => ({ type: "SOCKET", data: data });
 export const setMuteUnmute = (data) => ({ type: "USER_MUTE_UNMUTE", data: data });
 export const setrequestSender = (data) => ({ type: "REQUEST_SENDER", data: data });
 export const removerequestSender = (data) => ({ type: "REMOVE_REQUEST_SENDER", data: data });
+export const flush = (data) => ({ type: "FLUSH", data: data });

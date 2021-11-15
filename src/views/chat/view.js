@@ -203,7 +203,7 @@ const Room = React.memo(props => {
         socketRef.current.emit("join-room-response-from-moderator", {
             roomID: roomId, socketId: socketId, status
         });
-        dispatch(removerequestSender(socketId))
+        dispatch(removerequestSender(socketId));
         // setrequestSender(requestSender.filter(item => item.socketId != socketId));
         if(requestSender.length == 0){
             setrequestModel(false);
@@ -233,16 +233,7 @@ const Room = React.memo(props => {
 
     useEffect(() => {
         console.log("isModerator", isModerator)
-        if (isModerator) {
-            socketRef.current.on("user-request-moderator", ({ userdata, socketId }) => {
-                dispatch(setrequestSender({userdata:userdata , socketId:socketId}))
-                // setrequestSender([...requestSender,{ userdata:userdata , socketId:socketId}]);
-                setrequestModel(true);
-                // setreqSenderSocketId(socketId);
-                setforcerender(forcerender+1)
-                console.log("reqest from ", requestSender);
-            });
-        }
+       
         //////moderator reponse from server;
 
         socketRef.current.on("req-response-from-server", status => {
@@ -502,6 +493,24 @@ const Room = React.memo(props => {
                     }
                     );
 
+                    if (isModerator) {
+                        socketRef.current.on("user-request-moderator", ({ userdata, socketId }) => {
+                            dispatch(setrequestSender({userdata:userdata , socketId:socketId}))
+                            // setrequestSender([...requestSender,{ userdata:userdata , socketId:socketId}]);
+                            setrequestModel(true);
+                            // setreqSenderSocketId(socketId);
+                            setforcerender(forcerender+1)
+                            console.log("reqest from ", requestSender);
+                        });
+
+                        socketRef.current.on("requested-user-disconnected",(socketId) =>{
+                            dispatch(removerequestSender({socketId:socketId}))
+                        });;
+    
+
+                    }
+
+                    
                     socketRef.current.on("user-muted", ({ userId, joinedUserId, streamId }) => {
                         let data = {
                             joinedUserId,
@@ -844,6 +853,30 @@ const Room = React.memo(props => {
 
                                     <div className="container">
                                         <div className="row">
+                                        <div className="col-md-12">
+                                                        <div className="_1st2-member two_no">
+                                                            <div className="_1stimg">
+                                                                <div className="memberImg_">
+                                                                    <img style={{
+                                                                        height: "50px",
+                                                                        width: "50px",
+                                                                        borderRadius: "50%"
+                                                                    }} src={profilePic == "" ? `https://ui-avatars.com/api/?name=${username}&background=random` : profilePic} />
+                                                                </div>
+                                                                <div className="member_details">
+                                                                    <h5 style={{
+                                                                        color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
+                                                                    }}>{username}</h5>
+                                                                </div>
+                                                                <div className="icons-members" style={{
+                                                                    top: "18px !important"
+                                                                }}>
+                                                                    <img src={(isAudioMuted==false) ? "img/mic1.png" : "img/mute(1).png"} width="33px" alt="callMic" />
+                                                                    <img src={(isVideoMuted==false) ? "img/camera.png" : "img/camera-off(1).png"} width="33px" alt="ccallCam" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                             {otherUserSteams.map(item => {
                                                 return (
                                                     <div className="col-md-12">

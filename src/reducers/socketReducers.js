@@ -89,10 +89,10 @@ const socketReducers = (state = initialData, action) => {
 			return {
 				...state,
 				otherUserSteams: updatemuteuser
-			}
-		
-
-
+			}		
+			
+	case 'FLUSH': 
+		return initialData ;
 
 		default: return state;
 	}

@@ -20,7 +20,6 @@ import { indexOf } from 'underscore';
 import { addToken, addClientToken, addUserData, add_is_login, addRedirect, addReload, subscription, forgot_email } from '../../actions/index';
 import { joinRoomReqSend,setModerator,setSocket } from '../../actions/socketAction';
 import { connect } from "react-redux";
-import { Socket } from 'dgram';
 var jwt = require('jsonwebtoken');
 
 
@@ -53,10 +52,11 @@ let socket_2;
 			isModerator: state.socketReducers.isModerator,
 			waitScreen: state.socketReducers.waitScreen,
 			socket: state.socketReducers.socket,
+			otherUserSteams: state.socketReducers.otherUserSteams,
 			
 		};
-	 };
-	 const mapDispatchToProps = dispatch => ({
+	};
+	const mapDispatchToProps = dispatch => ({
 	
 		addToken: (data) => dispatch(addToken(data)),
 		addClientToken: (data) => dispatch(addClientToken(data)),
@@ -69,7 +69,7 @@ let socket_2;
 		joinRoomReqSend: (date) => dispatch(joinRoomReqSend(date)),
 		setModerator: (date) => dispatch(setModerator(date)),
 		setSocket: (date) => dispatch(setSocket(date)),
-	 });
+	});
 class StartRound extends Component {
 	constructor(props) {
 		super(props);
@@ -127,11 +127,13 @@ class StartRound extends Component {
 			width:"50%",
 			userId:JSON.parse(reactLocalStorage.get('userData')).userId,
 			connectedUserList:[],
-			currentAssignedUser:"",
+			currentAssignedUser:userId,
 			roomJoined:false,
 			isModerator:false,
 			joinroomreq:joinroomreq,
 			questionPart:true,
+			nextRoundStartForOtherUser:false,
+			stopTimer:false,
 		};
 		this.socketRef = React.createRef();
 		this.playContest = this.playContest.bind(this);
@@ -147,15 +149,15 @@ class StartRound extends Component {
 		
 
 		if (window.performance) {
-            if (performance.navigation.type == 1) {
-                this.props.history.push('/dashboard',{state:null});
-                window.location.reload();
-                return false;
-            }else{
+			if (performance.navigation.type == 1) {
+				this.props.history.push('/dashboard',{state:null});
+				window.location.reload();
+				return false;
+			}else{
 				if (!socket_2) {
 					socket_2  = io(API_URI_2);}
 			} 
-          }
+		}
 	}
 
 
@@ -219,38 +221,56 @@ class StartRound extends Component {
 
 		// after some user connected for same game room 
 		// it will call only for moderator
-		socket_2.on("user-connected-game", ({ userId, username }) => {
-			//not finished.
-			if(this.state.isModerator){
-				this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
-			}
-			console.log("user-connected-game in",username);
-		});
+		// socket_2.on("user-connected-game", ({ userId, username }) => {
+		// 	//not finished.
+		// 	if(this.state.isModerator){
+		// 		this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
+		// 	}
+		// 	console.log("user-connected-game in",username);
+		// });
 
 
 		// get socket data if moderator click on start any question
 
 		socket_2.on("startQuestion", async (data) => {
-		    console.log("start question => socket => ", JSON.stringify(data));
-			this.setState({currentIndexRound:data.roundIndex,indexQuestion:data.questionIndex,currentAssignedUser:data.userId});
-			if(data.questionIndex===0){
-				this.playContest();
+			console.log("start question => socket => ", JSON.stringify(data));
+			this.setState({currentIndexRound:data.roundIndex,indexQuestion:data.questionIndex,currentAssignedUser:data.userId,stopTimer:true});
+			if(this.state.indexQuestion == 0){
+				if(this.state.currentIndexRound > 0 && this.state.nextRoundStartForOtherUser == false){
+					this.saveExitAnswer();
+				}else{
+					this.playContest();
+				}
 			}else{
-				this.saveExitAnswer();
+				setTimeout(()=>{
+					this.setState({stopTimer:false});
+					this.startTimer();
+				},2000);
 			}
-		});
+			});
 
 		///when someone leaves the room
 		//still remain somework here
-		socket_2.on("user-disconnected",({userId})=>{
-			var userList =  this.state.connectedUserList;
-			userList =  userList.map((item)=> item != userId);
-			this.setState({connectedUserList:userList});
-		})
+		// socket_2.on("user-disconnected",({userId})=>{
+		// 	var userList =  this.state.connectedUserList;
+		// 	userList =  userList.map((item)=> item != userId);
+		// 	this.setState({connectedUserList:userList});
+		// })
 
 		socket_2.on("resultQuestion",({resultInfo})=>{
-			if(this.state.isModerator){
-				this._startRoundModerator.bind(this);
+			if(this.props.isModerator){
+				if(this.state.roundListArr[this.state.currentIndexRound] !== undefined){
+					if(this.state.listArr[(this.state.indexQuestion+1)] == undefined){
+							this.setState({indexQuestion:0,currentIndexRound:this.state.currentIndexRound+1});
+					}else{
+						this.setState({indexQuestion:this.state.indexQuestion+1});
+					}
+					// if(this.state.indexQuestion < this.state.listArr.length){
+					// 	this.setState({indexQuestion: this.state.indexQuestion+1}) 
+					// }
+					console.log("resultQuestion before start moderator"+this.state.indexQuestion+" indexQuestion")
+					this._startRoundModerator();
+				}
 			}
 		})
 
@@ -360,67 +380,103 @@ class StartRound extends Component {
 	}
 
 
-	_startRoundModerator(){
+	_startRoundModerator(check){
+		const userList = this.props.otherUserSteams;
 		//still not finish
-		const currentAssignedUser = this.state.currentAssignedUser;
-		const userList = this.state.connectedUserList;
-
-		let newUserIdIndex = userList.findIndex(x => x === currentAssignedUser);
-
-		console.log("user id for assign new question => index => old => ", newUserIdIndex);
-        console.log("user id for assign new question => id => old => ", currentAssignedUser);
-
-        if (newUserIdIndex === (userList.length - 1)) {
-            newUserIdIndex = 0;
-        } else {
-            newUserIdIndex = newUserIdIndex + 1;
-        }
-
-		const userId = userList[newUserIdIndex];
-
-		if(this.state.roundListArr[this.state.currentIndexRound] !== undefined){
-
-		}
-		if(this.state.listArr[(this.state.indexQuestion)] == undefined){
-			this.setState({indexQuestion:0});
-			var questionIndex = 0;
+		this.setState({stopTimer:true});
+		if(check != true && userList.length > 0){
+			const currentAssignedUser = this.state.currentAssignedUser;
+	
+			let newUserIdIndex = userList.findIndex(x => x.joinedUserId == this.state.currentAssignedUser);
+	
+			console.log("newUserIdIndex 379 => index => old => ", newUserIdIndex);			 
+		console.log("userList 379 => index => old => ", userList);
+			console.log("currentAssignedUser 379 => index => old => ", currentAssignedUser);
+			
+			
+			if(newUserIdIndex == -1){
+				newUserIdIndex = 0;
+				console.log("newUserIdIndex == -1");
+				this.setState({currentAssignedUser:userList[newUserIdIndex].joinedUserId});
+			}else if (newUserIdIndex === (userList.length - 1)) {
+				this.setState({currentAssignedUser:userId})
+				console.log("newUserIdIndex === (userList.length - 1)");
+			} else {
+				console.log("newUserIdIndex else,,,.....");
+				newUserIdIndex = newUserIdIndex + 1;
+				this.setState({currentAssignedUser:userList[newUserIdIndex].joinedUserId});
+			}
+			console.log("newUserIdIndex 393 => index => old => ", newUserIdIndex);
+			console.log("currentAssignedUser 393 => index => old => ", currentAssignedUser);
 		}else{
-			var questionIndex = that.state.indexQuestion;
+			this.setState({currentAssignedUser:userId})
 		}
+
+		
 
 		var that = this;
 
 		const gameInfo = {
-            questionIndex:questionIndex,
-            roundIndex:that.state.currentIndexRound,
-            userId:userId,
-        };
+			questionIndex:this.state.indexQuestion,
+			roundIndex:that.state.currentIndexRound,
+			userId:this.state.currentAssignedUser,
+		};
 
 		const roomID = this.state.roomIdd;
+		console.log("current Assigned user 408",this.state.currentAssignedUser);
 		socket_2.emit('startRound', ({ roomID, gameInfo }));
-		if(this.state.indexQuestion === 0){
-			this.playContest();
+		if(this.state.indexQuestion == 0 ){
+			if(this.state.currentIndexRound > 0 && check != true){
+				console.log("saveExitAnswer start moderator")
+				this.saveExitAnswer();
+			}else{
+				console.log("playcontest start moderator")
+				this.playContest();
+			}
 		}else{
-			this.saveExitAnswer();
+			console.log("startTimer start moderator")  
+			this.startTimer();
 		}
 
 	}
 
 	nextQuestion(){
-		let roomId = this.state.roomIdd;
+		let roomID = this.state.roomIdd;
 		const resultInfo = {
-            questionIndex:1,
-            roundIndex:1,
-            resultStatus:1,
-        };
-		socket_2.emit("submitQuestion",{roomId,resultInfo})
+			questionIndex:1,
+			roundIndex:1,
+			resultStatus:1,
+		};
+		socket_2.emit("submitQuestion",{roomID,resultInfo,userId})
 	}
 
 	// moderator leave room
 	_moderatorLeaveRoom(){
 		const roomID = this.state.roomIdd;   
-	    socket_2.emit('disconnect-room', ({ roomID }));
+		socket_2.emit('disconnect-room', ({ roomID }));
 		}
+
+
+		moderatorNextQue(){
+			if(this.state.roundListArr[this.state.currentIndexRound] !== undefined){
+				if(this.state.listArr[(this.state.indexQuestion+1)] == undefined){
+					if(this.state.roundListArr[this.state.currentIndexRound+1] !== undefined){
+						this.setState({indexQuestion:0,currentIndexRound:this.state.currentIndexRound+1});
+					}
+				}else{
+					this.setState({indexQuestion:this.state.indexQuestion+1});
+				}
+				// if(this.state.indexQuestion < this.state.listArr.length){
+				// 	this.setState({indexQuestion: this.state.indexQuestion+1}) 
+				// }
+			}else{
+				
+			}
+			console.log("moderatorNextQue");
+			this._startRoundModerator();
+		}
+
+	
 
 	
 
@@ -518,14 +574,14 @@ class StartRound extends Component {
 					return toast.error(data.message);
 				}
 			});
-			this.setState({ indexQuestion: 0 });
+			// this.setState({ indexQuestion: 0 });
 
 			if (gameTypeObj.gameType !== "Blank") {
 
 				this.getQuestionList(roundId);
-				this.setState({ isBalnkRound: false, blankRoundObj: {}, newTime: 0, isWinnerScreenShow: false });
+				this.setState({ isBalnkRound: false, blankRoundObj: {}, newTime: 0, isWinnerScreenShow: false ,nextRoundStartForOtherUser:false });
 			} else {
-				this.setState({ isBalnkRound: true, blankRoundObj: gameTypeObj, showRound: false, saveExitAnswer: false, isWinnerScreenShow: true });
+				this.setState({ isBalnkRound: true, blankRoundObj: gameTypeObj, showRound: false, saveExitAnswer: false, isWinnerScreenShow: true ,nextRoundStartForOtherUser:false});
 				this.startTimerForBlankRound(gameTypeObj);
 
 			}
@@ -543,15 +599,15 @@ class StartRound extends Component {
 	}
 
 	saveExitAnswer(isLast = 0) {
-		this.setState({indexQuestion:(this.state.listArr.length+1)})
-		if (this.state.roundListArr[(this.state.currentIndexRound + 1)] !== undefined) {
+		// this.setState({indexQuestion:(this.state.listArr.length+1)})
+		if (this.state.roundListArr[(this.state.currentIndexRound )] !== undefined) {
 			this.setState({ saveExitAnswer: true });
 
 			var that = this;
 			setTimeout(function () {
 				that.setState({ winnerScreen: true });
 				setTimeout(function () {
-					that.setState({ showRound: true, currentIndexRound: that.state.currentIndexRound + 1, winnerScreen: false });
+					that.setState({ showRound: true, winnerScreen: false,nextRoundStartForOtherUser:true });
 					// if(this.state.currentAssignedUser === this.state.userId){
 					// 	that.nextQuestion.bind(that);
 					// }
@@ -642,15 +698,15 @@ class StartRound extends Component {
 		this.setState({ listArr: fields });
 
 		this.countScore(this.state.indexQuestion);
-		var that = this;
-		setTimeout(function () {
-			if (that.state.indexQuestion < that.state.listArr.length && that.state.listArr[that.state.indexQuestion]['answerType'] === 2) {
-				that.setState({ indexQuestion: that.state.indexQuestion + 1 })
-			}
-			else {
-				that.saveExitAnswer();
-			}
-		}, 2000);
+		// var that = this;
+		// setTimeout(function () {
+		// 	if (that.state.indexQuestion < that.state.listArr.length && that.state.listArr[that.state.indexQuestion]['answerType'] === 2) {
+		// 		that.setState({ indexQuestion: that.state.indexQuestion + 1 })
+		// 	}
+		// 	else {
+		// 		that.saveExitAnswer();
+		// 	}
+		// }, 2000);
 	}
 
 	handleSingleSelectChange(index, e) {
@@ -660,15 +716,16 @@ class StartRound extends Component {
 		fields[index]['readonly'] = true;
 		this.setState({ listArr: fields });
 		this.countScore(this.state.indexQuestion);
-		var that = this;
-		setTimeout(function () {
-			if (index < that.state.listArr.length) {
-				that.setState({ indexQuestion: index + 1 })
-			}
-			else {
-				that.saveExitAnswer();
-			}
-		}, 2000);
+
+		// var that = this;
+		// setTimeout(function () {
+		// 	if (index < that.state.listArr.length) {
+		// 		that.setState({ indexQuestion: index + 1 })
+		// 	}
+		// 	else {
+		// 		that.saveExitAnswer();
+		// 	}
+		// }, 2000);
 
 	}
 
@@ -739,7 +796,7 @@ class StartRound extends Component {
 	}
 
 	getQuestionList(roundId1) {
-		let indexRoundNo = this.state.indexRound;
+		let indexRoundNo = this.state.currentIndexRound;
 		fetch(configuration.baseURL + "roundQuestion/roundQuestion?roundId=" + roundId1 + "&gameType=" + this.state.roundListArr[indexRoundNo].gameType, {
 			method: "GET",
 			headers: {
@@ -751,7 +808,7 @@ class StartRound extends Component {
 			return response.json();
 		}).then((data) => {
 			var data = data.data;
-			this.setState({ listArr: data, showRound: false, saveExitAnswer: false, indexRound: (indexRoundNo + 1) });
+			this.setState({ listArr: data, showRound: false, saveExitAnswer: false });
 			if(this.state.roundListArr[indexRoundNo].gameType === "Unscramble"){
 				console.log("in get Question");
 				this.unscrambleWords();
@@ -861,31 +918,38 @@ class StartRound extends Component {
 					fields[that.state.indexQuestion]['displaytimeLimit'] = minute + " : " + seconds;
 					fields[that.state.indexQuestion]['timeLimit'] = newTime;
 					that.setState({ listArr: fields });
-					// console.log(fields[that.state.indexQuestion]['displaytimeLimit'])
+
+					console.log(fields[that.state.indexQuestion]['displaytimeLimit'],"ques",that.state.indexQuestion)
 
 				}
 
 
 
-				if (newTime === 0) {
+				if (newTime === 0 || newTime < 0) {
 
+					console.log("timer got Zero");
 					if (that.state.indexQuestion < that.state.listArr.length) {
 						fields[that.state.indexQuestion]['selectAnswer'] = "";
 						fields[that.state.indexQuestion]['isAnswerTrue'] = false;
 						that.setState({ listArr: fields });
-						that.countScore(that.state.indexQuestion);
-						that.setState({ indexQuestion: that.state.indexQuestion + 1 })
-						that.startTimer();
+						if(that.state.currentAssignedUser == userId){
+							console.log("calling count score in timer");
+							that.countScore(that.state.indexQuestion);
+						}
+						// that.setState({ indexQuestion: that.state.indexQuestion + 1 })
+						// that.startTimer();
 						// socket_2.emit("submitQuestion",{roomID:this.state.roomIdd,resultInfo: 50})
 					}
 					else {
+						console.log("before else")
 						that.saveExitAnswer();
 						// that.nextQuestion();
 					}
 				}
 				else {
-
-					that.startTimer();
+					if(this.state.stopTimer == false){
+						that.startTimer();
+					}
 				}
 			}, 1000);
 		}
@@ -911,7 +975,7 @@ class StartRound extends Component {
 						var currentTime = parseInt(fields['timeLimit']);
 					}
 
-				 
+				
 					
 
 					if (fields['timeAlloted'] === undefined) {
@@ -1051,6 +1115,7 @@ class StartRound extends Component {
 
 
 	countScore(index) {
+		console.log("inside count score")
 		if (this.state.listArr.length > 0 && this.state.listArr[index] !== undefined) {
 			var score = 0;
 			if (this.state.listArr[index]['isAnswerTrue']) {
@@ -1092,6 +1157,15 @@ class StartRound extends Component {
 				this.setState({ totalScore: this.state.totalScore + score })
 
 			});
+
+
+			socket_2.emit("submitQuestion",({roomID:this.state.roomIdd,resultInfo:{"helo":"hi"},userId}))
+			console.log("before ismoderator");
+			if(this.props.isModerator){
+				this.moderatorNextQue();
+				console.log("inside ismoderator");
+			}
+
 		}
 	}
 
@@ -1477,27 +1551,27 @@ class StartRound extends Component {
 														<circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
 														<span id="base-timer-label" class="base-timer__label"></span>
 														{ /*(this.state.listArr[this.state.indexQuestion]) ?
-				                                  	var dasharray = this.state.listArr[this.state.indexQuestion]['timeLimit'] + ' 283';					                        
-							                        <path id="base-timer-path-remaining" stroke-dasharray={dasharray} class="base-timer__path-remaining red" d="
-				                                      M 50, 50
-				                                      m -45, 0
-				                                      a 45,45 0 1,0 90,0
-				                                      a 45,45 0 1,0 -90,0
-				                                    "></path>
-							                        :
-							                        <path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
-				                                      M 50, 50
-				                                      m -45, 0
-				                                      a 45,45 0 1,0 90,0
-				                                      a 45,45 0 1,0 -90,0
-				                                    "></path>*/
+													var dasharray = this.state.listArr[this.state.indexQuestion]['timeLimit'] + ' 283';					                        
+													<path id="base-timer-path-remaining" stroke-dasharray={dasharray} class="base-timer__path-remaining red" d="
+													M 50, 50
+													m -45, 0
+													a 45,45 0 1,0 90,0
+													a 45,45 0 1,0 -90,0
+													"></path>
+													:
+													<path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
+													M 50, 50
+													m -45, 0
+													a 45,45 0 1,0 90,0
+													a 45,45 0 1,0 -90,0
+													"></path>*/
 														}
 														<path id="base-timer-path-remaining" stroke-dasharray=" 283" class="base-timer__path-remaining red" d="
-				                                      M 50, 50
-				                                      m -45, 0
-				                                      a 45,45 0 1,0 90,0
-				                                      a 45,45 0 1,0 -90,0
-				                                    "></path>
+													M 50, 50
+													m -45, 0
+													a 45,45 0 1,0 90,0
+													a 45,45 0 1,0 -90,0
+													"></path>
 
 													</g>
 												</svg>
@@ -1582,8 +1656,8 @@ class StartRound extends Component {
 														{this.state.listArr[this.state.indexQuestion]['fileType'] == "image" ? (
 															<div style={{
 																width: "100%",
-    															alignContent: "center",
-    															textAlign: "center",
+																alignContent: "center",
+																textAlign: "center",
 																marginBottom: "25px",
 															}}>
 																<img src={this.state.listArr[this.state.indexQuestion]['file']} style={{
@@ -1639,8 +1713,6 @@ class StartRound extends Component {
 
 															{/* SCORING NOT WORKING FOR FALSHCARD	 */}
 
-															{/* {
-																(this.state.isModerator)? */}
 															
 															
 														{(this.state.listArr[this.state.indexQuestion]['answerType'] === 4) ?(
@@ -1657,6 +1729,11 @@ class StartRound extends Component {
 
 														}}>{this.state.listArr[this.state.indexQuestion]['question']}</h3>
 														
+														{
+																(this.state.currentAssignedUser == userId)?(
+															<>
+
+
 														<ul style={{
 															color: "#0e0e0e",
 															listStyleType: "none",
@@ -1691,8 +1768,13 @@ class StartRound extends Component {
 														
 														
 														
+														</>):null}
 														</>
-														):(<h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>)}		
+														):(<h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3>)}	
+														
+														{
+															(this.state.currentAssignedUser == userId)?
+														<>
 														
 
 														{
@@ -1891,7 +1973,8 @@ class StartRound extends Component {
 															}
 
 														</div> 
-														{/* :(null) */}
+														
+															</>:null}
 
 
 
@@ -2066,7 +2149,7 @@ class StartRound extends Component {
 																				):(null)} */}
 
 																								{this.props.isModerator?
-																								<button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this._startRoundModerator.bind(this)}>Start Round</button>
+																								<button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this._startRoundModerator.bind(this,true)}>Start Round</button>
 																								: null}
 																								
 																								{/* <button style={{ minWidth: '150px' }} class="yellow_btn" type="button" onClick={this.playContest.bind(this)}>Start Round</button> */}
@@ -2135,23 +2218,23 @@ class StartRound extends Component {
 									</div>
 
 									{/* <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/title.svg" />
-                                            <input
-                                                required
-                                                type="text"
-                                                onChange={this.handleChange.bind(
-                                                    this,
-                                                    "title"
-                                                )}
-                                                value={
-                                                    this.state.fields["title"]
-                                                }
-                                            />
-                                            <label>Title</label>
-                                        </div>
-                                        <span className="error-msg">
-                                            {this.state.errors["title"]}
-                                        </span> */}
+											<img src="./murabbo/img/title.svg" />
+											<input
+												required
+												type="text"
+												onChange={this.handleChange.bind(
+													this,
+													"title"
+												)}
+												value={
+													this.state.fields["title"]
+												}
+											/>
+											<label>Title</label>
+										</div>
+										<span className="error-msg">
+											{this.state.errors["title"]}
+										</span> */}
 
 									<div className="cus_input input_wrap">
 										<img
