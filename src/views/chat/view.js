@@ -21,10 +21,10 @@ let peers = {};
 let bgcolor = ["#25afff","#b525ff","#31a56a"];
 
 
-const videoConstraints = {
-    width: { min:640 },
-    height: { min:480 },
-}
+// const videoConstraints = {
+//     width: { min:640 },
+//     height: { min:480 },
+// }
 
 // const videoConstraints = {
 //     width: { min: 22 },
@@ -259,7 +259,7 @@ const Room = React.memo(props => {
         });
         try {
             navigator.mediaDevices
-                .getUserMedia({ video: videoConstraints, audio: true })
+                .getUserMedia({ video: true, audio: true })
                 .then(stream => {
                     peerServer = new Peer(undefined, {
                         secure: false,
