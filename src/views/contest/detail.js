@@ -40,18 +40,18 @@ class Detail extends Component {
 
     componentDidMount() {
 
-        var that = this;
+    //     var that = this;
 
-        navigator.getMedia = ( navigator.getUserMedia || // use the proper vendor prefix
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.msGetUserMedia);
+    //     navigator.getMedia = ( navigator.getUserMedia || // use the proper vendor prefix
+    //         navigator.webkitGetUserMedia ||
+    //         navigator.mozGetUserMedia ||
+    //         navigator.msGetUserMedia);
 
-        navigator.getMedia({video: true}, function() {
-        that.setState({playBottom:true});
-    }, function() {
-        that.setState({playBottom:false});
-        });
+    //     navigator.getMedia({video: true}, function() {
+    //     that.setState({playBottom:true});
+    // }, function() {
+    //     that.setState({playBottom:false});
+    //     });
 
 
 
@@ -256,13 +256,10 @@ class Detail extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {
-                                                this.state.playBottom ?  
+                                              
 											<div style={{ marginBottom: '50px', textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play</button>
 							                </div>
-                                            : null
-                                            }
 					                        <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
 							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play without video</button>
 							                </div>
