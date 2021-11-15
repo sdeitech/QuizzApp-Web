@@ -22,8 +22,8 @@ let bgcolor = ["#25afff","#b525ff","#31a56a"];
 
 
 const videoConstraints = {
-    width: { min: 1024, ideal: 1280, max: 1920 },
-    height: { min: 576, ideal: 720, max: 1080 },
+    width: { min:640 },
+    height: { min:480 },
 }
 
 // const videoConstraints = {
