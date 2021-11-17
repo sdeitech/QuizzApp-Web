@@ -201,15 +201,19 @@ const Room = React.memo(props => {
     }
 
     const moderatorResponse = (socketId,status) => {
-        socketRef.current.emit("join-room-response-from-moderator", {
-            roomID: roomId, socketId: socketId, status
-        });
-        dispatch(removerequestSender({socketId:socketId}));
-        // setrequestSender(requestSender.filter(item => item.socketId != socketId));
-        if(requestSender.length == 0){
-            setrequestModel(false);
+        try{
+            socketRef.current.emit("join-room-response-from-moderator", {
+                roomID: roomId, socketId: socketId, status
+            });
+            dispatch(removerequestSender({socketId:socketId}));
+            // setrequestSender(requestSender.filter(item => item.socketId != socketId));
+            if(requestSender.length == 0){
+                setrequestModel(false);
+            }
+            console.log("response send is ", status);
+        }catch(error){
+            console.log("moderatorResponse error => ", error);
         }
-        console.log("response send is ", status);
 
     }
 
@@ -221,14 +225,18 @@ const Room = React.memo(props => {
     };
 
     const handleDisqualify = (joinedUserId, qualify) => {
-        let data = {
-            joinedUserId,
-            field: "qualify",
-            value: qualify
+        try{
+            let data = {
+                joinedUserId,
+                field: "qualify",
+                value: qualify
+            }
+            dispatch(setMuteUnmute(data));
+            console.log("moderator Disqualify", joinedUserId, qualify, roomId);
+            socketRef.current.emit("Disqualify", { joinedUserId, qualify, roomId });
+        }catch(error){
+            console.log("handleDisqualify error => ",error);
         }
-        dispatch(setMuteUnmute(data));
-        console.log("moderator Disqualify", joinedUserId, qualify, roomId);
-        socketRef.current.emit("Disqualify", { joinedUserId, qualify, roomId });
     }
 
 
@@ -340,13 +348,17 @@ const Room = React.memo(props => {
                     ////user disQualifiy by moderator
 
                     socketRef.current.on("user-Disqualify", ({ joinedUserId, qualify }) => {
-                        console.log(joinedUserId, qualify, "user-Disqualify")
-                        let data = {
-                            joinedUserId,
-                            field: "qualify",
-                            value: qualify
+                        try{
+                            console.log(joinedUserId, qualify, "user-Disqualify")
+                            let data = {
+                                joinedUserId,
+                                field: "qualify",
+                                value: qualify
+                            }
+                            dispatch(setMuteUnmute(data));
+                        }catch(error){
+                            console.log("user-Disqualify error => ",error);
                         }
-                        dispatch(setMuteUnmute(data));
                     })
 
 
