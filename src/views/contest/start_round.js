@@ -1466,11 +1466,9 @@ class StartRound extends Component {
 					/>
 					{(!this.props.waitScreen) ? (
 						<>
-							<button type="button" class="btn btn-primary" id="hideButton" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
-						{(this.state.togglemodel)?
-					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Hide</span>:
-					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">Show</span>}
-					</button>
+							<a id="hideButton" style={{position:"absolute",right:"8px",backgroundColor: "#111b20",borderColor: "#4fc9e1"}} onClick={this.togglemodel.bind(this)}>
+					<img style={{width:"33px"}} src={(this.state.togglemodel)? "img/eye2.png":"img/eye-hide .png"} />
+					</a>
 
 
 					<section className="ff" id="exampleModalCenter"   style={{float:"right",position:"relative",width:'50%',top:"30px"}}>
