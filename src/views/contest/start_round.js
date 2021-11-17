@@ -124,7 +124,7 @@ class StartRound extends Component {
 			indexForUnscrambleAns:0,
 			roomActive:false,
 			togglemodel:true,
-			width:"50%",
+			width:"49%",
 			userId:JSON.parse(reactLocalStorage.get('userData')).userId,
 			connectedUserList:[],
 			currentAssignedUser:userId,
@@ -466,7 +466,7 @@ class StartRound extends Component {
 				}else{
 					this.setState({indexQuestion:this.state.indexQuestion+1});
 				}
-				// if(this.state.indexQuestion < this.state.listArr.length){
+				// if(this.state.indexQuestion < this.state.listArr.length){cate-box2
 				// 	this.setState({indexQuestion: this.state.indexQuestion+1}) 
 				// }
 			}else{
@@ -813,6 +813,7 @@ class StartRound extends Component {
 				console.log("in get Question");
 				this.unscrambleWords();
 			}else{
+				this.setState({stopTimer:false})
 				this.startTimer();
 			}
 		});	
@@ -947,7 +948,7 @@ class StartRound extends Component {
 					}
 				}
 				else {
-					if(this.state.stopTimer == false){
+					if(that.state.stopTimer == false){
 						that.startTimer();
 					}
 				}
@@ -1444,11 +1445,8 @@ class StartRound extends Component {
 			$("#exampleModalCenter").hide();
 			this.setState({togglemodel:false,width:"100%"});
 		}else{
-			// targetDiv.style.cssText= `display: contents;
-			// transition: opacity 20s ease-in 4s;
-			// opacity:0;`
 			$("#exampleModalCenter").show();
-			this.setState({togglemodel:true,width:"50%"});
+			this.setState({togglemodel:true,width:"49%"});
 		}
 	}
 
@@ -2104,7 +2102,7 @@ class StartRound extends Component {
 
 								<div class="col-lg-12 col-md-1 col-12">
 									<div class="cate-box2" >
-										<img src='img/undo.svg' className="undo_btn" onClick={() => { this.props.history.push('/dashboard') }} />
+										{/* <img src='img/undo.svg' className="undo_btn" onClick={() => { this.props.history.push('/dashboard') }} /> */}
 										<img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png'} alt="Game" className="main" />
 										<div class="cat_title2">
 											<div className="detailContestWithRoundList">
