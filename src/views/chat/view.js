@@ -13,6 +13,7 @@ import {
     CModalBody,
 } from '@coreui/react';
 import socket from "socket.io-client/lib/socket";
+import hark from "hark";
 
 
 let peerServer;
@@ -275,6 +276,21 @@ const Room = React.memo(props => {
                         }
                     });
 
+
+                    var speechEvents = hark(stream);
+
+                    speechEvents.on('speaking', function() {
+                        console.log('speaking');
+
+                        socketRef.current.emit("user-speaking",{joinedUserId:userId,speaking:true,roomId});
+                      });
+
+                      speechEvents.on('stopped_speaking', function() {
+                        console.log('stopped_speaking');
+                        socketRef.current.emit("user-speaking",{joinedUserId:userId,speaking:false,roomId});
+                      });
+
+
                     if (peerServer) {
                         console.log("peer connection => ", peerServer);
 
@@ -334,7 +350,7 @@ const Room = React.memo(props => {
                     })
 
 
-                    socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify, Video, Audio }) => {
+                    socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify, Video, Audio,speaking }) => {
                         try {
                             console.log("user connected => ", userId);
 
@@ -353,7 +369,8 @@ const Room = React.memo(props => {
                                             userData,
                                             qualify,
                                             Video,
-                                            Audio
+                                            Audio,
+                                            speaking
                                         }
                                         dispatch(setOtherUserStreams(data));
                                     }, 400);
@@ -496,10 +513,8 @@ const Room = React.memo(props => {
                     if (isModerator) {
                         socketRef.current.on("user-request-moderator", ({ userdata, socketId }) => {
                             dispatch(setrequestSender({userdata:userdata , socketId:socketId}))
-                            // setrequestSender([...requestSender,{ userdata:userdata , socketId:socketId}]);
                             setrequestModel(true);
-                            // setreqSenderSocketId(socketId);
-                            setforcerender(forcerender+1)
+                            setforcerender(forcerender+1);
                             console.log("reqest from ", requestSender);
                         });
                         
@@ -556,6 +571,16 @@ const Room = React.memo(props => {
                             value: true
                         }
                         console.log("user-video-unmuted>>>>>>>>>", data);
+                        dispatch(setMuteUnmute(data));
+                    });
+
+                    socketRef.current.on("speaking-user", ({ joinedUserId, speaking }) => {
+                        let data = {
+                            joinedUserId,
+                            field: "Speaking",
+                            value: speaking
+                        }
+                        console.log("speaking-user>>>>>>>>>", data);
                         dispatch(setMuteUnmute(data));
                     });
 
@@ -639,7 +664,7 @@ const Room = React.memo(props => {
 
     return (
         <>
-            <section className="" id="video" style={{ width: props.width }}>
+            <section className="" id="video" style={{ width: props.width,    position: "absolute" }}>
                 <ToastContainer
                     position="top-right"
                     autoClose={5000}
@@ -675,18 +700,13 @@ const Room = React.memo(props => {
                             {otherUserSteams.map((item, index, array) => {
                                 return (
                                     <div className={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
-                                        <div className={item.Video ? "video-inner-wrap video-center" : "video-inner-wrap video-center circle-body"} style={{position: "relative"}}>
+                                        <div className={"video-inner-wrap video-center circle-body"} style={{position: "relative",border : `${item.speaking?"3px solid #12b5cb":""}`}}>
                                             <Video key={index.toString()} item={item.stream} /> 
                                             {
                                                 item.Video ?null:
                                                 <div className="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width:"92"}}>
                                                         <img className="profile11" src={item.userData.image}></img>
-                                                        {/* :
-                                                        <img className="profile11" src={`https://ui-avatars.com/api/?name=${item.userData.name}&background=random`} ></img>
-                                                    // <div className="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
-                                                    //     <span className="initials">{item.userData.name.charAt(0).toUpperCase()}</span>
-                                                    // </div> 
-                                                    } */}
+
                                                     </div>
                                             }
                                             <a><img alt="" src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} /></a>
@@ -704,7 +724,7 @@ const Room = React.memo(props => {
                             <a onClick={muteAudio} >
                                 <img alt="" src={(isAudioMuted) ? "img/mute(1).png" : "img/mic1.png"} />
                             </a>
-                            <a onClick={() => setopenModelForMembers(true)} ><img alt="" src="img/group.png" /></a>
+                            <a onClick={() => setopenModelForMembers(true)} ><img alt="" src={openModelForMembers?"img/group2.png" :"img/group.png"} /></a>
                             <a onClick={() => setconfirmationModel(true)}><img className="video-end" alt="" src="img/call-end.png" /></a>
                         </div>
                     </div>
@@ -788,11 +808,9 @@ const Room = React.memo(props => {
                                                                     color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
                                                                 }}>{item.userdata.name}</h5>
                                                             </div>
-                                                            <div className="icons-members" style={{
-                                                                top: "18px !important"
-                                                            }}>
-                                                                <img src="img/correct-green.png" width="26px" height="23px" alt="callRight" onClick={() => moderatorResponse(item.socketId,true)} style={{ position: "relative", top: "5px" }}/>
-                                                                <img src="img/close.png" width="26px" height="23px" onClick={() => moderatorResponse(item.socketId,false)} style={{ position: "relative", top: "5px" }} />
+                                                            <div className="icons-members2">
+                                                                <img src="img/correct-green.png" width="37px"  alt="callRight" onClick={() => moderatorResponse(item.socketId,true)} />
+                                                                <img src="img/close.png" width="37px"  onClick={() => moderatorResponse(item.socketId,false)}  />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -873,8 +891,8 @@ const Room = React.memo(props => {
                                                                 <div className="icons-members" style={{
                                                                     top: "18px !important"
                                                                 }}>
-                                                                    <img src={(isAudioMuted==false) ? "img/mic1.png" : "img/mute(1).png"} width="33px" alt="callMic" />
-                                                                    <img src={(isVideoMuted==false) ? "img/camera.png" : "img/camera-off(1).png"} width="33px" alt="ccallCam" />
+                                                                    <img src={(isAudioMuted==false) ? "img/mic2.png" : "img/mute2.png"} width="49px" alt="callMic" />
+                                                                    <img src={(isVideoMuted==false) ? "img/cam2.png" : "img/cam-off2.png"} width="49px" alt="ccallCam" />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -897,23 +915,23 @@ const Room = React.memo(props => {
                                                                     }}>{item.userData.name}</h5>
                                                                 </div>
                                                                 <div className="icons-members" style={{
-                                                                    top: "18px !important"
+                                                                    top: "8px !important"
                                                                 }}>
                                                                     {
                                                                         isModerator ?
                                                                             item.qualify ?
                                                                                 <a onClick={() => handleDisqualify(item.userData._id, false)}>
-                                                                                    <img src="img/correct-green.png" width="26px" height="23px" alt="callRight" style={{ position: "relative", top: "5px" }} />
+                                                                                    <img src="img/rigth2.png" width="49px"  alt="callRight"  />
                                                                                 </a>
                                                                                 :
                                                                                 <a onClick={() => handleDisqualify(item.userData._id, true)}>
-                                                                                    <img src="img/close.png" width="26px" height="23px" style={{ position: "relative", top: "5px" }} />
+                                                                                    <img src="img/close.png" width="49px"  />
                                                                                 </a>
                                                                             :
                                                                             null
                                                                     }
-                                                                    <img src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} width="33px" alt="callMic" />
-                                                                    <img src={(item.Video) ? "img/camera.png" : "img/camera-off(1).png"} width="33px" alt="ccallCam" />
+                                                                    <img src={(item.Audio) ? "img/mic2.png" : "img/mute2.png"} width="49px" alt="callMic" />
+                                                                    <img src={(item.Video) ? "img/cam2.png" : "img/cam-off2.png"} width="49px" alt="ccallCam" />
                                                                 </div>
                                                             </div>
                                                         </div>

@@ -73,13 +73,23 @@ const socketReducers = (state = initialData, action) => {
 			let updatemuteuser = users.map(item => 
 				{
 					if(item.joinedUserId == joinedUserId){
-						if(field == "Video"){
-							item.Video = value
-						}else if(field == "Audio"){
-							item.Audio = value
-						}else{
-							item.qualify = value
-						}
+						switch(field){
+							case "Video" :
+								item.Video = value;
+								break;
+							
+							case "Audio" :
+								item.Audio = value;
+								break;
+								
+							case "qualify":
+								item.qualify = value;
+								break;
+							
+							case "Speaking":
+								item.speaking = value;
+								break;
+							}
 
 						return item
 					}else{
