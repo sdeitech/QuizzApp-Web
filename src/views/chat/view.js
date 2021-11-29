@@ -7,7 +7,8 @@ import { reactLocalStorage } from "reactjs-localstorage";
 import { ToastContainer, toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { joinRoomReqSend, setWaitScreen, setOtherUserStreams, RemoveOtherUserStreams, updateOthetUserStream, setSocket, setMuteUnmute, setrequestSender,removerequestSender } from '../../actions/socketAction';
+import { browserName, browserVersion } from "react-device-detect";
+import { joinRoomReqSend, setWaitScreen, setOtherUserStreams, RemoveOtherUserStreams, RemoveOtherUserStreamsWithUserId, updateOthetUserStream, setSocket, setMuteUnmute, setrequestSender,removerequestSender } from '../../actions/socketAction';
 import {
     CModal,
     CModalBody,
@@ -21,11 +22,20 @@ let peerServer;
 let peers = {};
 let bgcolor = ["#25afff","#b525ff","#31a56a"];
 
+console.log(browserName,"browserName");
+let videoConstraints;
+if(browserName != "Safari"){
+     videoConstraints = {
+        width: 320 ,
+        height: 240 
+    }
+}else{
+    videoConstraints = {
+        width: 720 ,
+        height:540 
+    }
+}
 
-// const videoConstraints = {
-//     width: { min:640 },
-//     height: { min:480 },
-// }
 
 // const videoConstraints = {
 //     width: { min: 22 },
@@ -268,7 +278,7 @@ const Room = React.memo(props => {
         });
         try {
             navigator.mediaDevices
-                .getUserMedia({ video: true, audio: true })
+                .getUserMedia({ video: videoConstraints, audio: true })
                 .then(stream => {
                     peerServer = new Peer(undefined, {
                         secure: false,
@@ -513,7 +523,7 @@ const Room = React.memo(props => {
                                 removedStream.release();
                             }
 
-                            dispatch(RemoveOtherUserStreams(streamId));
+                            dispatch(RemoveOtherUserStreamsWithUserId(userId));
 
                             if (peers[userId]) { peers[userId].close(); }
                         } catch (error) {

@@ -4,6 +4,7 @@ export const setRoomCreatorId = (data) => ({ type: "ROOM_CREATOR_ID", data: data
 export const setWaitScreen = (data) => ({ type: "WAIT_SCREEN", data: data });
 export const setOtherUserStreams = (data) => ({ type: "SET_OTHER_USER_STREAM", data: data });
 export const RemoveOtherUserStreams = (data) => ({ type: "REMOVE_OTHER_USER_STREAM", data: data });
+export const RemoveOtherUserStreamsWithUserId = (data) => ({ type: "REMOVE_OTHER_USER_STREAM_WITH_USERID", data: data });
 export const clearOthetUserStream = (data) => ({ type: "CLEAR_OTHER_USER_STREAM", data: data });
 export const updateOthetUserStream = (data) => ({ type: "UPDATE_OTHER_USER_STREAM", data: data });
 export const setRoomId = (data) => ({ type: "SET_ROOMID", data: data });

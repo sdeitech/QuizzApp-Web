@@ -64,6 +64,14 @@ const socketReducers = (state = initialData, action) => {
 			...state,
 			otherUserSteams: member
 		}
+		case 'REMOVE_OTHER_USER_STREAM_WITH_USERID':
+		
+		let member1 = [...state.otherUserSteams];	
+		member1 = member1.filter(x => x.joinedUserId !=  action.data );
+		return {
+			...state,
+			otherUserSteams: member1
+		}
 
 		case 'USER_MUTE_UNMUTE':
 			let joinedUserId = action.data.joinedUserId;
