@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Room from "../chat/view"
+import config from "./../../config"
 import {
 	TheFooter,
 	TheHeaderInner
@@ -29,8 +30,8 @@ let userId = JSON.parse(reactLocalStorage.get('userData')).userId;
 
 
 
-const API_URI_2 = `https://dev-api.murabbo.com`;
-// const API_URI_2 = `http://localhost:9002`;
+// const API_URI_2 = `https://dev-api.murabbo.com`;
+const API_URI_2 = config.apiURL;
 let socket_2;
 // if (!socket_2) {
 // 	socket_2  = io(API_URI_2, {

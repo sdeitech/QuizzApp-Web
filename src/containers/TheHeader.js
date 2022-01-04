@@ -467,6 +467,9 @@ class TheHeader extends Component {
                         this.setState({ tosterMsg: data.message, isLoading: false });
                         return false;
                     }
+                }).catch((error) => {
+                    this.setState({ tosterMsg: error.message, isLoading: false });
+                    return false;
                 });
         }
     }
