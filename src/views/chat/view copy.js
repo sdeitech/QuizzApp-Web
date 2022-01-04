@@ -7,7 +7,7 @@ import { reactLocalStorage } from "reactjs-localstorage";
 import { ToastContainer, toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { joinRoomReqSend, setWaitScreen, setOtherUserStreams, RemoveOtherUserStreams, updateOthetUserStream, setSocket, setMuteUnmute, setrequestSender,removerequestSender } from '../../actions/socketAction';
+import { joinRoomReqSend, setWaitScreen, setOtherUserStreams, RemoveOtherUserStreams, updateOthetUserStream, setSocket, setMuteUnmute, setrequestSender, removerequestSender } from '../../actions/socketAction';
 import {
     CModal,
     CModalBody,
@@ -19,7 +19,7 @@ import hark from "hark";
 let peerServer;
 
 let peers = {};
-let bgcolor = ["#25afff","#b525ff","#31a56a"];
+let bgcolor = ["#25afff", "#b525ff", "#31a56a"];
 
 
 // const videoConstraints = {
@@ -32,7 +32,7 @@ let bgcolor = ["#25afff","#b525ff","#31a56a"];
 //     height: { min: 33 }
 // }
 
- const Video = React.memo((props)  => {
+const Video = React.memo((props) => {
     const ref = useRef();
 
     useEffect(() => {
@@ -92,7 +92,7 @@ const Room = React.memo(props => {
     // socketRef.current = props.socket;
 
 
-   
+
     const cameraOff = () => {
         if (isVideoMuted) {
             setVideoMuted(false);
@@ -200,18 +200,18 @@ const Room = React.memo(props => {
         }
     }
 
-    const moderatorResponse = (socketId,status) => {
-        try{
+    const moderatorResponse = (socketId, status) => {
+        try {
             socketRef.current.emit("join-room-response-from-moderator", {
                 roomID: roomId, socketId: socketId, status
             });
-            dispatch(removerequestSender({socketId:socketId}));
+            dispatch(removerequestSender({ socketId: socketId }));
             // setrequestSender(requestSender.filter(item => item.socketId != socketId));
-            if(requestSender.length == 0){
+            if (requestSender.length == 0) {
                 setrequestModel(false);
             }
             console.log("response send is ", status);
-        }catch(error){
+        } catch (error) {
             console.log("moderatorResponse error => ", error);
         }
 
@@ -225,7 +225,7 @@ const Room = React.memo(props => {
     };
 
     const handleDisqualify = (joinedUserId, qualify) => {
-        try{
+        try {
             let data = {
                 joinedUserId,
                 field: "qualify",
@@ -234,15 +234,15 @@ const Room = React.memo(props => {
             dispatch(setMuteUnmute(data));
             console.log("moderator Disqualify", joinedUserId, qualify, roomId);
             socketRef.current.emit("Disqualify", { joinedUserId, qualify, roomId });
-        }catch(error){
-            console.log("handleDisqualify error => ",error);
+        } catch (error) {
+            console.log("handleDisqualify error => ", error);
         }
     }
 
 
     useEffect(() => {
         console.log("isModerator", isModerator)
-       
+
         //////moderator reponse from server;
 
         socketRef.current.on("req-response-from-server", status => {
@@ -287,16 +287,16 @@ const Room = React.memo(props => {
 
                     var speechEvents = hark(stream);
 
-                    speechEvents.on('speaking', function() {
+                    speechEvents.on('speaking', function () {
                         console.log('speaking');
 
-                        socketRef.current.emit("user-speaking",{joinedUserId:userId,speaking:true,roomId});
-                      });
+                        socketRef.current.emit("user-speaking", { joinedUserId: userId, speaking: true, roomId });
+                    });
 
-                      speechEvents.on('stopped_speaking', function() {
+                    speechEvents.on('stopped_speaking', function () {
                         console.log('stopped_speaking');
-                        socketRef.current.emit("user-speaking",{joinedUserId:userId,speaking:false,roomId});
-                      });
+                        socketRef.current.emit("user-speaking", { joinedUserId: userId, speaking: false, roomId });
+                    });
 
 
                     if (peerServer) {
@@ -348,7 +348,7 @@ const Room = React.memo(props => {
                     ////user disQualifiy by moderator
 
                     socketRef.current.on("user-Disqualify", ({ joinedUserId, qualify }) => {
-                        try{
+                        try {
                             console.log(joinedUserId, qualify, "user-Disqualify")
                             let data = {
                                 joinedUserId,
@@ -356,13 +356,13 @@ const Room = React.memo(props => {
                                 value: qualify
                             }
                             dispatch(setMuteUnmute(data));
-                        }catch(error){
-                            console.log("user-Disqualify error => ",error);
+                        } catch (error) {
+                            console.log("user-Disqualify error => ", error);
                         }
                     })
 
 
-                    socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify, Video, Audio,speaking }) => {
+                    socketRef.current.on("user-connected", ({ userId, joinedUserId, userData, qualify, Video, Audio, speaking }) => {
                         try {
                             console.log("user connected => ", userId);
 
@@ -524,22 +524,22 @@ const Room = React.memo(props => {
 
                     if (isModerator) {
                         socketRef.current.on("user-request-moderator", ({ userdata, socketId }) => {
-                            dispatch(setrequestSender({userdata:userdata , socketId:socketId}))
+                            dispatch(setrequestSender({ userdata: userdata, socketId: socketId }))
                             setrequestModel(true);
-                            setforcerender(forcerender+1);
+                            setforcerender(forcerender + 1);
                             console.log("reqest from ", requestSender);
                         });
-                        
-                        socketRef.current.on("requested-user-disconnected",(socketId) =>{
+
+                        socketRef.current.on("requested-user-disconnected", (socketId) => {
                             console.log("reqest disconnecty from ", socketId);
-                            
+
                             dispatch(removerequestSender(socketId));
                         });;
-    
+
 
                     }
 
-                    
+
                     socketRef.current.on("user-muted", ({ userId, joinedUserId, streamId }) => {
                         let data = {
                             joinedUserId,
@@ -676,7 +676,7 @@ const Room = React.memo(props => {
 
     return (
         <>
-            <section className="" id="video" style={{ width: props.width,    position: "absolute" }}>
+            <section className="" id="video" style={{ width: props.width, position: "absolute" }}>
                 <ToastContainer
                     position="top-right"
                     autoClose={5000}
@@ -686,37 +686,37 @@ const Room = React.memo(props => {
                     <div className="video-wrapper">
                         <div className="video-previe video-center">
 
-                            <div className={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
-                                <div className="video-inner-wrap video-center circle-body" style={{position: "relative"}}>
-                                    <video ref={userVideo} muted autoPlay /> 
+                            <div className={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{ position: "relative" }}>
+                                <div className="video-inner-wrap video-center circle-body" style={{ position: "relative" }}>
+                                    <video ref={userVideo} muted autoPlay />
                                 </div>
                                 {
-                                                isVideoMuted ?
-                                                <div className="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width: `${otherUserSteams.length == 0 ?"96%":"92%"}`}}>
-                                                   { profilePic?
+                                    isVideoMuted ?
+                                        <div className="video-inner-wrap video-center circle-body inline" style={{ position: "absolute", width: `${otherUserSteams.length == 0 ? "96%" : "92%"}` }}>
+                                            {profilePic ?
                                                 <img className="profile11" src={profilePic}></img>
-                                                
+
                                                 :
                                                 <>
-                                                <img className="profile11" src={`https://ui-avatars.com/api/?name=${username}&background=random`} ></img>
+                                                    <img className="profile11" src={`https://ui-avatars.com/api/?name=${username}&background=random`} ></img>
                                                     {/* <div className="circle" style={{backgroundColor: `${bgcolor[Math.floor(Math.random() * bgcolor.length)]}`}}>
                                                         
                                                         <span className="initials">{username.charAt(0).toUpperCase()}</span> */}
                                                     {/* </div> */}
-                                                     </>}
-                                                    </div>: null
-                                            }
+                                                </>}
+                                        </div> : null
+                                }
                             </div>
 
 
                             {otherUserSteams.map((item, index, array) => {
                                 return (
-                                    <div className={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{position: "relative"}}>
-                                        <div className={"video-inner-wrap video-center circle-body"} style={{position: "relative",border : `${item.speaking?"3px solid #12b5cb":""}`}}>
-                                            <Video key={index.toString()} item={item.stream} /> 
+                                    <div className={otherUserSteams.length == 0 ? "video-person1" : otherUserSteams.length == 1 ? "video-person2" : "video-person3"} style={{ position: "relative" }}>
+                                        <div className={"video-inner-wrap video-center circle-body"} style={{ position: "relative", border: `${item.speaking ? "3px solid #12b5cb" : ""}` }}>
+                                            <Video key={index.toString()} item={item.stream} />
                                             {
-                                                item.Video ?null:
-                                                <div className="video-inner-wrap video-center circle-body inline" style={{position: "absolute",width:"92"}}>
+                                                item.Video ? null :
+                                                    <div className="video-inner-wrap video-center circle-body inline" style={{ position: "absolute", width: "92" }}>
                                                         <img className="profile11" src={item.userData.image}></img>
 
                                                     </div>
@@ -736,7 +736,7 @@ const Room = React.memo(props => {
                             <a onClick={muteAudio} >
                                 <img alt="" src={(isAudioMuted) ? "img/mute(1).png" : "img/mic1.png"} />
                             </a>
-                            <a onClick={() => setopenModelForMembers(true)} ><img alt="" src={openModelForMembers?"img/group2.png" :"img/group.png"} /></a>
+                            <a onClick={() => setopenModelForMembers(true)} ><img alt="" src={openModelForMembers ? "img/group2.png" : "img/group.png"} /></a>
                             <a onClick={() => setconfirmationModel(true)}><img className="video-end" alt="" src="img/call-end.png" /></a>
                         </div>
                     </div>
@@ -786,58 +786,58 @@ const Room = React.memo(props => {
 
 
                 <CModal show={requestModel} closeOnBackdrop={true} onClose={() => setrequestModel(false)}
-                color="danger"
-                centered>
-                <CModalBody className="model-bg">
+                    color="danger"
+                    centered>
+                    <CModalBody className="model-bg">
 
-                    <div>
-                        <div className="modal-body">
+                        <div>
+                            <div className="modal-body">
 
-                            <button type="button" className="close" onClick={() => setrequestModel(false)}>
-                                <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                            </button>
-                            <div className="model_data">
-                                <div className="model-title">
-                                    <h3>Join Request</h3>
-                                </div>
+                                <button type="button" className="close" onClick={() => setrequestModel(false)}>
+                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <h3>Join Request</h3>
+                                    </div>
 
-                                <div className="container">
-                                    <div className="row">
-                                    {requestSender.map(item => {
-                                            return (
-                                                <div className="col-md-12">
-                                                    <div className="_1st2-member two_no">
-                                                        <div className="_1stimg">
-                                                            <div className="memberImg_">
-                                                                <img style={{
-                                                                    height: "50px",
-                                                                    width: "50px",
-                                                                    borderRadius: "50%"
-                                                                }} src={item.userdata.image == "" ? "avatars/placeholder-user.png" : item.userdata.image} />
-                                                            </div>
-                                                            <div className="member_details">
-                                                                <h5 style={{
-                                                                    color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
-                                                                }}>{item.userdata.name}</h5>
-                                                            </div>
-                                                            <div className="icons-members2">
-                                                                <img src="img/correct-green.png" width="37px"  alt="callRight" onClick={() => moderatorResponse(item.socketId,true)} />
-                                                                <img src="img/close.png" width="37px"  onClick={() => moderatorResponse(item.socketId,false)}  />
+                                    <div className="container">
+                                        <div className="row">
+                                            {requestSender.map(item => {
+                                                return (
+                                                    <div className="col-md-12">
+                                                        <div className="_1st2-member two_no">
+                                                            <div className="_1stimg">
+                                                                <div className="memberImg_">
+                                                                    <img style={{
+                                                                        height: "50px",
+                                                                        width: "50px",
+                                                                        borderRadius: "50%"
+                                                                    }} src={item.userdata.image == "" ? "avatars/placeholder-user.png" : item.userdata.image} />
+                                                                </div>
+                                                                <div className="member_details">
+                                                                    <h5 style={{
+                                                                        color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
+                                                                    }}>{item.userdata.name}</h5>
+                                                                </div>
+                                                                <div className="icons-members2">
+                                                                    <img src="img/correct-green.png" width="37px" alt="callRight" onClick={() => moderatorResponse(item.socketId, true)} />
+                                                                    <img src="img/close.png" width="37px" onClick={() => moderatorResponse(item.socketId, false)} />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            );
-                                        })}
+                                                );
+                                            })}
 
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </CModalBody>
-            </CModal>
+                    </CModalBody>
+                </CModal>
 
 
                 <CModal show={moderatorLeave} closeOnBackdrop={false} onClose={() => setrequestModel(false)}
@@ -885,30 +885,30 @@ const Room = React.memo(props => {
 
                                     <div className="container">
                                         <div className="row">
-                                        <div className="col-md-12">
-                                                        <div className="_1st2-member two_no">
-                                                            <div className="_1stimg">
-                                                                <div className="memberImg_">
-                                                                    <img style={{
-                                                                        height: "50px",
-                                                                        width: "50px",
-                                                                        borderRadius: "50%"
-                                                                    }} src={profilePic == "" ? `https://ui-avatars.com/api/?name=${username}&background=random` : profilePic} />
-                                                                </div>
-                                                                <div className="member_details">
-                                                                    <h5 style={{
-                                                                        color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
-                                                                    }}>{username}</h5>
-                                                                </div>
-                                                                <div className="icons-members" style={{
-                                                                    top: "18px !important"
-                                                                }}>
-                                                                    <img src={(isAudioMuted==false) ? "img/mic2.png" : "img/mute2.png"} width="49px" alt="callMic" />
-                                                                    <img src={(isVideoMuted==false) ? "img/cam2.png" : "img/cam-off2.png"} width="49px" alt="ccallCam" />
-                                                                </div>
-                                                            </div>
+                                            <div className="col-md-12">
+                                                <div className="_1st2-member two_no">
+                                                    <div className="_1stimg">
+                                                        <div className="memberImg_">
+                                                            <img style={{
+                                                                height: "50px",
+                                                                width: "50px",
+                                                                borderRadius: "50%"
+                                                            }} src={profilePic == "" ? `https://ui-avatars.com/api/?name=${username}&background=random` : profilePic} />
+                                                        </div>
+                                                        <div className="member_details">
+                                                            <h5 style={{
+                                                                color: "#fff", marginBottom: "0 !important", position: "relative", top: "10px"
+                                                            }}>{username}</h5>
+                                                        </div>
+                                                        <div className="icons-members" style={{
+                                                            top: "18px !important"
+                                                        }}>
+                                                            <img src={(isAudioMuted == false) ? "img/mic2.png" : "img/mute2.png"} width="49px" alt="callMic" />
+                                                            <img src={(isVideoMuted == false) ? "img/cam2.png" : "img/cam-off2.png"} width="49px" alt="ccallCam" />
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
                                             {otherUserSteams.map(item => {
                                                 return (
                                                     <div className="col-md-12">
@@ -933,11 +933,11 @@ const Room = React.memo(props => {
                                                                         isModerator ?
                                                                             item.qualify ?
                                                                                 <a onClick={() => handleDisqualify(item.userData._id, false)}>
-                                                                                    <img src="img/rigth2.png" width="49px"  alt="callRight"  />
+                                                                                    <img src="img/rigth2.png" width="49px" alt="callRight" />
                                                                                 </a>
                                                                                 :
                                                                                 <a onClick={() => handleDisqualify(item.userData._id, true)}>
-                                                                                    <img src="img/close.png" width="49px"  />
+                                                                                    <img src="img/close.png" width="49px" />
                                                                                 </a>
                                                                             :
                                                                             null
