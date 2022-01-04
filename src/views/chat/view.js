@@ -234,7 +234,7 @@ const Room = React.memo(props => {
         });
         try {
             navigator.mediaDevices
-                .getUserMedia({ video: videoConstraints, audio: true })
+                .getUserMedia({ video: true, audio: true })
                 .then(stream => {
                     peerServer = new Peer(undefined, {
                         secure: false,
@@ -481,8 +481,8 @@ const Room = React.memo(props => {
                     //             removedStream.getTracks().forEach(track => track.stop());
                     //             removedStream.release();
                     //         }
+
                     //         dispatch(RemoveOtherUserStreams(streamId));
-                            // dispatch(RemoveOtherUserStreamsWithUserId(userId));
 
                     //         if (peers[userId]) { peers[userId].close(); }
                     //     } catch (error) {
