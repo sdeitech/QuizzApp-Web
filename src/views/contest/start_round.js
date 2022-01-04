@@ -72,6 +72,9 @@ let socket_2;
 		setSocket: (date) => dispatch(setSocket(date)),
 	});
 class StartRound extends Component {
+	
+
+	
 	constructor(props) {
 		super(props);
 		let roomUrl = window.location.href;
@@ -163,9 +166,6 @@ class StartRound extends Component {
 
 
 	componentDidMount() {
-
-	
-
 		
 		this.getRoomDetails();
 		var roomID = this.state.roomIdd;
