@@ -690,7 +690,7 @@ const Room = React.memo(props => {
 
                                                     </div>
                                             }
-                                            <a href={"#null"}><img alt="" src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} /></a>
+                                            <a ><img alt="" src={(item.Audio) ? "img/mic1.png" : "img/mute(1).png"} /></a>
                                         </div>
                                     </div>
                                 );
@@ -699,14 +699,14 @@ const Room = React.memo(props => {
                     </div>
                     <div className="video-bottom-bar" style={{ width: props.width }}>
                         <div className="video-wrapper video-center">
-                            <a href={"#null"} onClick={cameraOff} >
+                            <a  onClick={cameraOff} >
                                 <img alt="" src={(isVideoMuted) ? "img/camera-off(1).png" : "img/camera.png"} />
                             </a>
-                            <a href={"#null"} onClick={muteAudio} >
+                            <a  onClick={muteAudio} >
                                 <img alt="" src={(isAudioMuted) ? "img/mute(1).png" : "img/mic1.png"} />
                             </a>
-                            <a href={"#null"} onClick={() => setopenModelForMembers(true)} ><img alt="" src={openModelForMembers ? "img/group2.png" : "img/group.png"} /></a>
-                            <a href={"#null"} onClick={() => setconfirmationModel(true)}><img alt="" className="video-end" src="img/call-end.png" /></a>
+                            <a  onClick={() => setopenModelForMembers(true)} ><img alt="" src={openModelForMembers ? "img/group2.png" : "img/group.png"} /></a>
+                            <a  onClick={() => setconfirmationModel(true)}><img alt="" className="video-end" src="img/call-end.png" /></a>
                         </div>
                     </div>
                 </div>
@@ -901,11 +901,11 @@ const Room = React.memo(props => {
                                                                     {
                                                                         isModerator ?
                                                                             item.qualify ?
-                                                                                <a href={"#null"} onClick={() => handleDisqualify(item.userData._id, false)}>
+                                                                                <a  onClick={() => handleDisqualify(item.userData._id, false)}>
                                                                                     <img alt="" src="img/rigth2.png" width="49px" />
                                                                                 </a>
                                                                                 :
-                                                                                <a href={"#null"} onClick={() => handleDisqualify(item.userData._id, true)}>
+                                                                                <a  onClick={() => handleDisqualify(item.userData._id, true)}>
                                                                                     <img alt="" src="img/close.png" width="49px" />
                                                                                 </a>
                                                                             :
