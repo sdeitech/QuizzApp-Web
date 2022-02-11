@@ -9,7 +9,6 @@ import $ from "jquery";
 import RLDD from "react-list-drag-and-drop/lib/RLDD";
 let round_id, gameType;
 
-
 let maxQuestionsLimit;
 class RoundQuestion extends Component {
     constructor(props) {
@@ -44,7 +43,7 @@ class RoundQuestion extends Component {
                 }
             });
 
-            this.getSettings();
+        this.getSettings();
     }
     handleRLDDChange(newItems) {
         this.setState({ listArr: newItems });
@@ -73,9 +72,6 @@ class RoundQuestion extends Component {
             .then((data) => {
                 this.getList(round_id);
             });
-
-
-           
     }
 
     getList(round_id) {
@@ -146,39 +142,33 @@ class RoundQuestion extends Component {
             this.setState({ delete_id: id, confirmationModel: true });
         }
     }
-    getSettings(){
-        fetch(
-            configuration.baseURL +
-                "getQuestionsLimit",
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization:
-                        "Bearer " + reactLocalStorage.get("clientToken"),
-                },
-            }
-        )
+    getSettings() {
+        fetch(configuration.baseURL + "getQuestionsLimit", {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+            },
+        })
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
-                
-                    console.log(data.data);
+                console.log(data.data);
 
                 maxQuestionsLimit = data.data.maxQuestionLimit;
             });
     }
 
     addQuestion() {
-
-        if(this.state.listArr.length < maxQuestionsLimit){
+        if (this.state.listArr.length < maxQuestionsLimit) {
             this.props.history.push("/add_round_question/" + round_id);
-        }else{
-            return toast.error(`You can't add more than ${maxQuestionsLimit} questions in a round`);
+        } else {
+            return toast.error(
+                `You can't add more than ${maxQuestionsLimit} questions in a round`
+            );
         }
-      
     }
 
     editHandler(id) {
@@ -223,7 +213,11 @@ class RoundQuestion extends Component {
             <>
                 <TheHeaderInner />
                 <main id="main">
-                <ToastContainer position="top-right" autoClose={20000} style={{top:'80px'}}/>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={20000}
+                        style={{ top: "80px" }}
+                    />
                     <section id="contest" className="d-flex align-items-center">
                         <div className="container">
                             <div className="create-contest">
@@ -232,7 +226,14 @@ class RoundQuestion extends Component {
                                         <div className="col-md-12">
                                             <div className="main_title">
                                                 <h3>
-                                                    {gameType} Round {this.state.listArr.length == 0 ? ('Questions'): (this.state.listArr.length == 1 ? ('Question'):('Questions'))}
+                                                    {gameType} Round{" "}
+                                                    {this.state.listArr
+                                                        .length == 0
+                                                        ? "Questions"
+                                                        : this.state.listArr
+                                                              .length == 1
+                                                        ? "Question"
+                                                        : "Questions"}
                                                 </h3>
                                             </div>
                                         </div>
@@ -309,13 +310,12 @@ class RoundQuestion extends Component {
                                                                                 />
                                                                             ) : null}
                                                                         </div>
-                                                                    </div>  
+                                                                    </div>
                                                                     <div className="col-md-10">
                                                                         <div
                                                                             className="acc_title"
                                                                             style={{
-                                                                                cursor:
-                                                                                    "pointer",
+                                                                                cursor: "pointer",
                                                                             }}
                                                                         >
                                                                             <h4>
@@ -349,8 +349,7 @@ class RoundQuestion extends Component {
                                                                                     val._id
                                                                                 )}
                                                                                 style={{
-                                                                                    cursor:
-                                                                                        "pointer",
+                                                                                    cursor: "pointer",
                                                                                 }}
                                                                             >
                                                                                 <img src="./murabbo/img/close2.svg" />{" "}
@@ -364,8 +363,7 @@ class RoundQuestion extends Component {
                                                                                     val._id
                                                                                 )}
                                                                                 style={{
-                                                                                    cursor:
-                                                                                        "pointer",
+                                                                                    cursor: "pointer",
                                                                                 }}
                                                                             >
                                                                                 <img src="./murabbo/img/edit.svg" />{" "}
@@ -387,16 +385,14 @@ class RoundQuestion extends Component {
                                                                                                         <i
                                                                                                             className="fa fa-check-circle"
                                                                                                             style={{
-                                                                                                                cursor:
-                                                                                                                    "auto",
+                                                                                                                cursor: "auto",
                                                                                                             }}
                                                                                                         />
                                                                                                     ) : (
                                                                                                         <span
                                                                                                             className="fancy-circle no-border"
                                                                                                             style={{
-                                                                                                                cursor:
-                                                                                                                    "auto",
+                                                                                                                cursor: "auto",
                                                                                                             }}
                                                                                                         ></span>
                                                                                                     )}

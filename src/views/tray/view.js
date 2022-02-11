@@ -26,7 +26,7 @@ class RoundTray extends Component {
                 entriesPerRound: 4,
                 type: "2",
                 noOfQuestions: 3,
-                basePoints:100
+                basePoints: 100,
             },
             errors: {},
             openModelRoundAdd: false,
@@ -177,7 +177,7 @@ class RoundTray extends Component {
                             data[i]["id"] = i;
                         }
 
-                        if(data.playerType == 1){
+                        if (data.playerType == 1) {
                             console.log("Dddd");
                         }
                         this.setState({ listArr: data });
@@ -190,7 +190,9 @@ class RoundTray extends Component {
     getContest(contest_id1) {
         if (contest_id) {
             fetch(
-                configuration.baseURL + "contest/contest?contestId=" + contest_id1,
+                configuration.baseURL +
+                    "contest/contest?contestId=" +
+                    contest_id1,
                 {
                     method: "GET",
                     headers: {
@@ -207,21 +209,20 @@ class RoundTray extends Component {
                 .then((data) => {
                     if (data.data.length > 0) {
                         let data1 = data.data;
-                        
 
-                        if(data1[0].playerType == 1){
-                            
-                          this.state.gameTypeArr =  this.state.gameTypeArr.filter((e,i)=>{
-
-                            return e.type == "Hangman" || e.type == "MatchIt" || e.type == "Unscramble" || e.type == "GuessAndGo" || e.type == "Quiz"  
-                            
-                          })
-                            
-                            
+                        if (data1[0].playerType == 1) {
+                            this.state.gameTypeArr =
+                                this.state.gameTypeArr.filter((e, i) => {
+                                    return (
+                                        e.type == "Hangman" ||
+                                        e.type == "MatchIt" ||
+                                        e.type == "Unscramble" ||
+                                        e.type == "GuessAndGo" ||
+                                        e.type == "Quiz"
+                                    );
+                                });
                         }
-                       
                     } else {
-                       
                     }
                 });
         }
@@ -369,7 +370,7 @@ class RoundTray extends Component {
         } else {
             var currentTime = parseInt(data.timeLimit);
             var seconds = (currentTime % 60).toString(); //get the seconds using the modulus operator and convert to a string (so we can use length below)
-             var   minute = Math.floor(currentTime / 60).toString(); // get the hours and convert to a string
+            var minute = Math.floor(currentTime / 60).toString(); // get the hours and convert to a string
 
             //make sure we've got the right length for the seconds string
             if (seconds.length === 0) {
@@ -384,29 +385,25 @@ class RoundTray extends Component {
                 minute = "0" + minute;
             }
 
-            if(data.gameType === "Blank"){
+            if (data.gameType === "Blank") {
                 if (parseInt(minute) === 15 || parseInt(minute) > 15) {
                     minute = "15";
                     seconds = "00";
-                } else if (
-                    (parseInt(minute) === 0 && parseInt(seconds) === 0) 
-                ) {
+                } else if (parseInt(minute) === 0 && parseInt(seconds) === 0) {
                     minute = "00";
                     seconds = "30";
-                }else{
+                } else {
                     minute = minute;
                     seconds = seconds;
                 }
-            }else{
+            } else {
                 if (parseInt(minute) === 5 || parseInt(minute) > 5) {
                     minute = "05";
                     seconds = "00";
-                } else if (
-                    (parseInt(minute) === 0 && parseInt(seconds) === 0)
-                ) {
+                } else if (parseInt(minute) === 0 && parseInt(seconds) === 0) {
                     minute = "00";
                     seconds = "30";
-                }else{
+                } else {
                     minute = minute;
                     seconds = seconds;
                 }
@@ -426,16 +423,14 @@ class RoundTray extends Component {
         if (!data.onDemandNegativePoints) {
             data.onDemandNegativePoints = 25;
         }
-       if (data.hint == 1) {
-            data.negativeScoring= true;
+        if (data.hint == 1) {
+            data.negativeScoring = true;
         }
         if (data.hint == 1) {
-            data.hint=3;
-            data.scoring = 2
-
+            data.hint = 3;
+            data.scoring = 2;
         }
 
-        
         if (data.gameType === "MatchIt" || data.gameType === "Bingo") {
             console.log(111);
             if (!data.entriesPerRound) {
@@ -451,7 +446,7 @@ class RoundTray extends Component {
                 $(".GridRadio").each(function () {
                     var trueOrFalse =
                         Number($(this).attr("id")) ===
-                            Number(data.entriesPerRound)
+                        Number(data.entriesPerRound)
                             ? true
                             : false;
                     console.log(trueOrFalse);
@@ -474,11 +469,10 @@ class RoundTray extends Component {
                 fields[field] = e.target.value;
             }
         }
-        if (field === 'basePoints') {
-			fields['negativeBasePoints'] = 0;
-			fields['onDemandNegativePoints'] = 0;
-			
-		}
+        if (field === "basePoints") {
+            fields["negativeBasePoints"] = 0;
+            fields["onDemandNegativePoints"] = 0;
+        }
 
         if (field === "execution_mode" && e.target.value !== 1) {
             fields["negativeScoring"] = false;
@@ -511,15 +505,11 @@ class RoundTray extends Component {
 
         let errors = {};
 
-        if (this.state.fields[
-            "gameType"
-        ] === "Blank") {
-
+        if (this.state.fields["gameType"] === "Blank") {
             // if( this.state.fields.timeLimitSeconds >901 ){
             //     errors["time"] = "Please enter time less 15 minutes";
             //     formIsValid = false;
             // }
-
         }
         if (fields["title"].trim() === "") {
             errors["title"] = "Please enter title";
@@ -668,7 +658,7 @@ class RoundTray extends Component {
 
     saveExitHandler(check, e) {
         this.props.history.push("/contest");
-        
+
         /*if (check) {
             this.props.history.push('/contest');
         }
@@ -691,12 +681,7 @@ class RoundTray extends Component {
     }
 
     changeTime(sec) {
-
-        if (this.state.fields[
-            "gameType"
-        ] === "Blank") {
-
-
+        if (this.state.fields["gameType"] === "Blank") {
             var fields = this.state.fields;
             var currentTime = parseInt(fields.timeLimitSeconds),
                 newTime = currentTime + sec, //calculate the new time
@@ -715,29 +700,28 @@ class RoundTray extends Component {
             } else if (minute.length === 1) {
                 minute = "0" + minute;
             }
-                
+
             if (parseInt(minute) === 15 || parseInt(minute) > 15) {
                 minute = "15";
                 seconds = "00";
-                newTime = 900
+                newTime = 900;
             } else if (
                 parseInt(minute) < 1 &&
                 (parseInt(seconds) === 0 || parseInt(seconds) < 30)
             ) {
                 minute = "00";
                 seconds = "30";
-                newTime = 30
-          }
+                newTime = 30;
+            }
 
             fields["timeLimit"] = minute + ":" + seconds;
             fields["timeLimitSeconds"] = newTime;
             this.setState({ fields });
 
-
-            // if (parseInt(minute) === 15 || parseInt(minute) > 15) {    
+            // if (parseInt(minute) === 15 || parseInt(minute) > 15) {
 
             //     return;
-            // } 
+            // }
         } else {
             var fields = this.state.fields;
             var currentTime = parseInt(fields.timeLimitSeconds),
@@ -768,14 +752,13 @@ class RoundTray extends Component {
             ) {
                 minute = "00";
                 seconds = "30";
-                newTime = 30    
+                newTime = 30;
             }
 
             fields["timeLimit"] = minute + ":" + seconds;
             fields["timeLimitSeconds"] = newTime;
             this.setState({ fields });
         }
-
     }
 
     handleChangeGrid(data, e) {
@@ -958,19 +941,28 @@ class RoundTray extends Component {
                                                                 )}`}
                                                                 {val.title
                                                                     .length >
-                                                                    MAX_LENGTH
+                                                                MAX_LENGTH
                                                                     ? "..."
-                                                                    : ""}<br />
+                                                                    : ""}
+                                                                <br />
 
-                                                                {val.totalQuestions == 0 ? (null) : (
-                                                                    val.totalQuestions == 1 ? (val.totalQuestions + "  Question") : (val.totalQuestions + "  Questions")
-                                                                )}
-                                                                {val.gameType == "Blank" ? (humanizeDuration(val.timeLimit*1000)):(null)}
+                                                                {val.totalQuestions ==
+                                                                0
+                                                                    ? null
+                                                                    : val.totalQuestions ==
+                                                                      1
+                                                                    ? val.totalQuestions +
+                                                                      "  Question"
+                                                                    : val.totalQuestions +
+                                                                      "  Questions"}
+                                                                {val.gameType ==
+                                                                "Blank"
+                                                                    ? humanizeDuration(
+                                                                          val.timeLimit *
+                                                                              1000
+                                                                      )
+                                                                    : null}
                                                             </p>
-                                                         
-
-
-
                                                         </div>
                                                     </div>
                                                 );
@@ -1035,13 +1027,10 @@ class RoundTray extends Component {
                     <CModal
                         size="lg"
                         show={this.state.openModel}
-                        onClose={() =>{
-                            this.setState({ openModel: !this.state.openModel })
+                        onClose={() => {
+                            this.setState({ openModel: !this.state.openModel });
                             this.componentDidMount();
-                        }
-                            
-                           
-                        }
+                        }}
                         color="danger"
                         centered
                     >
@@ -1093,9 +1082,9 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "image"
                                                             ] == "image" ||
-                                                                this.state.fields[
+                                                            this.state.fields[
                                                                 "image"
-                                                                ] ? (
+                                                            ] ? (
                                                                 <span aria-hidden="true">
                                                                     <img
                                                                         className="close_svg"
@@ -1122,7 +1111,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                        "image"
+                                                                            "image"
                                                                         ]
                                                                     }
                                                                     alt=""
@@ -1158,7 +1147,7 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                            "image"
+                                                                "image"
                                                             ]
                                                         }
                                                     </span>
@@ -1180,7 +1169,7 @@ class RoundTray extends Component {
                                                             value={
                                                                 this.state
                                                                     .fields[
-                                                                "title"
+                                                                    "title"
                                                                 ]
                                                             }
                                                         />
@@ -1189,7 +1178,7 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                            "title"
+                                                                "title"
                                                             ]
                                                         }
                                                     </span>
@@ -1209,7 +1198,7 @@ class RoundTray extends Component {
                                                             value={
                                                                 this.state
                                                                     .fields[
-                                                                "description"
+                                                                    "description"
                                                                 ]
                                                             }
                                                         />
@@ -1234,7 +1223,7 @@ class RoundTray extends Component {
                                                                 value={
                                                                     this.state
                                                                         .fields[
-                                                                    "execution_mode"
+                                                                        "execution_mode"
                                                                     ]
                                                                 }
                                                                 required
@@ -1255,7 +1244,7 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                            "execution_mode"
+                                                                "execution_mode"
                                                             ]
                                                         }
                                                     </span>
@@ -1263,9 +1252,9 @@ class RoundTray extends Component {
                                                     {this.state.fields[
                                                         "gameType"
                                                     ] === "Bingo" ||
-                                                        this.state.fields[
+                                                    this.state.fields[
                                                         "gameType"
-                                                        ] === "MatchIt" ? (
+                                                    ] === "MatchIt" ? (
                                                         <div>
                                                             <div className="cus_input grid_cus_input">
                                                                 <label>
@@ -1352,7 +1341,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                        "type"
+                                                                            "type"
                                                                         ]
                                                                     }
                                                                     required
@@ -1367,7 +1356,7 @@ class RoundTray extends Component {
                                                                         .fields[
                                                                         "gameType"
                                                                     ] ===
-                                                                        "Bingo" ? (
+                                                                    "Bingo" ? (
                                                                         <option value="3">
                                                                             Number
                                                                         </option>
@@ -1378,7 +1367,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                        "gameType"
+                                                                            "gameType"
                                                                         ]
                                                                     }{" "}
                                                                     type
@@ -1418,7 +1407,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                "noOfQuestions"
+                                                                                    "noOfQuestions"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1431,7 +1420,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                "noOfQuestions"
+                                                                                    "noOfQuestions"
                                                                                 ]
                                                                             }
                                                                         </output>
@@ -1478,12 +1467,15 @@ class RoundTray extends Component {
                                                                 </span>
                                                                 <input
                                                                     type="text"
-                                                                    style={{letterSpacing:"4px"}}
+                                                                    style={{
+                                                                        letterSpacing:
+                                                                            "4px",
+                                                                    }}
                                                                     value={
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                        "timeLimit"
+                                                                            "timeLimit"
                                                                         ]
                                                                     }
                                                                 />
@@ -1505,8 +1497,9 @@ class RoundTray extends Component {
 
                                                             <span className="error-msg">
                                                                 {
-                                                                    this.state.errors[
-                                                                    "time"
+                                                                    this.state
+                                                                        .errors[
+                                                                        "time"
                                                                     ]
                                                                 }
                                                             </span>
@@ -1514,7 +1507,7 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "gameType"
                                                             ] ===
-                                                                "Blank" ? null : (
+                                                            "Blank" ? null : (
                                                                 <div>
                                                                     <div
                                                                         style={{
@@ -1543,7 +1536,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                "basePoints"
+                                                                                    "basePoints"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1562,7 +1555,7 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                "basePoints"
+                                                                                    "basePoints"
                                                                                 ]
                                                                             }
                                                                         </output>
@@ -1573,7 +1566,7 @@ class RoundTray extends Component {
                                                             {this.state.fields[
                                                                 "gameType"
                                                             ] ===
-                                                                "Blank" ? null : (
+                                                            "Blank" ? null : (
                                                                 <div
                                                                     style={{
                                                                         margin: "0px 0 5px 0",
@@ -1599,14 +1592,14 @@ class RoundTray extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                "negativeScoring"
+                                                                                    "negativeScoring"
                                                                                 ]
                                                                             }
                                                                             checked={
                                                                                 this
                                                                                     .state
                                                                                     .fields[
-                                                                                "negativeScoring"
+                                                                                    "negativeScoring"
                                                                                 ]
                                                                             }
                                                                             onChange={this.handleChange.bind(
@@ -1633,86 +1626,87 @@ class RoundTray extends Component {
                                                                 </div>
                                                             )}
 
-
-                                                            {this.state.fields["gameType"] === "Blank" ? null : (
-
-                                                                    this.state.fields[
-                                                                        "negativeScoring"
-                                                                    ] === true ? (
-                                                                        <div>
-                                                                            <div
-                                                                                style={{
-                                                                                    margin: "0px 0 5px 0",
-                                                                                }}
-                                                                                className="cus_input "
-                                                                            >
-                                                                                <label
-                                                                                    style={{
-                                                                                        paddingLeft:
-                                                                                            "5px",
-                                                                                    }}
-                                                                                    className="cus_label"
-                                                                                >
-                                                                                    Negative
-                                                                                    Base
-                                                                                    Points
-                                                                                    (0 -&nbsp;
-                                                                                    {this
-                                                                                        .state
-                                                                                        .fields[
-                                                                                        "basePoints"
-                                                                                    ]})
-                                                                                </label>
-                                                                            </div>
-                                                                            <div className="range-wrap">
-                                                                                <input
-                                                                                    min="0"
-                                                                                    max={this
-                                                                                        .state
-                                                                                        .fields[
-                                                                                        "basePoints"
-                                                                                    ]}
-                                                                                    step={
-                                                                                        configuration.sliderScore
-                                                                                    }
-                                                                                    type="range"
-                                                                                    className="range"
-                                                                                    id="range"
-                                                                                    value={
-                                                                                        this
-                                                                                            .state
-                                                                                            .fields[
-                                                                                        "negativeBasePoints"
-                                                                                        ]
-                                                                                    }
-                                                                                    onChange={this.handleChange.bind(
-                                                                                        this,
-                                                                                        "negativeBasePoints"
-                                                                                    )}
-                                                                                />
-                                                                                <output className="bubble">
-                                                                                    {
-                                                                                        this
-                                                                                            .state
-                                                                                            .fields[
-                                                                                        "negativeBasePoints"
-                                                                                        ]
-                                                                                    }
-                                                                                </output>
-                                                                            </div>
-                                                                        </div>
-                                                                    ) : null
-
-
-
-                                                            )}
-
-                                                            
+                                                            {this.state.fields[
+                                                                "gameType"
+                                                            ] ===
+                                                            "Blank" ? null : this
+                                                                  .state.fields[
+                                                                  "negativeScoring"
+                                                              ] === true ? (
+                                                                <div>
+                                                                    <div
+                                                                        style={{
+                                                                            margin: "0px 0 5px 0",
+                                                                        }}
+                                                                        className="cus_input "
+                                                                    >
+                                                                        <label
+                                                                            style={{
+                                                                                paddingLeft:
+                                                                                    "5px",
+                                                                            }}
+                                                                            className="cus_label"
+                                                                        >
+                                                                            Negative
+                                                                            Base
+                                                                            Points
+                                                                            (0
+                                                                            -&nbsp;
+                                                                            {
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "basePoints"
+                                                                                ]
+                                                                            }
+                                                                            )
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="range-wrap">
+                                                                        <input
+                                                                            min="0"
+                                                                            max={
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "basePoints"
+                                                                                ]
+                                                                            }
+                                                                            step={
+                                                                                configuration.sliderScore
+                                                                            }
+                                                                            type="range"
+                                                                            className="range"
+                                                                            id="range"
+                                                                            value={
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "negativeBasePoints"
+                                                                                ]
+                                                                            }
+                                                                            onChange={this.handleChange.bind(
+                                                                                this,
+                                                                                "negativeBasePoints"
+                                                                            )}
+                                                                        />
+                                                                        <output className="bubble">
+                                                                            {
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "negativeBasePoints"
+                                                                                ]
+                                                                            }
+                                                                        </output>
+                                                                    </div>
+                                                                </div>
+                                                            ) : null}
 
                                                             {this.state.fields[
                                                                 "gameType"
                                                             ] ===
-                                                                "Blank" ? null : (
+                                                            "Blank" ? null : (
                                                                 <div className="cus_input input_wrap">
                                                                     <img
                                                                         src="./murabbo/img/info2.svg"
@@ -1728,7 +1722,7 @@ class RoundTray extends Component {
                                                                             this
                                                                                 .state
                                                                                 .fields[
-                                                                            "hint"
+                                                                                "hint"
                                                                             ]
                                                                         }
                                                                         required
@@ -1752,105 +1746,106 @@ class RoundTray extends Component {
                                                                 {
                                                                     this.state
                                                                         .errors[
-                                                                    "hint"
+                                                                        "hint"
                                                                     ]
                                                                 }
                                                             </span>
 
-
-                                                                {this.state.fields["gameType"] == "Blank" ? null : (
-
-
-                                                                        this.state.fields[
-                                                                            "hint"
-                                                                        ] === 3 ||
-                                                                            this.state.fields[
-                                                                            "hint"
-                                                                            ] === "3" ? (
-                                                                            <div>
-                                                                                <div
-                                                                                    style={{
-                                                                                        margin: "0px 0 5px 0",
-                                                                                    }}
-                                                                                    className="cus_input "
-                                                                                >
-                                                                                    <label
-                                                                                        style={{
-                                                                                            paddingLeft:
-                                                                                                "5px",
-                                                                                        }}
-                                                                                        className="cus_label"
-                                                                                    >
-                                                                                        On
-                                                                                        Demand
-                                                                                        Negative
-                                                                                        Points
-                                                                                        (0 -&nbsp;
-                                                                                        {this
-                                                                                            .state
-                                                                                            .fields[
-                                                                                            "basePoints"
-                                                                                        ]})
-                                                                                    </label>
-                                                                                </div>
-                                                                                <div className="range-wrap">
-                                                                                    <input
-                                                                                        min="0"
-                                                                                        max={this
-                                                                                            .state
-                                                                                            .fields[
-                                                                                            "basePoints"
-                                                                                        ]}
-                                                                                        step={
-                                                                                            configuration.sliderScore
-                                                                                        }
-                                                                                        type="range"
-                                                                                        className="range"
-                                                                                        id="range"
-                                                                                        value={
-                                                                                            this
-                                                                                                .state
-                                                                                                .fields[
-                                                                                            "onDemandNegativePoints"
-                                                                                            ]
-                                                                                        }
-                                                                                        onChange={this.handleChange.bind(
-                                                                                            this,
-                                                                                            "onDemandNegativePoints"
-                                                                                        )}
-                                                                                    />
-                                                                                    <output className="bubble">
-                                                                                        {
-                                                                                            this
-                                                                                                .state
-                                                                                                .fields[
-                                                                                            "onDemandNegativePoints"
-                                                                                            ]
-                                                                                        }
-                                                                                    </output>
-                                                                                </div>
-                                                                            </div>
-                                                                        ) : null
-
-
-                                                                )}
-
-                                                            
+                                                            {this.state.fields[
+                                                                "gameType"
+                                                            ] ==
+                                                            "Blank" ? null : this
+                                                                  .state.fields[
+                                                                  "hint"
+                                                              ] === 3 ||
+                                                              this.state.fields[
+                                                                  "hint"
+                                                              ] === "3" ? (
+                                                                <div>
+                                                                    <div
+                                                                        style={{
+                                                                            margin: "0px 0 5px 0",
+                                                                        }}
+                                                                        className="cus_input "
+                                                                    >
+                                                                        <label
+                                                                            style={{
+                                                                                paddingLeft:
+                                                                                    "5px",
+                                                                            }}
+                                                                            className="cus_label"
+                                                                        >
+                                                                            On
+                                                                            Demand
+                                                                            Negative
+                                                                            Points
+                                                                            (0
+                                                                            -&nbsp;
+                                                                            {
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "basePoints"
+                                                                                ]
+                                                                            }
+                                                                            )
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="range-wrap">
+                                                                        <input
+                                                                            min="0"
+                                                                            max={
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "basePoints"
+                                                                                ]
+                                                                            }
+                                                                            step={
+                                                                                configuration.sliderScore
+                                                                            }
+                                                                            type="range"
+                                                                            className="range"
+                                                                            id="range"
+                                                                            value={
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "onDemandNegativePoints"
+                                                                                ]
+                                                                            }
+                                                                            onChange={this.handleChange.bind(
+                                                                                this,
+                                                                                "onDemandNegativePoints"
+                                                                            )}
+                                                                        />
+                                                                        <output className="bubble">
+                                                                            {
+                                                                                this
+                                                                                    .state
+                                                                                    .fields[
+                                                                                    "onDemandNegativePoints"
+                                                                                ]
+                                                                            }
+                                                                        </output>
+                                                                    </div>
+                                                                </div>
+                                                            ) : null}
                                                         </div>
                                                     ) : null}
 
                                                     {this.state.fields[
                                                         "gameType"
                                                     ] !== "Hangman" &&
-                                                        this.state.fields[
+                                                    this.state.fields[
                                                         "gameType"
-                                                        ] !== "Unscramble" &&
-                                                        this.state.fields[
+                                                    ] !== "Unscramble" &&
+                                                    this.state.fields[
                                                         "gameType"
-                                                        ] !== "Gibberish" &&
-                                                        this.state.fields[
+                                                    ] !== "Gibberish" &&
+                                                    this.state.fields[
                                                         "gameType"
-                                                        ] !== "Blank" ? (
+                                                    ] !== "Blank" ? (
                                                         <div>
                                                             <div className="cus_input input_wrap">
                                                                 <img
@@ -1867,7 +1862,7 @@ class RoundTray extends Component {
                                                                         this
                                                                             .state
                                                                             .fields[
-                                                                        "scoring"
+                                                                            "scoring"
                                                                         ]
                                                                     }
                                                                     required
@@ -1881,7 +1876,7 @@ class RoundTray extends Component {
                                                                         .fields[
                                                                         "gameType"
                                                                     ] !==
-                                                                        "Taboo" ? (
+                                                                    "Taboo" ? (
                                                                         <option value="2">
                                                                             Automatic
                                                                         </option>
@@ -1895,7 +1890,7 @@ class RoundTray extends Component {
                                                                 {
                                                                     this.state
                                                                         .errors[
-                                                                    "scoring"
+                                                                        "scoring"
                                                                     ]
                                                                 }
                                                             </span>
@@ -1919,7 +1914,7 @@ class RoundTray extends Component {
                                                                 value={
                                                                     this.state
                                                                         .fields[
-                                                                    "renderingMode"
+                                                                        "renderingMode"
                                                                     ]
                                                                 }
                                                                 required
@@ -1940,13 +1935,14 @@ class RoundTray extends Component {
                                                     <span className="error-msg">
                                                         {
                                                             this.state.errors[
-                                                            "renderingMode"
+                                                                "renderingMode"
                                                             ]
                                                         }
                                                     </span>
                                                 </div>
                                             </div>
-                                            {this.state.fields['gameType'] === 'Blank' ? (
+                                            {this.state.fields["gameType"] ===
+                                            "Blank" ? (
                                                 <div
                                                     style={{
                                                         marginTop: "50px",
@@ -1977,16 +1973,19 @@ class RoundTray extends Component {
                                                     >
                                                         <button
                                                             style={{
-                                                                minWidth: "150px",
+                                                                minWidth:
+                                                                    "150px",
                                                             }}
                                                             className="blue_btn light_blue_btn"
                                                             type="button"
                                                             onClick={this.saveNextHandler.bind(
                                                                 this,
-                                                                this.state.fields[
-                                                                "_id"
+                                                                this.state
+                                                                    .fields[
+                                                                    "_id"
                                                                 ],
-                                                                this.state.fields
+                                                                this.state
+                                                                    .fields
                                                             )}
                                                         >
                                                             Save & Next
@@ -2002,7 +2001,8 @@ class RoundTray extends Component {
                                                     >
                                                         <button
                                                             style={{
-                                                                minWidth: "150px",
+                                                                minWidth:
+                                                                    "150px",
                                                             }}
                                                             className="yellow_btn"
                                                             type="button"
@@ -2028,15 +2028,8 @@ class RoundTray extends Component {
                                                             Save & Exit
                                                         </button>
                                                     </div>
-
-
                                                 </>
                                             )}
-
-
-
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -2205,7 +2198,9 @@ class RoundTray extends Component {
                                                 src="./murabbo/img/close_pink.png"
                                                 alt=""
                                             />
-                                            <h3>Are you sure you want to delete?</h3>
+                                            <h3>
+                                                Are you sure you want to delete?
+                                            </h3>
                                             {/* <h4>
                                                 Are you sure,you want to delete
                                                 this round?
@@ -2249,7 +2244,6 @@ class RoundTray extends Component {
                                                     style={{
                                                         textAlign: "center",
                                                         float: "left",
-                                                        
                                                     }}
                                                     className=""
                                                 >
@@ -2266,7 +2260,6 @@ class RoundTray extends Component {
                                                         Yes
                                                     </button>
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                     </div>

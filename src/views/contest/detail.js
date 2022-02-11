@@ -6,17 +6,23 @@ import languages from "../../languages";
 import configuration from "../../config";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { CModal, CModalBody } from "@coreui/react";
-import { joinRoomReqSend,setModerator,clearOthetUserStream,setRoomId, setSocket,flush } from '../../actions/socketAction';
+import {
+    joinRoomReqSend,
+    setModerator,
+    clearOthetUserStream,
+    setRoomId,
+    setSocket,
+    flush,
+} from "../../actions/socketAction";
 import { connect } from "react-redux";
 let contestId, roomId;
 
-
 const mapStateToProps = (state) => {
     return {
-        isModerator: state.socketReducers.isModerator,		
+        isModerator: state.socketReducers.isModerator,
     };
- };
- const mapDispatchToProps = dispatch => ({
+};
+const mapDispatchToProps = (dispatch) => ({
     setModerator: (date) => dispatch(setModerator(date)),
     clearOthetUserStream: (date) => dispatch(clearOthetUserStream(date)),
     setRoomId: (date) => dispatch(setRoomId(date)),
@@ -27,33 +33,34 @@ class Detail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: { invitedUserDetails: [], acceptedUserDetails: [] ,roomDetails : {}},
-            contestData:{image:''},
+            data: {
+                invitedUserDetails: [],
+                acceptedUserDetails: [],
+                roomDetails: {},
+            },
+            contestData: { image: "" },
             userListInvite: [],
             userListInviteSearch: "",
             inviteFriendsModel: false,
             inviteModel: false,
             inviteUsersModel: false,
-            playBottom:false,
+            playBottom: false,
         };
     }
 
     componentDidMount() {
+        //     var that = this;
 
-    //     var that = this;
+        //     navigator.getMedia = ( navigator.getUserMedia || // use the proper vendor prefix
+        //         navigator.webkitGetUserMedia ||
+        //         navigator.mozGetUserMedia ||
+        //         navigator.msGetUserMedia);
 
-    //     navigator.getMedia = ( navigator.getUserMedia || // use the proper vendor prefix
-    //         navigator.webkitGetUserMedia ||
-    //         navigator.mozGetUserMedia ||
-    //         navigator.msGetUserMedia);
-
-    //     navigator.getMedia({video: true}, function() {
-    //     that.setState({playBottom:true});
-    // }, function() {
-    //     that.setState({playBottom:false});
-    //     });
-
-
+        //     navigator.getMedia({video: true}, function() {
+        //     that.setState({playBottom:true});
+        // }, function() {
+        //     that.setState({playBottom:false});
+        //     });
 
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
 
@@ -83,9 +90,8 @@ class Detail extends Component {
             .then((data) => {
                 if (data.data.length > 0) {
                     let dataObj = this.state.data;
-                    dataObj['roomDetails'] = data.data[0];
+                    dataObj["roomDetails"] = data.data[0];
                     this.setState({ data: dataObj });
-                    
                 }
             });
 
@@ -107,7 +113,6 @@ class Detail extends Component {
             .then((data) => {
                 if (data.data.length > 0) {
                     this.setState({ contestData: data.data[0] });
-
                 }
             });
         this.getUsersList();
@@ -187,18 +192,19 @@ class Detail extends Component {
             });
     }
 
-    playWithoutVideo()
-    {
+    playWithoutVideo() {
         this.props.flush();
         this.props.setModerator(true);
         this.props.clearOthetUserStream();
         this.props.setRoomId(roomId);
         this.props.setSocket("");
-        this.props.history.replace('/contests/start_round/'+contestId+'?'+roomId,{state:null});
+        this.props.history.replace(
+            "/contests/start_round/" + contestId + "?" + roomId,
+            { state: null }
+        );
     }
-    playWithVideo()
-    {
-        this.props.history.push('/videoChat/6163d78cdfa8fc1f8d64477f');
+    playWithVideo() {
+        this.props.history.push("/videoChat/6163d78cdfa8fc1f8d64477f");
     }
     render() {
         return (
@@ -210,73 +216,183 @@ class Detail extends Component {
                     style={{ top: "80px" }}
                 />
                 <main id="main">
-
-                <div className="container">
-						<div className="contest-detail-with-round">
-
-						<div class="row">
-						
-							<div class="col-lg-12 col-md-12 col-12">
-								<div style={{height: '82vh'}} class="cate-box2" >
-                                    <img src='img/undo.svg' className="undo_btn" onClick={() => {this.props.history.push('/dashboard')}}/>
-									<img src={(this.state.contestData.image !== '') ? this.state.contestData.image : 'avatars/placeholder.png' } alt="Game" className="main"/>
-									<div class="cat_title2">
-										<div className="detailContestWithRoundList">
-										<div className="row">
-											<div class="cat_title2 col-lg-12 col-md-12">
-
-												<h3 style={{paddingLeft: '0px'}}>{this.state.contestData.title}</h3>
-												<p>{this.state.contestData.description}</p> 													
-											</div>
-                                            <div className="col-lg-12 col-md-12">
-                                                <div className="inline">
-                                                    <h5 style={{ paddingTop: "30px", color: '#fff' }}>
-                                                        You need to be with a friend to
-                                                        play.
-                                                    </h5>
-                                                </div>
-                                                <div
-                                                    style={{ float: "right" }}
-                                                    className="inline "
-                                                >
-                                                    <div className="abc-detail">
-                                                        <p>Game PIN</p>
-                                                        <h3>
-                                                            {this.state.data.roomDetails.gamePin}
+                    <div className="container">
+                        <div className="contest-detail-with-round">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12">
+                                    <div
+                                        style={{ height: "82vh" }}
+                                        class="cate-box2"
+                                    >
+                                        <img
+                                            src="img/undo.svg"
+                                            className="undo_btn"
+                                            onClick={() => {
+                                                this.props.history.push(
+                                                    "/dashboard"
+                                                );
+                                            }}
+                                        />
+                                        <img
+                                            src={
+                                                this.state.contestData.image !==
+                                                ""
+                                                    ? this.state.contestData
+                                                          .image
+                                                    : "avatars/placeholder.png"
+                                            }
+                                            alt="Game"
+                                            className="main"
+                                        />
+                                        <div class="cat_title2">
+                                            <div className="detailContestWithRoundList">
+                                                <div className="row">
+                                                    <div class="cat_title2 col-lg-12 col-md-12">
+                                                        <h3
+                                                            style={{
+                                                                paddingLeft:
+                                                                    "0px",
+                                                            }}
+                                                        >
+                                                            {
+                                                                this.state
+                                                                    .contestData
+                                                                    .title
+                                                            }
                                                         </h3>
+                                                        <p>
+                                                            {
+                                                                this.state
+                                                                    .contestData
+                                                                    .description
+                                                            }
+                                                        </p>
                                                     </div>
-                                                    <div className="abc-detail">
-                                                        <p>Game Password</p>
-                                                        <h3>
-                                                            {this.state.data.roomDetails.password
-                                                                ? this.state.data.roomDetails
+                                                    <div className="col-lg-12 col-md-12">
+                                                        <div className="inline">
+                                                            <h5
+                                                                style={{
+                                                                    paddingTop:
+                                                                        "30px",
+                                                                    color: "#fff",
+                                                                }}
+                                                            >
+                                                                You need to be
+                                                                with a friend to
+                                                                play.
+                                                            </h5>
+                                                        </div>
+                                                        <div
+                                                            style={{
+                                                                float: "right",
+                                                            }}
+                                                            className="inline "
+                                                        >
+                                                            <div className="abc-detail">
+                                                                <p>Game PIN</p>
+                                                                <h3>
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .data
+                                                                            .roomDetails
+                                                                            .gamePin
+                                                                    }
+                                                                </h3>
+                                                            </div>
+                                                            <div className="abc-detail">
+                                                                <p>
+                                                                    Game
+                                                                    Password
+                                                                </p>
+                                                                <h3>
+                                                                    {this.state
+                                                                        .data
+                                                                        .roomDetails
                                                                         .password
-                                                                : "-NA-"}
-                                                        </h3>
+                                                                        ? this
+                                                                              .state
+                                                                              .data
+                                                                              .roomDetails
+                                                                              .password
+                                                                        : "-NA-"}
+                                                                </h3>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        style={{
+                                                            marginBottom:
+                                                                "50px",
+                                                            textAlign: "center",
+                                                            float: "left",
+                                                        }}
+                                                        className="col-lg-4 col-md-6 col-sm-12"
+                                                    >
+                                                        <button
+                                                            style={{
+                                                                minWidth:
+                                                                    "150px",
+                                                            }}
+                                                            className="yellow_btn"
+                                                            type="button"
+                                                            onClick={this.playWithoutVideo.bind(
+                                                                this
+                                                            )}
+                                                        >
+                                                            Play
+                                                        </button>
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            marginBottom:
+                                                                "50px",
+                                                            textAlign: "center",
+                                                            float: "left",
+                                                        }}
+                                                        className="col-lg-4 col-md-6 col-sm-12"
+                                                    >
+                                                        <button
+                                                            style={{
+                                                                minWidth:
+                                                                    "150px",
+                                                            }}
+                                                            className="yellow_btn"
+                                                            type="button"
+                                                            onClick={this.playWithoutVideo.bind(
+                                                                this
+                                                            )}
+                                                        >
+                                                            Play without video
+                                                        </button>
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            marginBottom:
+                                                                "50px",
+                                                            textAlign: "center",
+                                                            float: "left",
+                                                        }}
+                                                        className="col-lg-4 col-md-6 col-sm-12"
+                                                    >
+                                                        <button
+                                                            className="yellow_btn"
+                                                            type="button"
+                                                        >
+                                                            Play in-person
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                              
-											<div style={{ marginBottom: '50px', textAlign: 'center' , float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play</button>
-							                </div>
-					                        <div style={{ marginBottom: '50px', textAlign: 'center' , float:'left'}} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button  style={{minWidth: '150px'}}  className="yellow_btn" type="button" onClick={this.playWithoutVideo.bind(this)} >Play without video</button>
-							                </div>
-						                    <div style={{ marginBottom: '50px', textAlign: 'center', float:'left' }} className="col-lg-4 col-md-6 col-sm-12">
-							                    <button className="yellow_btn" type="button">Play in-person</button>
-							                </div>  
-                                                                     
-										</div>
-									</div>
-									</div>
-								</div>
-							</div>
-						</div>
-		            </div>
-					</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                   <CModal
+                    <CModal
                         show={this.state.inviteModel}
                         closeOnBackdrop={false}
                         onClose={() => this.setState({ inviteModel: false })}
@@ -440,15 +556,13 @@ class Detail extends Component {
                                                                 </div>
                                                                 <div
                                                                     style={{
-                                                                        float:
-                                                                            "right",
+                                                                        float: "right",
                                                                     }}
                                                                     className="inline arrow"
                                                                 >
                                                                     <button
                                                                         style={{
-                                                                            margin:
-                                                                                "0",
+                                                                            margin: "0",
                                                                         }}
                                                                         type="button"
                                                                         className="yellow_btn"
@@ -553,7 +667,7 @@ class Detail extends Component {
                                                 In This Room
                                             </h3>
                                             <div className="cus_scroll">
-                                                { this.state.data
+                                                {this.state.data
                                                     .invitedUserDetails.length >
                                                 0 ? (
                                                     this.state.data.invitedUserDetails.map(
@@ -633,15 +747,13 @@ class Detail extends Component {
                                                                     </div>
                                                                     <div
                                                                         style={{
-                                                                            float:
-                                                                                "right",
+                                                                            float: "right",
                                                                         }}
                                                                         className="inline arrow"
                                                                     >
                                                                         <button
                                                                             style={{
-                                                                                margin:
-                                                                                    "0",
+                                                                                margin: "0",
                                                                             }}
                                                                             type="button"
                                                                             className="yellow_btn"
@@ -734,4 +846,4 @@ class Detail extends Component {
         );
     }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(Detail);
+export default connect(mapStateToProps, mapDispatchToProps)(Detail);

@@ -57,8 +57,8 @@ class AddContest extends Component {
             tempSelectedLanguage: {},
             subscriptionModel: false,
             addModel: false,
-            fieldsForSaveTo: { saveToTitle: '' },
-            fieldsForSaveToerrors: {}
+            fieldsForSaveTo: { saveToTitle: "" },
+            fieldsForSaveToerrors: {},
         };
         this.searchUpdated = this.searchUpdated.bind(this);
         this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this);
@@ -88,15 +88,17 @@ class AddContest extends Component {
                 let mainLabels = data.data;
                 _.each(mainLabels, function (item, index) {
                     _.each(item.categories, function (itemCat, indexCat) {
-                        mainLabels[index]["categories"][indexCat]['is_selected'] = false;
-                    })
-                })
+                        mainLabels[index]["categories"][indexCat][
+                            "is_selected"
+                        ] = false;
+                    });
+                });
 
                 this.setState({
                     mainLabels,
                     loadLabels: mainLabels,
                     categoryList: mainLabels,
-                    filterCategoryList: mainLabels
+                    filterCategoryList: mainLabels,
                 });
             });
 
@@ -261,12 +263,15 @@ class AddContest extends Component {
         _.each(loadLabels, function (item, index) {
             _.each(item.categories, function (itemCat, indexCat) {
                 if (e.target.id === itemCat._id) {
-                    loadLabels[index]["categories"][indexCat]['is_selected'] = e.target.checked ? true : false;
+                    loadLabels[index]["categories"][indexCat]["is_selected"] = e
+                        .target.checked
+                        ? true
+                        : false;
                 }
-            })
-        })
+            });
+        });
 
-        this.setState({ loadLabels })
+        this.setState({ loadLabels });
         console.log(loadLabels);
     }
 
@@ -278,12 +283,12 @@ class AddContest extends Component {
                     mainSelectedCategories.push({
                         categoryId: itemCat._id,
                         mainLabelId: item.title,
-                        name: itemCat.name
-                    })
+                        name: itemCat.name,
+                    });
                 }
-            })
-        })
-        this.setState({ mainSelectedCategories, openModelCategory: false })
+            });
+        });
+        this.setState({ mainSelectedCategories, openModelCategory: false });
     }
 
     handleChangeBrand(maindata, e) {
@@ -364,23 +369,34 @@ class AddContest extends Component {
 
     handleRemoveCategory(data, e) {
         let mainSelectedCategories = this.state.mainSelectedCategories;
-        mainSelectedCategories = _.reject(mainSelectedCategories, function (item) { return item.categoryId === data.categoryId; });
+        mainSelectedCategories = _.reject(
+            mainSelectedCategories,
+            function (item) {
+                return item.categoryId === data.categoryId;
+            }
+        );
 
         let loadLabels = this.state.loadLabels;
         _.each(loadLabels, function (item, index) {
             _.each(item.categories, function (itemCat, indexCat) {
                 if (itemCat._id === data.categoryId) {
-                    loadLabels[index]['categories'][indexCat]['is_selected'] = false;
+                    loadLabels[index]["categories"][indexCat][
+                        "is_selected"
+                    ] = false;
                 }
-            })
-        })
-        this.setState({ mainSelectedCategories, mainLabels: loadLabels, loadLabels })
+            });
+        });
+        this.setState({
+            mainSelectedCategories,
+            mainLabels: loadLabels,
+            loadLabels,
+        });
     }
 
     handleRemoveBrand(data, e) {
         let brandListObj = this.state.brandListObj;
-        let brandListObjDisplaySelected = this.state
-            .brandListObjDisplaySelected;
+        let brandListObjDisplaySelected =
+            this.state.brandListObjDisplaySelected;
         let brandListSelected = this.state.brandListSelected;
         brandListObj = brandListObj.filter(function (value, index, arr) {
             if (value.id !== data.id) {
@@ -479,9 +495,10 @@ class AddContest extends Component {
 
         this.setState({ fields });
 
-        var categoryArr = (this.state.mainSelectedCategories.length > 0)
-            ? this.state.mainSelectedCategories
-            : [];
+        var categoryArr =
+            this.state.mainSelectedCategories.length > 0
+                ? this.state.mainSelectedCategories
+                : [];
 
         if (fields["title"].trim() === "") {
             formIsValid = false;
@@ -525,7 +542,7 @@ class AddContest extends Component {
                 data.append("image", this.uploadInput.files[0]);
             }
             // console.log(data);
-            this.setState({isLoading:true});
+            this.setState({ isLoading: true });
             fetch(configuration.baseURL + "contest/contest", {
                 method: "post",
                 headers: {
@@ -540,13 +557,13 @@ class AddContest extends Component {
                 })
                 .then((data) => {
                     if (data.code === 200) {
-                        this.setState({isLoading:false});
+                        this.setState({ isLoading: false });
                         this.props.history.push({
                             pathname: "/tray/" + data.data._id,
                             state: { contest_id: data.data._id },
                         });
                     } else {
-                        this.setState({isLoading:false});
+                        this.setState({ isLoading: false });
                         return toast.error(data.message);
                     }
                 });
@@ -640,19 +657,25 @@ class AddContest extends Component {
                 _.each(this.state.loadLabels, function (item, index) {
                     let catArr = [];
                     _.each(item.categories, function (itemCat, indexCat) {
-                        if (itemCat.name.includes(e.target.value) || itemCat.name.toLowerCase().includes(e.target.value) || itemCat.name.toUpperCase().includes(e.target.value)) {
+                        if (
+                            itemCat.name.includes(e.target.value) ||
+                            itemCat.name
+                                .toLowerCase()
+                                .includes(e.target.value) ||
+                            itemCat.name.toUpperCase().includes(e.target.value)
+                        ) {
                             catArr.push(itemCat);
                         }
-                    })
+                    });
 
                     if (catArr.length > 0) {
                         filterItems.push({
                             id: item.id,
                             title: item.title,
-                            categories: catArr
-                        })
+                            categories: catArr,
+                        });
                     }
-                })
+                });
                 this.setState({ mainLabels: filterItems });
             } else {
                 this.setState({ mainLabels: this.state.loadLabels });
@@ -672,22 +695,27 @@ class AddContest extends Component {
     }
 
     addModel() {
-        this.setState({ 'addModel': true, fieldsForSaveTo: { saveToTitle: '' }, fieldsForSaveToerrors: { saveToTitle: '' } })
+        this.setState({
+            addModel: true,
+            fieldsForSaveTo: { saveToTitle: "" },
+            fieldsForSaveToerrors: { saveToTitle: "" },
+        });
     }
 
     handleChangeForSaveTo(field, e) {
         let fieldsForSaveTo = this.state.fieldsForSaveTo;
-        fieldsForSaveTo['saveToTitle'] = e.target.value;
+        fieldsForSaveTo["saveToTitle"] = e.target.value;
         this.setState({ fieldsForSaveTo });
 
-
         let errors = {};
-        if (field === 'saveToTitle' && fieldsForSaveTo["saveToTitle"].trim() === '') {
+        if (
+            field === "saveToTitle" &&
+            fieldsForSaveTo["saveToTitle"].trim() === ""
+        ) {
             errors["saveToTitle"] = "Please enter title";
         }
 
         this.setState({ fieldsForSaveToerrors: errors });
-
     }
 
     saveGroupModel() {
@@ -695,46 +723,47 @@ class AddContest extends Component {
         let formIsValid = true;
 
         let errors = {};
-        if (fields["saveToTitle"].trim() === '') {
+        if (fields["saveToTitle"].trim() === "") {
             errors["saveToTitle"] = "Please enter title";
             formIsValid = false;
         }
         this.setState({ fieldsForSaveToerrors: errors });
 
         if (formIsValid) {
-
-            var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+            var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
             const data = new FormData();
-            data.append('userId', userId);
-            data.append('saveToTitle', fields['saveToTitle']);
+            data.append("userId", userId);
+            data.append("saveToTitle", fields["saveToTitle"]);
 
-            this.setState({isLoading:true});
+            this.setState({ isLoading: true });
             fetch(configuration.baseURL + "user/saveTo", {
                 method: "POST",
                 headers: {
-                    'contentType': "application/json",
-                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                    contentType: "application/json",
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
                 },
-                body: data
-            }).then((response) => {
-                return response.json();
-            }).then((data) => {
-                if (data.code === 200) {
-                this.setState({isLoading:false});
+                body: data,
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.code === 200) {
+                        this.setState({ isLoading: false });
 
-                    this.componentDidMount();
-                    fields['saveToTitle'] = '';
-                    this.setState({ fieldsForSaveTo: fields, addModel: false });
-                }
-                else {
-                this.setState({isLoading:false});
+                        this.componentDidMount();
+                        fields["saveToTitle"] = "";
+                        this.setState({
+                            fieldsForSaveTo: fields,
+                            addModel: false,
+                        });
+                    } else {
+                        this.setState({ isLoading: false });
 
-                    return toast.error(data.message);
-                }
-
-            });
-
-
+                        return toast.error(data.message);
+                    }
+                });
         }
     }
 
@@ -822,7 +851,7 @@ class AddContest extends Component {
                                                 />
 
                                                 {this.state.fields["image"] ==
-                                                    "image" ? (
+                                                "image" ? (
                                                     <span aria-hidden="true">
                                                         <img
                                                             className="close_svg"
@@ -909,7 +938,7 @@ class AddContest extends Component {
                                                 )}
                                                 value={
                                                     this.state.fields[
-                                                    "description"
+                                                        "description"
                                                     ]
                                                 }
                                             />
@@ -1060,7 +1089,7 @@ class AddContest extends Component {
                                             <span className="error-msg">
                                                 {
                                                     this.state.errors[
-                                                    "playerType"
+                                                        "playerType"
                                                     ]
                                                 }
                                             </span>
@@ -1120,7 +1149,7 @@ class AddContest extends Component {
                                             <span className="error-msg">
                                                 {
                                                     this.state.errors[
-                                                    "visibility"
+                                                        "visibility"
                                                     ]
                                                 }
                                             </span>
@@ -1233,14 +1262,18 @@ class AddContest extends Component {
                                                         this.state.isLoading
                                                     }
                                                 >
-
                                                     {this.state.isLoading ? (
                                                         <>
-                                                            <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                                                            <span
+                                                                className="spinner-border spinner-border-sm mr-2"
+                                                                role="status"
+                                                                aria-hidden="true"
+                                                            ></span>
                                                             Loading...
                                                         </>
-                                                    ) : ("Save & Next")}
-
+                                                    ) : (
+                                                        "Save & Next"
+                                                    )}
                                                 </button>
                                             </div>
                                         </div>
@@ -1383,7 +1416,7 @@ class AddContest extends Component {
                                             </div>
                                             <div className="contest saveToIdDiv row">
                                                 {this.state.saveToList.length >
-                                                    0 ? (
+                                                0 ? (
                                                     this.state.saveToList.map(
                                                         (saveTo, key) => {
                                                             return (
@@ -1457,8 +1490,12 @@ class AddContest extends Component {
                                                     <button
                                                         class="yellow_btn"
                                                         type="button"
-                                                        style={{ marginLeft: "10px" }}
-                                                        onClick={this.addModel.bind(this)}
+                                                        style={{
+                                                            marginLeft: "10px",
+                                                        }}
+                                                        onClick={this.addModel.bind(
+                                                            this
+                                                        )}
                                                     >
                                                         Add Group
                                                     </button>
@@ -1505,7 +1542,7 @@ class AddContest extends Component {
                                             </div>
                                             <div className="contest saveToIdDiv row">
                                                 {languages.languages.length >
-                                                    0 ? (
+                                                0 ? (
                                                     languages.languages.map(
                                                         (language, key) => {
                                                             return (
@@ -1631,12 +1668,14 @@ class AddContest extends Component {
                                                             this.state
                                                                 .searchCategoryTerm
                                                         }
-                                                        onChange={this.searchUpdatedCategory.bind(this)}
+                                                        onChange={this.searchUpdatedCategory.bind(
+                                                            this
+                                                        )}
                                                     />
                                                     <i className="bx bx-search"></i>
                                                 </div>
-                                                {this.state.mainLabels
-                                                    .length > 0 ? (
+                                                {this.state.mainLabels.length >
+                                                0 ? (
                                                     this.state.mainLabels.map(
                                                         (e, key) => {
                                                             return (
@@ -1674,7 +1713,11 @@ class AddContest extends Component {
                                                                                             cat,
                                                                                             e
                                                                                         )}
-                                                                                        checked={cat.is_selected ? "checked" : ""}
+                                                                                        checked={
+                                                                                            cat.is_selected
+                                                                                                ? "checked"
+                                                                                                : ""
+                                                                                        }
                                                                                     />
                                                                                     <label
                                                                                         for={
@@ -1693,21 +1736,30 @@ class AddContest extends Component {
                                                                                                     cat.image
                                                                                                 }
                                                                                             />
-                                                                                            {
-                                                                                                (_.contains(["PRO", "PREMIUM"], cat.subscriptionType)) ? ((cat.subscriptionType === "PRO") ? (
+                                                                                            {_.contains(
+                                                                                                [
+                                                                                                    "PRO",
+                                                                                                    "PREMIUM",
+                                                                                                ],
+                                                                                                cat.subscriptionType
+                                                                                            ) ? (
+                                                                                                cat.subscriptionType ===
+                                                                                                "PRO" ? (
                                                                                                     <div className="paid-cat">
-                                                                                                        <img
-                                                                                                            src="img/pro.png"
-                                                                                                        />
-                                                                                                        <span className="paid-cat-color">Pro</span>
+                                                                                                        <img src="img/pro.png" />
+                                                                                                        <span className="paid-cat-color">
+                                                                                                            Pro
+                                                                                                        </span>
                                                                                                     </div>
-                                                                                                ) : (<div className="paid-cat">
-                                                                                                    <img
-                                                                                                        src="img/premium.png"
-                                                                                                    />
-                                                                                                    <span className="paid-cat-color">Premium</span>
-                                                                                                </div>)) : null
-                                                                                            }
+                                                                                                ) : (
+                                                                                                    <div className="paid-cat">
+                                                                                                        <img src="img/premium.png" />
+                                                                                                        <span className="paid-cat-color">
+                                                                                                            Premium
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                )
+                                                                                            ) : null}
                                                                                         </div>
                                                                                     </label>
                                                                                     <div className="cat_title checked_title">
@@ -1921,19 +1973,26 @@ class AddContest extends Component {
                         </CModal>
                     </div>
 
-
-
-
-                    <CModal show={this.state.addModel} closeOnBackdrop={false} onClose={() => this.setState({ addModel: false })}
+                    <CModal
+                        show={this.state.addModel}
+                        closeOnBackdrop={false}
+                        onClose={() => this.setState({ addModel: false })}
                         color="danger"
-                        centered>
+                        centered
+                    >
                         <CModalBody className="model-bg">
-
                             <div>
                                 <div className="modal-body">
-
-                                    <button type="button" className="close" onClick={() => this.setState({ addModel: false })}>
-                                        <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
+                                    <button
+                                        type="button"
+                                        className="close"
+                                        onClick={() =>
+                                            this.setState({ addModel: false })
+                                        }
+                                    >
+                                        <span aria-hidden="true">
+                                            <img src="./murabbo/img/close.svg" />
+                                        </span>
                                     </button>
                                     <div className="model_data">
                                         <div className="model-title">
@@ -1941,24 +2000,79 @@ class AddContest extends Component {
                                         </div>
 
                                         <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/title.svg" alt="Upload" />
-                                            <input type="text" required name="" onChange={this.handleChangeForSaveTo.bind(this, 'saveToTitle')} value={this.state.fieldsForSaveTo['saveToTitle']} />
+                                            <img
+                                                src="./murabbo/img/title.svg"
+                                                alt="Upload"
+                                            />
+                                            <input
+                                                type="text"
+                                                required
+                                                name=""
+                                                onChange={this.handleChangeForSaveTo.bind(
+                                                    this,
+                                                    "saveToTitle"
+                                                )}
+                                                value={
+                                                    this.state.fieldsForSaveTo[
+                                                        "saveToTitle"
+                                                    ]
+                                                }
+                                            />
                                             <label>Title</label>
                                         </div>
-                                        <span className="error-msg">{this.state.errors["saveToTitle"]}</span>
-                                        <div style={{ textAlign: 'center' }} className="col-md-12">
-                                            <button style={{ minWidth: '150px', marginRight: '10px' }}
-                                            
-                                            
-                                            disabled={this.state.isLoading}
-                                            
-                                            className="blue_btn light_blue_btn" type="button" onClick={this.saveGroupModel.bind(this)} >
-                                            {this.state.isLoading ? 
- (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Add")}
-                                                
-                                                
-                                                </button>
-                                            <button style={{ minWidth: '150px', marginRight: '10px' }} className="pink_btn" type="button" onClick={() => this.setState({ 'addModel': false, fieldsForSaveTo: { saveToTitle: '' }, fieldsForSaveToerrors: { saveToTitle: '' } })} >Cancel</button>
+                                        <span className="error-msg">
+                                            {this.state.errors["saveToTitle"]}
+                                        </span>
+                                        <div
+                                            style={{ textAlign: "center" }}
+                                            className="col-md-12"
+                                        >
+                                            <button
+                                                style={{
+                                                    minWidth: "150px",
+                                                    marginRight: "10px",
+                                                }}
+                                                disabled={this.state.isLoading}
+                                                className="blue_btn light_blue_btn"
+                                                type="button"
+                                                onClick={this.saveGroupModel.bind(
+                                                    this
+                                                )}
+                                            >
+                                                {this.state.isLoading ? (
+                                                    <>
+                                                        <span
+                                                            className="spinner-border spinner-border-sm mr-2"
+                                                            role="status"
+                                                            aria-hidden="true"
+                                                        ></span>
+                                                        Loading...
+                                                    </>
+                                                ) : (
+                                                    "Add"
+                                                )}
+                                            </button>
+                                            <button
+                                                style={{
+                                                    minWidth: "150px",
+                                                    marginRight: "10px",
+                                                }}
+                                                className="pink_btn"
+                                                type="button"
+                                                onClick={() =>
+                                                    this.setState({
+                                                        addModel: false,
+                                                        fieldsForSaveTo: {
+                                                            saveToTitle: "",
+                                                        },
+                                                        fieldsForSaveToerrors: {
+                                                            saveToTitle: "",
+                                                        },
+                                                    })
+                                                }
+                                            >
+                                                Cancel
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

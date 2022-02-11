@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import GoogleLogin from "react-google-login";
-import Session from '../session';
+import Session from "../session";
 
 import configuration from "../config";
 import { ToastContainer, toast } from "react-toastify";
@@ -30,17 +30,18 @@ class TheHeader extends Component {
             checkbox: false,
             tosterMsg: "",
             hiddenPassword: true,
-            hiddenConfirmPassword: true
-
+            hiddenConfirmPassword: true,
         };
-        reactLocalStorage.set('redirect',"true");
-        reactLocalStorage.set('reload',"false");
+        reactLocalStorage.set("redirect", "true");
+        reactLocalStorage.set("reload", "false");
     }
     toggleShowPassword() {
         this.setState({ hiddenPassword: !this.state.hiddenPassword });
     }
     toggleShowConfirmPassword() {
-        this.setState({ hiddenConfirmPassword: !this.state.hiddenConfirmPassword });
+        this.setState({
+            hiddenConfirmPassword: !this.state.hiddenConfirmPassword,
+        });
     }
     toggle(type) {
         if (type === "login") {
@@ -131,7 +132,8 @@ class TheHeader extends Component {
         if (field === "password" && fields["password"].trim() === "") {
             errors["password"] = "Please enter password";
         } else {
-            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            let re =
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if (field === "password" && !re.test(fields["password"])) {
                 errors["password"] =
                     "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
@@ -238,7 +240,8 @@ class TheHeader extends Component {
         if (field === "password" && fields["password"].trim() === "") {
             errors["password"] = "Please enter password";
         } else {
-            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            let re =
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if (field === "password" && !re.test(fields["password"])) {
                 errors["password"] =
                     "Your password must be at least 8 characters long, contain at least one number and have a mixture of uppercase and lowercase letters.";
@@ -281,7 +284,8 @@ class TheHeader extends Component {
             formIsValid = false;
             errors["password"] = "Please enter password";
         } else {
-            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            let re =
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if (!re.test(fields["password"])) {
                 formIsValid = false;
                 errors["password"] =
@@ -325,17 +329,23 @@ class TheHeader extends Component {
                             openModelForgot: false,
                             openModelReset: false,
                             openModelCongratulation: true,
-                            isLoading: false
+                            isLoading: false,
                         });
                         fields.otp = "";
                         fields.password = "";
                         fields.confirm_password = "";
                         this.setState({ resetFields: fields });
                     } else if (data.code === 400) {
-                        this.setState({ tosterMsg: "Invalid OTP!", isLoading: false });
+                        this.setState({
+                            tosterMsg: "Invalid OTP!",
+                            isLoading: false,
+                        });
                         return false;
                     } else {
-                        this.setState({ tosterMsg: data.message, isLoading: false });
+                        this.setState({
+                            tosterMsg: data.message,
+                            isLoading: false,
+                        });
                         return false;
                     }
                 });
@@ -370,7 +380,6 @@ class TheHeader extends Component {
             fields.roleId = "2";
             this.setState({ forgotFields: fields, isLoading: true });
 
-
             fetch(configuration.baseURL + "user/forgotPassword", {
                 method: "post",
                 headers: {
@@ -385,7 +394,11 @@ class TheHeader extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.handleCloseClick();
-                        this.setState({ resetFields: {}, resetErrors: {}, isLoading: false });
+                        this.setState({
+                            resetFields: {},
+                            resetErrors: {},
+                            isLoading: false,
+                        });
                         this.setState({
                             openModelForgot: !this.state.openModelForgot,
                             openModelReset: true,
@@ -393,7 +406,10 @@ class TheHeader extends Component {
                         fields.email = "";
                         this.setState({ forgotFields: fields });
                     } else {
-                        this.setState({ tosterMsg: data.message, isLoading: false });
+                        this.setState({
+                            tosterMsg: data.message,
+                            isLoading: false,
+                        });
                         return false;
                     }
                 });
@@ -432,9 +448,9 @@ class TheHeader extends Component {
         this.setState({ loginErrors: errors });
         if (formIsValid) {
             fields.roleId = "2";
-            fields['timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            fields["timezone"] =
+                Intl.DateTimeFormat().resolvedOptions().timeZone;
             this.setState({ loginFields: fields, isLoading: true });
-
 
             fetch(configuration.baseURL + "user/userLogin", {
                 method: "post",
@@ -450,7 +466,8 @@ class TheHeader extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.setState({
-                            openModelLogin: !this.state.openModelLogin, isLoading: false
+                            openModelLogin: !this.state.openModelLogin,
+                            isLoading: false,
                         });
                         fields.password = "";
                         fields.email = "";
@@ -464,11 +481,18 @@ class TheHeader extends Component {
                             }
                         );
                     } else {
-                        this.setState({ tosterMsg: data.message, isLoading: false });
+                        this.setState({
+                            tosterMsg: data.message,
+                            isLoading: false,
+                        });
                         return false;
                     }
-                }).catch((error) => {
-                    this.setState({ tosterMsg: error.message, isLoading: false });
+                })
+                .catch((error) => {
+                    this.setState({
+                        tosterMsg: error.message,
+                        isLoading: false,
+                    });
                     return false;
                 });
         }
@@ -507,7 +531,8 @@ class TheHeader extends Component {
             formIsValid = false;
             errors["password"] = "Please enter password";
         } else {
-            let re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
+            let re =
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[0-9])(?=.*[A-Za-z\d@$!%*#?&])(?=.{8,})/;
             if (!re.test(fields["password"])) {
                 formIsValid = false;
                 errors["password"] =
@@ -588,7 +613,12 @@ class TheHeader extends Component {
                 });
             }
 
-            this.callAPI(socialResponse.id, postData, socialResponse.profileObj, "facebook");
+            this.callAPI(
+                socialResponse.id,
+                postData,
+                socialResponse.profileObj,
+                "facebook"
+            );
         }
     };
     responseGoogle = (socialResponse) => {
@@ -604,7 +634,7 @@ class TheHeader extends Component {
                 first_name: socialResponse.profileObj.familyName,
                 last_name: socialResponse.profileObj.givenName,
                 name: socialResponse.profileObj.name,
-                email: socialResponse.profileObj.email || '',
+                email: socialResponse.profileObj.email || "",
                 password: "",
                 player_id: "",
             };
@@ -619,7 +649,12 @@ class TheHeader extends Component {
                 });
             }
 
-            this.callAPI(socialResponse.googleId, postData, socialResponse.profileObj, "google");
+            this.callAPI(
+                socialResponse.googleId,
+                postData,
+                socialResponse.profileObj,
+                "google"
+            );
         }
     };
     responseFacebookForLogin = (socialResponse) => {
@@ -643,7 +678,12 @@ class TheHeader extends Component {
                 });
             }
 
-            this.callAPI(socialResponse.id, postData, socialResponse.profileObj, "facebook");
+            this.callAPI(
+                socialResponse.id,
+                postData,
+                socialResponse.profileObj,
+                "facebook"
+            );
         }
     };
 
@@ -682,47 +722,52 @@ class TheHeader extends Component {
         fetch(configuration.baseURL + "user/checkSocial", {
             method: "post",
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                Accept: "application/json",
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({ socialId: social_id, email: postData.email, registerType, roleId: 2 })
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            console.log(data);
-            if (data.code === 404) {
-                this.setState({
-                    openModelRegister: true,
-                    openModelLogin: false,
-                });
-            } else if (data.code === 200) {
-                this.setState({
-                    openModelRegister: false,
-                    openModelLogin: false,
-                });
-                console.log("Good to go for login");
-                let that = this;
-                configuration.saveTokenData(data.data, function (payload) {
-                    console.log(payload);
-                    window.location.href = "/#/dashboard";
-                });
-            } else if (data.code === 409) {
-
-                this.setState({ tosterMsg: data.message })
-
-            } else {
-                this.setState({
-                    openModelRegister: true,
-                    openModelLogin: false,
-                });
-            }
-        });
+            body: JSON.stringify({
+                socialId: social_id,
+                email: postData.email,
+                registerType,
+                roleId: 2,
+            }),
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log(data);
+                if (data.code === 404) {
+                    this.setState({
+                        openModelRegister: true,
+                        openModelLogin: false,
+                    });
+                } else if (data.code === 200) {
+                    this.setState({
+                        openModelRegister: false,
+                        openModelLogin: false,
+                    });
+                    console.log("Good to go for login");
+                    let that = this;
+                    configuration.saveTokenData(data.data, function (payload) {
+                        console.log(payload);
+                        window.location.href = "/#/dashboard";
+                    });
+                } else if (data.code === 409) {
+                    this.setState({ tosterMsg: data.message });
+                } else {
+                    this.setState({
+                        openModelRegister: true,
+                        openModelLogin: false,
+                    });
+                }
+            });
     }
 
     render() {
         return (
             <div>
-                <Session/>
+                <Session />
                 <ToastContainer
                     position="top-right"
                     autoClose={25000}
@@ -891,7 +936,7 @@ class TheHeader extends Component {
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                        "name"
+                                                            "name"
                                                         ]
                                                     }
                                                 />
@@ -911,7 +956,7 @@ class TheHeader extends Component {
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                        "email"
+                                                            "email"
                                                         ]
                                                     }
                                                 />
@@ -926,29 +971,49 @@ class TheHeader extends Component {
                                                     required
                                                     // type="password"
 
-                                                    type={this.state.hiddenPassword ? 'password' : 'text'}
+                                                    type={
+                                                        this.state
+                                                            .hiddenPassword
+                                                            ? "password"
+                                                            : "text"
+                                                    }
                                                     onChange={this.handleChangeRegister.bind(
                                                         this,
                                                         "password"
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                        "password"
+                                                            "password"
                                                         ]
                                                     }
                                                 />
                                                 <label>Password</label>
-
-
-                                                <span style={{
-                                                    position: "absolute",
-                                                    right: "27px",
-                                                    top: "47px"
-                                                }}>
-
-                                                    {this.state.hiddenPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />)}
+                                                <span
+                                                    style={{
+                                                        position: "absolute",
+                                                        right: "27px",
+                                                        top: "47px",
+                                                    }}
+                                                >
+                                                    {this.state
+                                                        .hiddenPassword ? (
+                                                        <img
+                                                            src="./murabbo/img/eye-hide.png"
+                                                            alt="eyeicon"
+                                                            onClick={this.toggleShowPassword.bind(
+                                                                this
+                                                            )}
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            src="./murabbo/img/eye.png"
+                                                            alt="eyeicon"
+                                                            onClick={this.toggleShowPassword.bind(
+                                                                this
+                                                            )}
+                                                        />
+                                                    )}
                                                 </span>
-
                                             </div>
 
                                             <span className="error-msg">
@@ -959,32 +1024,55 @@ class TheHeader extends Component {
                                                 <input
                                                     required
                                                     // type="password"
-                                                    type={this.state.hiddenConfirmPassword ? 'password' : 'text'}
+                                                    type={
+                                                        this.state
+                                                            .hiddenConfirmPassword
+                                                            ? "password"
+                                                            : "text"
+                                                    }
                                                     onChange={this.handleChangeRegister.bind(
                                                         this,
                                                         "confirm_password"
                                                     )}
                                                     value={
                                                         this.state.fields[
-                                                        "confirm_password"
+                                                            "confirm_password"
                                                         ]
                                                     }
                                                 />
                                                 <label>Confirm Password</label>
-                                                <span style={{
-                                                    position: "absolute",
-                                                    right: "28px",
-                                                    top: "47px"
-                                                }}>
-
-                                                    {this.state.hiddenConfirmPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />)}
+                                                <span
+                                                    style={{
+                                                        position: "absolute",
+                                                        right: "28px",
+                                                        top: "47px",
+                                                    }}
+                                                >
+                                                    {this.state
+                                                        .hiddenConfirmPassword ? (
+                                                        <img
+                                                            src="./murabbo/img/eye-hide.png"
+                                                            alt="eyeicon"
+                                                            onClick={this.toggleShowConfirmPassword.bind(
+                                                                this
+                                                            )}
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            src="./murabbo/img/eye.png"
+                                                            alt="eyeicon"
+                                                            onClick={this.toggleShowConfirmPassword.bind(
+                                                                this
+                                                            )}
+                                                        />
+                                                    )}
                                                 </span>
                                             </div>
 
                                             <span className="error-msg">
                                                 {
                                                     this.state.errors[
-                                                    "confirm_password"
+                                                        "confirm_password"
                                                     ]
                                                 }
                                             </span>
@@ -1150,7 +1238,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .loginFields[
-                                                            "email"
+                                                                "email"
                                                             ]
                                                         }
                                                     />
@@ -1159,7 +1247,7 @@ class TheHeader extends Component {
                                                 <span className="error-msg">
                                                     {
                                                         this.state.loginErrors[
-                                                        "email"
+                                                            "email"
                                                         ]
                                                     }
                                                 </span>
@@ -1168,7 +1256,12 @@ class TheHeader extends Component {
                                                     <input
                                                         required
                                                         // type="password"
-                                                        type={this.state.hiddenPassword ? 'password' : 'text'}
+                                                        type={
+                                                            this.state
+                                                                .hiddenPassword
+                                                                ? "password"
+                                                                : "text"
+                                                        }
                                                         onChange={this.handleChangeLogin.bind(
                                                             this,
                                                             "password"
@@ -1176,25 +1269,44 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .loginFields[
-                                                            "password"
+                                                                "password"
                                                             ]
                                                         }
                                                     />
                                                     <label>Password</label>
-                                                    <span style={{
-                                                        position: "absolute",
-                                                        right: "27px",
-                                                        top: "47px"
-                                                    }}>
-
-                                                        {this.state.hiddenPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />)}
+                                                    <span
+                                                        style={{
+                                                            position:
+                                                                "absolute",
+                                                            right: "27px",
+                                                            top: "47px",
+                                                        }}
+                                                    >
+                                                        {this.state
+                                                            .hiddenPassword ? (
+                                                            <img
+                                                                src="./murabbo/img/eye-hide.png"
+                                                                alt="eyeicon"
+                                                                onClick={this.toggleShowPassword.bind(
+                                                                    this
+                                                                )}
+                                                            />
+                                                        ) : (
+                                                            <img
+                                                                src="./murabbo/img/eye.png"
+                                                                alt="eyeicon"
+                                                                onClick={this.toggleShowPassword.bind(
+                                                                    this
+                                                                )}
+                                                            />
+                                                        )}
                                                     </span>
                                                 </div>
 
                                                 <span className="error-msg">
                                                     {
                                                         this.state.loginErrors[
-                                                        "password"
+                                                            "password"
                                                         ]
                                                     }
                                                 </span>
@@ -1202,13 +1314,26 @@ class TheHeader extends Component {
                                                     <button
                                                         className="blue_btn"
                                                         type="button"
-                                                        disabled={this.state.isLoading}
+                                                        disabled={
+                                                            this.state.isLoading
+                                                        }
                                                         onClick={this.handleLoginSubmit.bind(
                                                             this
                                                         )}
                                                     >
-                                                        {this.state.isLoading ?
-                                                            (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Login")}
+                                                        {this.state
+                                                            .isLoading ? (
+                                                            <>
+                                                                <span
+                                                                    className="spinner-border spinner-border-sm mr-2"
+                                                                    role="status"
+                                                                    aria-hidden="true"
+                                                                ></span>
+                                                                Loading...
+                                                            </>
+                                                        ) : (
+                                                            "Login"
+                                                        )}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">
@@ -1229,7 +1354,9 @@ class TheHeader extends Component {
                                                 </div>
                                                 <div className="social-login">
                                                     <FacebookLogin
-                                                        appId={configuration.fbAppId}
+                                                        appId={
+                                                            configuration.fbAppId
+                                                        }
                                                         // autoLoad
                                                         fields="name,email,picture"
                                                         callback={this.responseFacebookForLogin.bind(
@@ -1243,7 +1370,10 @@ class TheHeader extends Component {
                                                                     renderProps.onClick
                                                                 }
                                                             >
-                                                                <img src="./murabbo/img/facebook.svg" className="cursor" />
+                                                                <img
+                                                                    src="./murabbo/img/facebook.svg"
+                                                                    className="cursor"
+                                                                />
                                                             </span>
                                                         )}
                                                     />
@@ -1266,12 +1396,21 @@ class TheHeader extends Component {
                                                                     renderProps.onClick
                                                                 }
                                                             >
-                                                                <img src="./murabbo/img/google.svg" className="cursor" />
+                                                                <img
+                                                                    src="./murabbo/img/google.svg"
+                                                                    className="cursor"
+                                                                />
                                                             </span>
                                                         )}
-                                                        cookiePolicy={'single_host_origin'}
-                                                        onSuccess={this.responseGoogle.bind(this)}
-                                                        onFailure={this.responseGoogle.bind(this)}
+                                                        cookiePolicy={
+                                                            "single_host_origin"
+                                                        }
+                                                        onSuccess={this.responseGoogle.bind(
+                                                            this
+                                                        )}
+                                                        onFailure={this.responseGoogle.bind(
+                                                            this
+                                                        )}
                                                     />
                                                 </div>
 
@@ -1376,7 +1515,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .forgotFields[
-                                                            "email"
+                                                                "email"
                                                             ]
                                                         }
                                                     />
@@ -1385,7 +1524,7 @@ class TheHeader extends Component {
                                                 <span className="error-msg">
                                                     {
                                                         this.state.forgotErrors[
-                                                        "email"
+                                                            "email"
                                                         ]
                                                     }
                                                 </span>
@@ -1393,13 +1532,26 @@ class TheHeader extends Component {
                                                     <button
                                                         className="blue_btn light_blue_btn"
                                                         type="button"
-                                                        disabled={this.state.isLoading}
+                                                        disabled={
+                                                            this.state.isLoading
+                                                        }
                                                         onClick={this.handleForgotPasswordSubmit.bind(
                                                             this
                                                         )}
                                                     >
-                                                        {this.state.isLoading ?
-                                                            (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Reset")}
+                                                        {this.state
+                                                            .isLoading ? (
+                                                            <>
+                                                                <span
+                                                                    className="spinner-border spinner-border-sm mr-2"
+                                                                    role="status"
+                                                                    aria-hidden="true"
+                                                                ></span>
+                                                                Loading...
+                                                            </>
+                                                        ) : (
+                                                            "Reset"
+                                                        )}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">
@@ -1507,7 +1659,7 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .resetFields[
-                                                            "otp"
+                                                                "otp"
                                                             ]
                                                         }
                                                     />
@@ -1516,7 +1668,7 @@ class TheHeader extends Component {
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
-                                                        "otp"
+                                                            "otp"
                                                         ]
                                                     }
                                                 </span>
@@ -1526,7 +1678,12 @@ class TheHeader extends Component {
                                                     <input
                                                         required
                                                         // type="password"
-                                                        type={this.state.hiddenPassword ? 'password' : 'text'}
+                                                        type={
+                                                            this.state
+                                                                .hiddenPassword
+                                                                ? "password"
+                                                                : "text"
+                                                        }
                                                         onChange={this.handleChangeResetPassword.bind(
                                                             this,
                                                             "password"
@@ -1534,25 +1691,44 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .resetFields[
-                                                            "password"
+                                                                "password"
                                                             ]
                                                         }
                                                     />
                                                     <label>Password</label>
-                                                    <span style={{
-                                                        position: "absolute",
-                                                        right: "27px",
-                                                        top: "47px"
-                                                    }}>
-
-                                                        {this.state.hiddenPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowPassword.bind(this)} />)}
+                                                    <span
+                                                        style={{
+                                                            position:
+                                                                "absolute",
+                                                            right: "27px",
+                                                            top: "47px",
+                                                        }}
+                                                    >
+                                                        {this.state
+                                                            .hiddenPassword ? (
+                                                            <img
+                                                                src="./murabbo/img/eye-hide.png"
+                                                                alt="eyeicon"
+                                                                onClick={this.toggleShowPassword.bind(
+                                                                    this
+                                                                )}
+                                                            />
+                                                        ) : (
+                                                            <img
+                                                                src="./murabbo/img/eye.png"
+                                                                alt="eyeicon"
+                                                                onClick={this.toggleShowPassword.bind(
+                                                                    this
+                                                                )}
+                                                            />
+                                                        )}
                                                     </span>
                                                 </div>
 
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
-                                                        "password"
+                                                            "password"
                                                         ]
                                                     }
                                                 </span>
@@ -1561,7 +1737,12 @@ class TheHeader extends Component {
                                                     <input
                                                         required
                                                         // type="password"
-                                                        type={this.state.hiddenConfirmPassword ? 'password' : 'text'}
+                                                        type={
+                                                            this.state
+                                                                .hiddenConfirmPassword
+                                                                ? "password"
+                                                                : "text"
+                                                        }
                                                         onChange={this.handleChangeResetPassword.bind(
                                                             this,
                                                             "confirm_password"
@@ -1569,28 +1750,46 @@ class TheHeader extends Component {
                                                         value={
                                                             this.state
                                                                 .resetFields[
-                                                            "confirm_password"
+                                                                "confirm_password"
                                                             ]
                                                         }
                                                     />
                                                     <label>
                                                         Confirm Password
                                                     </label>
-
-                                                    <span style={{
-                                                        position: "absolute",
-                                                        right: "27px",
-                                                        top: "46px"
-                                                    }}>
-
-                                                        {this.state.hiddenConfirmPassword ? (<img src="./murabbo/img/eye-hide.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />) : (<img src="./murabbo/img/eye.png" alt="eyeicon" onClick={this.toggleShowConfirmPassword.bind(this)} />)}
+                                                    <span
+                                                        style={{
+                                                            position:
+                                                                "absolute",
+                                                            right: "27px",
+                                                            top: "46px",
+                                                        }}
+                                                    >
+                                                        {this.state
+                                                            .hiddenConfirmPassword ? (
+                                                            <img
+                                                                src="./murabbo/img/eye-hide.png"
+                                                                alt="eyeicon"
+                                                                onClick={this.toggleShowConfirmPassword.bind(
+                                                                    this
+                                                                )}
+                                                            />
+                                                        ) : (
+                                                            <img
+                                                                src="./murabbo/img/eye.png"
+                                                                alt="eyeicon"
+                                                                onClick={this.toggleShowConfirmPassword.bind(
+                                                                    this
+                                                                )}
+                                                            />
+                                                        )}
                                                     </span>
                                                 </div>
 
                                                 <span className="error-msg">
                                                     {
                                                         this.state.resetErrors[
-                                                        "confirm_password"
+                                                            "confirm_password"
                                                         ]
                                                     }
                                                 </span>
@@ -1599,13 +1798,26 @@ class TheHeader extends Component {
                                                     <button
                                                         className="blue_btn light_blue_btn"
                                                         type="button"
-                                                        disabled={this.state.isLoading}
+                                                        disabled={
+                                                            this.state.isLoading
+                                                        }
                                                         onClick={this.handleResetPasswordSubmit.bind(
                                                             this
                                                         )}
                                                     >
-                                                        {this.state.isLoading ?
-                                                            (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Submit")}
+                                                        {this.state
+                                                            .isLoading ? (
+                                                            <>
+                                                                <span
+                                                                    className="spinner-border spinner-border-sm mr-2"
+                                                                    role="status"
+                                                                    aria-hidden="true"
+                                                                ></span>
+                                                                Loading...
+                                                            </>
+                                                        ) : (
+                                                            "Submit"
+                                                        )}
                                                     </button>
                                                 </div>
                                                 <div className="forgot">

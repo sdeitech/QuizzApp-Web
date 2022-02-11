@@ -16,7 +16,7 @@ class EditContest extends Component {
         super(props);
         this.state = {
             isLoading: false,
-            isexitImage:"",
+            isexitImage: "",
             searchTerm: "",
             searchCategoryTerm: "",
             filterBrandList: [],
@@ -65,8 +65,8 @@ class EditContest extends Component {
             tempSelectedLanguage: {},
             saveToTitle: "",
             subscriptionModel: false,
-            fieldsForSaveTo:{saveToTitle:''},
-            fieldsForSaveToerrors:{}
+            fieldsForSaveTo: { saveToTitle: "" },
+            fieldsForSaveToerrors: {},
         };
         this.searchUpdated = this.searchUpdated.bind(this);
         this.searchUpdatedCategory = this.searchUpdatedCategory.bind(this);
@@ -76,7 +76,7 @@ class EditContest extends Component {
     }
 
     componentDidMount() {
-        console.log("componentDidMount")
+        console.log("componentDidMount");
         var url = window.location.href;
         contest_id = url.substring(url.lastIndexOf("/") + 1);
         user_id = JSON.parse(reactLocalStorage.get("userData")).userId;
@@ -98,7 +98,12 @@ class EditContest extends Component {
                 this.setState({ saveToList: data.data.saveTo });
             });
 
-            fetch(configuration.baseURL +"contest/contest?contestId=" +contest_id +"&userId=" +user_id,
+        fetch(
+            configuration.baseURL +
+                "contest/contest?contestId=" +
+                contest_id +
+                "&userId=" +
+                user_id,
             {
                 method: "GET",
                 headers: {
@@ -107,9 +112,12 @@ class EditContest extends Component {
                     Authorization:
                         "Bearer " + reactLocalStorage.get("clientToken"),
                 },
-            }).then((response) => {
+            }
+        )
+            .then((response) => {
                 return response.json();
-            }).then((data) => {
+            })
+            .then((data) => {
                 if (data.data.length > 0) {
                     this.setState({ items: data.data[0].hashtag });
                     var that = this;
@@ -119,14 +127,18 @@ class EditContest extends Component {
                         that.setBrand(data.data[0].brandIds);
                     }, 1000);
 
-                    
-                    let selectedCategoryIds = _.pluck(data.data[0].categoryIds,'categoryId');
+                    let selectedCategoryIds = _.pluck(
+                        data.data[0].categoryIds,
+                        "categoryId"
+                    );
                     fetch(configuration.baseURL + "category/categoryList", {
                         method: "GET",
                         headers: {
                             Accept: "application/json",
                             "Content-Type": "application/json",
-                            Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+                            Authorization:
+                                "Bearer " +
+                                reactLocalStorage.get("clientToken"),
                         },
                     })
                         .then((response) => {
@@ -135,26 +147,41 @@ class EditContest extends Component {
                         .then((data) => {
                             let mainSelectedCategories = [];
                             let mainLabels = data.data;
-                            _.each(mainLabels, function(item, index) {
-                                _.each(item.categories, function(itemCat, indexCat) {
-                                    mainLabels[index]["categories"][indexCat]['is_selected'] = _.contains(selectedCategoryIds,itemCat._id) ? true : false;
-                                    if(_.contains(selectedCategoryIds,itemCat._id)){
-                                        mainSelectedCategories.push({
-                                            categoryId: itemCat._id,
-                                            mainLabelId: item.title,
-                                            name: itemCat.name
-                                        })
+                            _.each(mainLabels, function (item, index) {
+                                _.each(
+                                    item.categories,
+                                    function (itemCat, indexCat) {
+                                        mainLabels[index]["categories"][
+                                            indexCat
+                                        ]["is_selected"] = _.contains(
+                                            selectedCategoryIds,
+                                            itemCat._id
+                                        )
+                                            ? true
+                                            : false;
+                                        if (
+                                            _.contains(
+                                                selectedCategoryIds,
+                                                itemCat._id
+                                            )
+                                        ) {
+                                            mainSelectedCategories.push({
+                                                categoryId: itemCat._id,
+                                                mainLabelId: item.title,
+                                                name: itemCat.name,
+                                            });
+                                        }
                                     }
-                                })
-                            })
+                                );
+                            });
                             console.log("Cat List.... ");
                             console.log(mainLabels);
                             this.setState({
                                 mainLabels,
                                 mainSelectedCategories,
-                                loadLabels: mainLabels, 
+                                loadLabels: mainLabels,
                                 categoryList: mainLabels,
-                                filterCategoryList: mainLabels
+                                filterCategoryList: mainLabels,
                             });
                         });
                 } else {
@@ -383,12 +410,10 @@ class EditContest extends Component {
                     this.state.saveToList[i].saveToId
                 ) {
                     var tempSelectedSaveTo = {};
-                    tempSelectedSaveTo.saveToId = this.state.saveToList[
-                        i
-                    ].saveToId;
-                    tempSelectedSaveTo.saveToTitle = this.state.saveToList[
-                        i
-                    ].saveToTitle;
+                    tempSelectedSaveTo.saveToId =
+                        this.state.saveToList[i].saveToId;
+                    tempSelectedSaveTo.saveToTitle =
+                        this.state.saveToList[i].saveToTitle;
                     this.setState({ tempSelectedSaveTo: tempSelectedSaveTo });
                     var that = this;
                     $(".saveToRadio").each(function () {
@@ -445,32 +470,35 @@ class EditContest extends Component {
         }
 
         let loadLabels = this.state.loadLabels;
-        _.each(loadLabels, function(item, index) {
-            _.each(item.categories, function(itemCat, indexCat) {
-                if(e.target.id === itemCat._id){
-                    loadLabels[index]["categories"][indexCat]['is_selected'] = e.target.checked ? true : false;
+        _.each(loadLabels, function (item, index) {
+            _.each(item.categories, function (itemCat, indexCat) {
+                if (e.target.id === itemCat._id) {
+                    loadLabels[index]["categories"][indexCat]["is_selected"] = e
+                        .target.checked
+                        ? true
+                        : false;
                 }
-            })
-        })
+            });
+        });
 
-        this.setState({loadLabels})
+        this.setState({ loadLabels });
         console.log(loadLabels);
     }
 
     handleSubmitCategory(e) {
         let mainSelectedCategories = [];
-        _.each(this.state.mainLabels, function(item, index) {
-            _.each(item.categories, function(itemCat, indexCat) {
-                if(itemCat.is_selected){
+        _.each(this.state.mainLabels, function (item, index) {
+            _.each(item.categories, function (itemCat, indexCat) {
+                if (itemCat.is_selected) {
                     mainSelectedCategories.push({
                         categoryId: itemCat._id,
                         mainLabelId: item.title,
-                        name: itemCat.name
-                    })
+                        name: itemCat.name,
+                    });
                 }
-            })
-        })
-        this.setState({mainSelectedCategories, openModelCategory: false})
+            });
+        });
+        this.setState({ mainSelectedCategories, openModelCategory: false });
     }
 
     handleChangeBrand(maindata, e) {
@@ -551,23 +579,34 @@ class EditContest extends Component {
 
     handleRemoveCategory(data, e) {
         let mainSelectedCategories = this.state.mainSelectedCategories;
-        mainSelectedCategories = _.reject(mainSelectedCategories, function(item){ return item.categoryId === data.categoryId; });
+        mainSelectedCategories = _.reject(
+            mainSelectedCategories,
+            function (item) {
+                return item.categoryId === data.categoryId;
+            }
+        );
 
         let loadLabels = this.state.loadLabels;
-        _.each(loadLabels, function(item, index) {
-            _.each(item.categories, function(itemCat, indexCat) {
-                if(itemCat._id === data.categoryId){
-                   loadLabels[index]['categories'][indexCat]['is_selected'] = false;
+        _.each(loadLabels, function (item, index) {
+            _.each(item.categories, function (itemCat, indexCat) {
+                if (itemCat._id === data.categoryId) {
+                    loadLabels[index]["categories"][indexCat][
+                        "is_selected"
+                    ] = false;
                 }
-            })
-        })
-        this.setState({mainSelectedCategories,mainLabels: loadLabels, loadLabels})
+            });
+        });
+        this.setState({
+            mainSelectedCategories,
+            mainLabels: loadLabels,
+            loadLabels,
+        });
     }
 
     handleRemoveBrand(data, e) {
         let brandListObj = this.state.brandListObj;
-        let brandListObjDisplaySelected = this.state
-            .brandListObjDisplaySelected;
+        let brandListObjDisplaySelected =
+            this.state.brandListObjDisplaySelected;
         let brandListSelected = this.state.brandListSelected;
         brandListObj = brandListObj.filter(function (value, index, arr) {
             if (value.id !== data.id) {
@@ -634,9 +673,10 @@ class EditContest extends Component {
 
         this.setState({ fields });
 
-        var categoryArr = (this.state.mainSelectedCategories.length > 0)
-            ? this.state.mainSelectedCategories
-            : [];
+        var categoryArr =
+            this.state.mainSelectedCategories.length > 0
+                ? this.state.mainSelectedCategories
+                : [];
 
         if (fields["title"].trim() === "") {
             formIsValid = false;
@@ -657,7 +697,7 @@ class EditContest extends Component {
             formIsValid = false;
             errors["categoryIds"] = "Please select category";
         }
-            
+
         this.setState({ errors: errors });
         if (formIsValid) {
             const data = new FormData();
@@ -677,11 +717,11 @@ class EditContest extends Component {
             data.append("brandIds", this.state.fields.brandIds);
             if (this.state.fields.image === "image") {
                 data.append("image", this.uploadInput.files[0]);
-            }else{
-                data.append('image','');
+            } else {
+                data.append("image", "");
 
                 // if(this.state.isexitImage !== ""){
-                //         data.append('image',this.state.isexitImage);    
+                //         data.append('image',this.state.isexitImage);
                 // }else{
                 //     data.append('image','');
                 // }
@@ -689,7 +729,7 @@ class EditContest extends Component {
 
             /*console.log(data);
             return false;*/
-            this.setState({isLoading:true});
+            this.setState({ isLoading: true });
             fetch(configuration.baseURL + "contest/contest/" + contest_id, {
                 method: "PUT",
                 headers: {
@@ -704,13 +744,13 @@ class EditContest extends Component {
                 })
                 .then((data) => {
                     if (data.code === 200) {
-                        this.setState({isLoading:false});
+                        this.setState({ isLoading: false });
                         this.props.history.push({
                             pathname: "/tray/" + data.data._id,
                             state: { contest_id: data.data._id },
                         });
                     } else {
-                        this.setState({isLoading:false});
+                        this.setState({ isLoading: false });
                         return toast.error(data.message);
                     }
                 });
@@ -797,29 +837,35 @@ class EditContest extends Component {
     }
 
     searchUpdatedCategory(e) {
-        if(e.target){
-            this.setState({searchCategoryTerm: e.target.value});
-            if(e.target.value){
+        if (e.target) {
+            this.setState({ searchCategoryTerm: e.target.value });
+            if (e.target.value) {
                 let filterItems = [];
-                _.each(this.state.loadLabels, function(item, index) {
+                _.each(this.state.loadLabels, function (item, index) {
                     let catArr = [];
-                    _.each(item.categories, function(itemCat, indexCat) {
-                        if(itemCat.name.includes(e.target.value) || itemCat.name.toLowerCase().includes(e.target.value) || itemCat.name.toUpperCase().includes(e.target.value)){
+                    _.each(item.categories, function (itemCat, indexCat) {
+                        if (
+                            itemCat.name.includes(e.target.value) ||
+                            itemCat.name
+                                .toLowerCase()
+                                .includes(e.target.value) ||
+                            itemCat.name.toUpperCase().includes(e.target.value)
+                        ) {
                             catArr.push(itemCat);
                         }
-                    })
+                    });
 
-                    if(catArr.length > 0){
+                    if (catArr.length > 0) {
                         filterItems.push({
                             id: item.id,
                             title: item.title,
-                            categories: catArr
-                        })
+                            categories: catArr,
+                        });
                     }
-                })
-                this.setState({mainLabels: filterItems});
+                });
+                this.setState({ mainLabels: filterItems });
             } else {
-                this.setState({mainLabels: this.state.loadLabels});
+                this.setState({ mainLabels: this.state.loadLabels });
             }
         }
     }
@@ -883,82 +929,81 @@ class EditContest extends Component {
     removeImage(event) {
         event.stopPropagation();
         $(document).ready(function () {
-        $(".display-profile-pic").attr("src", "avatars/placeholder.png");
-        $(".file-upload").val("");  
+            $(".display-profile-pic").attr("src", "avatars/placeholder.png");
+            $(".file-upload").val("");
         });
         let fields = this.state.fields;
 
-        if(fields["image"] !== ""){
-            this.setState({isexitImage:fields["image"]});
-        // console.log(this.state.isexitImage);
+        if (fields["image"] !== "") {
+            this.setState({ isexitImage: fields["image"] });
+            // console.log(this.state.isexitImage);
         }
         fields["image"] = "";
-        this.setState({ fields });      
+        this.setState({ fields });
     }
 
-
-
-    addModel()
-    {
-        this.setState({'addModel':true,fieldsForSaveTo:{saveToTitle:''},fieldsForSaveToerrors:{saveToTitle:''}})
+    addModel() {
+        this.setState({
+            addModel: true,
+            fieldsForSaveTo: { saveToTitle: "" },
+            fieldsForSaveToerrors: { saveToTitle: "" },
+        });
     }
 
-    handleChangeForSaveTo(field, e){  
+    handleChangeForSaveTo(field, e) {
         let fields = this.state.fieldsForSaveTo;
-        fields['saveToTitle'] = e.target.value;
-        this.setState({fields});
-
+        fields["saveToTitle"] = e.target.value;
+        this.setState({ fields });
 
         let errors = {};
-        if(field === 'saveToTitle' && fields["saveToTitle"].trim() === ''){
+        if (field === "saveToTitle" && fields["saveToTitle"].trim() === "") {
             errors["saveToTitle"] = "Please enter title";
         }
 
-        this.setState({fieldsForSaveToerrors: errors});
-
+        this.setState({ fieldsForSaveToerrors: errors });
     }
 
-    saveGroupModel(){
+    saveGroupModel() {
         let fields = this.state.fieldsForSaveTo;
         let formIsValid = true;
 
         let errors = {};
-        if(fields["saveToTitle"].trim() === ''){
+        if (fields["saveToTitle"].trim() === "") {
             errors["saveToTitle"] = "Please enter title";
             formIsValid = false;
         }
-        this.setState({fieldsForSaveToerrors: errors});
+        this.setState({ fieldsForSaveToerrors: errors });
 
-        if(formIsValid){
-
-            var userId = JSON.parse(reactLocalStorage.get('userData')).userId;
+        if (formIsValid) {
+            var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
             const data = new FormData();
-            data.append('userId',userId);
-            data.append('saveToTitle',fields['saveToTitle']);
-            
-            fetch(configuration.baseURL+"user/saveTo", {
+            data.append("userId", userId);
+            data.append("saveToTitle", fields["saveToTitle"]);
+
+            fetch(configuration.baseURL + "user/saveTo", {
                 method: "POST",
                 headers: {
-                    'contentType': "application/json",
-                    'Authorization': 'Bearer ' + reactLocalStorage.get('clientToken'),
+                    contentType: "application/json",
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
                 },
-                body:data
-            }).then((response) => {
-                return response.json();
-            }).then((data) => {
-                if(data.code === 200){
-                    this.componentDidMount();
-                    fields['saveToTitle']='';
-                    this.setState({fieldsForSaveTo:fields,addModel:false});
-                }
-                else
-                {
-                    return toast.error(data.message);
-                }
-                
-            });
-
-            
+                body: data,
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.code === 200) {
+                        this.componentDidMount();
+                        fields["saveToTitle"] = "";
+                        this.setState({
+                            fieldsForSaveTo: fields,
+                            addModel: false,
+                        });
+                    } else {
+                        return toast.error(data.message);
+                    }
+                });
         }
     }
 
@@ -1048,7 +1093,10 @@ class EditContest extends Component {
 			                                    </div>
 			                                </div>
 			                            </div>*/}
-                                    <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px" style={{overflow:"hidden"}}>
+                                    <div
+                                        className="col-lg-4 col-md-6 col-sm-12 marginTop_30px"
+                                        style={{ overflow: "hidden" }}
+                                    >
                                         <div className="profile-img">
                                             <form
                                                 id="file-upload-form"
@@ -1523,15 +1571,25 @@ class EditContest extends Component {
                                                 <button
                                                     className="blue_btn light_blue_btn"
                                                     type="button"
-                                                    disabled={this.state.isLoading}
+                                                    disabled={
+                                                        this.state.isLoading
+                                                    }
                                                     onClick={this.handleSubmit.bind(
                                                         this
                                                     )}
                                                 >
-
-{this.state.isLoading ? 
- (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : ("Save & Next")}
-                                                   
+                                                    {this.state.isLoading ? (
+                                                        <>
+                                                            <span
+                                                                className="spinner-border spinner-border-sm mr-2"
+                                                                role="status"
+                                                                aria-hidden="true"
+                                                            ></span>
+                                                            Loading...
+                                                        </>
+                                                    ) : (
+                                                        "Save & Next"
+                                                    )}
                                                 </button>
                                             </div>
                                         </div>
@@ -1744,12 +1802,15 @@ class EditContest extends Component {
                                                         Done
                                                     </button>
 
-
                                                     <button
                                                         class="yellow_btn"
                                                         type="button"
-                                                        style={{marginLeft:"10px"}}
-                                                        onClick={this.addModel.bind(this)}
+                                                        style={{
+                                                            marginLeft: "10px",
+                                                        }}
+                                                        onClick={this.addModel.bind(
+                                                            this
+                                                        )}
                                                     >
                                                         Add Group
                                                     </button>
@@ -1928,8 +1989,8 @@ class EditContest extends Component {
                                                     />
                                                     <i className="bx bx-search"></i>
                                                 </div>
-                                                {this.state.mainLabels
-                                                    .length > 0 ? (
+                                                {this.state.mainLabels.length >
+                                                0 ? (
                                                     this.state.mainLabels.map(
                                                         (e, key) => {
                                                             return (
@@ -1967,7 +2028,11 @@ class EditContest extends Component {
                                                                                             cat,
                                                                                             e
                                                                                         )}
-                                                                                        checked={cat.is_selected ? "checked" : ""}
+                                                                                        checked={
+                                                                                            cat.is_selected
+                                                                                                ? "checked"
+                                                                                                : ""
+                                                                                        }
                                                                                     />
                                                                                     <label
                                                                                         for={
@@ -1976,8 +2041,10 @@ class EditContest extends Component {
                                                                                     >
                                                                                         <div
                                                                                             style={{
-                                                                                                marginBottom:"0",
-                                                                                                position:"relative",
+                                                                                                marginBottom:
+                                                                                                    "0",
+                                                                                                position:
+                                                                                                    "relative",
                                                                                             }}
                                                                                             className="cate-box"
                                                                                         >
@@ -1986,21 +2053,30 @@ class EditContest extends Component {
                                                                                                     cat.image
                                                                                                 }
                                                                                             />
-                                                                                            {
-                                                                                                (_.contains(["PRO","PREMIUM"],cat.subscriptionType)) ? ((cat.subscriptionType === "PRO") ? (
+                                                                                            {_.contains(
+                                                                                                [
+                                                                                                    "PRO",
+                                                                                                    "PREMIUM",
+                                                                                                ],
+                                                                                                cat.subscriptionType
+                                                                                            ) ? (
+                                                                                                cat.subscriptionType ===
+                                                                                                "PRO" ? (
                                                                                                     <div className="paid-cat">
-                                                                                                        <img
-                                                                                                            src="img/pro.png"
-                                                                                                        />
-                                                                                                        <span className="paid-cat-color">Pro</span>
+                                                                                                        <img src="img/pro.png" />
+                                                                                                        <span className="paid-cat-color">
+                                                                                                            Pro
+                                                                                                        </span>
                                                                                                     </div>
-                                                                                                ) : (<div className="paid-cat">
-                                                                                                        <img
-                                                                                                            src="img/premium.png"
-                                                                                                        />
-                                                                                                        <span className="paid-cat-color">Premium</span>
-                                                                                                    </div>)) : null
-                                                                                            }
+                                                                                                ) : (
+                                                                                                    <div className="paid-cat">
+                                                                                                        <img src="img/premium.png" />
+                                                                                                        <span className="paid-cat-color">
+                                                                                                            Premium
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                )
+                                                                                            ) : null}
                                                                                         </div>
                                                                                     </label>
                                                                                     <div className="cat_title checked_title">
@@ -2407,36 +2483,97 @@ class EditContest extends Component {
                         </CModalBody>
                     </CModal>
 
-
-
-                    <CModal show={this.state.addModel}  closeOnBackdrop={false}  onClose={()=> this.setState({addModel:false})}
-                        color="danger" 
-                        centered>
+                    <CModal
+                        show={this.state.addModel}
+                        closeOnBackdrop={false}
+                        onClose={() => this.setState({ addModel: false })}
+                        color="danger"
+                        centered
+                    >
                         <CModalBody className="model-bg">
+                            <div>
+                                <div className="modal-body">
+                                    <button
+                                        type="button"
+                                        className="close"
+                                        onClick={() =>
+                                            this.setState({ addModel: false })
+                                        }
+                                    >
+                                        <span aria-hidden="true">
+                                            <img src="./murabbo/img/close.svg" />
+                                        </span>
+                                    </button>
+                                    <div className="model_data">
+                                        <div className="model-title">
+                                            <h3>Add Group</h3>
+                                        </div>
 
-                        <div>
-                            <div className="modal-body">
-                                
-                                <button type="button" className="close" onClick={()=> this.setState({addModel:false})}>
-                                    <span aria-hidden="true"><img src="./murabbo/img/close.svg" /></span>
-                                </button>
-                                <div className="model_data">
-                                    <div className="model-title">
-                                        <h3>Add Group</h3> 
-                                    </div>
-
-                                    <div className="cus_input input_wrap">
-                                        <img src="./murabbo/img/title.svg" alt="Upload"/>
-                                        <input type="text" required name="" onChange={this.handleChangeForSaveTo.bind(this,'saveToTitle')} value={this.state.fieldsForSaveTo['saveToTitle']} />
-                                        <label>Title</label>
-                                    </div>
-                                    <span className="error-msg">{this.state.errors["saveToTitle"]}</span>
-                                    <div style={{textAlign:'center'}} className="col-md-12">
-                                        <button style={{minWidth: '150px',marginRight:'10px'}}  className="blue_btn light_blue_btn" type="button"  onClick={this.saveGroupModel.bind(this)} >Add</button>
-                                        <button style={{minWidth: '150px',marginRight:'10px'}} className="pink_btn" type="button"  onClick={() => this.setState({'addModel':false,fieldsForSaveTo:{saveToTitle:''},fieldsForSaveToerrors:{saveToTitle:''}})} >Cancel</button>
+                                        <div className="cus_input input_wrap">
+                                            <img
+                                                src="./murabbo/img/title.svg"
+                                                alt="Upload"
+                                            />
+                                            <input
+                                                type="text"
+                                                required
+                                                name=""
+                                                onChange={this.handleChangeForSaveTo.bind(
+                                                    this,
+                                                    "saveToTitle"
+                                                )}
+                                                value={
+                                                    this.state.fieldsForSaveTo[
+                                                        "saveToTitle"
+                                                    ]
+                                                }
+                                            />
+                                            <label>Title</label>
+                                        </div>
+                                        <span className="error-msg">
+                                            {this.state.errors["saveToTitle"]}
+                                        </span>
+                                        <div
+                                            style={{ textAlign: "center" }}
+                                            className="col-md-12"
+                                        >
+                                            <button
+                                                style={{
+                                                    minWidth: "150px",
+                                                    marginRight: "10px",
+                                                }}
+                                                className="blue_btn light_blue_btn"
+                                                type="button"
+                                                onClick={this.saveGroupModel.bind(
+                                                    this
+                                                )}
+                                            >
+                                                Add
+                                            </button>
+                                            <button
+                                                style={{
+                                                    minWidth: "150px",
+                                                    marginRight: "10px",
+                                                }}
+                                                className="pink_btn"
+                                                type="button"
+                                                onClick={() =>
+                                                    this.setState({
+                                                        addModel: false,
+                                                        fieldsForSaveTo: {
+                                                            saveToTitle: "",
+                                                        },
+                                                        fieldsForSaveToerrors: {
+                                                            saveToTitle: "",
+                                                        },
+                                                    })
+                                                }
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                         </CModalBody>
                     </CModal>

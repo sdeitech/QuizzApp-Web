@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const TheAside = () => {
-  return ('')
-}
+    return "";
+};
 
-export default React.memo(TheAside)
+export default React.memo(TheAside);

@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const TheSidebar = () => {
-  return ('')
-}
+    return "";
+};
 
-export default React.memo(TheSidebar)
+export default React.memo(TheSidebar);

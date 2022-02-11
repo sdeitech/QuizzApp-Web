@@ -79,7 +79,7 @@ class Detail extends Component {
     invite(data) {
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
         if (data.is_invited === false) {
-            this.setState({isLoading:true});
+            this.setState({ isLoading: true });
             fetch(configuration.baseURL + "room/inviteRoom", {
                 method: "POSt",
                 headers: {
@@ -98,12 +98,11 @@ class Detail extends Component {
                 })
                 .then((data) => {
                     if (data.code === 200) {
-                       
                         this.componentDidMount();
-                        this.setState({isLoading:true});
+                        this.setState({ isLoading: true });
                         return toast.success("Invite successfully");
                     } else {
-                        this.setState({isLoading:false});
+                        this.setState({ isLoading: false });
 
                         return toast.error(data.message);
                     }
@@ -313,9 +312,7 @@ class Detail extends Component {
                                 <button
                                     className="blue_btn"
                                     type="button"
-                                    onClick={this.goToVideoChat.bind(
-                                        this
-                                    )}
+                                    onClick={this.goToVideoChat.bind(this)}
                                 >
                                     Let's Play
                                 </button>
@@ -487,15 +484,13 @@ class Detail extends Component {
                                                                 </div>
                                                                 <div
                                                                     style={{
-                                                                        float:
-                                                                            "right",
+                                                                        float: "right",
                                                                     }}
                                                                     className="inline arrow"
                                                                 >
                                                                     <button
                                                                         style={{
-                                                                            margin:
-                                                                                "0",
+                                                                            margin: "0",
                                                                         }}
                                                                         type="button"
                                                                         className="yellow_btn"
@@ -680,34 +675,42 @@ class Detail extends Component {
                                                                     </div>
                                                                     <div
                                                                         style={{
-                                                                            float:
-                                                                                "right",
+                                                                            float: "right",
                                                                         }}
                                                                         className="inline arrow"
                                                                     >
                                                                         <button
                                                                             style={{
-                                                                                margin:
-                                                                                    "0",
+                                                                                margin: "0",
                                                                             }}
                                                                             type="button"
-                                                                            disabled={this.state.isLoading}
+                                                                            disabled={
+                                                                                this
+                                                                                    .state
+                                                                                    .isLoading
+                                                                            }
                                                                             className="yellow_btn"
                                                                             onClick={this.invite.bind(
                                                                                 this,
                                                                                 e
                                                                             )}
                                                                         >
-
-{this.state.isLoading ? 
- (<><span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>Loading...</>) : (
-
-
-    e.is_invited
-        ? "Invited"
-        : "Invite"
- )}
-                                                                            
+                                                                            {this
+                                                                                .state
+                                                                                .isLoading ? (
+                                                                                <>
+                                                                                    <span
+                                                                                        className="spinner-border spinner-border-sm mr-2"
+                                                                                        role="status"
+                                                                                        aria-hidden="true"
+                                                                                    ></span>
+                                                                                    Loading...
+                                                                                </>
+                                                                            ) : e.is_invited ? (
+                                                                                "Invited"
+                                                                            ) : (
+                                                                                "Invite"
+                                                                            )}
                                                                         </button>
                                                                     </div>
                                                                 </div>

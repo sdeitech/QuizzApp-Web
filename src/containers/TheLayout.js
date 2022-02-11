@@ -1,12 +1,11 @@
-import React, {Component} from 'react'
+import React, { Component } from "react";
 import {
     TheContent,
     //TheFooter,
     //TheHeader
-} from './index'
+} from "./index";
 
 class TheLayout extends Component {
-
     constructor(props) {
         super(props);
         this.state = {};
@@ -23,8 +22,8 @@ class TheLayout extends Component {
                     {/*<TheFooter />*/}
                 </div>
             </div>
-        )
+        );
     }
 }
 
-export default TheLayout
+export default TheLayout;
