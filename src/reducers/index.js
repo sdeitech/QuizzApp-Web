@@ -3,8 +3,8 @@ import socketReducers from "./socketReducers";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
-	authReducers,
-	socketReducers,
-})
+    authReducers,
+    socketReducers,
+});
 
 export default rootReducer;

@@ -1,34 +1,34 @@
 export default {
-    "languages": [
+    languages: [
         {
-          "name": "English"
+            name: "English",
         },
         {
-          "name": "Hindi"
+            name: "Hindi",
         },
         {
-          "name": "Gujarati"
+            name: "Gujarati",
         },
         {
-          "name": "Marathi"
+            name: "Marathi",
         },
         {
-          "name": "Tamil"
+            name: "Tamil",
         },
         {
-          "name": "Punjabi"
+            name: "Punjabi",
         },
         {
-          "name": "Spanish"
+            name: "Spanish",
         },
         {
-          "name": "Bhojpuri"
+            name: "Bhojpuri",
         },
         {
-          "name": "Telugu"
+            name: "Telugu",
         },
         {
-          "name": "Other"
-        }
-    ]
+            name: "Other",
+        },
+    ],
 };

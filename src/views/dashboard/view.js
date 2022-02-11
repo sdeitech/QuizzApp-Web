@@ -298,7 +298,10 @@ class Dashboard extends Component {
 			                        </div>
 			                    </div>*/}
 
-                        <div class="trending-contest-dashboard" style={{paddingBottom: "0px"}}>
+                        <div
+                            class="trending-contest-dashboard"
+                            style={{ paddingBottom: "0px" }}
+                        >
                             <div class="create-contest">
                                 <div class="container">
                                     <div class="contest-title">
@@ -409,7 +412,10 @@ class Dashboard extends Component {
                             </div>
                         </div>
 
-                        <div class="trending-contest-dashboard" style={{paddingTop: "0px"}}>
+                        <div
+                            class="trending-contest-dashboard"
+                            style={{ paddingTop: "0px" }}
+                        >
                             <div class="create-contest">
                                 <div class="container">
                                     <div class="contest-title">
@@ -574,16 +580,21 @@ class Dashboard extends Component {
                                                                 />
                                                                 <div class="cat_title2">
                                                                     <h3>
-                                                                            {this.titleSmall(
-                                                                                e.title
-                                                                            )}
-                                                                        </h3>
-                                                                    <h5 style={{
-                                                                            fontSize: "14px",
-                                                                            marginLeft: "36px",
+                                                                        {this.titleSmall(
+                                                                            e.title
+                                                                        )}
+                                                                    </h3>
+                                                                    <h5
+                                                                        style={{
+                                                                            fontSize:
+                                                                                "14px",
+                                                                            marginLeft:
+                                                                                "36px",
                                                                             color: "#c0c9ce",
-                                                                            marginBottom: "10px"
-                                                                    }}>
+                                                                            marginBottom:
+                                                                                "10px",
+                                                                        }}
+                                                                    >
                                                                         {
                                                                             e.numberOfQuestions
                                                                         }{" "}
@@ -592,7 +603,7 @@ class Dashboard extends Component {
                                                                             ? "Questions"
                                                                             : "Question"}
                                                                     </h5>
-                                                                    
+
                                                                     <p className="username">
                                                                         {
                                                                             e.createdBy
