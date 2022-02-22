@@ -539,7 +539,8 @@ class Contest extends Component {
                                                             this
                                                         )}
                                                     >
-                                                        Clear All
+                                                        {/* Clear All */}
+                                                        Reset
                                                     </button>
                                                     <button
                                                         className="yellow_btn"

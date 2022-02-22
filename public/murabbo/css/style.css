@@ -4447,3 +4447,9 @@ width: 95px;
   margin-right: 20px;
   height: 95px;
 }
+
+::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+}
