@@ -142,7 +142,8 @@ class Dashboard extends Component {
         currentDate = currentDate.toUTCString();
 
         fetch(
-            configuration.baseURL + "contest/gameOfTheDay?date=" + currentDate,
+            // configuration.baseURL + "contest/gameOfTheDay?date=" + currentDate,
+            configuration.baseURL + `contest/gameOfTheDay?date=${currentDate}&userId=${userId}`,
             {
                 method: "GET",
                 headers: {
