@@ -155,7 +155,11 @@ class YourFriends extends Component {
                                                                                 : "avatars/placeholder-user.png"
                                                                         }
                                                                     />
-                                                                    <img
+                                                                    <p>
+                                                                        {index +
+                                                                            1}
+                                                                    </p>
+                                                                    {/* <img
                                                                         class="onlinetick"
                                                                         style={{
                                                                             position:
@@ -178,12 +182,24 @@ class YourFriends extends Component {
                                                                                 ? "img/invisible.png"
                                                                                 : "img/online.png"
                                                                         }
-                                                                    />
+                                                                    /> */}
                                                                 </div>
                                                                 <div class="user-detail_">
                                                                     <h3>
                                                                         {i.name}
                                                                     </h3>
+                                                                </div>
+                                                                <div class="point_">
+                                                                    <h5>
+                                                                        {
+                                                                            i.currentScore
+                                                                        }{" "}
+                                                                        pt
+                                                                    </h5>
+                                                                    <img
+                                                                        class="up-arrow"
+                                                                        src="./murabbo/img/up-arrow.svg"
+                                                                    />
                                                                 </div>
                                                             </div>
                                                         </div>

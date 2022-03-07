@@ -74,6 +74,7 @@ const Room = React.memo((props) => {
     // eslint-disable-next-line no-unused-vars
     const [moderatorLeave, setmoderatorLeave] = useState(false);
     const [openModelForMembers, setopenModelForMembers] = useState(false);
+    const [openModelForInviteFriend, setopenModelForInviteFriend] = useState(false);
 
     const cameraOff = () => {
         if (isVideoMuted) {
@@ -726,8 +727,8 @@ const Room = React.memo((props) => {
                                     otherUserSteams.length === 0
                                         ? "video-person1"
                                         : otherUserSteams.length === 1
-                                        ? "video-person2"
-                                        : "video-person3"
+                                            ? "video-person2"
+                                            : "video-person3"
                                 }
                                 style={{ position: "relative" }}
                             >
@@ -742,11 +743,10 @@ const Room = React.memo((props) => {
                                         className="video-inner-wrap video-center circle-body inline"
                                         style={{
                                             position: "absolute",
-                                            width: `${
-                                                otherUserSteams.length === 0
-                                                    ? "96%"
-                                                    : "92%"
-                                            }`,
+                                            width: `${otherUserSteams.length === 0
+                                                ? "96%"
+                                                : "92%"
+                                                }`,
                                         }}
                                     >
                                         {profilePic ? (
@@ -779,8 +779,8 @@ const Room = React.memo((props) => {
                                             otherUserSteams.length === 0
                                                 ? "video-person1"
                                                 : otherUserSteams.length === 1
-                                                ? "video-person2"
-                                                : "video-person3"
+                                                    ? "video-person2"
+                                                    : "video-person3"
                                         }
                                         style={{ position: "relative" }}
                                     >
@@ -790,11 +790,10 @@ const Room = React.memo((props) => {
                                             }
                                             style={{
                                                 position: "relative",
-                                                border: `${
-                                                    item.speaking
-                                                        ? "3px solid #12b5cb"
-                                                        : ""
-                                                }`,
+                                                border: `${item.speaking
+                                                    ? "3px solid #12b5cb"
+                                                    : ""
+                                                    }`,
                                             }}
                                         >
                                             <Video
@@ -867,6 +866,12 @@ const Room = React.memo((props) => {
                                             ? "img/group2.png"
                                             : "img/group.png"
                                     }
+                                />
+                            </a>
+                            <a onClick={() => setopenModelForInviteFriend(true)}>
+                                <img
+                                    alt=""
+                                    src={"img/invite.png"}
                                 />
                             </a>
                             <a onClick={() => setconfirmationModel(true)}>
@@ -1019,11 +1024,11 @@ const Room = React.memo((props) => {
                                                                             item
                                                                                 .userdata
                                                                                 .image ===
-                                                                            ""
+                                                                                ""
                                                                                 ? "avatars/placeholder-user.png"
                                                                                 : item
-                                                                                      .userdata
-                                                                                      .image
+                                                                                    .userdata
+                                                                                    .image
                                                                         }
                                                                     />
                                                                 </div>
@@ -1180,7 +1185,7 @@ const Room = React.memo((props) => {
                                                                 }}
                                                                 src={
                                                                     profilePic ===
-                                                                    ""
+                                                                        ""
                                                                         ? `https://ui-avatars.com/api/?name=${username}&background=random`
                                                                         : profilePic
                                                                 }
@@ -1210,7 +1215,7 @@ const Room = React.memo((props) => {
                                                                 alt=""
                                                                 src={
                                                                     isAudioMuted ===
-                                                                    false
+                                                                        false
                                                                         ? "img/mic2.png"
                                                                         : "img/mute2.png"
                                                                 }
@@ -1220,7 +1225,7 @@ const Room = React.memo((props) => {
                                                                 alt=""
                                                                 src={
                                                                     isVideoMuted ===
-                                                                    false
+                                                                        false
                                                                         ? "img/cam2.png"
                                                                         : "img/cam-off2.png"
                                                                 }
@@ -1248,11 +1253,11 @@ const Room = React.memo((props) => {
                                                                             item
                                                                                 .userData
                                                                                 .image ===
-                                                                            ""
+                                                                                ""
                                                                                 ? "avatars/placeholder-user.png"
                                                                                 : item
-                                                                                      .userData
-                                                                                      .image
+                                                                                    .userData
+                                                                                    .image
                                                                         }
                                                                     />
                                                                 </div>
@@ -1343,6 +1348,184 @@ const Room = React.memo((props) => {
                                             })}
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CModalBody>
+                </CModal>
+
+                <CModal
+                    show={openModelForInviteFriend}
+                    closeOnBackdrop={true}
+                    onClose={() => setopenModelForInviteFriend(false)}
+                    color="danger"
+                    centered
+                >
+                    <CModalBody className="model-bg">
+                        <div>
+                            <div className="modal-body">
+                                <button
+                                    type="button"
+                                    className="close"
+                                    onClick={() =>
+                                        setopenModelForInviteFriend(false)
+                                    }
+                                >
+                                    <span aria-hidden="true">
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
+                                    </span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title"></div>
+                                    <img
+                                        className="shape2"
+                                        src="./murabbo/img/shape2.svg"
+                                    />
+                                    <img
+                                        className="shape3"
+                                        src="./murabbo/img/shape3.svg"
+                                    />
+
+                                    <div className="row">
+                                        <div className="col-md-10 offset-md-1">
+                                            <div
+                                                style={{
+                                                    textAlign: "center",
+                                                }}
+                                                className=""
+                                            >
+                                                <button
+                                                    style={{
+                                                        minWidth: "250px",
+                                                        marginBottom:
+                                                            "10px",
+                                                    }}
+                                                    className="blue_btn light_blue_btn"
+                                                    type="button"
+                                                    // onClick={this.handleRoomList.bind(
+                                                    //     this
+                                                    // )}
+                                                >
+                                                    Add friend by name
+                                                </button>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    textAlign: "center",
+                                                }}
+                                                className=""
+                                            >
+                                                <button
+                                                    style={{
+                                                        minWidth: "250px",
+                                                        marginBottom:
+                                                            "10px",
+                                                    }}
+                                                    className="yellow_btn"
+                                                    type="button"
+                                                    // onClick={() =>
+                                                    //     this.setState({
+                                                    //         playContestModel: false,
+                                                    //         playNewContestModel: true,
+                                                    //     })
+                                                    // }
+                                                >
+                                                    Add friend from friend list
+                                                </button>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    textAlign: "center",
+                                                }}
+                                                className=""
+                                            >
+                                                <button
+                                                    style={{
+                                                        minWidth: "250px",
+                                                        marginBottom:
+                                                            "10px",
+                                                    }}
+                                                    className="yellow_btn"
+                                                    type="button"
+                                                    // onClick={() =>
+                                                    //     this.setState({
+                                                    //         playContestModel: false,
+                                                    //         playNewContestModel: true,
+                                                    //     })
+                                                    // }
+                                                >
+                                                    Add friend using link
+                                                </button>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    textAlign: "center",
+                                                }}
+                                                className=""
+                                            >
+                                                <button
+                                                    style={{
+                                                        minWidth: "250px",
+                                                        marginBottom:
+                                                            "10px",
+                                                    }}
+                                                    className="pink_btn"
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setopenModelForInviteFriend(false)
+                                                    }
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* <div className="container">
+                                        <div className="row">
+                                            <div className="col-md-12">
+                                                <div className="_1st2-member two_no">
+                                                    <div className="_1stimg">
+                                                        <div className="memberImg_">
+                                                            <img
+                                                                alt=""
+                                                                style={{
+                                                                    height: "50px",
+                                                                    width: "50px",
+                                                                    borderRadius:
+                                                                        "50%",
+                                                                }}
+                                                                src={
+                                                                    profilePic ===
+                                                                        ""
+                                                                        ? `https://ui-avatars.com/api/?name=${username}&background=random`
+                                                                        : profilePic
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <div className="member_details">
+                                                            <h5
+                                                                style={{
+                                                                    color: "#fff",
+                                                                    marginBottom:
+                                                                        "0 !important",
+                                                                    position:
+                                                                        "relative",
+                                                                    top: "10px",
+                                                                }}
+                                                            >
+                                                                {username}
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
