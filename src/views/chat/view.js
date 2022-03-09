@@ -75,6 +75,7 @@ const Room = React.memo((props) => {
     const [moderatorLeave, setmoderatorLeave] = useState(false);
     const [openModelForMembers, setopenModelForMembers] = useState(false);
     const [openModelForInviteFriend, setopenModelForInviteFriend] = useState(false);
+    const [addFriendByName, setaddFriendByName] = useState(false);
 
     const cameraOff = () => {
         if (isVideoMuted) {
@@ -1405,9 +1406,10 @@ const Room = React.memo((props) => {
                                                     }}
                                                     className="blue_btn light_blue_btn"
                                                     type="button"
-                                                    // onClick={this.handleRoomList.bind(
-                                                    //     this
-                                                    // )}
+                                                    onClick={() =>
+                                                        setaddFriendByName(true) ||
+                                                        setopenModelForInviteFriend(false)
+                                                    }
                                                 >
                                                     Add friend by name
                                                 </button>
@@ -1426,12 +1428,12 @@ const Room = React.memo((props) => {
                                                     }}
                                                     className="yellow_btn"
                                                     type="button"
-                                                    // onClick={() =>
-                                                    //     this.setState({
-                                                    //         playContestModel: false,
-                                                    //         playNewContestModel: true,
-                                                    //     })
-                                                    // }
+                                                // onClick={() =>
+                                                //     this.setState({
+                                                //         playContestModel: false,
+                                                //         playNewContestModel: true,
+                                                //     })
+                                                // }
                                                 >
                                                     Add friend from friend list
                                                 </button>
@@ -1450,12 +1452,12 @@ const Room = React.memo((props) => {
                                                     }}
                                                     className="yellow_btn"
                                                     type="button"
-                                                    // onClick={() =>
-                                                    //     this.setState({
-                                                    //         playContestModel: false,
-                                                    //         playNewContestModel: true,
-                                                    //     })
-                                                    // }
+                                                // onClick={() =>
+                                                //     this.setState({
+                                                //         playContestModel: false,
+                                                //         playNewContestModel: true,
+                                                //     })
+                                                // }
                                                 >
                                                     Add friend using link
                                                 </button>
@@ -1531,6 +1533,62 @@ const Room = React.memo((props) => {
                         </div>
                     </CModalBody>
                 </CModal>
+
+
+
+                <CModal
+                    show={addFriendByName}
+                    closeOnBackdrop={true}
+                    onClose={() => setaddFriendByName(false)}
+                    color="danger"
+                    centered
+                >
+                    <CModalBody className="model-bg">
+                        <div>
+                            <div className="modal-body">
+                                <button
+                                    type="button"
+                                    className="close"
+                                    onClick={() =>
+                                        setaddFriendByName(false)
+                                    }
+                                >
+                                    <span aria-hidden="true">
+                                        <img src="./murabbo/img/close.svg" />
+                                    </span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                        <h3>Search Friend</h3>
+                                    </div>
+                                    <img
+                                        className="shape2"
+                                        src="./murabbo/img/shape2.svg"
+                                    />
+                                    <img
+                                        className="shape3"
+                                        src="./murabbo/img/shape3.svg"
+                                    />
+                                    <div
+                                        class="row search"
+                                        style={{ marginBottom: "20px" }}
+                                    >
+                                        <input
+                                            type="text"
+                                            placeholder="Search"
+                                            // value={this.state.searchTerm}
+                                            // onChange={this.search.bind(
+                                            //     this
+                                            // )}
+                                        />
+                                        <i className="bx bx-search"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CModalBody>
+                </CModal>
+
             </section>
         </>
     );
