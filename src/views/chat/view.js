@@ -19,6 +19,7 @@ import {
     setrequestSender,
     removerequestSender,
 } from "../../actions/socketAction";
+import AddFriendByFriendList from "./modals/addFriendByFriendList.js"
 import { CModal, CModalBody } from "@coreui/react";
 // import socket from "socket.io-client/lib/socket";
 // import hark from "hark";
@@ -76,6 +77,7 @@ const Room = React.memo((props) => {
     const [openModelForMembers, setopenModelForMembers] = useState(false);
     const [openModelForInviteFriend, setopenModelForInviteFriend] = useState(false);
     const [addFriendByName, setaddFriendByName] = useState(false);
+    const [addFriendByFriendListModal, setaddFriendByFriendListModal] = useState(false);
 
     const cameraOff = () => {
         if (isVideoMuted) {
@@ -886,6 +888,8 @@ const Room = React.memo((props) => {
                     </div>
                 </div>
 
+                <AddFriendByFriendList open={addFriendByFriendListModal} setOpen={setaddFriendByFriendListModal} />
+
                 <CModal
                     show={confirmationModel}
                     closeOnBackdrop={false}
@@ -1428,12 +1432,10 @@ const Room = React.memo((props) => {
                                                     }}
                                                     className="yellow_btn"
                                                     type="button"
-                                                // onClick={() =>
-                                                //     this.setState({
-                                                //         playContestModel: false,
-                                                //         playNewContestModel: true,
-                                                //     })
-                                                // }
+                                                onClick={() =>
+                                                    setaddFriendByFriendListModal(true) ||
+                                                    setopenModelForInviteFriend(false)
+                                                }
                                                 >
                                                     Add friend from friend list
                                                 </button>
@@ -1576,10 +1578,10 @@ const Room = React.memo((props) => {
                                         <input
                                             type="text"
                                             placeholder="Search"
-                                            // value={this.state.searchTerm}
-                                            // onChange={this.search.bind(
-                                            //     this
-                                            // )}
+                                        // value={this.state.searchTerm}
+                                        // onChange={this.search.bind(
+                                        //     this
+                                        // )}
                                         />
                                         <i className="bx bx-search"></i>
                                     </div>
