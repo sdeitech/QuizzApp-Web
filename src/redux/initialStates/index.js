@@ -1,0 +1,25 @@
+export const initialState = {
+        status: '',
+        userId: '',
+        loginToken: '',
+        loginRole: '',
+        loader: false,
+        alertMessage: '',
+        isAlertVisible: false,
+        isFetch: false,
+        phone: '',
+        profile: {},
+        loginDetails: {},
+        countryLabel: '',
+        gamesList: [],
+        groupsList: [],
+        notificationList: [],
+        subscriptionData: {
+                expired: "",
+                price: "",
+                subscriptionCode: "",
+                title: "",
+                type: ""
+        },
+        maxQuestionNumber: 0,
+}

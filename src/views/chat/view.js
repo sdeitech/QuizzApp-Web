@@ -801,8 +801,6 @@ const Room = React.memo((props) => {
     ]);
     const deleteRoom = async () => {
         console.log("deleting room id", roomId);
-
-
         const data = new FormData();
         data.append("roomId", roomId);
         fetch(configuration.apiURL + "api/game/deleteGameRoomData", {

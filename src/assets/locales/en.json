@@ -1,0 +1,13 @@
+{
+  "selected_Langugae": "English", 
+  "email": "Email",
+  "email_placeholder": "Enter your Email",
+  "password": "Password",
+  "password_placeholder": "Enter your Email",
+  "email_error": "Enter your valid Email",
+
+  "password_error": "Enter your valid password"
+
+
+
+}
