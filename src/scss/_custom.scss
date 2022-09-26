@@ -1,20 +1,20 @@
 // Here you can add other styles
 .loader-img {
     position: fixed;
-    z-index: 1000; 
+    z-index: 1000;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
-    background: rgba( 255, 255, 255, .8) url('/img/loader.gif') 50% 50% no-repeat;
+    background: rgba(255, 255, 255, 0.8) url("/img/loader.gif") 50% 50%
+        no-repeat;
     background-size: 80px;
 }
-.congo_main_btn
-{
+.congo_main_btn {
     background-color: #6434e8 !important;
     border-radius: 5px !important;
     color: #fff !important;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-size: 18px !important;
     box-shadow: 0px 0px 4px #6434e8 !important;
     padding: 10px 30px !important;

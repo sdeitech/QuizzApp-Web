@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import languages from "../../languages";
 import configuration from "../../config";
 import { reactLocalStorage } from "reactjs-localstorage";
-import MultiSelect from "react-multi-select-component";
+import { MultiSelect } from "react-multi-select-component";
 import { CModal, CModalBody } from "@coreui/react";
 
 class View extends Component {

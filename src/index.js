@@ -11,12 +11,12 @@ import { Provider } from "react-redux";
 import store from "./store";
 
 React.icons = icons;
-
+const rootNode = document.getElementById("root");
 ReactDOM.render(
     <Provider store={store}>
         <App />
     </Provider>,
-    document.getElementById("root")
+    rootNode
 );
 
 // If you want your app to work offline and load faster, you can change
