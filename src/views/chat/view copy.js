@@ -54,7 +54,7 @@ const Room = React.memo((props) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const joinroomreq = useSelector(
-        (state) => state.socketReducers.joinRoomReq
+        (state) => state.sockteReducers.joinRoomReq
     );
     const isModerator = useSelector(
         (state) => state.socketReducers.isModerator
@@ -228,12 +228,14 @@ const Room = React.memo((props) => {
     };
 
     const moderatorResponse = (socketId, status) => {
+        console.log("MODERATOR RESPONSE2222222222 ");
         try {
             socketRef.current.emit("join-room-response-from-moderator", {
                 roomID: roomId,
                 socketId: socketId,
                 status,
             });
+            console.log("MODERATOR RESPONSE2222222222 try");
             dispatch(removerequestSender({ socketId: socketId }));
             // setrequestSender(requestSender.filter(item => item.socketId != socketId));
             if (requestSender.length == 0) {
@@ -241,7 +243,7 @@ const Room = React.memo((props) => {
             }
             console.log("response send is ", status);
         } catch (error) {
-            console.log("moderatorResponse error => ", error);
+            console.log("moderatorResponse error22222222 catch => ", error);
         }
     };
 
@@ -298,7 +300,7 @@ const Room = React.memo((props) => {
             }
         });
         try {
-            return;
+            //return;
             navigator.mediaDevices
                 .getUserMedia({ video: false, audio: false })
                 .then((stream) => {
@@ -831,12 +833,14 @@ const Room = React.memo((props) => {
                                     >
                                         {profilePic ? (
                                             <img
+                                                alt=""
                                                 className="profile11"
                                                 src={profilePic}
                                             ></img>
                                         ) : (
                                             <>
                                                 <img
+                                                    alt=""
                                                     className="profile11"
                                                     src={`https://ui-avatars.com/api/?name=${username}&background=random`}
                                                 ></img>
@@ -888,6 +892,7 @@ const Room = React.memo((props) => {
                                                     }}
                                                 >
                                                     <img
+                                                        alt=""
                                                         className="profile11"
                                                         src={
                                                             item.userData.image
@@ -897,6 +902,7 @@ const Room = React.memo((props) => {
                                             )}
                                             <a>
                                                 <img
+                                                    alt=""
                                                     alt=""
                                                     src={
                                                         item.Audio
@@ -919,6 +925,7 @@ const Room = React.memo((props) => {
                             <a onClick={cameraOff}>
                                 <img
                                     alt=""
+                                    alt=""
                                     src={
                                         isVideoMuted
                                             ? "img/camera-off(1).png"
@@ -928,6 +935,7 @@ const Room = React.memo((props) => {
                             </a>
                             <a onClick={muteAudio}>
                                 <img
+                                    alt=""
                                     alt=""
                                     src={
                                         isAudioMuted
@@ -939,6 +947,7 @@ const Room = React.memo((props) => {
                             <a onClick={() => setopenModelForMembers(true)}>
                                 <img
                                     alt=""
+                                    alt=""
                                     src={
                                         openModelForMembers
                                             ? "img/group2.png"
@@ -948,6 +957,7 @@ const Room = React.memo((props) => {
                             </a>
                             <a onClick={() => setconfirmationModel(true)}>
                                 <img
+                                    alt=""
                                     className="video-end"
                                     alt=""
                                     src="img/call-end.png"
@@ -973,12 +983,16 @@ const Room = React.memo((props) => {
                                     onClick={() => setconfirmationModel(false)}
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
                                     <div className="model-title">
                                         <img
+                                            alt=""
                                             src="./murabbo/img/exit.png"
                                             alt=""
                                         />
@@ -986,10 +1000,12 @@ const Room = React.memo((props) => {
                                         <h4>Do you want to Exit?</h4>
                                     </div>
                                     <img
+                                        alt=""
                                         className="shape2"
                                         src="./murabbo/img/shape2.svg"
                                     />
                                     <img
+                                        alt=""
                                         className="shape3"
                                         src="./murabbo/img/shape3.svg"
                                     />
@@ -1060,7 +1076,10 @@ const Room = React.memo((props) => {
                                     onClick={() => setrequestModel(false)}
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -1077,6 +1096,7 @@ const Room = React.memo((props) => {
                                                             <div className="_1stimg">
                                                                 <div className="memberImg_">
                                                                     <img
+                                                                        alt=""
                                                                         style={{
                                                                             height: "50px",
                                                                             width: "50px",
@@ -1115,6 +1135,7 @@ const Room = React.memo((props) => {
                                                                 </div>
                                                                 <div className="icons-members2">
                                                                     <img
+                                                                        alt=""
                                                                         src="img/correct-green.png"
                                                                         width="37px"
                                                                         alt="callRight"
@@ -1126,6 +1147,7 @@ const Room = React.memo((props) => {
                                                                         }
                                                                     />
                                                                     <img
+                                                                        alt=""
                                                                         src="img/close.png"
                                                                         width="37px"
                                                                         onClick={() =>
@@ -1162,16 +1184,19 @@ const Room = React.memo((props) => {
                                 <div className="model_data">
                                     <div className="model-title">
                                         <img
+                                            alt=""
                                             src="./murabbo/img/exit.png"
                                             alt=""
                                         />
                                         <h3>Moderator has left the Room</h3>
                                     </div>
                                     <img
+                                        alt=""
                                         className="shape2"
                                         src="./murabbo/img/shape2.svg"
                                     />
                                     <img
+                                        alt=""
                                         className="shape3"
                                         src="./murabbo/img/shape3.svg"
                                     />
@@ -1218,7 +1243,10 @@ const Room = React.memo((props) => {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -1233,6 +1261,7 @@ const Room = React.memo((props) => {
                                                     <div className="_1stimg">
                                                         <div className="memberImg_">
                                                             <img
+                                                                alt=""
                                                                 style={{
                                                                     height: "50px",
                                                                     width: "50px",
@@ -1268,8 +1297,9 @@ const Room = React.memo((props) => {
                                                             }}
                                                         >
                                                             <img
+                                                                alt=""
                                                                 src={
-                                                                    isAudioMuted ==
+                                                                    isAudioMuted ===
                                                                     false
                                                                         ? "img/mic2.png"
                                                                         : "img/mute2.png"
@@ -1278,8 +1308,9 @@ const Room = React.memo((props) => {
                                                                 alt="callMic"
                                                             />
                                                             <img
+                                                                alt=""
                                                                 src={
-                                                                    isVideoMuted ==
+                                                                    isVideoMuted ===
                                                                     false
                                                                         ? "img/cam2.png"
                                                                         : "img/cam-off2.png"
@@ -1298,6 +1329,7 @@ const Room = React.memo((props) => {
                                                             <div className="_1stimg">
                                                                 <div className="memberImg_">
                                                                     <img
+                                                                        alt=""
                                                                         style={{
                                                                             height: "50px",
                                                                             width: "50px",
@@ -1353,6 +1385,7 @@ const Room = React.memo((props) => {
                                                                                 }
                                                                             >
                                                                                 <img
+                                                                                    alt=""
                                                                                     src="img/rigth2.png"
                                                                                     width="49px"
                                                                                     alt="callRight"
@@ -1370,6 +1403,7 @@ const Room = React.memo((props) => {
                                                                                 }
                                                                             >
                                                                                 <img
+                                                                                    alt=""
                                                                                     src="img/close.png"
                                                                                     width="49px"
                                                                                 />
@@ -1377,6 +1411,7 @@ const Room = React.memo((props) => {
                                                                         )
                                                                     ) : null}
                                                                     <img
+                                                                        alt=""
                                                                         src={
                                                                             item.Audio
                                                                                 ? "img/mic2.png"
@@ -1386,6 +1421,7 @@ const Room = React.memo((props) => {
                                                                         alt="callMic"
                                                                     />
                                                                     <img
+                                                                        alt=""
                                                                         src={
                                                                             item.Video
                                                                                 ? "img/cam2.png"

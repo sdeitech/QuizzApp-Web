@@ -226,6 +226,7 @@ class Detail extends Component {
                                             <div className="participate-list">
                                                 <div className="inline">
                                                     <img
+                                                        alt=""
                                                         src={
                                                             e.image
                                                                 ? e.image
@@ -266,6 +267,7 @@ class Detail extends Component {
                                             <div className="participate-list">
                                                 <div className="inline">
                                                     <img
+                                                        alt=""
                                                         src={
                                                             e.image
                                                                 ? e.image
@@ -337,7 +339,10 @@ class Detail extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -356,7 +361,10 @@ class Detail extends Component {
                                                 className="addfriend"
                                             >
                                                 <div className="inline">
-                                                    <img src="./murabbo/img/magnifying-glass.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/magnifying-glass.svg"
+                                                    />
                                                 </div>
                                                 <div className="inline">
                                                     <h5>Add by Name</h5>
@@ -365,12 +373,18 @@ class Detail extends Component {
                                                     style={{ float: "right" }}
                                                     className="inline arrow"
                                                 >
-                                                    <img src="./murabbo/img/arrow-right.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/arrow-right.svg"
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="addfriend">
                                                 <div className="inline">
-                                                    <img src="./murabbo/img/contacts.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/contacts.svg"
+                                                    />
                                                 </div>
                                                 <div className="inline">
                                                     <h5>Add from Contacts</h5>
@@ -379,12 +393,18 @@ class Detail extends Component {
                                                     style={{ float: "right" }}
                                                     className="inline arrow"
                                                 >
-                                                    <img src="./murabbo/img/arrow-right.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/arrow-right.svg"
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="addfriend">
                                                 <div className="inline">
-                                                    <img src="./murabbo/img/facebook2.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/facebook2.svg"
+                                                    />
                                                 </div>
                                                 <div className="inline">
                                                     <h5>
@@ -395,7 +415,10 @@ class Detail extends Component {
                                                     style={{ float: "right" }}
                                                     className="inline arrow"
                                                 >
-                                                    <img src="./murabbo/img/arrow-right.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/arrow-right.svg"
+                                                    />
                                                 </div>
                                             </div>
 
@@ -432,7 +455,7 @@ class Detail extends Component {
                                 }
                             >
                                 <span aria-hidden="true">
-                                    <img src="./murabbo/img/close.svg" />
+                                    <img alt="" src="./murabbo/img/close.svg" />
                                 </span>
                             </button>
                             <div className="model_data">
@@ -470,6 +493,7 @@ class Detail extends Component {
                                                             <div className="participate-list">
                                                                 <div className="inline">
                                                                     <img
+                                                                        alt=""
                                                                         src={
                                                                             e.image
                                                                                 ? e.image
@@ -565,7 +589,10 @@ class Detail extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -604,6 +631,7 @@ class Detail extends Component {
                                                                 <div className="participate-list">
                                                                     <div className="inline">
                                                                         <img
+                                                                            alt=""
                                                                             src={
                                                                                 e.image
                                                                                     ? e.image
@@ -659,6 +687,7 @@ class Detail extends Component {
                                                                 <div className="participate-list">
                                                                     <div className="inline">
                                                                         <img
+                                                                            alt=""
                                                                             src={
                                                                                 e.image
                                                                                     ? e.image
@@ -747,7 +776,10 @@ class Detail extends Component {
                                                 </h3>
                                                 <div className="participate-list">
                                                     <div className="inline">
-                                                        <img src="murabbo/img/team-3.jpg" />
+                                                        <img
+                                                            alt=""
+                                                            src="murabbo/img/team-3.jpg"
+                                                        />
                                                     </div>
                                                     <div className="inline">
                                                         <h5>Zen Lee Ho</h5>

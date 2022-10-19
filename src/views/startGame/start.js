@@ -134,67 +134,97 @@ class StartGame extends Component {
                             </div>
                             <div className="participate-list">
                                 <div className="inline">
-                                    <img src="./murabbo/img/team-1.jpg" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/team-1.jpg"
+                                    />
                                 </div>
                                 <div className="inline">
                                     <h5>Jessica Singh</h5>
                                     <h6>jess123.sin</h6>
                                 </div>
                                 <div className="inline part_ico">
-                                    <img src="./murabbo/img/mic1.png" />
-                                    <img src="./murabbo/img/video1.png" />
+                                    <img alt="" src="./murabbo/img/mic1.png" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/video1.png"
+                                    />
                                 </div>
                             </div>
                             <div className="participate-list">
                                 <div className="inline">
-                                    <img src="./murabbo/img/team-2.jpg" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/team-2.jpg"
+                                    />
                                 </div>
                                 <div className="inline">
                                     <h5>Alina Joy</h5>
                                     <h6>joy.alina</h6>
                                 </div>
                                 <div className="inline part_ico">
-                                    <img src="./murabbo/img/mic2.png" />
-                                    <img src="./murabbo/img/video2.png" />
+                                    <img alt="" src="./murabbo/img/mic2.png" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/video2.png"
+                                    />
                                 </div>
                             </div>
                             <div className="participate-list">
                                 <div className="inline">
-                                    <img src="./murabbo/img/team-3.jpg" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/team-3.jpg"
+                                    />
                                 </div>
                                 <div className="inline">
                                     <h5>Zen Lee Ho</h5>
                                     <h6>zenlee.ho</h6>
                                 </div>
                                 <div className="inline part_ico">
-                                    <img src="./murabbo/img/mic1.png" />
-                                    <img src="./murabbo/img/video1.png" />
+                                    <img alt="" src="./murabbo/img/mic1.png" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/video1.png"
+                                    />
                                 </div>
                             </div>
                             <div className="participate-list">
                                 <div className="inline">
-                                    <img src="./murabbo/img/team-1.jpg" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/team-1.jpg"
+                                    />
                                 </div>
                                 <div className="inline">
                                     <h5>Angelo Grasso</h5>
                                     <h6>grasso.124</h6>
                                 </div>
                                 <div className="inline part_ico">
-                                    <img src="./murabbo/img/mic1.png" />
-                                    <img src="./murabbo/img/video1.png" />
+                                    <img alt="" src="./murabbo/img/mic1.png" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/video1.png"
+                                    />
                                 </div>
                             </div>
                             <div className="participate-list">
                                 <div className="inline">
-                                    <img src="./murabbo/img/team-2.jpg" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/team-2.jpg"
+                                    />
                                 </div>
                                 <div className="inline">
                                     <h5>Mark Andrew</h5>
                                     <h6>andrew123</h6>
                                 </div>
                                 <div className="inline part_ico">
-                                    <img src="./murabbo/img/mic1.png" />
-                                    <img src="./murabbo/img/video1.png" />
+                                    <img alt="" src="./murabbo/img/mic1.png" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/video1.png"
+                                    />
                                 </div>
                             </div>
                             <div className="participate-list">
@@ -206,8 +236,11 @@ class StartGame extends Component {
                                     <h6>barari.debsani</h6>
                                 </div>
                                 <div className="inline part_ico">
-                                    <img src="./murabbo/img/mic1.png" />
-                                    <img src="./murabbo/img/video1.png" />
+                                    <img alt="" src="./murabbo/img/mic1.png" />
+                                    <img
+                                        alt=""
+                                        src="./murabbo/img/video1.png"
+                                    />
                                 </div>
                             </div>
                         </div>

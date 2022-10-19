@@ -594,7 +594,7 @@ class TheHeader extends Component {
     }
     responseFacebook = (socialResponse) => {
         console.log("socialResponse Login");
-        console.log(socialResponse);
+        console.log(socialResponse, "callback function called");
 
         if (socialResponse.id) {
             var postData = {
@@ -617,13 +617,13 @@ class TheHeader extends Component {
                 socialResponse.id,
                 postData,
                 socialResponse.profileObj,
-                "facebook"
+                "fb"
             );
         }
     };
     responseGoogle = (socialResponse) => {
         console.log("Google login call");
-        console.log(socialResponse);
+        console.log(socialResponse, "response form the google");
         if (socialResponse.googleId) {
             var social_id = socialResponse.googleId;
 
@@ -658,31 +658,31 @@ class TheHeader extends Component {
         }
     };
     responseFacebookForLogin = (socialResponse) => {
-        console.log("Call responseFacebookForLogin");
-        console.log(socialResponse);
-
+        console.log(socialResponse, "SOcial Object");
+        const { id, name, email, friends } = socialResponse;
         if (socialResponse.id) {
             var postData = {
-                social_id: socialResponse.id,
-                name: socialResponse.name,
-                email: socialResponse.email || "",
+                social_id: id,
+                name: name,
+                email: email || "",
             };
-            // console.log(postData);
+            console.log(postData, "postData");
             if (postData) {
                 this.setState({
                     fields: {
-                        social_id: postData.social_id,
-                        name: postData.name,
-                        email: postData.email,
+                        social_id: id,
+                        name: name,
+                        email: email,
+                        friends: friends,
                     },
                 });
             }
-
+            console.log(this.state, "states");
             this.callAPI(
                 socialResponse.id,
                 postData,
                 socialResponse.profileObj,
-                "facebook"
+                "fb"
             );
         }
     };
@@ -726,6 +726,7 @@ class TheHeader extends Component {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                name: postData.name,
                 socialId: social_id,
                 email: postData.email,
                 registerType,
@@ -849,12 +850,12 @@ class TheHeader extends Component {
                                         </li>
                                         {/* <li className="nav-item">
                                             <a data-toggle="modal" data-target="#setpin" className="nav-link" href="javascript:void(0);">
-                                                <button className="yellow_btn" type="button"><img src="./murabbo/img/pin.svg" alt="Pin"/> Set Pin</button>
+                                                <button className="yellow_btn" type="button"><img alt="" src="./murabbo/img/pin.svg" alt="Pin"/> Set Pin</button>
                                             </a>
                                         </li>
                                         <li className="nav-item">
                                             <a className="nav-link " href="#/contest">
-                                                <button className="blue_btn" type="button"><img src="./murabbo/img/create.svg" alt="Create"/> Create</button>
+                                                <button className="blue_btn" type="button"><img alt="" src="./murabbo/img/create.svg" alt="Create"/> Create</button>
                                             </a>
                                         </li> */}
                                     </ul>
@@ -863,6 +864,7 @@ class TheHeader extends Component {
                         </nav>
                     </div>
                 </header>
+                {/*=================== For Resgistor Model ===================*/}
                 <div
                     className={this.state.openModelRegister ? "stopScorll" : ""}
                 >
@@ -887,7 +889,7 @@ class TheHeader extends Component {
                                 className="close"
                             >
                                 <span aria-hidden="true">
-                                    <img src="./murabbo/img/close.svg" />
+                                    <img alt="" src="./murabbo/img/close.svg" />
                                 </span>
                             </button>
                             <div className="modal-body">
@@ -896,16 +898,18 @@ class TheHeader extends Component {
                                         <h3>Welcome to Murabbo!</h3>
                                     </div>
                                     <img
+                                        alt=""
                                         className="shape2"
                                         src="./murabbo/img/shape2.svg"
                                     />
                                     <img
+                                        alt=""
                                         className="shape3"
                                         src="./murabbo/img/shape3.svg"
                                     />
                                     <div className="row">
                                         <div className="col-md-10 offset-md-1">
-                                            {this.state.tosterMsg != "" ? (
+                                            {this.state.tosterMsg !== "" ? (
                                                 <div className="tosterMsg">
                                                     <button
                                                         type="button"
@@ -917,7 +921,10 @@ class TheHeader extends Component {
                                                         }}
                                                     >
                                                         <span aria-hidden="true">
-                                                            <img src="./murabbo/img/close.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/close.svg"
+                                                            />
                                                         </span>
                                                     </button>
                                                     <span>
@@ -926,7 +933,10 @@ class TheHeader extends Component {
                                                 </div>
                                             ) : null}
                                             <div className="cus_input input_wrap">
-                                                <img src="./murabbo/img/username.svg" />
+                                                <img
+                                                    alt=""
+                                                    src="./murabbo/img/username.svg"
+                                                />
                                                 <input
                                                     required
                                                     type="text"
@@ -946,7 +956,10 @@ class TheHeader extends Component {
                                                 {this.state.errors["name"]}
                                             </span>
                                             <div className="cus_input input_wrap">
-                                                <img src="./murabbo/img/email.svg" />{" "}
+                                                <img
+                                                    alt=""
+                                                    src="./murabbo/img/email.svg"
+                                                />{" "}
                                                 <input
                                                     required
                                                     type="text"
@@ -966,7 +979,10 @@ class TheHeader extends Component {
                                                 {this.state.errors["email"]}
                                             </span>
                                             <div className="cus_input input_wrap">
-                                                <img src="./murabbo/img/password.svg" />{" "}
+                                                <img
+                                                    alt=""
+                                                    src="./murabbo/img/password.svg"
+                                                />{" "}
                                                 <input
                                                     required
                                                     // type="password"
@@ -1020,7 +1036,10 @@ class TheHeader extends Component {
                                                 {this.state.errors["password"]}
                                             </span>
                                             <div className="cus_input input_wrap">
-                                                <img src="./murabbo/img/password.svg" />{" "}
+                                                <img
+                                                    alt=""
+                                                    src="./murabbo/img/password.svg"
+                                                />{" "}
                                                 <input
                                                     required
                                                     // type="password"
@@ -1107,7 +1126,7 @@ class TheHeader extends Component {
                                                                 renderProps.onClick
                                                             }
                                                         >
-                                                            <img src="./murabbo/img/facebook.svg" className="cursor"/>
+                                                            <img alt="" src="./murabbo/img/facebook.svg" className="cursor"/>
                                                         </span>
                                                     )}
                                                 /> */}
@@ -1125,7 +1144,7 @@ class TheHeader extends Component {
                                                                 renderProps.onClick
                                                             }
                                                         >
-                                                            <img src="./murabbo/img/google.svg" className="cursor"/>
+                                                            <img alt="" src="./murabbo/img/google.svg" className="cursor"/>
                                                         </span>
                                                     )}
                                                     cookiePolicy={'single_host_origin'}
@@ -1157,6 +1176,7 @@ class TheHeader extends Component {
                     </CModal>
                 </div>
 
+                {/*=================== For Login Model =======================*/}
                 <div className={this.state.openModelLogin ? "stopScorll" : ""}>
                     <CModal
                         show={this.state.openModelLogin}
@@ -1177,7 +1197,10 @@ class TheHeader extends Component {
                                         )}
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1185,24 +1208,28 @@ class TheHeader extends Component {
                                             <h3>Login</h3>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape1"
                                             src="./murabbo/img/shape.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape1_"
                                             src="./murabbo/img/shape.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
                                         <div className="row">
                                             <div className="col-md-10 offset-md-1">
-                                                {this.state.tosterMsg != "" ? (
+                                                {this.state.tosterMsg !== "" ? (
                                                     <div className="tosterMsg">
                                                         <button
                                                             type="button"
@@ -1215,7 +1242,10 @@ class TheHeader extends Component {
                                                             }}
                                                         >
                                                             <span aria-hidden="true">
-                                                                <img src="./murabbo/img/close.svg" />
+                                                                <img
+                                                                    alt=""
+                                                                    src="./murabbo/img/close.svg"
+                                                                />
                                                             </span>
                                                         </button>
                                                         <span>
@@ -1227,7 +1257,10 @@ class TheHeader extends Component {
                                                     </div>
                                                 ) : null}
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/email.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/email.svg"
+                                                    />
                                                     <input
                                                         required
                                                         type="text"
@@ -1252,7 +1285,10 @@ class TheHeader extends Component {
                                                     }
                                                 </span>
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/password.svg" />{" "}
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/password.svg"
+                                                    />
                                                     <input
                                                         required
                                                         // type="password"
@@ -1354,11 +1390,13 @@ class TheHeader extends Component {
                                                 </div>
                                                 <div className="social-login">
                                                     <FacebookLogin
-                                                        appId={
-                                                            configuration.fbAppId
-                                                        }
-                                                        // autoLoad
-                                                        fields="name,email,picture"
+                                                        appId="489699952707497"
+                                                        scope="public_profile,email,user_friends,user_gender,user_photos"
+                                                        // appId={
+                                                        //     configuration.fbAppId
+                                                        // }
+                                                        //autoLoad={true}
+                                                        fields="name,email,picture,friends,gender"
                                                         callback={this.responseFacebookForLogin.bind(
                                                             this
                                                         )}
@@ -1371,15 +1409,16 @@ class TheHeader extends Component {
                                                                 }
                                                             >
                                                                 <img
+                                                                    alt=""
                                                                     src="./murabbo/img/facebook.svg"
                                                                     className="cursor"
                                                                 />
                                                             </span>
                                                         )}
                                                     />
-                                                    {/* <a href="#"><img src="./murabbo/img/facebook.svg" /></a> */}
+                                                    {/* <a href="#"><img alt="" src="./murabbo/img/facebook.svg" /></a> */}
                                                     {/* <a href="#">
-                                                    <img src="./murabbo/img/google.svg" />
+                                                    <img alt="" src="./murabbo/img/google.svg" />
                                                 </a> */}
 
                                                     <GoogleLogin
@@ -1397,6 +1436,7 @@ class TheHeader extends Component {
                                                                 }
                                                             >
                                                                 <img
+                                                                    alt=""
                                                                     src="./murabbo/img/google.svg"
                                                                     className="cursor"
                                                                 />
@@ -1457,7 +1497,10 @@ class TheHeader extends Component {
                                         )}
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1470,16 +1513,18 @@ class TheHeader extends Component {
                                             </p>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
                                         <div className="row">
                                             <div className="col-md-10 offset-md-1">
-                                                {this.state.tosterMsg != "" ? (
+                                                {this.state.tosterMsg !== "" ? (
                                                     <div className="tosterMsg">
                                                         <button
                                                             type="button"
@@ -1492,7 +1537,10 @@ class TheHeader extends Component {
                                                             }}
                                                         >
                                                             <span aria-hidden="true">
-                                                                <img src="./murabbo/img/close.svg" />
+                                                                <img
+                                                                    alt=""
+                                                                    src="./murabbo/img/close.svg"
+                                                                />
                                                             </span>
                                                         </button>
                                                         <span>
@@ -1504,7 +1552,10 @@ class TheHeader extends Component {
                                                     </div>
                                                 ) : null}
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/email.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/email.svg"
+                                                    />
                                                     <input
                                                         required
                                                         type="text"
@@ -1599,7 +1650,10 @@ class TheHeader extends Component {
                                         )}
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1614,10 +1668,12 @@ class TheHeader extends Component {
                                             </p>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -1636,7 +1692,10 @@ class TheHeader extends Component {
                                                             }}
                                                         >
                                                             <span aria-hidden="true">
-                                                                <img src="./murabbo/img/close.svg" />
+                                                                <img
+                                                                    alt=""
+                                                                    src="./murabbo/img/close.svg"
+                                                                />
                                                             </span>
                                                         </button>
                                                         <span>
@@ -1648,7 +1707,10 @@ class TheHeader extends Component {
                                                     </div>
                                                 ) : null}
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/otp.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/otp.svg"
+                                                    />
                                                     <input
                                                         required
                                                         type="text"
@@ -1674,7 +1736,10 @@ class TheHeader extends Component {
                                                 </span>
 
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/password.svg" />{" "}
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/password.svg"
+                                                    />{" "}
                                                     <input
                                                         required
                                                         // type="password"
@@ -1733,7 +1798,10 @@ class TheHeader extends Component {
                                                     }
                                                 </span>
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/password.svg" />{" "}
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/password.svg"
+                                                    />{" "}
                                                     <input
                                                         required
                                                         // type="password"
@@ -1868,7 +1936,10 @@ class TheHeader extends Component {
                                         )}
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1880,10 +1951,12 @@ class TheHeader extends Component {
                                             </p>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />

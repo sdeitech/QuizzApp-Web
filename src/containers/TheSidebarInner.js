@@ -18,37 +18,37 @@ class TheSidebarInner extends Component {
                 {/*class="active_side"*/}
                 <a href="#/my_account">
                     <li>
-                        <img src="./murabbo/img/username.svg" /> My Profile
+                        <img alt="" src="./murabbo/img/username.svg" /> My Profile
                     </li>
                 </a>
                 <a href="#/contest">
                     <li>
-                        <img src="./murabbo/img/console.svg" /> My Games
+                        <img alt="" src="./murabbo/img/console.svg" /> My Games
                     </li>
                 </a>
                 <a href="#/contest">
                     <li>
-                        <img src="./murabbo/img/calendar.svg" /> Game History
+                        <img alt="" src="./murabbo/img/calendar.svg" /> Game History
                     </li>
                 </a>
                 <a href="#/cards">
                     <li>
-                        <img src="./murabbo/img/calendar.svg" /> Manage Cards
+                        <img alt="" src="./murabbo/img/calendar.svg" /> Manage Cards
                     </li>
                 </a>
                 <a href="#/leaderboard">
                     <li>
-                        <img src="./murabbo/img/leaderboard.svg" /> Leaderboard
+                        <img alt="" src="./murabbo/img/leaderboard.svg" /> Leaderboard
                     </li>
                 </a>
                 <a href="javascript:void(0)">
                     <li>
-                        <img src="./murabbo/img/union.svg" /> Online Friend
+                        <img alt="" src="./murabbo/img/union.svg" /> Online Friend
                     </li>
                 </a>
                 <a href="javascript:void(0)">
                     <li>
-                        <img src="./murabbo/img/invitation.svg" /> Invite Friend
+                        <img alt="" src="./murabbo/img/invitation.svg" /> Invite Friend
                     </li>
                 </a>
             </ul>

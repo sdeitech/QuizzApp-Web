@@ -140,7 +140,10 @@ class Add extends Component {
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6 col-sm-6">
                                         <div class="cus_input input_wrap mt-3">
-                                            <img src="./murabbo/img/title.svg" />{" "}
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/title.svg"
+                                            />{" "}
                                             <input
                                                 type="text"
                                                 required
@@ -163,7 +166,10 @@ class Add extends Component {
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-6">
                                         <div class="cus_input input_wrap mt-3">
-                                            <img src="./murabbo/img/credit-card.svg" />{" "}
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/credit-card.svg"
+                                            />{" "}
                                             <input
                                                 type="text"
                                                 required
@@ -186,7 +192,10 @@ class Add extends Component {
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-6">
                                         <div class="cus_input input_wrap mt-3">
-                                            <img src="./murabbo/img/calendar.svg" />{" "}
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/calendar.svg"
+                                            />{" "}
                                             <input
                                                 type="text"
                                                 required
@@ -213,7 +222,10 @@ class Add extends Component {
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-6">
                                         <div class="cus_input input_wrap mt-3">
-                                            <img src="./murabbo/img/security.svg" />{" "}
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/security.svg"
+                                            />{" "}
                                             <input
                                                 type="text"
                                                 required

@@ -854,6 +854,7 @@ class AddContest extends Component {
                                                 "image" ? (
                                                     <span aria-hidden="true">
                                                         <img
+                                                            alt=""
                                                             className="close_svg"
                                                             src="./murabbo/img/close_dark.svg"
                                                             onClick={this.removeImage.bind(
@@ -906,7 +907,10 @@ class AddContest extends Component {
                                     </div>
                                     <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
                                         <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/title.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/title.svg"
+                                            />
                                             <input
                                                 required
                                                 type="text"
@@ -1533,7 +1537,10 @@ class AddContest extends Component {
                                             )}
                                         >
                                             <span aria-hidden="true">
-                                                <img src="./murabbo/img/close.svg" />
+                                                <img
+                                                    alt=""
+                                                    src="./murabbo/img/close.svg"
+                                                />
                                             </span>
                                         </button>
                                         <div className="model_data">
@@ -1647,7 +1654,10 @@ class AddContest extends Component {
                                             )}
                                         >
                                             <span aria-hidden="true">
-                                                <img src="./murabbo/img/close.svg" />
+                                                <img
+                                                    alt=""
+                                                    src="./murabbo/img/close.svg"
+                                                />
                                             </span>
                                         </button>
                                         <div className="model_data">
@@ -1732,6 +1742,7 @@ class AddContest extends Component {
                                                                                             className="cate-box"
                                                                                         >
                                                                                             <img
+                                                                                                alt=""
                                                                                                 src={
                                                                                                     cat.image
                                                                                                 }
@@ -1746,14 +1757,20 @@ class AddContest extends Component {
                                                                                                 cat.subscriptionType ===
                                                                                                 "PRO" ? (
                                                                                                     <div className="paid-cat">
-                                                                                                        <img src="img/pro.png" />
+                                                                                                        <img
+                                                                                                            alt=""
+                                                                                                            src="img/pro.png"
+                                                                                                        />
                                                                                                         <span className="paid-cat-color">
                                                                                                             Pro
                                                                                                         </span>
                                                                                                     </div>
                                                                                                 ) : (
                                                                                                     <div className="paid-cat">
-                                                                                                        <img src="img/premium.png" />
+                                                                                                        <img
+                                                                                                            alt=""
+                                                                                                            src="img/premium.png"
+                                                                                                        />
                                                                                                         <span className="paid-cat-color">
                                                                                                             Premium
                                                                                                         </span>
@@ -1849,7 +1866,10 @@ class AddContest extends Component {
                                             )}
                                         >
                                             <span aria-hidden="true">
-                                                <img src="./murabbo/img/close.svg" />
+                                                <img
+                                                    alt=""
+                                                    src="./murabbo/img/close.svg"
+                                                />
                                             </span>
                                         </button>
                                         <div className="model_data">
@@ -1909,6 +1929,7 @@ class AddContest extends Component {
                                                                                 className=" cate-box"
                                                                             >
                                                                                 <img
+                                                                                    alt=""
                                                                                     src={
                                                                                         brand.image
                                                                                     }
@@ -1991,7 +2012,10 @@ class AddContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">

@@ -403,6 +403,8 @@ export default class DuringVideoCall extends Component {
         e.target === this.partRef && this.props.setopenModelForMembers(false);
     };
     async downloadCopyLinkContent(){
+        const newLink ="https://play.murabbo.com"
+        const oldLink ="https://murabbo.page.link"
         const response = await fetch(
             " https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyDg-UszS6Y5Qj3xmY2YQun-6wv2dXwO2Rk",
             {
@@ -412,7 +414,7 @@ export default class DuringVideoCall extends Component {
                 },
                 body: JSON.stringify({
                     dynamicLinkInfo: {
-                        domainUriPrefix: "https://murabbo.page.link",
+                        domainUriPrefix:newLink,
                         link: window.location.href,
                         androidInfo: {
                             androidPackageName: "com.cozycrater.murabbo",

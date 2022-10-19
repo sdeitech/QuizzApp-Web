@@ -1,18 +1,12 @@
-import React, { Component } from 'react'
-import {
-    TheFooter,
-    TheHeaderInner
-} from '../../containers/index'
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import languages from '../../languages';
-import configuration from '../../config';
-import { reactLocalStorage } from 'reactjs-localstorage';
-import {
-    CModal,
-    CModalBody,
-} from '@coreui/react';
-import $ from 'jquery';
+import React, { Component } from "react";
+import { TheFooter, TheHeaderInner } from "../../containers/index";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import languages from "../../languages";
+import configuration from "../../config";
+import { reactLocalStorage } from "reactjs-localstorage";
+import { CModal, CModalBody } from "@coreui/react";
+import $ from "jquery";
 let contestId, roundId, gameType, parentContestId;
 class DetailContestWithQuestionList extends Component {
     constructor(props) {
@@ -22,9 +16,7 @@ class DetailContestWithQuestionList extends Component {
             roundData: {},
             listArr: [],
             openModel: false,
-            errors: {
-
-            },
+            errors: {},
             fields: {
                 title: "",
                 description: "",
@@ -32,16 +24,43 @@ class DetailContestWithQuestionList extends Component {
 
             blankRoundObj: {},
             contestCreater: false,
-            createdBy: '',
+            createdBy: "",
             selectedAnswer: [],
             indexQuestion: 0,
             indexRound: 0,
             showQuestion: false,
-            gameId: '',
-            freeTextAnswer: '',
+            gameId: "",
+            freeTextAnswer: "",
             saveExitAnswer: false,
             numberArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
-            alphabetArray: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+            alphabetArray: [
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i",
+                "j",
+                "k",
+                "l",
+                "m",
+                "n",
+                "o",
+                "p",
+                "q",
+                "r",
+                "s",
+                "t",
+                "u",
+                "v",
+                "w",
+                "x",
+                "y",
+                "z",
+            ],
             unscrambleArr: [],
             item: [],
             indexForUnscrambleAns: 0,
@@ -52,7 +71,9 @@ class DetailContestWithQuestionList extends Component {
 
     componentDidMount() {
         var url = window.location.href;
-        this.setState({ userData: JSON.parse(reactLocalStorage.get("userData")) });
+        this.setState({
+            userData: JSON.parse(reactLocalStorage.get("userData")),
+        });
         var urlParts = url.substring(url.lastIndexOf("/") + 1);
         urlParts = urlParts.split("?");
 
@@ -62,14 +83,20 @@ class DetailContestWithQuestionList extends Component {
         if (urlParts[0]) {
             contestId = urlParts[0];
 
-            fetch(configuration.baseURL + "contest/contest?contestId=" + contestId, {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
-                },
-            })
+            fetch(
+                configuration.baseURL +
+                    "contest/contest?contestId=" +
+                    contestId,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization:
+                            "Bearer " + reactLocalStorage.get("clientToken"),
+                    },
+                }
+            )
                 .then((response) => {
                     return response.json();
                 })
@@ -86,14 +113,18 @@ class DetailContestWithQuestionList extends Component {
 
         // console.log(contestId,roundId);
         if (contestId && roundId) {
-            fetch(configuration.baseURL + "round/round?contestId=" + contestId, {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
-                },
-            })
+            fetch(
+                configuration.baseURL + "round/round?contestId=" + contestId,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization:
+                            "Bearer " + reactLocalStorage.get("clientToken"),
+                    },
+                }
+            )
                 .then((response) => {
                     return response.json();
                 })
@@ -156,7 +187,8 @@ class DetailContestWithQuestionList extends Component {
                 method: "post",
                 headers: {
                     contentType: "application/json",
-                    Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
                 },
                 body: data,
             })
@@ -181,7 +213,10 @@ class DetailContestWithQuestionList extends Component {
     }
 
     saveExitAnswer() {
-        console.log("indexRound saveExitAnswer ---  ", this.state.indexRound + 1);
+        console.log(
+            "indexRound saveExitAnswer ---  ",
+            this.state.indexRound + 1
+        );
         if (this.state.roundData[this.state.indexRound + 1] !== undefined) {
             this.setState({
                 saveExitAnswer: false,
@@ -200,18 +235,34 @@ class DetailContestWithQuestionList extends Component {
         fields[this.state.indexQuestion]["readonly"] = true;
 
         if (
-            this.state.listArr[this.state.indexQuestion]["selectAnswer"] === undefined
+            this.state.listArr[this.state.indexQuestion]["selectAnswer"] ===
+            undefined
         ) {
             fields[this.state.indexQuestion]["selectAnswer"] = "";
             fields[this.state.indexQuestion]["isAnswerTrue"] = false;
         } else {
             for (
                 var i = 0;
-                i < this.state.listArr[this.state.indexQuestion]["answers"].length;
+                i <
+                this.state.listArr[this.state.indexQuestion]["answers"].length;
                 i++
             ) {
-                if (this.state.listArr[this.state.indexQuestion]["selectAnswer"] !== undefined && this.state.listArr[this.state.indexQuestion]["selectAnswer"].includes(this.state.listArr[this.state.indexQuestion]["answers"][i]._id) && this.state.listArr[this.state.indexQuestion]["answers"][i].correctAnswer === true) {
-                    temp = true; break;
+                if (
+                    this.state.listArr[this.state.indexQuestion][
+                        "selectAnswer"
+                    ] !== undefined &&
+                    this.state.listArr[this.state.indexQuestion][
+                        "selectAnswer"
+                    ].includes(
+                        this.state.listArr[this.state.indexQuestion]["answers"][
+                            i
+                        ]._id
+                    ) &&
+                    this.state.listArr[this.state.indexQuestion]["answers"][i]
+                        .correctAnswer === true
+                ) {
+                    temp = true;
+                    break;
                 }
             }
         }
@@ -276,7 +327,9 @@ class DetailContestWithQuestionList extends Component {
         let fields = this.state.listArr;
         fields[index]["selectAnswer"] = isTrue;
         fields[index]["isAnswerTrue"] =
-            this.state.listArr[index]["answerTypeBoolean"] === isTrue ? true : false;
+            this.state.listArr[index]["answerTypeBoolean"] === isTrue
+                ? true
+                : false;
         fields[index]["readonly"] = true;
         this.setState({ listArr: fields });
         this.countScore(this.state.indexQuestion);
@@ -291,18 +344,20 @@ class DetailContestWithQuestionList extends Component {
     }
 
     getList(roundId1) {
+        console.log("Details_with_questions")
         fetch(
             configuration.baseURL +
-            "roundQuestion/roundQuestion?roundId=" +
-            roundId1 +
-            "&gameType=" +
-            gameType,
+                "roundQuestion/roundQuestion?roundId=" +
+                roundId1 +
+                "&gameType=" +
+                gameType,
             {
                 method: "GET",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
                 },
             }
         )
@@ -315,13 +370,16 @@ class DetailContestWithQuestionList extends Component {
                     data[index]["right_words"] = [];
                     data[index]["wrong_words"] = [];
                 }
+                console.log("detailsa with questions");
+
                 this.setState({
                     listArr: data,
                     showQuestion: true,
                     indexQuestion: 0,
                 });
                 if (
-                    this.state.roundData[this.state.indexRound].gameType === "Unscramble"
+                    this.state.roundData[this.state.indexRound].gameType ===
+                    "Unscramble"
                 ) {
                     console.log("in get Question");
                     this.unscrambleWords();
@@ -468,8 +526,12 @@ class DetailContestWithQuestionList extends Component {
                         fields[that.state.indexQuestion]["timeLimit"]
                     );
 
-                    if (fields[that.state.indexQuestion]["timeAlloted"] === undefined) {
-                        fields[that.state.indexQuestion]["timeAlloted"] = currentTime;
+                    if (
+                        fields[that.state.indexQuestion]["timeAlloted"] ===
+                        undefined
+                    ) {
+                        fields[that.state.indexQuestion]["timeAlloted"] =
+                            currentTime;
                     }
                     // console.log('timeLimit--->',fields[that.state.indexQuestion]['timeLimit']);
 
@@ -498,7 +560,9 @@ class DetailContestWithQuestionList extends Component {
                 if (newTime === 0) {
                     if (that.state.indexQuestion < that.state.listArr.length) {
                         fields[that.state.indexQuestion]["selectAnswer"] = "";
-                        fields[that.state.indexQuestion]["isAnswerTrue"] = false;
+                        fields[that.state.indexQuestion][
+                            "isAnswerTrue"
+                        ] = false;
                         that.setState({ listArr: fields });
                         that.countScore(that.state.indexQuestion);
                         that.setState({
@@ -527,14 +591,16 @@ class DetailContestWithQuestionList extends Component {
                 score += this.state.listArr[index]["basePoints"];
             } else {
                 if (this.state.listArr[index]["negativeScoring"]) {
-                    score = score - this.state.listArr[index]["negativeBasePoints"];
+                    score =
+                        score - this.state.listArr[index]["negativeBasePoints"];
                 }
             }
             if (
                 this.state.listArr[index]["hint"] === 3 &&
                 this.state.listArr[index]["hintTextStyle"] !== undefined
             ) {
-                score = score - this.state.listArr[index]["onDemandNegativePoints"];
+                score =
+                    score - this.state.listArr[index]["onDemandNegativePoints"];
             }
 
             var postData = {};
@@ -542,7 +608,7 @@ class DetailContestWithQuestionList extends Component {
             postData.roundQuestionId = this.state.listArr[index]["_id"];
             postData.selectedAnswer =
                 this.state.listArr[index]["selectAnswer"] !== undefined &&
-                    this.state.listArr[index]["selectAnswer"].toString() !== ""
+                this.state.listArr[index]["selectAnswer"].toString() !== ""
                     ? this.state.listArr[index]["selectAnswer"].toString()
                     : "false";
             postData.isCorrect =
@@ -561,7 +627,8 @@ class DetailContestWithQuestionList extends Component {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
                 },
                 body: JSON.stringify(postData),
             })
@@ -596,7 +663,9 @@ class DetailContestWithQuestionList extends Component {
             i++
         ) {
             if (
-                this.state.listArr[this.state.indexQuestion]["answers"][i]["answer"] ===
+                this.state.listArr[this.state.indexQuestion]["answers"][i][
+                    "answer"
+                ] ===
                 this.state.listArr[this.state.indexQuestion]["selectAnswer"]
             ) {
                 istrue = true;
@@ -635,8 +704,9 @@ class DetailContestWithQuestionList extends Component {
 
         if (
             fields[this.state.indexQuestion]["right_words"].includes(data) ===
-            false &&
-            fields[this.state.indexQuestion]["wrong_words"].includes(data) === false
+                false &&
+            fields[this.state.indexQuestion]["wrong_words"].includes(data) ===
+                false
         ) {
             if (fields[this.state.indexQuestion]["question"].includes(data)) {
                 fields[this.state.indexQuestion]["right_words"].push(data);
@@ -665,7 +735,9 @@ class DetailContestWithQuestionList extends Component {
 
         if (fields[this.state.indexQuestion]["right_words"].length > 0) {
             var wordStrArr =
-                this.state.listArr[this.state.indexQuestion]["question"].split("");
+                this.state.listArr[this.state.indexQuestion]["question"].split(
+                    ""
+                );
             var trueOrFalse = true;
             for (let index = 0; index < wordStrArr.length; index++) {
                 if (
@@ -704,14 +776,17 @@ class DetailContestWithQuestionList extends Component {
             var postData = {};
             postData.contestId = contestId;
             postData.roundId = roundId;
-            postData.createdBy = JSON.parse(reactLocalStorage.get("userData")).userId;
+            postData.createdBy = JSON.parse(
+                reactLocalStorage.get("userData")
+            ).userId;
             // console.log(postData);
             fetch(configuration.APIbaseURL + "game/game", {
                 method: "post",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + reactLocalStorage.get("clientToken"),
+                    Authorization:
+                        "Bearer " + reactLocalStorage.get("clientToken"),
                 },
                 body: JSON.stringify(postData),
             })
@@ -721,12 +796,14 @@ class DetailContestWithQuestionList extends Component {
                 .then((data) => {
                     if (data.code === 200) {
                         this.setState({ gameId: data.data._id });
-                        gameType = this.state.roundData[this.state.indexRound].gameType;
+                        gameType =
+                            this.state.roundData[this.state.indexRound]
+                                .gameType;
                         this.getList(roundId);
 
                         if (
-                            JSON.parse(reactLocalStorage.get("userData")).userId ==
-                            this.state.createdBy
+                            JSON.parse(reactLocalStorage.get("userData"))
+                                .userId == this.state.createdBy
                         ) {
                             this.setState({ contestCreater: true });
                         }
@@ -740,6 +817,7 @@ class DetailContestWithQuestionList extends Component {
     }
 
     render() {
+        console.log("details_with_question_list...........")
         return (
             <>
                 <TheHeaderInner />
@@ -765,19 +843,80 @@ class DetailContestWithQuestionList extends Component {
                                                     <div className="detailContestWithRoundList">
                                                         <div className="row">
                                                             <div className="cat_title2 col-lg-12 col-md-12">
-                                                                <h3 style={{ paddingLeft: "0px", }} >{this.state.roundData[this.state.indexRound].title}                                                                </h3>
-                                                                <p>{this.state.roundData[this.state.indexRound].description}</p>
-                                                                <p>{this.state.roundData[this.state.indexRound].gameType}</p>
-                                                                <p>{this.state.roundData[this.state.indexRound].totalQuestions}{" "} {this.state.roundData[this.state.indexRound].totalQuestions > 1 ? "Questions" : "Question"}                                                                </p>
+                                                                <h3
+                                                                    style={{
+                                                                        paddingLeft:
+                                                                            "0px",
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .roundData[
+                                                                            this
+                                                                                .state
+                                                                                .indexRound
+                                                                        ].title
+                                                                    }{" "}
+                                                                </h3>
+                                                                <p>
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .roundData[
+                                                                            this
+                                                                                .state
+                                                                                .indexRound
+                                                                        ]
+                                                                            .description
+                                                                    }
+                                                                </p>
+                                                                <p>
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .roundData[
+                                                                            this
+                                                                                .state
+                                                                                .indexRound
+                                                                        ]
+                                                                            .gameType
+                                                                    }
+                                                                </p>
+                                                                <p>
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .roundData[
+                                                                            this
+                                                                                .state
+                                                                                .indexRound
+                                                                        ]
+                                                                            .totalQuestions
+                                                                    }{" "}
+                                                                    {this.state
+                                                                        .roundData[
+                                                                        this
+                                                                            .state
+                                                                            .indexRound
+                                                                    ]
+                                                                        .totalQuestions >
+                                                                    1
+                                                                        ? "Questions"
+                                                                        : "Question"}{" "}
+                                                                </p>
                                                             </div>
                                                             <div className="col-lg-12 col-md-12 align-self-center mb-3">
                                                                 <button
                                                                     style={{
-                                                                        minWidth: "150px",
+                                                                        minWidth:
+                                                                            "150px",
                                                                     }}
                                                                     className="yellow_btn"
                                                                     type="button"
-                                                                    onClick={this.playContest.bind(this)}
+                                                                    onClick={this.playContest.bind(
+                                                                        this
+                                                                    )}
                                                                 >
                                                                     Start Round
                                                                 </button>
@@ -793,11 +932,20 @@ class DetailContestWithQuestionList extends Component {
                         ) : null
                     ) : this.state.saveExitAnswer === false ? (
                         <div>
-                            {this.state.roundData[this.state.indexRound].gameType ===
-                                "Hangman" ? (
-                                <section id="hero" className="d-flex align-items-center">
-                                    <div className="quizz-game" style={{ marginTop: "35px" }}>
-                                        <div className="dropdown show" style={{ float: "right" }}>
+                            {this.state.roundData[this.state.indexRound]
+                                .gameType === "Hangman" ? (
+                                <section
+                                    id="hero"
+                                    className="d-flex align-items-center"
+                                >
+                                    <div
+                                        className="quizz-game"
+                                        style={{ marginTop: "35px" }}
+                                    >
+                                        <div
+                                            className="dropdown show"
+                                            style={{ float: "right" }}
+                                        >
                                             <a
                                                 className="btn btn-secondary dropdown-toggle toggle-arrow"
                                                 href="#"
@@ -814,7 +962,8 @@ class DetailContestWithQuestionList extends Component {
                                                 className="dropdown-menu drop-btn-menu"
                                                 aria-labelledby="dropdownMenuLink"
                                             >
-                                                {this.state.contestCreater ? null : (
+                                                {this.state
+                                                    .contestCreater ? null : (
                                                     <button
                                                         style={{
                                                             minWidth: "150px",
@@ -842,32 +991,51 @@ class DetailContestWithQuestionList extends Component {
                                         </div>
                                         <h3>{this.state.contestData.title}</h3>
                                         <p>
-                                            {this.state.roundData[this.state.indexRound].gameType}
+                                            {
+                                                this.state.roundData[
+                                                    this.state.indexRound
+                                                ].gameType
+                                            }
                                         </p>
                                         <div className="quizz-quas">
-                                            {this.state.listArr[this.state.indexQuestion] ? (
+                                            {this.state.listArr[
+                                                this.state.indexQuestion
+                                            ] ? (
                                                 <h4>
-                                                    Round {this.state.indexQuestion + 1}/
-                                                    {this.state.listArr.length}
+                                                    Round{" "}
+                                                    {this.state.indexQuestion +
+                                                        1}
+                                                    /{this.state.listArr.length}
                                                 </h4>
                                             ) : (
                                                 <h4>
-                                                    Round {this.state.listArr.length}/
+                                                    Round{" "}
+                                                    {this.state.listArr.length}/
                                                     {this.state.listArr.length}
                                                 </h4>
                                             )}
 
-                                            {this.state.listArr.map((e, key) => {
-                                                let classname =
-                                                    key === this.state.indexQuestion
-                                                        ? "step_progress yellow_"
-                                                        : typeof e.isAnswerTrue !== "undefined"
+                                            {this.state.listArr.map(
+                                                (e, key) => {
+                                                    let classname =
+                                                        key ===
+                                                        this.state.indexQuestion
+                                                            ? "step_progress yellow_"
+                                                            : typeof e.isAnswerTrue !==
+                                                              "undefined"
                                                             ? e.isAnswerTrue
                                                                 ? "step_progress blue_"
                                                                 : "step_progress pink_"
                                                             : "step_progress";
-                                                return <div className={classname}></div>;
-                                            })}
+                                                    return (
+                                                        <div
+                                                            className={
+                                                                classname
+                                                            }
+                                                        ></div>
+                                                    );
+                                                }
+                                            )}
                                             <div id="app">
                                                 <div className="base-timer">
                                                     <svg
@@ -914,17 +1082,26 @@ class DetailContestWithQuestionList extends Component {
                                                             ></path>
                                                         </g>
                                                     </svg>
-                                                    {this.state.listArr[this.state.indexQuestion] ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ] ? (
                                                         <span
                                                             id="base-timer-label"
                                                             className="base-timer__label"
                                                         >
-                                                            {this.state.listArr[this.state.indexQuestion][
+                                                            {this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "displaytimeLimit"
                                                             ]
-                                                                ? this.state.listArr[this.state.indexQuestion][
-                                                                "displaytimeLimit"
-                                                                ]
+                                                                ? this.state
+                                                                      .listArr[
+                                                                      this.state
+                                                                          .indexQuestion
+                                                                  ][
+                                                                      "displaytimeLimit"
+                                                                  ]
                                                                 : "00:00"}
                                                         </span>
                                                     ) : (
@@ -938,7 +1115,9 @@ class DetailContestWithQuestionList extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        {this.state.listArr[this.state.indexQuestion] ? (
+                                        {this.state.listArr[
+                                            this.state.indexQuestion
+                                        ] ? (
                                             <div>
                                                 <div
                                                     className="qus"
@@ -948,34 +1127,47 @@ class DetailContestWithQuestionList extends Component {
                                                 >
                                                     {/* <h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3> */}
 
-                                                    {this.state.listArr[this.state.indexQuestion][
-                                                        "hint"
-                                                    ] === 2 ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ]["hint"] === 2 ? (
                                                         <p className="hintText">
                                                             <span>Hint - </span>
                                                             {
-                                                                this.state.listArr[this.state.indexQuestion][
-                                                                "hintText"
-                                                                ]
+                                                                this.state
+                                                                    .listArr[
+                                                                    this.state
+                                                                        .indexQuestion
+                                                                ]["hintText"]
                                                             }
                                                         </p>
-                                                    ) : this.state.listArr[this.state.indexQuestion][
-                                                        "hint"
-                                                    ] === 3 ? (
+                                                    ) : this.state.listArr[
+                                                          this.state
+                                                              .indexQuestion
+                                                      ]["hint"] === 3 ? (
                                                         <p className="hintText">
-                                                            {this.state.listArr[this.state.indexQuestion][
+                                                            {this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "hintTextStyle"
                                                             ] !== undefined &&
-                                                                this.state.listArr[this.state.indexQuestion][
+                                                            this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "hintTextStyle"
-                                                                ] === true ? (
-                                                                this.state.listArr[this.state.indexQuestion][
-                                                                "hintText"
-                                                                ]
+                                                            ] === true ? (
+                                                                this.state
+                                                                    .listArr[
+                                                                    this.state
+                                                                        .indexQuestion
+                                                                ]["hintText"]
                                                             ) : (
                                                                 <button
                                                                     className="blue_btn"
-                                                                    onClick={this.changeOnDemand.bind(this)}
+                                                                    onClick={this.changeOnDemand.bind(
+                                                                        this
+                                                                    )}
                                                                 >
                                                                     Show Hint
                                                                 </button>
@@ -986,46 +1178,77 @@ class DetailContestWithQuestionList extends Component {
                                                     <div className="row">
                                                         <div className="col-md-3 offset-md-1">
                                                             <img
+                                                                alt=""
                                                                 src={
                                                                     "./murabbo/img/hang-" +
-                                                                    this.state.listArr[this.state.indexQuestion][
+                                                                    this.state
+                                                                        .listArr[
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                    ][
                                                                         "wrong_words"
                                                                     ].length +
-                                                                    ".png"} />
+                                                                    ".png"
+                                                                }
+                                                            />
                                                         </div>
                                                         <div
                                                             style={{
-                                                                textAlign: "left",
+                                                                textAlign:
+                                                                    "left",
                                                             }}
                                                             className="col-md-8"
                                                         >
-                                                            {this.state.listArr[this.state.indexQuestion][
-                                                                "question"
-                                                            ]
+                                                            {this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ]["question"]
                                                                 .split("")
-                                                                .map((e, key) => {
-                                                                    return (
-                                                                        <div className="otpoutput hangman">
-                                                                            <input
-                                                                                type="text"
-                                                                                name="output"
-                                                                                id="output"
-                                                                                className={"output_" + key}
-                                                                                value={
-                                                                                    this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                    ]["right_words"] !== undefined &&
+                                                                .map(
+                                                                    (
+                                                                        e,
+                                                                        key
+                                                                    ) => {
+                                                                        return (
+                                                                            <div className="otpoutput hangman">
+                                                                                <input
+                                                                                    type="text"
+                                                                                    name="output"
+                                                                                    id="output"
+                                                                                    className={
+                                                                                        "output_" +
+                                                                                        key
+                                                                                    }
+                                                                                    value={
+                                                                                        this
+                                                                                            .state
+                                                                                            .listArr[
+                                                                                            this
+                                                                                                .state
+                                                                                                .indexQuestion
+                                                                                        ][
+                                                                                            "right_words"
+                                                                                        ] !==
+                                                                                            undefined &&
                                                                                         this.state.listArr[
-                                                                                            this.state.indexQuestion
-                                                                                        ]["right_words"].includes(e)
-                                                                                        ? e
-                                                                                        : ""
-                                                                                }
-                                                                                disabled
-                                                                            />
-                                                                        </div>
-                                                                    );
-                                                                })}
+                                                                                            this
+                                                                                                .state
+                                                                                                .indexQuestion
+                                                                                        ][
+                                                                                            "right_words"
+                                                                                        ].includes(
+                                                                                            e
+                                                                                        )
+                                                                                            ? e
+                                                                                            : ""
+                                                                                    }
+                                                                                    disabled
+                                                                                />
+                                                                            </div>
+                                                                        );
+                                                                    }
+                                                                )}
                                                         </div>
                                                     </div>
 
@@ -1033,67 +1256,123 @@ class DetailContestWithQuestionList extends Component {
                                                         <div className="virtual-keyboard">
                                                             <div
                                                                 style={{
-                                                                    marginTop: "30px",
+                                                                    marginTop:
+                                                                        "30px",
                                                                 }}
                                                                 className="numberkey"
                                                             >
-                                                                {this.state.numberArray.map((e, key) => {
-                                                                    return (
-                                                                        <input
-                                                                            type="button"
-                                                                            value={e}
-                                                                            onClick={this.checkExistInWord.bind(
-                                                                                this,
-                                                                                e
-                                                                            )}
-                                                                            className={
-                                                                                this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["right_words"].includes(e) === true ||
+                                                                {this.state.numberArray.map(
+                                                                    (
+                                                                        e,
+                                                                        key
+                                                                    ) => {
+                                                                        return (
+                                                                            <input
+                                                                                type="button"
+                                                                                value={
+                                                                                    e
+                                                                                }
+                                                                                onClick={this.checkExistInWord.bind(
+                                                                                    this,
+                                                                                    e
+                                                                                )}
+                                                                                className={
                                                                                     this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                    ]["wrong_words"].includes(e) === true
-                                                                                    ? this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                    ]["right_words"].includes(e)
-                                                                                        ? "blue_color_btn gibberish-answer "
-                                                                                        : "pink_color_btn gibberish-answer "
-                                                                                    : "gibberish-answer"
-                                                                            }
-                                                                        />
-                                                                    );
-                                                                })}
+                                                                                        this
+                                                                                            .state
+                                                                                            .indexQuestion
+                                                                                    ][
+                                                                                        "right_words"
+                                                                                    ].includes(
+                                                                                        e
+                                                                                    ) ===
+                                                                                        true ||
+                                                                                    this.state.listArr[
+                                                                                        this
+                                                                                            .state
+                                                                                            .indexQuestion
+                                                                                    ][
+                                                                                        "wrong_words"
+                                                                                    ].includes(
+                                                                                        e
+                                                                                    ) ===
+                                                                                        true
+                                                                                        ? this.state.listArr[
+                                                                                              this
+                                                                                                  .state
+                                                                                                  .indexQuestion
+                                                                                          ][
+                                                                                              "right_words"
+                                                                                          ].includes(
+                                                                                              e
+                                                                                          )
+                                                                                            ? "blue_color_btn gibberish-answer "
+                                                                                            : "pink_color_btn gibberish-answer "
+                                                                                        : "gibberish-answer"
+                                                                                }
+                                                                            />
+                                                                        );
+                                                                    }
+                                                                )}
                                                             </div>
                                                             <div className="textkey">
-                                                                {this.state.alphabetArray.map((e, key) => {
-                                                                    return (
-                                                                        <input
-                                                                            type="button"
-                                                                            style={{
-                                                                                textTransform: "capitalize",
-                                                                            }}
-                                                                            value={e}
-                                                                            onClick={this.checkExistInWord.bind(
-                                                                                this,
-                                                                                e
-                                                                            )}
-                                                                            className={
-                                                                                this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["right_words"].includes(e) === true ||
+                                                                {this.state.alphabetArray.map(
+                                                                    (
+                                                                        e,
+                                                                        key
+                                                                    ) => {
+                                                                        return (
+                                                                            <input
+                                                                                type="button"
+                                                                                style={{
+                                                                                    textTransform:
+                                                                                        "capitalize",
+                                                                                }}
+                                                                                value={
+                                                                                    e
+                                                                                }
+                                                                                onClick={this.checkExistInWord.bind(
+                                                                                    this,
+                                                                                    e
+                                                                                )}
+                                                                                className={
                                                                                     this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                    ]["wrong_words"].includes(e) === true
-                                                                                    ? this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                    ]["right_words"].includes(e)
-                                                                                        ? "blue_color_btn gibberish-answer "
-                                                                                        : "pink_color_btn gibberish-answer "
-                                                                                    : "gibberish-answer"
-                                                                            }
-                                                                        />
-                                                                    );
-                                                                })}
+                                                                                        this
+                                                                                            .state
+                                                                                            .indexQuestion
+                                                                                    ][
+                                                                                        "right_words"
+                                                                                    ].includes(
+                                                                                        e
+                                                                                    ) ===
+                                                                                        true ||
+                                                                                    this.state.listArr[
+                                                                                        this
+                                                                                            .state
+                                                                                            .indexQuestion
+                                                                                    ][
+                                                                                        "wrong_words"
+                                                                                    ].includes(
+                                                                                        e
+                                                                                    ) ===
+                                                                                        true
+                                                                                        ? this.state.listArr[
+                                                                                              this
+                                                                                                  .state
+                                                                                                  .indexQuestion
+                                                                                          ][
+                                                                                              "right_words"
+                                                                                          ].includes(
+                                                                                              e
+                                                                                          )
+                                                                                            ? "blue_color_btn gibberish-answer "
+                                                                                            : "pink_color_btn gibberish-answer "
+                                                                                        : "gibberish-answer"
+                                                                                }
+                                                                            />
+                                                                        );
+                                                                    }
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1110,7 +1389,9 @@ class DetailContestWithQuestionList extends Component {
                                                         }}
                                                         className="pink_btn"
                                                         type="button"
-                                                        onClick={this.saveExitAnswer.bind(this)}
+                                                        onClick={this.saveExitAnswer.bind(
+                                                            this
+                                                        )}
                                                     >
                                                         Exit
                                                     </button>
@@ -1121,13 +1402,22 @@ class DetailContestWithQuestionList extends Component {
                                 </section>
                             ) : null}
 
-                            {this.state.roundData[this.state.indexRound].gameType ===
-                                "Quiz" ||
-                                this.state.roundData[this.state.indexRound].gameType ===
-                                "GuessAndGo" ? (
-                                <section id="hero" className="d-flex align-items-center">
-                                    <div className="quizz-game" style={{ marginTop: "35px" }}>
-                                        <div className="dropdown show" style={{ float: "right" }}>
+                            {this.state.roundData[this.state.indexRound]
+                                .gameType === "Quiz" ||
+                            this.state.roundData[this.state.indexRound]
+                                .gameType === "GuessAndGo" ? (
+                                <section
+                                    id="hero"
+                                    className="d-flex align-items-center"
+                                >
+                                    <div
+                                        className="quizz-game"
+                                        style={{ marginTop: "35px" }}
+                                    >
+                                        <div
+                                            className="dropdown show"
+                                            style={{ float: "right" }}
+                                        >
                                             <a
                                                 className="btn btn-secondary dropdown-toggle toggle-arrow"
                                                 href="#"
@@ -1144,7 +1434,8 @@ class DetailContestWithQuestionList extends Component {
                                                 className="dropdown-menu drop-btn-menu"
                                                 aria-labelledby="dropdownMenuLink"
                                             >
-                                                {this.state.contestCreater ? null : (
+                                                {this.state
+                                                    .contestCreater ? null : (
                                                     <button
                                                         style={{
                                                             minWidth: "150px",
@@ -1172,32 +1463,51 @@ class DetailContestWithQuestionList extends Component {
                                         </div>
                                         <h3>{this.state.contestData.title}</h3>
                                         <p>
-                                            {this.state.roundData[this.state.indexRound].gameType}
+                                            {
+                                                this.state.roundData[
+                                                    this.state.indexRound
+                                                ].gameType
+                                            }
                                         </p>
                                         <div className="quizz-quas">
-                                            {this.state.listArr[this.state.indexQuestion] ? (
+                                            {this.state.listArr[
+                                                this.state.indexQuestion
+                                            ] ? (
                                                 <h4>
-                                                    Question {this.state.indexQuestion + 1}/
-                                                    {this.state.listArr.length}
+                                                    Question{" "}
+                                                    {this.state.indexQuestion +
+                                                        1}
+                                                    /{this.state.listArr.length}
                                                 </h4>
                                             ) : (
                                                 <h4>
-                                                    Question {this.state.listArr.length}/
+                                                    Question{" "}
+                                                    {this.state.listArr.length}/
                                                     {this.state.listArr.length}
                                                 </h4>
                                             )}
 
-                                            {this.state.listArr.map((e, key) => {
-                                                let classname =
-                                                    key === this.state.indexQuestion
-                                                        ? "step_progress yellow_"
-                                                        : typeof e.selectAnswer !== "undefined"
+                                            {this.state.listArr.map(
+                                                (e, key) => {
+                                                    let classname =
+                                                        key ===
+                                                        this.state.indexQuestion
+                                                            ? "step_progress yellow_"
+                                                            : typeof e.selectAnswer !==
+                                                              "undefined"
                                                             ? e.isAnswerTrue
                                                                 ? "step_progress blue_"
                                                                 : "step_progress pink_"
                                                             : "step_progress";
-                                                return <div className={classname}></div>;
-                                            })}
+                                                    return (
+                                                        <div
+                                                            className={
+                                                                classname
+                                                            }
+                                                        ></div>
+                                                    );
+                                                }
+                                            )}
                                             <div id="app">
                                                 <div className="base-timer">
                                                     <svg
@@ -1244,17 +1554,26 @@ class DetailContestWithQuestionList extends Component {
                                                             ></path>
                                                         </g>
                                                     </svg>
-                                                    {this.state.listArr[this.state.indexQuestion] ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ] ? (
                                                         <span
                                                             id="base-timer-label"
                                                             className="base-timer__label"
                                                         >
-                                                            {this.state.listArr[this.state.indexQuestion][
+                                                            {this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "displaytimeLimit"
                                                             ]
-                                                                ? this.state.listArr[this.state.indexQuestion][
-                                                                "displaytimeLimit"
-                                                                ]
+                                                                ? this.state
+                                                                      .listArr[
+                                                                      this.state
+                                                                          .indexQuestion
+                                                                  ][
+                                                                      "displaytimeLimit"
+                                                                  ]
                                                                 : "00:00"}
                                                         </span>
                                                     ) : (
@@ -1268,7 +1587,9 @@ class DetailContestWithQuestionList extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        {this.state.listArr[this.state.indexQuestion] ? (
+                                        {this.state.listArr[
+                                            this.state.indexQuestion
+                                        ] ? (
                                             <div>
                                                 <div
                                                     className="qus"
@@ -1276,32 +1597,41 @@ class DetailContestWithQuestionList extends Component {
                                                         marginBottom: "30px",
                                                     }}
                                                 >
-                                                    {this.state.listArr[this.state.indexQuestion][
-                                                        "fileType"
-                                                    ] == "image" ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ]["fileType"] == "image" ? (
                                                         <div
                                                             style={{
                                                                 width: "300px",
                                                                 height: "150px",
-                                                                marginLeft: "334px",
+                                                                marginLeft:
+                                                                    "334px",
                                                             }}
                                                         >
                                                             <img
+                                                                alt=""
                                                                 src={
-                                                                    this.state.listArr[this.state.indexQuestion][
-                                                                    "file"
-                                                                    ]} />
+                                                                    this.state
+                                                                        .listArr[
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                    ]["file"]
+                                                                }
+                                                            />
                                                         </div>
                                                     ) : null}
 
-                                                    {this.state.listArr[this.state.indexQuestion][
-                                                        "fileType"
-                                                    ] == "video" ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ]["fileType"] ===
+                                                    "video" ? (
                                                         <div
                                                             style={{
                                                                 width: "300px",
                                                                 height: "150px",
-                                                                marginLeft: "232px",
+                                                                marginLeft:
+                                                                    "232px",
                                                             }}
                                                         >
                                                             <video
@@ -1313,24 +1643,35 @@ class DetailContestWithQuestionList extends Component {
                                                             >
                                                                 <source
                                                                     src={
-                                                                        this.state.listArr[
-                                                                        this.state.indexQuestion
-                                                                        ]["file"]}
+                                                                        this
+                                                                            .state
+                                                                            .listArr[
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
+                                                                        ][
+                                                                            "file"
+                                                                        ]
+                                                                    }
                                                                     type="video/mp4"
                                                                 />
-                                                                This browser doesn't support video tag.
+                                                                This browser
+                                                                doesn't support
+                                                                video tag.
                                                             </video>
                                                         </div>
                                                     ) : null}
 
-                                                    {this.state.listArr[this.state.indexQuestion][
-                                                        "fileType"
-                                                    ] == "audio" ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ]["fileType"] ===
+                                                    "audio" ? (
                                                         <div
                                                             style={{
                                                                 width: "300px",
                                                                 height: "150px",
-                                                                marginLeft: "232px",
+                                                                marginLeft:
+                                                                    "232px",
                                                             }}
                                                         >
                                                             <audio
@@ -1340,32 +1681,48 @@ class DetailContestWithQuestionList extends Component {
                                                             >
                                                                 <source
                                                                     src={
-                                                                        this.state.listArr[
-                                                                        this.state.indexQuestion
-                                                                        ]["file"]}
+                                                                        this
+                                                                            .state
+                                                                            .listArr[
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
+                                                                        ][
+                                                                            "file"
+                                                                        ]
+                                                                    }
                                                                 />
-                                                                Your browser does not support the audio element.
+                                                                Your browser
+                                                                does not support
+                                                                the audio
+                                                                element.
                                                             </audio>
                                                         </div>
                                                     ) : null}
 
-                                                    {this.state.listArr[this.state.indexQuestion][
-                                                        "fileType"
-                                                    ] == "link" ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ]["fileType"] === "link" ? (
                                                         <div
                                                             style={{
                                                                 width: "300px",
                                                                 height: "150px",
-                                                                marginLeft: "232px",
+                                                                marginLeft:
+                                                                    "232px",
                                                             }}
                                                         >
                                                             <iframe
                                                                 width="300"
                                                                 height="150"
                                                                 src={
-                                                                    this.state.listArr[this.state.indexQuestion][
-                                                                    "file"
-                                                                    ]} title="YouTube video player"
+                                                                    this.state
+                                                                        .listArr[
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                    ]["file"]
+                                                                }
+                                                                title="YouTube video player"
                                                                 frameborder="0"
                                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                                 allowfullscreen
@@ -1374,40 +1731,54 @@ class DetailContestWithQuestionList extends Component {
                                                     ) : null}
                                                     <h3>
                                                         {
-                                                            this.state.listArr[this.state.indexQuestion][
-                                                            "question"
-                                                            ]
+                                                            this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ]["question"]
                                                         }
                                                     </h3>
 
-                                                    {this.state.listArr[this.state.indexQuestion][
-                                                        "hint"
-                                                    ] === 2 ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ]["hint"] === 2 ? (
                                                         <p className="hintText">
                                                             <span>Hint - </span>
                                                             {
-                                                                this.state.listArr[this.state.indexQuestion][
-                                                                "hintText"
-                                                                ]
+                                                                this.state
+                                                                    .listArr[
+                                                                    this.state
+                                                                        .indexQuestion
+                                                                ]["hintText"]
                                                             }
                                                         </p>
-                                                    ) : this.state.listArr[this.state.indexQuestion][
-                                                        "hint"
-                                                    ] === 3 ? (
+                                                    ) : this.state.listArr[
+                                                          this.state
+                                                              .indexQuestion
+                                                      ]["hint"] === 3 ? (
                                                         <p className="hintText">
-                                                            {this.state.listArr[this.state.indexQuestion][
+                                                            {this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "hintTextStyle"
                                                             ] !== undefined &&
-                                                                this.state.listArr[this.state.indexQuestion][
+                                                            this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "hintTextStyle"
-                                                                ] === true ? (
-                                                                this.state.listArr[this.state.indexQuestion][
-                                                                "hintText"
-                                                                ]
+                                                            ] === true ? (
+                                                                this.state
+                                                                    .listArr[
+                                                                    this.state
+                                                                        .indexQuestion
+                                                                ]["hintText"]
                                                             ) : (
                                                                 <button
                                                                     className="blue_btn"
-                                                                    onClick={this.changeOnDemand.bind(this)}
+                                                                    onClick={this.changeOnDemand.bind(
+                                                                        this
+                                                                    )}
                                                                 >
                                                                     Show Hint
                                                                 </button>
@@ -1416,204 +1787,421 @@ class DetailContestWithQuestionList extends Component {
                                                     ) : null}
 
                                                     <div className="answer-option">
-                                                        {this.state.listArr[this.state.indexQuestion][
-                                                            "answerType"
-                                                        ] === 1
-                                                            ? this.state.listArr[this.state.indexQuestion]["answers"].map((e, key) => {
-                                                                var forclass = e._id + key;
-                                                                return (
-                                                                    <p
-                                                                        className={this.state.listArr[this.state.indexQuestion]["selectAnswer"] ? this.state.listArr[this.state.indexQuestion]["selectAnswer"] === e._id && e.correctAnswer === true ? "fancy2 highlight" : this.state.listArr[this.state.indexQuestion]["selectAnswer"] === e._id && e.correctAnswer === false ? "fancy2 pinkhighlight" : "fancy2" : "fancy2"}
-                                                                    >
-                                                                        <label>
-                                                                            {key === 0 ? (
-                                                                                <b className="option_ _a">A</b>
-                                                                            ) : null}
-                                                                            {key === 1 ? (
-                                                                                <b className="option_ _b">B</b>
-                                                                            ) : null}
-                                                                            {key === 2 ? (
-                                                                                <b className="option_ _c">C</b>
-                                                                            ) : null}
-                                                                            {key === 3 ? (
-                                                                                <b className="option_ _d">D</b>
-                                                                            ) : null}
-                                                                            {key === 4 ? (
-                                                                                <b className="option_ _e">E</b>
-                                                                            ) : null}
-                                                                            {key === 5 ? (
-                                                                                <b className="option_ _f">F</b>
-                                                                            ) : null}
+                                                        {this.state.listArr[
+                                                            this.state
+                                                                .indexQuestion
+                                                        ]["answerType"] === 1
+                                                            ? this.state.listArr[
+                                                                  this.state
+                                                                      .indexQuestion
+                                                              ]["answers"].map(
+                                                                  (e, key) => {
+                                                                      var forclass =
+                                                                          e._id +
+                                                                          key;
+                                                                      return (
+                                                                          <p
+                                                                              className={
+                                                                                  this
+                                                                                      .state
+                                                                                      .listArr[
+                                                                                      this
+                                                                                          .state
+                                                                                          .indexQuestion
+                                                                                  ][
+                                                                                      "selectAnswer"
+                                                                                  ]
+                                                                                      ? this
+                                                                                            .state
+                                                                                            .listArr[
+                                                                                            this
+                                                                                                .state
+                                                                                                .indexQuestion
+                                                                                        ][
+                                                                                            "selectAnswer"
+                                                                                        ] ===
+                                                                                            e._id &&
+                                                                                        e.correctAnswer ===
+                                                                                            true
+                                                                                          ? "fancy2 highlight"
+                                                                                          : this
+                                                                                                .state
+                                                                                                .listArr[
+                                                                                                this
+                                                                                                    .state
+                                                                                                    .indexQuestion
+                                                                                            ][
+                                                                                                "selectAnswer"
+                                                                                            ] ===
+                                                                                                e._id &&
+                                                                                            e.correctAnswer ===
+                                                                                                false
+                                                                                          ? "fancy2 pinkhighlight"
+                                                                                          : "fancy2"
+                                                                                      : "fancy2"
+                                                                              }
+                                                                          >
+                                                                              <label>
+                                                                                  {key ===
+                                                                                  0 ? (
+                                                                                      <b className="option_ _a">
+                                                                                          A
+                                                                                      </b>
+                                                                                  ) : null}
+                                                                                  {key ===
+                                                                                  1 ? (
+                                                                                      <b className="option_ _b">
+                                                                                          B
+                                                                                      </b>
+                                                                                  ) : null}
+                                                                                  {key ===
+                                                                                  2 ? (
+                                                                                      <b className="option_ _c">
+                                                                                          C
+                                                                                      </b>
+                                                                                  ) : null}
+                                                                                  {key ===
+                                                                                  3 ? (
+                                                                                      <b className="option_ _d">
+                                                                                          D
+                                                                                      </b>
+                                                                                  ) : null}
+                                                                                  {key ===
+                                                                                  4 ? (
+                                                                                      <b className="option_ _e">
+                                                                                          E
+                                                                                      </b>
+                                                                                  ) : null}
+                                                                                  {key ===
+                                                                                  5 ? (
+                                                                                      <b className="option_ _f">
+                                                                                          F
+                                                                                      </b>
+                                                                                  ) : null}
 
-                                                                            {this.state.listArr[
-                                                                                this.state.indexQuestion
-                                                                            ]["selectAnswer"] === e._id &&
-                                                                                e.correctAnswer === true ? (
-                                                                                <input
-                                                                                    id={forclass}
-                                                                                    name={
-                                                                                        this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                        ]["_id"]
-                                                                                    }
-                                                                                    type="radio"
-                                                                                    onChange={this.handleSingleSelectChange.bind(
-                                                                                        this,
-                                                                                        this.state.indexQuestion,
-                                                                                        e
-                                                                                    )}
-                                                                                    value={e.answer}
-                                                                                    checked="checked"
-                                                                                    disabled={
-                                                                                        e.readonly ? "disabled" : ""
-                                                                                    }
-                                                                                />
-                                                                            ) : (
-                                                                                <input
-                                                                                    id={forclass}
-                                                                                    name={
-                                                                                        this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                        ]["_id"]
-                                                                                    }
-                                                                                    type="radio"
-                                                                                    onChange={this.handleSingleSelectChange.bind(
-                                                                                        this,
-                                                                                        this.state.indexQuestion,
-                                                                                        e
-                                                                                    )}
-                                                                                    value={e.answer}
-                                                                                    disabled={
-                                                                                        e.readonly ? "disabled" : ""
-                                                                                    }
-                                                                                />
-                                                                            )}
-                                                                            <span for={forclass}>{e.answer}</span>
-                                                                        </label>
-                                                                    </p>
-                                                                );
-                                                            })
+                                                                                  {this
+                                                                                      .state
+                                                                                      .listArr[
+                                                                                      this
+                                                                                          .state
+                                                                                          .indexQuestion
+                                                                                  ][
+                                                                                      "selectAnswer"
+                                                                                  ] ===
+                                                                                      e._id &&
+                                                                                  e.correctAnswer ===
+                                                                                      true ? (
+                                                                                      <input
+                                                                                          id={
+                                                                                              forclass
+                                                                                          }
+                                                                                          name={
+                                                                                              this
+                                                                                                  .state
+                                                                                                  .listArr[
+                                                                                                  this
+                                                                                                      .state
+                                                                                                      .indexQuestion
+                                                                                              ][
+                                                                                                  "_id"
+                                                                                              ]
+                                                                                          }
+                                                                                          type="radio"
+                                                                                          onChange={this.handleSingleSelectChange.bind(
+                                                                                              this,
+                                                                                              this
+                                                                                                  .state
+                                                                                                  .indexQuestion,
+                                                                                              e
+                                                                                          )}
+                                                                                          value={
+                                                                                              e.answer
+                                                                                          }
+                                                                                          checked="checked"
+                                                                                          disabled={
+                                                                                              e.readonly
+                                                                                                  ? "disabled"
+                                                                                                  : ""
+                                                                                          }
+                                                                                      />
+                                                                                  ) : (
+                                                                                      <input
+                                                                                          id={
+                                                                                              forclass
+                                                                                          }
+                                                                                          name={
+                                                                                              this
+                                                                                                  .state
+                                                                                                  .listArr[
+                                                                                                  this
+                                                                                                      .state
+                                                                                                      .indexQuestion
+                                                                                              ][
+                                                                                                  "_id"
+                                                                                              ]
+                                                                                          }
+                                                                                          type="radio"
+                                                                                          onChange={this.handleSingleSelectChange.bind(
+                                                                                              this,
+                                                                                              this
+                                                                                                  .state
+                                                                                                  .indexQuestion,
+                                                                                              e
+                                                                                          )}
+                                                                                          value={
+                                                                                              e.answer
+                                                                                          }
+                                                                                          disabled={
+                                                                                              e.readonly
+                                                                                                  ? "disabled"
+                                                                                                  : ""
+                                                                                          }
+                                                                                      />
+                                                                                  )}
+                                                                                  <span
+                                                                                      for={
+                                                                                          forclass
+                                                                                      }
+                                                                                  >
+                                                                                      {
+                                                                                          e.answer
+                                                                                      }
+                                                                                  </span>
+                                                                              </label>
+                                                                          </p>
+                                                                      );
+                                                                  }
+                                                              )
                                                             : null}
 
-                                                        {this.state.listArr[this.state.indexQuestion][
-                                                            "answerType"
-                                                        ] === 2 ? (
+                                                        {this.state.listArr[
+                                                            this.state
+                                                                .indexQuestion
+                                                        ]["answerType"] ===
+                                                        2 ? (
                                                             <div className="row">
                                                                 <div
                                                                     className="col-12"
                                                                     style={{
-                                                                        marginBottom: "30px",
+                                                                        marginBottom:
+                                                                            "30px",
                                                                     }}
                                                                 >
-                                                                    {this.state.listArr[this.state.indexQuestion][
+                                                                    {this.state.listArr[
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                    ][
                                                                         "answers"
-                                                                    ].map((e, key) => {
-                                                                        var forclass = e._id + key;
-                                                                        // var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
-                                                                        //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ?
-                                                                        //                			'fancy2 highlight' :
-                                                                        //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2'
-                                                                        //               				: 'fancy2';
-                                                                        var innnerpclass = "fancy2 fancy2_" + key;
-                                                                        var pcalss =
-                                                                            this.state.listArr[
-                                                                                this.state.indexQuestion
-                                                                            ]["selectAnswer"] &&
+                                                                    ].map(
+                                                                        (
+                                                                            e,
+                                                                            key
+                                                                        ) => {
+                                                                            var forclass =
+                                                                                e._id +
+                                                                                key;
+                                                                            // var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
+                                                                            //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ?
+                                                                            //                			'fancy2 highlight' :
+                                                                            //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2'
+                                                                            //               				: 'fancy2';
+                                                                            var innnerpclass =
+                                                                                "fancy2 fancy2_" +
+                                                                                key;
+                                                                            var pcalss =
+                                                                                this
+                                                                                    .state
+                                                                                    .listArr[
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "selectAnswer"
+                                                                                ] &&
                                                                                 this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["selectAnswer"].includes(e._id)
-                                                                                ? innnerpclass
-                                                                                : "fancy2";
-                                                                        var inputclass = "input_" + key;
-                                                                        return (
-                                                                            <p className={pcalss}>
-                                                                                <label>
-                                                                                    {key === 0 ? (
-                                                                                        <b className="option_ _a">A</b>
-                                                                                    ) : null}
-                                                                                    {key === 1 ? (
-                                                                                        <b className="option_ _b">B</b>
-                                                                                    ) : null}
-                                                                                    {key === 2 ? (
-                                                                                        <b className="option_ _c">C</b>
-                                                                                    ) : null}
-                                                                                    {key === 3 ? (
-                                                                                        <b className="option_ _d">D</b>
-                                                                                    ) : null}
-                                                                                    {key === 4 ? (
-                                                                                        <b className="option_ _e">E</b>
-                                                                                    ) : null}
-                                                                                    {key === 5 ? (
-                                                                                        <b className="option_ _f">F</b>
-                                                                                    ) : null}
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "selectAnswer"
+                                                                                ].includes(
+                                                                                    e._id
+                                                                                )
+                                                                                    ? innnerpclass
+                                                                                    : "fancy2";
+                                                                            var inputclass =
+                                                                                "input_" +
+                                                                                key;
+                                                                            return (
+                                                                                <p
+                                                                                    className={
+                                                                                        pcalss
+                                                                                    }
+                                                                                >
+                                                                                    <label>
+                                                                                        {key ===
+                                                                                        0 ? (
+                                                                                            <b className="option_ _a">
+                                                                                                A
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        1 ? (
+                                                                                            <b className="option_ _b">
+                                                                                                B
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        2 ? (
+                                                                                            <b className="option_ _c">
+                                                                                                C
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        3 ? (
+                                                                                            <b className="option_ _d">
+                                                                                                D
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        4 ? (
+                                                                                            <b className="option_ _e">
+                                                                                                E
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        5 ? (
+                                                                                            <b className="option_ _f">
+                                                                                                F
+                                                                                            </b>
+                                                                                        ) : null}
 
-                                                                                    {this.state.listArr[
-                                                                                        this.state.indexQuestion
-                                                                                    ]["selectAnswer"] &&
+                                                                                        {this
+                                                                                            .state
+                                                                                            .listArr[
+                                                                                            this
+                                                                                                .state
+                                                                                                .indexQuestion
+                                                                                        ][
+                                                                                            "selectAnswer"
+                                                                                        ] &&
                                                                                         this.state.listArr[
-                                                                                            this.state.indexQuestion
-                                                                                        ]["selectAnswer"].includes(e._id) &&
-                                                                                        e.correctAnswer === true ? (
-                                                                                        <input
-                                                                                            id={forclass}
-                                                                                            className={inputclass}
-                                                                                            name={
-                                                                                                this.state.listArr[
-                                                                                                this.state.indexQuestion
-                                                                                                ]["_id"]
+                                                                                            this
+                                                                                                .state
+                                                                                                .indexQuestion
+                                                                                        ][
+                                                                                            "selectAnswer"
+                                                                                        ].includes(
+                                                                                            e._id
+                                                                                        ) &&
+                                                                                        e.correctAnswer ===
+                                                                                            true ? (
+                                                                                            <input
+                                                                                                id={
+                                                                                                    forclass
+                                                                                                }
+                                                                                                className={
+                                                                                                    inputclass
+                                                                                                }
+                                                                                                name={
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "_id"
+                                                                                                    ]
+                                                                                                }
+                                                                                                type="checkbox"
+                                                                                                onChange={this.handleMultiSelectChange.bind(
+                                                                                                    this,
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion,
+                                                                                                    e
+                                                                                                )}
+                                                                                                value={
+                                                                                                    e.answer
+                                                                                                }
+                                                                                                checked="checked"
+                                                                                                disabled={
+                                                                                                    e.readonly
+                                                                                                        ? "disabled"
+                                                                                                        : ""
+                                                                                                }
+                                                                                            />
+                                                                                        ) : (
+                                                                                            <input
+                                                                                                id={
+                                                                                                    forclass
+                                                                                                }
+                                                                                                className={
+                                                                                                    inputclass
+                                                                                                }
+                                                                                                name={
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "_id"
+                                                                                                    ]
+                                                                                                }
+                                                                                                type="checkbox"
+                                                                                                onChange={this.handleMultiSelectChange.bind(
+                                                                                                    this,
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion,
+                                                                                                    e
+                                                                                                )}
+                                                                                                value={
+                                                                                                    e.answer
+                                                                                                }
+                                                                                                disabled={
+                                                                                                    e.readonly
+                                                                                                        ? "disabled"
+                                                                                                        : ""
+                                                                                                }
+                                                                                            />
+                                                                                        )}
+                                                                                        <span
+                                                                                            for={
+                                                                                                forclass
                                                                                             }
-                                                                                            type="checkbox"
-                                                                                            onChange={this.handleMultiSelectChange.bind(
-                                                                                                this,
-                                                                                                this.state.indexQuestion,
-                                                                                                e
-                                                                                            )}
-                                                                                            value={e.answer}
-                                                                                            checked="checked"
-                                                                                            disabled={
-                                                                                                e.readonly ? "disabled" : ""
+                                                                                        >
+                                                                                            {
+                                                                                                e.answer
                                                                                             }
-                                                                                        />
-                                                                                    ) : (
-                                                                                        <input
-                                                                                            id={forclass}
-                                                                                            className={inputclass}
-                                                                                            name={
-                                                                                                this.state.listArr[
-                                                                                                this.state.indexQuestion
-                                                                                                ]["_id"]
-                                                                                            }
-                                                                                            type="checkbox"
-                                                                                            onChange={this.handleMultiSelectChange.bind(
-                                                                                                this,
-                                                                                                this.state.indexQuestion,
-                                                                                                e
-                                                                                            )}
-                                                                                            value={e.answer}
-                                                                                            disabled={
-                                                                                                e.readonly ? "disabled" : ""
-                                                                                            }
-                                                                                        />
-                                                                                    )}
-                                                                                    <span for={forclass}>{e.answer}</span>
-                                                                                </label>
-                                                                            </p>
-                                                                        );
-                                                                    })}
+                                                                                        </span>
+                                                                                    </label>
+                                                                                </p>
+                                                                            );
+                                                                        }
+                                                                    )}
                                                                 </div>
                                                                 <div
                                                                     className="col-12 align-self-center"
                                                                     style={{
-                                                                        textAlign: "center",
+                                                                        textAlign:
+                                                                            "center",
                                                                     }}
                                                                 >
                                                                     <button
                                                                         style={{
-                                                                            minWidth: "150px",
+                                                                            minWidth:
+                                                                                "150px",
                                                                         }}
                                                                         className="pink_btn"
                                                                         type="button"
-                                                                        onClick={this.saveIndexAnswer.bind(this)}
+                                                                        onClick={this.saveIndexAnswer.bind(
+                                                                            this
+                                                                        )}
                                                                     >
                                                                         Save
                                                                     </button>
@@ -1621,27 +2209,36 @@ class DetailContestWithQuestionList extends Component {
                                                             </div>
                                                         ) : null}
 
-                                                        {this.state.listArr[this.state.indexQuestion][
-                                                            "answerType"
-                                                        ] === 3 ? (
+                                                        {this.state.listArr[
+                                                            this.state
+                                                                .indexQuestion
+                                                        ]["answerType"] ===
+                                                        3 ? (
                                                             <div className="row">
                                                                 <div
                                                                     className="col-12"
                                                                     style={{
-                                                                        marginBottom: "30px",
-                                                                        textAlign: "center",
+                                                                        marginBottom:
+                                                                            "30px",
+                                                                        textAlign:
+                                                                            "center",
                                                                     }}
                                                                 >
                                                                     <div className="cus_input input_wrap">
                                                                         <input
                                                                             type="text"
                                                                             required
-                                                                            value={this.state.freeTextAnswer}
+                                                                            value={
+                                                                                this
+                                                                                    .state
+                                                                                    .freeTextAnswer
+                                                                            }
                                                                             onChange={this.handleFreeTextChange.bind(
                                                                                 this
                                                                             )}
                                                                             style={{
-                                                                                textAlign: "center",
+                                                                                textAlign:
+                                                                                    "center",
                                                                             }}
                                                                         />
                                                                     </div>
@@ -1649,103 +2246,197 @@ class DetailContestWithQuestionList extends Component {
                                                                 <div
                                                                     className="col-12"
                                                                     style={{
-                                                                        marginBottom: "30px",
-                                                                        display: this.state.listArr[
-                                                                            this.state.indexQuestion
-                                                                        ]["selectAnswer"]
-                                                                            ? "block"
-                                                                            : "none",
+                                                                        marginBottom:
+                                                                            "30px",
+                                                                        display:
+                                                                            this
+                                                                                .state
+                                                                                .listArr[
+                                                                                this
+                                                                                    .state
+                                                                                    .indexQuestion
+                                                                            ][
+                                                                                "selectAnswer"
+                                                                            ]
+                                                                                ? "block"
+                                                                                : "none",
                                                                     }}
                                                                 >
-                                                                    {this.state.listArr[this.state.indexQuestion][
+                                                                    {this.state.listArr[
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                    ][
                                                                         "answers"
-                                                                    ].map((e, key) => {
-                                                                        var forclass = e._id + key;
-                                                                        // var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
-                                                                        //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ?
-                                                                        //                			'fancy2 highlight' :
-                                                                        //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2'
-                                                                        //               				: 'fancy2';
-                                                                        var innnerpclass = "fancy2 fancy2_" + key;
-                                                                        var pcalss =
-                                                                            this.state.listArr[
-                                                                                this.state.indexQuestion
-                                                                            ]["selectAnswer"] &&
+                                                                    ].map(
+                                                                        (
+                                                                            e,
+                                                                            key
+                                                                        ) => {
+                                                                            var forclass =
+                                                                                e._id +
+                                                                                key;
+                                                                            // var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer']) ?
+                                                                            //                		(this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === true) ?
+                                                                            //                			'fancy2 highlight' :
+                                                                            //               				(this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e.answer) && e.correctAnswer === false) ? 'fancy2 pinkhighlight' : 'fancy2'
+                                                                            //               				: 'fancy2';
+                                                                            var innnerpclass =
+                                                                                "fancy2 fancy2_" +
+                                                                                key;
+                                                                            var pcalss =
+                                                                                this
+                                                                                    .state
+                                                                                    .listArr[
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "selectAnswer"
+                                                                                ] &&
                                                                                 this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["selectAnswer"].includes(e._id)
-                                                                                ? innnerpclass
-                                                                                : "fancy2";
-                                                                        var inputclass = "input_" + key;
-                                                                        return (
-                                                                            <p className={pcalss}>
-                                                                                <label>
-                                                                                    {key === 0 ? (
-                                                                                        <b className="option_ _a">A</b>
-                                                                                    ) : null}
-                                                                                    {key === 1 ? (
-                                                                                        <b className="option_ _b">B</b>
-                                                                                    ) : null}
-                                                                                    {key === 2 ? (
-                                                                                        <b className="option_ _c">C</b>
-                                                                                    ) : null}
-                                                                                    {key === 3 ? (
-                                                                                        <b className="option_ _d">D</b>
-                                                                                    ) : null}
-                                                                                    {key === 4 ? (
-                                                                                        <b className="option_ _e">E</b>
-                                                                                    ) : null}
-                                                                                    {key === 5 ? (
-                                                                                        <b className="option_ _f">F</b>
-                                                                                    ) : null}
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "selectAnswer"
+                                                                                ].includes(
+                                                                                    e._id
+                                                                                )
+                                                                                    ? innnerpclass
+                                                                                    : "fancy2";
+                                                                            var inputclass =
+                                                                                "input_" +
+                                                                                key;
+                                                                            return (
+                                                                                <p
+                                                                                    className={
+                                                                                        pcalss
+                                                                                    }
+                                                                                >
+                                                                                    <label>
+                                                                                        {key ===
+                                                                                        0 ? (
+                                                                                            <b className="option_ _a">
+                                                                                                A
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        1 ? (
+                                                                                            <b className="option_ _b">
+                                                                                                B
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        2 ? (
+                                                                                            <b className="option_ _c">
+                                                                                                C
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        3 ? (
+                                                                                            <b className="option_ _d">
+                                                                                                D
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        4 ? (
+                                                                                            <b className="option_ _e">
+                                                                                                E
+                                                                                            </b>
+                                                                                        ) : null}
+                                                                                        {key ===
+                                                                                        5 ? (
+                                                                                            <b className="option_ _f">
+                                                                                                F
+                                                                                            </b>
+                                                                                        ) : null}
 
-                                                                                    {e.correctAnswer === true ? (
-                                                                                        <input
-                                                                                            id={forclass}
-                                                                                            className={inputclass}
-                                                                                            name={
-                                                                                                this.state.listArr[
-                                                                                                this.state.indexQuestion
-                                                                                                ]["_id"]
+                                                                                        {e.correctAnswer ===
+                                                                                        true ? (
+                                                                                            <input
+                                                                                                id={
+                                                                                                    forclass
+                                                                                                }
+                                                                                                className={
+                                                                                                    inputclass
+                                                                                                }
+                                                                                                name={
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "_id"
+                                                                                                    ]
+                                                                                                }
+                                                                                                type="checkbox"
+                                                                                                value={
+                                                                                                    e.answer
+                                                                                                }
+                                                                                                checked="checked"
+                                                                                                disabled="disabled"
+                                                                                            />
+                                                                                        ) : (
+                                                                                            <input
+                                                                                                id={
+                                                                                                    forclass
+                                                                                                }
+                                                                                                className={
+                                                                                                    inputclass
+                                                                                                }
+                                                                                                name={
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "_id"
+                                                                                                    ]
+                                                                                                }
+                                                                                                type="checkbox"
+                                                                                                value={
+                                                                                                    e.answer
+                                                                                                }
+                                                                                                disabled="disabled"
+                                                                                            />
+                                                                                        )}
+                                                                                        <span
+                                                                                            for={
+                                                                                                forclass
                                                                                             }
-                                                                                            type="checkbox"
-                                                                                            value={e.answer}
-                                                                                            checked="checked"
-                                                                                            disabled="disabled"
-                                                                                        />
-                                                                                    ) : (
-                                                                                        <input
-                                                                                            id={forclass}
-                                                                                            className={inputclass}
-                                                                                            name={
-                                                                                                this.state.listArr[
-                                                                                                this.state.indexQuestion
-                                                                                                ]["_id"]
+                                                                                        >
+                                                                                            {
+                                                                                                e.answer
                                                                                             }
-                                                                                            type="checkbox"
-                                                                                            value={e.answer}
-                                                                                            disabled="disabled"
-                                                                                        />
-                                                                                    )}
-                                                                                    <span for={forclass}>{e.answer}</span>
-                                                                                </label>
-                                                                            </p>
-                                                                        );
-                                                                    })}
+                                                                                        </span>
+                                                                                    </label>
+                                                                                </p>
+                                                                            );
+                                                                        }
+                                                                    )}
                                                                 </div>
                                                                 <div
                                                                     className="col-12 align-self-center"
                                                                     style={{
-                                                                        textAlign: "center",
+                                                                        textAlign:
+                                                                            "center",
                                                                     }}
                                                                 >
                                                                     <button
                                                                         style={{
-                                                                            minWidth: "150px",
+                                                                            minWidth:
+                                                                                "150px",
                                                                         }}
                                                                         className="pink_btn"
                                                                         type="button"
-                                                                        onClick={this.submitFreeText.bind(this)}
+                                                                        onClick={this.submitFreeText.bind(
+                                                                            this
+                                                                        )}
                                                                     >
                                                                         Save
                                                                     </button>
@@ -1753,94 +2444,174 @@ class DetailContestWithQuestionList extends Component {
                                                             </div>
                                                         ) : null}
 
-                                                        {this.state.listArr[this.state.indexQuestion][
-                                                            "answerType"
-                                                        ] === 5 ? (
+                                                        {this.state.listArr[
+                                                            this.state
+                                                                .indexQuestion
+                                                        ]["answerType"] ===
+                                                        5 ? (
                                                             <div>
                                                                 <p
                                                                     className={
-                                                                        this.state.listArr[
-                                                                            this.state.indexQuestion
-                                                                        ]["selectAnswer"]
-                                                                            ? this.state.listArr[
-                                                                                this.state.indexQuestion
-                                                                            ]["isAnswerTrue"] === true
+                                                                        this
+                                                                            .state
+                                                                            .listArr[
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
+                                                                        ][
+                                                                            "selectAnswer"
+                                                                        ]
+                                                                            ? this
+                                                                                  .state
+                                                                                  .listArr[
+                                                                                  this
+                                                                                      .state
+                                                                                      .indexQuestion
+                                                                              ][
+                                                                                  "isAnswerTrue"
+                                                                              ] ===
+                                                                              true
                                                                                 ? "fancy2 highlight"
-                                                                                : this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["isAnswerTrue"] === false
-                                                                                    ? "fancy2 pinkhighlight"
-                                                                                    : "fancy2"
-                                                                            : "fancy2"}
+                                                                                : this
+                                                                                      .state
+                                                                                      .listArr[
+                                                                                      this
+                                                                                          .state
+                                                                                          .indexQuestion
+                                                                                  ][
+                                                                                      "isAnswerTrue"
+                                                                                  ] ===
+                                                                                  false
+                                                                                ? "fancy2 pinkhighlight"
+                                                                                : "fancy2"
+                                                                            : "fancy2"
+                                                                    }
                                                                 >
                                                                     <label>
-                                                                        <b className="option_ _a">A</b>
+                                                                        <b className="option_ _a">
+                                                                            A
+                                                                        </b>
                                                                         <input
                                                                             id="trueFalse"
                                                                             name={
-                                                                                this.state.listArr[
-                                                                                this.state.indexQuestion
-                                                                                ]["_id"]
+                                                                                this
+                                                                                    .state
+                                                                                    .listArr[
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "_id"
+                                                                                ]
                                                                             }
                                                                             type="radio"
                                                                             onChange={this.handleTrueFalseSelectChange.bind(
                                                                                 this,
-                                                                                this.state.indexQuestion,
+                                                                                this
+                                                                                    .state
+                                                                                    .indexQuestion,
                                                                                 true
                                                                             )}
                                                                             value="true"
                                                                             disabled={
-                                                                                this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["readonly"]
+                                                                                this
+                                                                                    .state
+                                                                                    .listArr[
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "readonly"
+                                                                                ]
                                                                                     ? "disabled"
                                                                                     : ""
                                                                             }
                                                                         />
-                                                                        <span for="trueFalse">True</span>
+                                                                        <span for="trueFalse">
+                                                                            True
+                                                                        </span>
                                                                     </label>
                                                                 </p>
                                                                 <p
                                                                     className={
-                                                                        this.state.listArr[
-                                                                            this.state.indexQuestion
-                                                                        ]["selectAnswer"]
-                                                                            ? this.state.listArr[
-                                                                                this.state.indexQuestion
-                                                                            ]["isAnswerTrue"] === false
+                                                                        this
+                                                                            .state
+                                                                            .listArr[
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
+                                                                        ][
+                                                                            "selectAnswer"
+                                                                        ]
+                                                                            ? this
+                                                                                  .state
+                                                                                  .listArr[
+                                                                                  this
+                                                                                      .state
+                                                                                      .indexQuestion
+                                                                              ][
+                                                                                  "isAnswerTrue"
+                                                                              ] ===
+                                                                              false
                                                                                 ? "fancy2 highlight"
-                                                                                : this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["isAnswerTrue"] === true
-                                                                                    ? "fancy2 pinkhighlight"
-                                                                                    : "fancy2"
-                                                                            : "fancy2"}
+                                                                                : this
+                                                                                      .state
+                                                                                      .listArr[
+                                                                                      this
+                                                                                          .state
+                                                                                          .indexQuestion
+                                                                                  ][
+                                                                                      "isAnswerTrue"
+                                                                                  ] ===
+                                                                                  true
+                                                                                ? "fancy2 pinkhighlight"
+                                                                                : "fancy2"
+                                                                            : "fancy2"
+                                                                    }
                                                                 >
                                                                     <label>
-                                                                        <b className="option_ _b">B</b>
+                                                                        <b className="option_ _b">
+                                                                            B
+                                                                        </b>
                                                                         <input
                                                                             id="trueFalse"
                                                                             name={
-                                                                                this.state.listArr[
-                                                                                this.state.indexQuestion
-                                                                                ]["_id"]
+                                                                                this
+                                                                                    .state
+                                                                                    .listArr[
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "_id"
+                                                                                ]
                                                                             }
                                                                             type="radio"
                                                                             onChange={this.handleTrueFalseSelectChange.bind(
                                                                                 this,
-                                                                                this.state.indexQuestion,
+                                                                                this
+                                                                                    .state
+                                                                                    .indexQuestion,
                                                                                 false
                                                                             )}
                                                                             value="false"
                                                                             disabled={
-                                                                                this.state.listArr[
-                                                                                    this.state.indexQuestion
-                                                                                ]["readonly"]
+                                                                                this
+                                                                                    .state
+                                                                                    .listArr[
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "readonly"
+                                                                                ]
                                                                                     ? "disabled"
                                                                                     : ""
                                                                             }
                                                                         />
-                                                                        <span for="trueFalse">False</span>
+                                                                        <span for="trueFalse">
+                                                                            False
+                                                                        </span>
                                                                     </label>
                                                                 </p>
                                                             </div>
@@ -1859,7 +2630,9 @@ class DetailContestWithQuestionList extends Component {
                                                         }}
                                                         className="pink_btn"
                                                         type="button"
-                                                        onClick={this.saveExitAnswer.bind(this)}
+                                                        onClick={this.saveExitAnswer.bind(
+                                                            this
+                                                        )}
                                                     >
                                                         Exit
                                                     </button>
@@ -1870,11 +2643,20 @@ class DetailContestWithQuestionList extends Component {
                                 </section>
                             ) : null}
 
-                            {this.state.roundData[this.state.indexRound].gameType ===
-                                "Unscramble" ? (
-                                <section id="hero" className="d-flex align-items-center">
-                                    <div className="quizz-game" style={{ marginTop: "35px" }}>
-                                        <div className="dropdown show" style={{ float: "right" }}>
+                            {this.state.roundData[this.state.indexRound]
+                                .gameType === "Unscramble" ? (
+                                <section
+                                    id="hero"
+                                    className="d-flex align-items-center"
+                                >
+                                    <div
+                                        className="quizz-game"
+                                        style={{ marginTop: "35px" }}
+                                    >
+                                        <div
+                                            className="dropdown show"
+                                            style={{ float: "right" }}
+                                        >
                                             <a
                                                 className="btn btn-secondary dropdown-toggle toggle-arrow"
                                                 href="#"
@@ -1891,7 +2673,8 @@ class DetailContestWithQuestionList extends Component {
                                                 className="dropdown-menu drop-btn-menu"
                                                 aria-labelledby="dropdownMenuLink"
                                             >
-                                                {this.state.contestCreater ? null : (
+                                                {this.state
+                                                    .contestCreater ? null : (
                                                     <button
                                                         style={{
                                                             minWidth: "150px",
@@ -1911,32 +2694,51 @@ class DetailContestWithQuestionList extends Component {
                                         </div>
                                         <h3>{this.state.contestData.title}</h3>
                                         <p>
-                                            {this.state.roundData[this.state.indexRound].gameType}
+                                            {
+                                                this.state.roundData[
+                                                    this.state.indexRound
+                                                ].gameType
+                                            }
                                         </p>
                                         <div className="quizz-quas">
-                                            {this.state.listArr[this.state.indexQuestion] ? (
+                                            {this.state.listArr[
+                                                this.state.indexQuestion
+                                            ] ? (
                                                 <h4>
-                                                    Question {this.state.indexQuestion + 1}/
-                                                    {this.state.listArr.length}
+                                                    Question{" "}
+                                                    {this.state.indexQuestion +
+                                                        1}
+                                                    /{this.state.listArr.length}
                                                 </h4>
                                             ) : (
                                                 <h4>
-                                                    Question {this.state.listArr.length}/
+                                                    Question{" "}
+                                                    {this.state.listArr.length}/
                                                     {this.state.listArr.length}
                                                 </h4>
                                             )}
 
-                                            {this.state.listArr.map((e, key) => {
-                                                let classname =
-                                                    key === this.state.indexQuestion
-                                                        ? "step_progress yellow_"
-                                                        : typeof e.selectAnswer !== "undefined"
+                                            {this.state.listArr.map(
+                                                (e, key) => {
+                                                    let classname =
+                                                        key ===
+                                                        this.state.indexQuestion
+                                                            ? "step_progress yellow_"
+                                                            : typeof e.selectAnswer !==
+                                                              "undefined"
                                                             ? e.isAnswerTrue
                                                                 ? "step_progress blue_"
                                                                 : "step_progress pink_"
                                                             : "step_progress";
-                                                return <div className={classname}></div>;
-                                            })}
+                                                    return (
+                                                        <div
+                                                            className={
+                                                                classname
+                                                            }
+                                                        ></div>
+                                                    );
+                                                }
+                                            )}
                                             <div id="app">
                                                 <div className="base-timer">
                                                     <svg
@@ -1968,17 +2770,26 @@ class DetailContestWithQuestionList extends Component {
                                                             ></path>
                                                         </g>
                                                     </svg>
-                                                    {this.state.listArr[this.state.indexQuestion] ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ] ? (
                                                         <span
                                                             id="base-timer-label"
                                                             className="base-timer__label"
                                                         >
-                                                            {this.state.listArr[this.state.indexQuestion][
+                                                            {this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "displaytimeLimit"
                                                             ]
-                                                                ? this.state.listArr[this.state.indexQuestion][
-                                                                "displaytimeLimit"
-                                                                ]
+                                                                ? this.state
+                                                                      .listArr[
+                                                                      this.state
+                                                                          .indexQuestion
+                                                                  ][
+                                                                      "displaytimeLimit"
+                                                                  ]
                                                                 : "00:00"}
                                                         </span>
                                                     ) : (
@@ -1992,7 +2803,9 @@ class DetailContestWithQuestionList extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        {this.state.listArr[this.state.indexQuestion] ? (
+                                        {this.state.listArr[
+                                            this.state.indexQuestion
+                                        ] ? (
                                             <div>
                                                 <div
                                                     className="qus"
@@ -2002,34 +2815,47 @@ class DetailContestWithQuestionList extends Component {
                                                 >
                                                     {/* <h3>{this.state.listArr[this.state.indexQuestion]['question']}</h3> */}
 
-                                                    {this.state.listArr[this.state.indexQuestion][
-                                                        "hint"
-                                                    ] === 2 ? (
+                                                    {this.state.listArr[
+                                                        this.state.indexQuestion
+                                                    ]["hint"] === 2 ? (
                                                         <p className="hintText">
                                                             <span>Hint - </span>
                                                             {
-                                                                this.state.listArr[this.state.indexQuestion][
-                                                                "hintText"
-                                                                ]
+                                                                this.state
+                                                                    .listArr[
+                                                                    this.state
+                                                                        .indexQuestion
+                                                                ]["hintText"]
                                                             }
                                                         </p>
-                                                    ) : this.state.listArr[this.state.indexQuestion][
-                                                        "hint"
-                                                    ] === 3 ? (
+                                                    ) : this.state.listArr[
+                                                          this.state
+                                                              .indexQuestion
+                                                      ]["hint"] === 3 ? (
                                                         <p className="hintText">
-                                                            {this.state.listArr[this.state.indexQuestion][
+                                                            {this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "hintTextStyle"
                                                             ] !== undefined &&
-                                                                this.state.listArr[this.state.indexQuestion][
+                                                            this.state.listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ][
                                                                 "hintTextStyle"
-                                                                ] === true ? (
-                                                                this.state.listArr[this.state.indexQuestion][
-                                                                "hintText"
-                                                                ]
+                                                            ] === true ? (
+                                                                this.state
+                                                                    .listArr[
+                                                                    this.state
+                                                                        .indexQuestion
+                                                                ]["hintText"]
                                                             ) : (
                                                                 <button
                                                                     className="blue_btn"
-                                                                    onClick={this.changeOnDemand.bind(this)}
+                                                                    onClick={this.changeOnDemand.bind(
+                                                                        this
+                                                                    )}
                                                                 >
                                                                     Show Hint
                                                                 </button>
@@ -2039,42 +2865,76 @@ class DetailContestWithQuestionList extends Component {
 
                                                     <div className="answer-option">
                                                         <div className="flexboxbox">
-                                                            {this.state.unscrambleArr.map((i, index) => {
-                                                                if (index == this.state.indexQuestion) {
-                                                                    return i.map((e, index) => {
-                                                                        var id = `id${index}`;
-                                                                        return (
-                                                                            <button
-                                                                                className="flexbox"
-                                                                                id={id}
-                                                                                onClick={this.unscrambleAnswerCheck.bind(
-                                                                                    this,
-                                                                                    e,
-                                                                                    id
-                                                                                )}
-                                                                            >
-                                                                                {" "}
-                                                                                {e}{" "}
-                                                                            </button>
+                                                            {this.state.unscrambleArr.map(
+                                                                (i, index) => {
+                                                                    if (
+                                                                        index ==
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                    ) {
+                                                                        return i.map(
+                                                                            (
+                                                                                e,
+                                                                                index
+                                                                            ) => {
+                                                                                var id = `id${index}`;
+                                                                                return (
+                                                                                    <button
+                                                                                        className="flexbox"
+                                                                                        id={
+                                                                                            id
+                                                                                        }
+                                                                                        onClick={this.unscrambleAnswerCheck.bind(
+                                                                                            this,
+                                                                                            e,
+                                                                                            id
+                                                                                        )}
+                                                                                    >
+                                                                                        {" "}
+                                                                                        {
+                                                                                            e
+                                                                                        }{" "}
+                                                                                    </button>
+                                                                                );
+                                                                            }
                                                                         );
-                                                                    });
+                                                                    }
                                                                 }
-                                                            })}
+                                                            )}
                                                         </div>
                                                         <div className="flexboxbox">
-                                                            {this.state.unscrambleArr.map((i, index) => {
-                                                                if (index == this.state.indexQuestion) {
-                                                                    return i.map((e, index) => {
-                                                                        var id = `idd${index}`;
-                                                                        return (
-                                                                            <div className="flexbox2">
-                                                                                <p id={id}> </p>
-                                                                            </div>
+                                                            {this.state.unscrambleArr.map(
+                                                                (i, index) => {
+                                                                    if (
+                                                                        index ==
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                    ) {
+                                                                        return i.map(
+                                                                            (
+                                                                                e,
+                                                                                index
+                                                                            ) => {
+                                                                                var id = `idd${index}`;
+                                                                                return (
+                                                                                    <div className="flexbox2">
+                                                                                        <p
+                                                                                            id={
+                                                                                                id
+                                                                                            }
+                                                                                        >
+                                                                                            {" "}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                );
+                                                                            }
                                                                         );
-                                                                    });
+                                                                    }
+                                                                    return;
                                                                 }
-                                                                return;
-                                                            })}
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2090,7 +2950,9 @@ class DetailContestWithQuestionList extends Component {
                                                         }}
                                                         className="pink_btn"
                                                         type="button"
-                                                        onClick={this.saveExitAnswer.bind(this)}
+                                                        onClick={this.saveExitAnswer.bind(
+                                                            this
+                                                        )}
                                                     >
                                                         Exit
                                                     </button>
@@ -2171,20 +3033,23 @@ class DetailContestWithQuestionList extends Component {
 								 } */}
                         </div>
                     ) : (
-                        <section id="hero" className="d-flex align-items-center">
+                        <section
+                            id="hero"
+                            className="d-flex align-items-center"
+                        >
                             <div className="quizz-game width40 inline">
                                 <div className="quizz-quas">
-                                    <img src="./murabbo/img/star.svg" />
+                                    <img alt="" src="./murabbo/img/star.svg" />
                                 </div>
                                 {/*  <div className="leaderimg">
-                                    <img
+                                    <img alt=""
                                         className="second"
                                         src="./murabbo/img/6.png"
                                     />
                                     <p>2</p>
                                 </div>
                                 <div className="leaderimg">
-                                    <img src="./murabbo/img/7.png" />
+                                    <img alt="" src="./murabbo/img/7.png" />
                                     <p
                                         style={{
                                             background:
@@ -2195,7 +3060,7 @@ class DetailContestWithQuestionList extends Component {
                                     </p>
                                 </div>
                                 <div className="leaderimg">
-                                    <img
+                                    <img alt=""
                                         className="third"
                                         src="./murabbo/img/8.png"
                                     />
@@ -2209,29 +3074,38 @@ class DetailContestWithQuestionList extends Component {
                                                 <img
                                                     alt="leader"
                                                     src={
-                                                        this.state.userData.profilePic ||
+                                                        this.state.userData
+                                                            .profilePic ||
                                                         "./murabbo/img/8.png"
                                                     }
                                                 />
                                                 <p
                                                     style={{
-                                                        background: "#FFC542 0% 0% no-repeat padding-box",
+                                                        background:
+                                                            "#FFC542 0% 0% no-repeat padding-box",
                                                     }}
                                                 >
                                                     1
                                                 </p>
                                             </div>
                                             <div className="user-detail">
-                                                <h3>{this.state.userData.name}</h3>
+                                                <h3>
+                                                    {this.state.userData.name}
+                                                </h3>
                                             </div>
                                             <div className="point">
-                                                <h5>{this.state.user_score} pt</h5>
+                                                <h5>
+                                                    {this.state.user_score} pt
+                                                </h5>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="full_btn">
                                         <a href="#/contest">
-                                            <button className="blue_btn" type="button">
+                                            <button
+                                                className="blue_btn"
+                                                type="button"
+                                            >
                                                 Go To Leader Board
                                             </button>
                                         </a>
@@ -2255,10 +3129,15 @@ class DetailContestWithQuestionList extends Component {
                                 <button
                                     type="button"
                                     className="close"
-                                    onClick={() => this.setState({ openModel: false })}
+                                    onClick={() =>
+                                        this.setState({ openModel: false })
+                                    }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -2267,7 +3146,7 @@ class DetailContestWithQuestionList extends Component {
                                     </div>
 
                                     {/* <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/title.svg" />
+                                            <img alt="" src="./murabbo/img/title.svg" />
                                             <input
                                                 required
                                                 type="text"
@@ -2286,12 +3165,20 @@ class DetailContestWithQuestionList extends Component {
                                         </span> */}
 
                                     <div className="cus_input input_wrap">
-                                        <img src="./murabbo/img/des.svg" alt="Murabbo" />{" "}
+                                        <img
+                                            src="./murabbo/img/des.svg"
+                                            alt="Murabbo"
+                                        />{" "}
                                         <input
                                             required
                                             type="text"
-                                            onChange={this.handleChange.bind(this, "description")}
-                                            value={this.state.fields["description"]}
+                                            onChange={this.handleChange.bind(
+                                                this,
+                                                "description"
+                                            )}
+                                            value={
+                                                this.state.fields["description"]
+                                            }
                                         />
                                         <label>Description</label>
                                     </div>
@@ -2304,7 +3191,9 @@ class DetailContestWithQuestionList extends Component {
                                             style={{ marginBottom: "15px" }}
                                             className="yellow_btn"
                                             type="button"
-                                            onClick={this.handleSubmit.bind(this)}
+                                            onClick={this.handleSubmit.bind(
+                                                this
+                                            )}
                                         >
                                             Send
                                         </button>

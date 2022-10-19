@@ -99,6 +99,7 @@ class RoundQuestion extends Component {
     }
 
     getList(round_id) {
+        console.log("Views1");
         if (round_id) {
             fetch(
                 configuration.baseURL +
@@ -495,7 +496,10 @@ class RoundQuestion extends Component {
                                                                                         cursor: "pointer",
                                                                                     }}
                                                                                 >
-                                                                                    <img src="./murabbo/img/close2.svg" />{" "}
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="./murabbo/img/close2.svg"
+                                                                                    />{" "}
                                                                                     Remove
                                                                                 </button>
                                                                                 <button
@@ -509,7 +513,10 @@ class RoundQuestion extends Component {
                                                                                         cursor: "pointer",
                                                                                     }}
                                                                                 >
-                                                                                    <img src="./murabbo/img/edit.svg" />{" "}
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="./murabbo/img/edit.svg"
+                                                                                    />{" "}
                                                                                     Edit
                                                                                 </button>
                                                                             </div>
@@ -627,7 +634,10 @@ class RoundQuestion extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -699,7 +709,10 @@ class RoundQuestion extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -713,10 +726,12 @@ class RoundQuestion extends Component {
                                         </h3>
                                     </div>
                                     <img
+                                        alt=""
                                         className="shape2"
                                         src="./murabbo/img/shape2.svg"
                                     />
                                     <img
+                                        alt=""
                                         className="shape3"
                                         src="./murabbo/img/shape3.svg"
                                     />
@@ -794,7 +809,10 @@ class RoundQuestion extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data questionOptionModel">
@@ -882,7 +900,10 @@ class RoundQuestion extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -896,10 +917,12 @@ class RoundQuestion extends Component {
                                         </h3>
                                     </div>
                                     <img
+                                        alt=""
                                         className="shape2"
                                         src="./murabbo/img/shape2.svg"
                                     />
                                     <img
+                                        alt=""
                                         className="shape3"
                                         src="./murabbo/img/shape3.svg"
                                     />
@@ -977,7 +1000,10 @@ class RoundQuestion extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
 

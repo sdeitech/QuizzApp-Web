@@ -1137,6 +1137,7 @@ class EditContest extends Component {
                                                 "" ? (
                                                     <span aria-hidden="true">
                                                         <img
+                                                            alt=""
                                                             className="close_svg"
                                                             src="./murabbo/img/close_dark.svg"
                                                             onClick={this.removeImage.bind(
@@ -1190,7 +1191,10 @@ class EditContest extends Component {
                                     </div>
                                     <div className="col-lg-4 col-md-6 col-sm-12 marginTop_30px">
                                         <div className="cus_input input_wrap">
-                                            <img src="./murabbo/img/title.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/title.svg"
+                                            />
                                             <input
                                                 required
                                                 type="text"
@@ -1621,7 +1625,7 @@ class EditContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img alt=""src="./murabbo/img/close.svg" />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1635,11 +1639,11 @@ class EditContest extends Component {
                                                 subscription.
                                             </h3>
                                         </div>
-                                        <img
+                                        <img alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
-                                        <img
+                                        <img alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -1722,7 +1726,7 @@ class EditContest extends Component {
                                             )}
                                         >
                                             <span aria-hidden="true">
-                                                <img src="./murabbo/img/close.svg" />
+                                                <img alt="" src="./murabbo/img/close.svg" />
                                             </span>
                                         </button>
                                         <div className="model_data">
@@ -1848,7 +1852,7 @@ class EditContest extends Component {
                                             )}
                                         >
                                             <span aria-hidden="true">
-                                                <img src="./murabbo/img/close.svg" />
+                                                <img alt="" src="./murabbo/img/close.svg" />
                                             </span>
                                         </button>
                                         <div className="model_data">
@@ -1962,7 +1966,7 @@ class EditContest extends Component {
                                             )}
                                         >
                                             <span aria-hidden="true">
-                                                <img src="./murabbo/img/close.svg" />
+                                                <img alt="" src="./murabbo/img/close.svg" />
                                             </span>
                                         </button>
                                         <div className="model_data">
@@ -2048,7 +2052,7 @@ class EditContest extends Component {
                                                                                             }}
                                                                                             className="cate-box"
                                                                                         >
-                                                                                            <img
+                                                                                            <img alt=""
                                                                                                 src={
                                                                                                     cat.image
                                                                                                 }
@@ -2063,14 +2067,14 @@ class EditContest extends Component {
                                                                                                 cat.subscriptionType ===
                                                                                                 "PRO" ? (
                                                                                                     <div className="paid-cat">
-                                                                                                        <img src="img/pro.png" />
+                                                                                                        <img alt="" src="img/pro.png" />
                                                                                                         <span className="paid-cat-color">
                                                                                                             Pro
                                                                                                         </span>
                                                                                                     </div>
                                                                                                 ) : (
                                                                                                     <div className="paid-cat">
-                                                                                                        <img src="img/premium.png" />
+                                                                                                        <img alt="" src="img/premium.png" />
                                                                                                         <span className="paid-cat-color">
                                                                                                             Premium
                                                                                                         </span>
@@ -2166,7 +2170,7 @@ class EditContest extends Component {
                                             )}
                                         >
                                             <span aria-hidden="true">
-                                                <img src="./murabbo/img/close.svg" />
+                                            <img alt="" src="./murabbo/img/close.svg" />
                                             </span>
                                         </button>
                                         <div className="model_data">
@@ -2225,7 +2229,7 @@ class EditContest extends Component {
                                                                                 }}
                                                                                 className=" cate-box"
                                                                             >
-                                                                                <img
+                                                                                <img alt=""
                                                                                     src={
                                                                                         brand.image
                                                                                     }
@@ -2312,7 +2316,7 @@ class EditContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                        <img alt="" src="./murabbo/img/close.svg" />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -2325,11 +2329,11 @@ class EditContest extends Component {
                                                 Are you sure you want to delete?
                                             </h3>
                                         </div>
-                                        <img
+                                        <img alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
-                                        <img
+                                        <img alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -2410,7 +2414,7 @@ class EditContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                        <img alt="" src="./murabbo/img/close.svg" />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -2420,11 +2424,11 @@ class EditContest extends Component {
                                                 publish?
                                             </h3>
                                         </div>
-                                        <img
+                                        <img alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
-                                        <img
+                                        <img alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -2501,7 +2505,7 @@ class EditContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                        <img alt="" src="./murabbo/img/close.svg" />
                                         </span>
                                     </button>
                                     <div className="model_data">

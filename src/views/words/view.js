@@ -74,6 +74,7 @@ class RoundWords extends Component {
 
     getList(round_id) {
         if (round_id && gameType) {
+            console.log("View 2")
             fetch(
                 configuration.baseURL +
                     "roundQuestion/roundQuestion?roundId=" +
@@ -272,7 +273,10 @@ class RoundWords extends Component {
                                                                                     cursor: "pointer",
                                                                                 }}
                                                                             >
-                                                                                <img src="./murabbo/img/close2.svg" />{" "}
+                                                                                <img
+                                                                                    alt=""
+                                                                                    src="./murabbo/img/close2.svg"
+                                                                                />{" "}
                                                                                 Remove
                                                                             </button>
                                                                             <button
@@ -286,7 +290,10 @@ class RoundWords extends Component {
                                                                                     cursor: "pointer",
                                                                                 }}
                                                                             >
-                                                                                <img src="./murabbo/img/edit.svg" />{" "}
+                                                                                <img
+                                                                                    alt=""
+                                                                                    src="./murabbo/img/edit.svg"
+                                                                                />{" "}
                                                                                 Edit
                                                                             </button>
                                                                         </div>
@@ -399,7 +406,10 @@ class RoundWords extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -413,10 +423,12 @@ class RoundWords extends Component {
                                         </h3>
                                     </div>
                                     <img
+                                        alt=""
                                         className="shape2"
                                         src="./murabbo/img/shape2.svg"
                                     />
                                     <img
+                                        alt=""
                                         className="shape3"
                                         src="./murabbo/img/shape3.svg"
                                     />

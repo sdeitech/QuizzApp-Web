@@ -111,7 +111,7 @@ class EditRoundQuestion extends Component {
 
                         gameType = newdata.gameType;
                         contest_id = newdata.contestId;
-
+                        console.log("Edit");
                         fetch(
                             configuration.baseURL +
                                 "roundQuestion/roundQuestion?roundId=" +
@@ -1316,7 +1316,10 @@ class EditRoundQuestion extends Component {
                                                 }}
                                             >
                                                 <span aria-hidden="true">
-                                                    <img src="./murabbo/img/close.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/close.svg"
+                                                    />
                                                 </span>
                                             </button>
                                             <span>{this.state.tosterMsg}</span>
@@ -1331,6 +1334,7 @@ class EditRoundQuestion extends Component {
                                             "" ? (
                                                 <span aria-hidden="true">
                                                     <img
+                                                        alt=""
                                                         className="close_svg"
                                                         src="./murabbo/img/close_dark.svg"
                                                         style={{ zIndex: "2" }}
@@ -1458,6 +1462,7 @@ class EditRoundQuestion extends Component {
                                                     }}
                                                 >
                                                     <img
+                                                        alt=""
                                                         src="./murabbo/img/minus.svg"
                                                         onClick={this.btnClickHandler.bind(
                                                             this,
@@ -1480,6 +1485,7 @@ class EditRoundQuestion extends Component {
                                                     }}
                                                 >
                                                     <img
+                                                        alt=""
                                                         src="./murabbo/img/plus.svg"
                                                         onClick={this.btnClickHandler.bind(
                                                             this,
@@ -1618,6 +1624,7 @@ class EditRoundQuestion extends Component {
                                                     ></label>
                                                 </div>
                                                 <img
+                                                    alt=""
                                                     style={{
                                                         left: "auto",
                                                         top: "0px",
@@ -2034,6 +2041,7 @@ class EditRoundQuestion extends Component {
                                                                         ]
                                                                     ) === 2 ? (
                                                                         <img
+                                                                            alt=""
                                                                             src="./murabbo/img/check-y.png"
                                                                             className="fa fa-check-circle"
                                                                             onClick={this.changeAnswer.bind(
@@ -2044,6 +2052,7 @@ class EditRoundQuestion extends Component {
                                                                         />
                                                                     ) : (
                                                                         <img
+                                                                            alt=""
                                                                             src="./murabbo/img/check-y.png"
                                                                             className="fa fa-check-circle"
                                                                         />
@@ -2094,7 +2103,10 @@ class EditRoundQuestion extends Component {
                                                                 key
                                                             )}
                                                         >
-                                                            <img src="./murabbo/img/close2.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/close2.svg"
+                                                            />
                                                         </button>
                                                         <button
                                                             style={{
@@ -2111,7 +2123,10 @@ class EditRoundQuestion extends Component {
                                                                 key
                                                             )}
                                                         >
-                                                            <img src="./murabbo/img/pen.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/pen.svg"
+                                                            />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -2210,7 +2225,10 @@ class EditRoundQuestion extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -2259,7 +2277,7 @@ class EditRoundQuestion extends Component {
 
                                         {/*<div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
 					                     <div style={{ margin:'29px 0 15px 0' }} className="cus_input ">
-					                        <img src="./murabbo/img/answer.svg" /> <label className="cus_label">Show Correct Answer</label>
+					                        <img alt="" src="./murabbo/img/answer.svg" /> <label className="cus_label">Show Correct Answer</label>
 					                    </div>
 					                    <div className="button-switch white_switch">
 					                    {(this.state.fieldsAnswer['correctAnswer'] === true) ? 
@@ -2310,10 +2328,12 @@ class EditRoundQuestion extends Component {
                                             </h3>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -2392,7 +2412,10 @@ class EditRoundQuestion extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data questionOptionModel">
@@ -2520,7 +2543,10 @@ class EditRoundQuestion extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -2535,10 +2561,12 @@ class EditRoundQuestion extends Component {
                                             </h3>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -2619,7 +2647,10 @@ class EditRoundQuestion extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
 
@@ -2739,14 +2770,20 @@ class EditRoundQuestion extends Component {
                                                                             e.subscriptionType ===
                                                                             "PRO" ? (
                                                                                 <div className="paid-cat">
-                                                                                    <img src="img/pro.png" />
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="img/pro.png"
+                                                                                    />
                                                                                     <span className="paid-cat-color">
                                                                                         Pro
                                                                                     </span>
                                                                                 </div>
                                                                             ) : (
                                                                                 <div className="paid-cat">
-                                                                                    <img src="img/premium.png" />
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="img/premium.png"
+                                                                                    />
                                                                                     <span className="paid-cat-color">
                                                                                         Premium
                                                                                     </span>
@@ -2914,14 +2951,20 @@ class EditRoundQuestion extends Component {
                                                                             e.subscriptionType ===
                                                                             "PRO" ? (
                                                                                 <div className="paid-cat">
-                                                                                    <img src="img/pro.png" />
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="img/pro.png"
+                                                                                    />
                                                                                     <span className="paid-cat-color">
                                                                                         Pro
                                                                                     </span>
                                                                                 </div>
                                                                             ) : (
                                                                                 <div className="paid-cat">
-                                                                                    <img src="img/premium.png" />
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="img/premium.png"
+                                                                                    />
                                                                                     <span className="paid-cat-color">
                                                                                         Premium
                                                                                     </span>
@@ -3083,14 +3126,20 @@ class EditRoundQuestion extends Component {
                                                                             e.subscriptionType ===
                                                                             "PRO" ? (
                                                                                 <div className="paid-cat">
-                                                                                    <img src="img/pro.png" />
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="img/pro.png"
+                                                                                    />
                                                                                     <span className="paid-cat-color">
                                                                                         Pro
                                                                                     </span>
                                                                                 </div>
                                                                             ) : (
                                                                                 <div className="paid-cat">
-                                                                                    <img src="img/premium.png" />
+                                                                                    <img
+                                                                                        alt=""
+                                                                                        src="img/premium.png"
+                                                                                    />
                                                                                     <span className="paid-cat-color">
                                                                                         Premium
                                                                                     </span>

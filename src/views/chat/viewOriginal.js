@@ -192,7 +192,7 @@ const Room = React.memo((props) => {
             // clone main data
             const joinedUserId = userId;
             const myStream = userVideoStream.current;
-           // debugger;
+            //debugger;
             socketRef.current.emit("mute-user", {
                 joinedUserId,
                 userId: userVideoPeerId.current,
@@ -239,7 +239,6 @@ const Room = React.memo((props) => {
     };
 
     const moderatorResponse = (socketId, roomId, status) => {
-        console.log(userVideoPeerId.current, "userVideoPeerId.current");
         try {
             socketRef.current.emit("join-room-response-from-moderator", {
                 roomID: roomId,
@@ -248,10 +247,7 @@ const Room = React.memo((props) => {
             });
             console.log("MODERATOR RESPONSE2222222222");
             dispatch(removerequestSender({ socketId: socketId }));
-            //Redux Component
-            setrequestSender(
-                requestSender.filter((item) => item.socketId != socketId)
-            );
+            // setrequestSender(requestSender.filter(item => item.socketId != socketId));
             if (requestSender.length === 0) {
                 setrequestModel(false);
             }
@@ -348,41 +344,18 @@ const Room = React.memo((props) => {
         //////moderator reponse from server;
 
         socketRef.current.on("req-response-from-server", (status) => {
-            console.log(
-                "req response................",
-                status,
-                userVideoPeerId.current,
-                "userVideoPeerId.current",
-                userId,
-                "userId",
-                userVideoStream.current,
-                "userVideoStream.current"
-            );
+            console.log("req response");
             if (status) {
                 const myStream = userVideoStream.current;
-                console.log(myStream, "default");
-                const stream ={active:myStream.active,
-                    id:myStream.id,
-                onactive:myStream.onactive,
-                onaddtrack:myStream.onaddtrack,
-            oninactive:myStream.oninactive,
-        onremovetrack:myStream.onremovetrack}
                 //debugger;
+                console.log(myStream, "default");
                 socketRef.current.emit("join-room", {
-                    userId: userVideoPeerId.current,
+                    userId: props.userId,
                     roomId: props.roomId,
-                    stream,
-                    joinedUserId: userId,
+                    stream: myStream,
+                    joinedUserId: "632ad0b03136e64e08a87f23",
                     isModerator: isModerator,
                 });
-                console.log("bbbbbbbbbbbb -ViewJsA")
-                // socketRef.current.emit("join-room", {
-                //     userId: props.userId,
-                //     roomId: props.roomId,
-                //     stream: myStream,
-                //     joinedUserId: "632ad0b03136e64e08a87f23",
-                //     isModerator: isModerator,
-                // });
                 dispatch(setWaitScreen(false));
                 dispatch(joinRoomReqSend(false));
             } else {
@@ -463,26 +436,16 @@ const Room = React.memo((props) => {
                     peerServer.on("open", (peerUserId) => {
                         userVideoPeerId.current = peerUserId;
                         const myStream = userVideoStream.current;
-                        const stream ={active:myStream.active,
-                        id:myStream.id,
-                    onactive:myStream.onactive,
-                    onaddtrack:myStream.onaddtrack,
-                oninactive:myStream.oninactive,
-            onremovetrack:myStream.onremovetrack}
-                        console.log(stream,"stream.......")
-                        //debugger
 
                         if (isModerator) {
                             console.log("open join room", roomId);
                             socketRef.current.emit("join-room", {
                                 userId: peerUserId,
                                 roomId,
-                                stream ,
+                                stream: myStream,
                                 joinedUserId: userId,
                                 isModerator: isModerator,
                             });
-                            console.log("bbbbbbbbbbbb -ViewB")
-                            console.log( myStream,"my............")
                         }
                     });
 
@@ -579,43 +542,40 @@ const Room = React.memo((props) => {
                             }
                         }
                     );
-    //Coomented Code below========>
 
-                    socketRef.current.on("previous-users", (users) => {
-                        // connectToNewUser(userId, stream, dispatch);
-                        console.log("user connected prev users => from server :: ", users);
+                    // socketRef.current.on("previous-users", (users) => {
+                    //     // connectToNewUser(userId, stream, dispatch);
+                    //     console.log("user connected prev users => from server :: ", users);
 
-                        if (users) {
-                            users.forEach(user => {
-                                const userId = user.userId;
-                                const joinedUserId = user.userData._id;
-                                const userData = user.userData;
-                                const qualify = user.qualify;
-                                const Video = user.Video;
-                                const Audio = user.Audio;
+                    //     if (users) {
+                    //         users.forEach(user => {
+                    //             const userId = user.userId;
+                    //             const joinedUserId = user.userData._id;
+                    //             const userData = user.userData;
+                    //             const qualify = user.qualify;
+                    //             const Video = user.Video;
+                    //             const Audio = user.Audio;
 
-                                const call = peerServer.call(userId, stream);
+                    //             const call = peerServer.call(userId, stream);
 
-                                console.log("user connected prev users => ", userId);
+                    //             console.log("user connected prev users => ", userId);
 
-                                call.on('stream', (remoteVideoStream) => {
-                                    console.log("user connected prev users => :: ", remoteVideoStream);
+                    //             call.on('stream', (remoteVideoStream) => {
+                    //                 console.log("user connected prev users => :: ", remoteVideoStream);
 
-                                    let data = {
-                                        stream: remoteVideoStream,
-                                        joinedUserId,
-                                        userData,
-                                        qualify,
-                                        Video,
-                                        Audio
-                                    }
-                                    dispatch(setOtherUserStreams(data));
-                                });
-                            });
-                        }
-                    });
-
-//Commecnted Code Above========================================>
+                    //                 let data = {
+                    //                     stream: remoteVideoStream,
+                    //                     joinedUserId,
+                    //                     userData,
+                    //                     qualify,
+                    //                     Video,
+                    //                     Audio
+                    //                 }
+                    //                 dispatch(setOtherUserStreams(data));
+                    //             });
+                    //         });
+                    //     }
+                    // });
 
                     // receive a call
                     peerServer.on("call", (call) => {
@@ -657,7 +617,7 @@ const Room = React.memo((props) => {
                             }
                         });
                     });
-//Commented Below==========================================>
+
                     // socketRef.current.on("user-disconnected", ({ userId, streamId, isModerator, username }) => {
                     //     try {
                     //         if (isModerator) {
@@ -686,7 +646,7 @@ const Room = React.memo((props) => {
                     //     }
                     // }
                     // );
-//Commented above======================================================>
+
                     if (isModerator) {
                         socketRef.current.on(
                             "user-request-moderator",
@@ -718,7 +678,6 @@ const Room = React.memo((props) => {
                             }
                         );
                     }
-//Commented below this=======================>
 
                     // socketRef.current.on("user-muted", ({ userId, joinedUserId, streamId }) => {
                     //     let data = {
@@ -773,10 +732,7 @@ const Room = React.memo((props) => {
                     //     console.log("speaking-user>>>>>>>>>", data);
                     //     dispatch(setMuteUnmute(data));
                     // });
-
-    //commected above this===================>
                 });
-//Commented below this=================>
 
             // window.addEventListener('popstate', function (event) {
             //     window.history.pushState(null, document.title, window.location.href);
@@ -789,71 +745,67 @@ const Room = React.memo((props) => {
             //     // Chrome requires returnValue to be set.
             //     event.returnValue = "";
 
-            //     console.log("close page LISTENER");
-            //     const streamUserId = userVideoPeerId.current;
-            //     const myStream = userVideoStream.current;
+            //     // console.log("close page LISTENER");
+            //     // const streamUserId = userVideoPeerId.current;
+            //     // const myStream = userVideoStream.current;
 
-            //     console.log("leaving room for => ", streamUserId);
-            //     socketRef.current.emit("leave-room", {
-            //         userId: streamUserId,
-            //         roomId,
-            //         streamId: myStream.id,
-            //         isModerator: isModerator,
-            //     });
+            //     // console.log("leaving room for => ", streamUserId);
+            //     // socketRef.current.emit("leave-room", {
+            //     //     userId: streamUserId,
+            //     //     roomId,
+            //     //     streamId: myStream.id,
+            //     //     isModerator: isModerator,
+            //     // });
             // });
-//commecnted above this====================>
         } catch (error) {
             console.log(error);
         }
-    //     return () => {
-    //         window.removeEventListener("beforeunload", (event) => {
-    //             // Cancel the event as stated by the standard.
-    //             event.preventDefault();
-    //             // // Chrome requires returnValue to be set.
-    //             event.returnValue = "";
+        // return () => {
+        //     window.removeEventListener("beforeunload", event => {
+        //         // Cancel the event as stated by the standard.
+        //         // event.preventDefault();
+        //         // // Chrome requires returnValue to be set.
+        //         // event.returnValue = "";
 
-    //             console.log("close page  REMOVELISTENER");
-    //             const streamUserId = userVideoPeerId.current;
-    //             const myStream = userVideoStream.current;
+        //         // console.log("close page  REMOVELISTENER");
+        //         // const streamUserId = userVideoPeerId.current;
+        //         // const myStream = userVideoStream.current;
 
-    //             console.log("leaving room for => ", streamUserId);
-    //             socketRef.current.emit("leave-room", {
-    //                 userId: streamUserId,
-    //                 roomId,
-    //                 streamId: myStream.id,
-    //                 isModerator: isModerator,
-    //             });
-    //             if (myStream) {
-    //                 myStream.getTracks().forEach((track) => track.stop());
-    //             }
-    //             socketRef.current.emit("end");
-    //             setSocket("");
-    //             otherStreamRef.current = [];
-    //         });
-    //         console.log("close page");
-    //         const streamUserId = userVideoPeerId.current;
-    //         const myStream = userVideoStream.current;
+        //         // console.log("leaving room for => ", streamUserId);
+        //         // socketRef.current.emit("leave-room", {
+        //         //     userId: streamUserId,
+        //         //     roomId,
+        //         //     streamId: myStream.id,
+        //         //     isModerator: isModerator,
+        //         // });
+        //         // if (myStream) {
+        //         //     myStream.getTracks().forEach(track => track.stop());
+        //         // }
+        //         // // socketRef.current.emit('end');
+        //         // setSocket("");
+        //         // otherStreamRef.current = [];
+        //     });
+        //     console.log("close page");
+        //     const streamUserId = userVideoPeerId.current;
+        //     const myStream = userVideoStream.current;
 
-    //         console.log("leaving room for => ", streamUserId);
-    //         setTimeout(() => {
-    //             socketRef.current.emit("leave-room", {
-    //                 userId: streamUserId,
-    //                 roomId,
-    //                 streamId: myStream.id || "",
-    //                 isModerator: isModerator,
-    //             });
-    // // Commented Below=========================================>
-    //              socketRef.current.emit('end');
-    // // Commented above=========================================>
+        //     console.log("leaving room for => ", streamUserId);
+        //     setTimeout(() => {
+        //         socketRef.current.emit("leave-room", {
+        //             userId: streamUserId,
+        //             roomId,
+        //             streamId: myStream.id || '',
+        //             isModerator: isModerator
+        //         });
+        //         // socketRef.current.emit('end');
+        //         setSocket("");
+        //         otherStreamRef.current = [];
 
-    //             setSocket("");
-    //             otherStreamRef.current = [];
-
-    //             if (myStream) {
-    //                 myStream.getTracks().forEach((track) => track.stop());
-    //             }
-    //         }, 2000);
-    //     };
+        //         if (myStream) {
+        //             myStream.getTracks().forEach(track => track.stop());
+        //         }
+        //     }, 2000);
+        // };
     }, [
         dispatch,
         forcerender,
@@ -919,49 +871,47 @@ const Room = React.memo((props) => {
         }
     }
     async function copyLink() {
-        const link ="https://play.murabbo.com"
-        const oldLink ="https://murabbo.page.link"
-        const response = await fetch(
-            " https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyDg-UszS6Y5Qj3xmY2YQun-6wv2dXwO2Rk",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    dynamicLinkInfo: {
-                        domainUriPrefix: link,
-                        link: window.location.href,
-                        androidInfo: {
-                            androidPackageName: "com.cozycrater.murabbo",
-                        },
-                        iosInfo: {
-                            iosBundleId: "com.cozycrater.murabbo",
-                        },
-                    },
-                }),
-            }
-        )
-        //const res = await response.json();
+        // const response = await fetch(
+        //     " https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyDg-UszS6Y5Qj3xmY2YQun-6wv2dXwO2Rk",
+        //     {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //         body: JSON.stringify({
+        //             dynamicLinkInfo: {
+        //                 domainUriPrefix: "https://murabbo.page.link",
+        //                 link: window.location.href,
+        //                 androidInfo: {
+        //                     androidPackageName: "com.cozycrater.murabbo",
+        //                 },
+        //                 iosInfo: {
+        //                     iosBundleId: "com.cozycrater.murabbo",
+        //                 },
+        //             },
+        //         }),
+        //     }
+        // )
+        // const res = await response.json();
         // try {
         //     await navigator.clipboard.writeText(res.shortLink);
-        // } catch (err) {
-        //     console.error(err);
         // }
-        .then((res) => res.json())
-        .then((res) => {
-            onLink(res.shortLink);
-            navigator.clipboard.writeText(res.shortLink).then(() => {
-                toast("Link Copied!");
-            });
-        })
-        .catch((err) => console.log(err));
-        toast.dismiss();
+        // catch (err) {
+        //     console.error(err)
+        // }
+        // .then((res) => res.json())
+        // .then((res) => {
+        //     onLink(res.shortLink);
+        //     // navigator.clipboard.writeText(res.shortLink).then(() => {
+        //     //     toast("Link Copied!");
+        //     // });
+        // })
+        // .catch((err) => console.log(err));
+        // toast.dismiss();
     }
     console.log("view", props);
     console.log("props.waitScreen", props.waitScreen);
     console.log("participants", participant);
-    console.log("view.js is running here.............................")
     return (
         <>
             <section

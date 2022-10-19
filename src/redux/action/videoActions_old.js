@@ -79,6 +79,7 @@ export const joinRoom = (stream, roomId) => (dispatch) => {
     peerServer.on("open", (userId) => {
         console.log("open join room", roomId);
         socket.emit('join-room', { userId, roomId });
+        console.log("bbbbbbbbbbbb -vedioAction")
         dispatch({ type: actionTypes.ADD_VIDEO_USERID, payload: userId });
     });
 

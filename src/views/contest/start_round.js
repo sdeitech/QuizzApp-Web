@@ -7,10 +7,11 @@ import "react-toastify/dist/ReactToastify.css";
 import languages from "../../languages";
 import configuration from "../../config";
 import { reactLocalStorage } from "reactjs-localstorage";
-import { CModal, CModalBody } from "@coreui/react";
+import { CCollapse,CCardBody,CDataTable,CBadge,CModal, CModalBody,CSpinner,CButton } from "@coreui/react";
 import $ from "jquery";
 import io from "socket.io-client";
 //import socket from "socket.io-client/lib/socket";
+
 import { indexOf } from "underscore";
 import {
     addToken,
@@ -36,10 +37,6 @@ let userId = JSON.parse(reactLocalStorage.get("userData")).userId;
 // const API_URI_2 = `https://dev-api.murabbo.com`;
 const API_URI_2 = config.apiURL;
 let socket_2;
-// if (!socket_2) {
-// 	socket_2  = io(API_URI_2, {
-// 					forceNew: true,
-// 				});}
 
 const mapStateToProps = (state) => {
     return {
@@ -82,6 +79,8 @@ class StartRound extends Component {
         }
         this.state = {
             profile_picture: "avatars/placeholder-user.png",
+            allUsersResponse:[],
+            scoreByMod:[],
             name: "",
             data: {},
             openModel: false,
@@ -132,6 +131,9 @@ class StartRound extends Component {
             questionPart: true,
             nextRoundStartForOtherUser: false,
             stopTimer: false,
+            resultwait:false
+          
+
         };
         this.socketRef = React.createRef();
         this.playContest = this.playContest.bind(this);
@@ -146,7 +148,7 @@ class StartRound extends Component {
         }
 
         if (window.performance) {
-            if (performance.navigation.type == 1) {
+            if (performance.navigation.type === 1) {
                 this.props.history.push("/dashboard", { state: null });
                 window.location.reload();
                 return false;
@@ -193,48 +195,57 @@ class StartRound extends Component {
 
         console.log("socket_2", socket_2);
 
-        socket_2.on("Connection", () => {
-            console.log("Connection for 2");
+        socket_2.on("connect", () => {
+            console.log("Connection for 2.....................");
         });
 
-        // if(!this.state.roomJoined){
-        // 	socket_2.emit("join-game-room", {
-        // 		userId,
-        // 		roomID,
-        // 	});
-        // 	console.log("new data emit => enter join room => ");
-        // 	this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
-        // 	this.setState({roomJoined:true});
-        // }
+        if (!this.state.roomJoined) {
+            socket_2.emit("join-game-room", {
+                userId,
+                roomID,
+            });
+            console.log("new data emit => enter join room => .................");
+            this.setState({
+                connectedUserList: [...this.state.connectedUserList, userId],
+            });
+            this.setState({ roomJoined: true });
+        }
 
         // after some user connected for same game room
         // it will call only for moderator
-        // socket_2.on("user-connected-game", ({ userId, username }) => {
-        // 	//not finished.
-        // 	if(this.state.isModerator){
-        // 		this.setState({connectedUserList:[...this.state.connectedUserList,userId]});
-        // 	}
-        // 	console.log("user-connected-game in",username);
-        // });
+        socket_2.on("user-connected-game", ({ userId, username }) => {
+            // 	//not finished.
+            if (this.state.isModerator) {
+                this.setState({
+                    connectedUserList: [
+                        ...this.state.connectedUserList,
+                        userId,
+                    ],
+                });
+            }
+            console.log("user-connected-game in.............", username, this.state.connectedUserList);
+        });
 
         // get socket data if moderator click on start any question
 
         socket_2.on("startQuestion", async (data) => {
-            console.log("start question => socket => ", JSON.stringify(data));
+            console.log("Start Round===========>..............", data);
             this.setState({
                 currentIndexRound: data.roundIndex,
                 indexQuestion: data.questionIndex,
                 currentAssignedUser: data.userId,
                 stopTimer: true,
             });
-            if (this.state.indexQuestion == 0) {
+            if (this.state.indexQuestion === 0) {
                 if (
                     this.state.currentIndexRound > 0 &&
-                    this.state.nextRoundStartForOtherUser == false
+                    this.state.nextRoundStartForOtherUser === false
                 ) {
                     this.saveExitAnswer();
+                    console.log("Save And Exxit");
                 } else {
                     this.playContest();
+                    console.log("Play Contest");
                 }
             } else {
                 setTimeout(() => {
@@ -243,14 +254,62 @@ class StartRound extends Component {
                 }, 2000);
             }
         });
+        socket_2.on("nextQue",(data)=>{
+           const value= data.scoresByMod.filter((item)=>item.userId===this.state.userId)
+           const modScore =this.state.totalScore+value[0].score
+           console.log(modScore,"scores......",value[0].score,value)
+          this.setState({totalScore:modScore})
+          console.log(this.state.totalScore,"scores......Total",value[0].score,value)
+            // if (
+            //     this.state.roundListArr[this.state.currentIndexRound] !== undefined
+            // ) {
+                if (
+                    this.state.listArr[this.state.indexQuestion + 1] === undefined
+                ) {
+                    if (
+                        this.state.roundListArr[
+                        this.state.currentIndexRound + 1
+                        ] !== undefined
+                    ) {
+                        this.setState({
+                            indexQuestion: 0,
+                            currentIndexRound: this.state.currentIndexRound + 1,
+                            resultwait:false
+                        });
+                    } else {
+                       this.setState({saveExitAnswer: true})
+                       setTimeout(function () {
+                        that.setState({
+                            winnerScreen: true,
+                            showRound: false,
+                            showGoLeaderBoardBtn: true,
+                            resultwait:false
+                        });
+                    }, 1000)
+                        }
+                    
+                } else {
+                    this.setState({ indexQuestion: this.state.indexQuestion + 1, resultwait:false });
+                }
+              
+            // } else {
+            //     // this.saveExitAnswer()
+            // }
+            setTimeout(() => {
+                this.setState({ stopTimer: false });
+                this.startTimer();
+            }, 2000)
+           
+        })
 
+    
         ///when someone leaves the room
         //still remain somework here
-        // socket_2.on("user-disconnected",({userId})=>{
-        // 	var userList =  this.state.connectedUserList;
-        // 	userList =  userList.map((item)=> item != userId);
-        // 	this.setState({connectedUserList:userList});
-        // })
+        socket_2.on("user-disconnected", ({ userId }) => {
+            var userList = this.state.connectedUserList;
+            userList = userList.map((item) => item != userId);
+            this.setState({ connectedUserList: userList });
+        });
 
         socket_2.on("resultQuestion", ({ resultInfo }) => {
             if (this.props.isModerator) {
@@ -259,7 +318,7 @@ class StartRound extends Component {
                     undefined
                 ) {
                     if (
-                        this.state.listArr[this.state.indexQuestion + 1] ==
+                        this.state.listArr[this.state.indexQuestion + 1] ===
                         undefined
                     ) {
                         this.setState({
@@ -271,13 +330,15 @@ class StartRound extends Component {
                             indexQuestion: this.state.indexQuestion + 1,
                         });
                     }
-                    // if(this.state.indexQuestion < this.state.listArr.length){
-                    // 	this.setState({indexQuestion: this.state.indexQuestion+1})
-                    // }
+                    if (this.state.indexQuestion < this.state.listArr.length) {
+                        this.setState({
+                            indexQuestion: this.state.indexQuestion + 1,
+                        });
+                    }
                     console.log(
                         "resultQuestion before start moderator" +
-                            this.state.indexQuestion +
-                            " indexQuestion"
+                        this.state.indexQuestion +
+                        " indexQuestion"
                     );
                     this._startRoundModerator();
                 }
@@ -304,7 +365,7 @@ class StartRound extends Component {
                             .profilePic === ""
                             ? "avatars/placeholder-user.png"
                             : JSON.parse(reactLocalStorage.get("userData"))
-                                  .profilePic,
+                                .profilePic,
                     name: JSON.parse(reactLocalStorage.get("userData")).name,
                 });
             }
@@ -315,10 +376,10 @@ class StartRound extends Component {
         contestId = contestId.substring(0, contestId.indexOf("?"));
         fetch(
             configuration.baseURL +
-                "contest/contest?contestId=" +
-                contestId +
-                "&v=" +
-                1,
+            "contest/contest?contestId=" +
+            contestId +
+            "&v=" +
+            1,
             {
                 method: "GET",
                 headers: {
@@ -342,50 +403,57 @@ class StartRound extends Component {
                 }
             });
         this.getList(contestId);
-
-        // if(this.state.roundListArr[this.state.indexRound] !== undefined){
-        // 	if(this.state.roundListArr[this.state.indexRound].gameType === "Unscramble"){
-        // 		var wordsArr = this.state.unscrambleArr[this.state.indexQuestion];
-        // 		var length = wordsArr.length;
-        // 		var row = Math.ceil(length/4);
-        // 		var item=[];
-        // 		for(let k=0;k<row;k++){
-        // 			var insideItem=[];
-        // 			var l = length - k*4;
-        // 			for(let j=0;j<l;j++){
-        // 				var a = wordsArr[j+k*4];
-        // 				insideItem.push(<div className="flexbox" >{a}</div>);
-        // 			}
-        // 			item.push(<div className="flexboxbox" >{insideItem}</div>)
-        // 		}
-        // 		this.setState({item:item})
-        // 	}
+        /////////Commented Code below
+        // if (this.state.roundListArr[this.state.indexRound] !== undefined) {
+        //     if (
+        //         this.state.roundListArr[this.state.indexRound].gameType ===
+        //         "Unscramble"
+        //     ) {
+        //         var wordsArr =
+        //             this.state.unscrambleArr[this.state.indexQuestion];
+        //         var length = wordsArr.length;
+        //         var row = Math.ceil(length / 4);
+        //         var item = [];
+        //         for (let k = 0; k < row; k++) {
+        //             var insideItem = [];
+        //             var l = length - k * 4;
+        //             for (let j = 0; j < l; j++) {
+        //                 var a = wordsArr[j + k * 4];
+        //                 insideItem.push(<div className="flexbox">{a}</div>);
+        //             }
+        //             item.push(<div className="flexboxbox">{insideItem}</div>);
+        //         }
+        //         this.setState({ item: item });
+        //     }
         // }
+        //commented code above
     }
-
+   
     ///////////////socket.......
 
-    // componentWillUnmount(){
-    // 	window.addEventListener("beforeunload", event => {
-    // 		// Cancel the event as stated by the standard.
-    // 		event.preventDefault();
-    // 		// Chrome requires returnValue to be set.
-    // 		event.returnValue = "";
-    // 		let userId = this.state.userId;
-    // 		let roomId = this.state.roomIdd;
+    componentWillUnmount() {
+        window.addEventListener("beforeunload", (event) => {
+            // 		// Cancel the event as stated by the standard.
+            event.preventDefault();
+            // 		// Chrome requires returnValue to be set.
+            event.returnValue = "";
+            let userId = this.state.userId;
+            let roomId = this.state.roomIdd;
 
-    // 		console.log("close page");
-    // 		console.log("leaving room for => ", userId);
-    // 		socket_2.emit("disconnect-user", {
-    // 			userId,
-    // 			roomId,
-    // 		});
-    // 	});
-    // }
+            console.log("close page");
+            console.log("leaving room for => ", userId);
+            socket_2.emit("disconnect-user", {
+                userId,
+                roomId,
+            });
+        });
+    }
+    
 
     joinGameRoom() {
         var that = this;
         var roomID = this.state.roomIdd;
+        console.log(roomID, "111111111111111RoomId");
         var userId = JSON.parse(reactLocalStorage.get("userData")).userId;
 
         socket_2.emit("join-game-room", {
@@ -396,14 +464,16 @@ class StartRound extends Component {
     }
 
     _startRoundModerator(check) {
+        console.log(this.props, "_startRoundModerator's Props");
         const userList = this.props.otherUserSteams;
         //still not finish
+
         this.setState({ stopTimer: true });
-        if (check != true && userList.length > 0) {
+        if (check !== true && userList.length > 0) {
             const currentAssignedUser = this.state.currentAssignedUser;
 
             let newUserIdIndex = userList.findIndex(
-                (x) => x.joinedUserId == this.state.currentAssignedUser
+                (x) => x.joinedUserId === this.state.currentAssignedUser
             );
 
             console.log(
@@ -416,7 +486,7 @@ class StartRound extends Component {
                 currentAssignedUser
             );
 
-            if (newUserIdIndex == -1) {
+            if (newUserIdIndex === -1) {
                 newUserIdIndex = 0;
                 console.log("newUserIdIndex == -1");
                 this.setState({
@@ -457,18 +527,27 @@ class StartRound extends Component {
             "current Assigned user 408",
             this.state.currentAssignedUser
         );
+        ///Socket Here
         socket_2.emit("startRound", { roomID, gameInfo });
-        if (this.state.indexQuestion == 0) {
-            if (this.state.currentIndexRound > 0 && check != true) {
-                console.log("saveExitAnswer start moderator");
+       
+        console.log(this.state.indexQuestion, "this.state.indexQuestion...........")
+        if (this.state.indexQuestion === 0) {
+            if (this.state.currentIndexRound > 0 && check !== true) {
+                console.log("saveExitAnswer start moderator..............");
                 this.saveExitAnswer();
             } else {
-                console.log("playcontest start moderator");
+                console.log("playcontest start moderator..........");
                 this.playContest();
             }
         } else {
-            console.log("startTimer start moderator");
-            this.startTimer();
+            console.log("startTimer start moderator.............");
+            //Remove 2 lines below of this
+            // this.setState({ stopTimer: false });
+            //this.startTimer();
+            setTimeout(() => {
+                this.setState({ stopTimer: false });
+                this.startTimer();
+            }, 2000);
         }
     }
 
@@ -492,10 +571,12 @@ class StartRound extends Component {
         if (
             this.state.roundListArr[this.state.currentIndexRound] !== undefined
         ) {
-            if (this.state.listArr[this.state.indexQuestion + 1] == undefined) {
+            if (
+                this.state.listArr[this.state.indexQuestion + 1] === undefined
+            ) {
                 if (
                     this.state.roundListArr[
-                        this.state.currentIndexRound + 1
+                    this.state.currentIndexRound + 1
                     ] !== undefined
                 ) {
                     this.setState({
@@ -506,9 +587,7 @@ class StartRound extends Component {
             } else {
                 this.setState({ indexQuestion: this.state.indexQuestion + 1 });
             }
-            // if(this.state.indexQuestion < this.state.listArr.length){cate-box2
-            // 	this.setState({indexQuestion: this.state.indexQuestion+1})
-            // }
+          
         } else {
         }
         console.log("moderatorNextQue");
@@ -669,9 +748,11 @@ class StartRound extends Component {
                         winnerScreen: false,
                         nextRoundStartForOtherUser: true,
                     });
-                    // if(this.state.currentAssignedUser === this.state.userId){
-                    // 	that.nextQuestion.bind(that);
-                    // }
+                    //Commented************
+                    if (this.state.currentAssignedUser === this.state.userId) {
+                        that.nextQuestion.bind(that);
+                    }
+                    //*************** */
                 }, 5000);
             }, 2000);
         } else {
@@ -690,22 +771,24 @@ class StartRound extends Component {
         if (this.state.listArr[this.state.indexQuestion + 1] !== undefined) {
             let indexQu = this.state.indexQuestion;
             this.setState({ indexQuestion: indexQu + 1 });
-            // let fields = this.state.listArr;
+            //Commmented Below===================================>
+            let fields = this.state.listArr;
 
-            // fields[index]['selectAnswer'] = e._id;
-            // fields[index]['isAnswerTrue'] = false;
-            // fields[index]['readonly'] = true;
-            // this.setState({ listArr: fields });
+            fields[index]['selectAnswer'] = e._id;
+            fields[index]['isAnswerTrue'] = false;
+            fields[index]['readonly'] = true;
+            this.setState({ listArr: fields });
 
-            // this.countScore(this.state.indexQuestion);
+            this.countScore(this.state.indexQuestion);
 
-            // var that = this;
-            // setTimeout(function () {
+            var that = this;
+            setTimeout(function () {
 
-            // 	setTimeout(function () {
-            // 		that.setState({ showRound: true, currentIndexRound: that.state.currentIndexRound + 1, winnerScreen: false });
-            // 	}, 5000);
-            // }, 2000);
+                setTimeout(function () {
+                    that.setState({ showRound: true, currentIndexRound: that.state.currentIndexRound + 1, winnerScreen: false });
+                }, 5000);
+            }, 2000);
+            //Commmented ab===================================>
         } else {
             this.setState({ saveExitAnswer: true });
             var that = this;
@@ -753,7 +836,7 @@ class StartRound extends Component {
             ) {
                 if (
                     this.state.listArr[this.state.indexQuestion][
-                        "selectAnswer"
+                    "selectAnswer"
                     ] !== undefined &&
                     this.state.listArr[this.state.indexQuestion][
                         "selectAnswer"
@@ -775,8 +858,13 @@ class StartRound extends Component {
             fields[this.state.indexQuestion]["isAnswerTrue"] = true;
         }
         this.setState({ listArr: fields });
+       
+        this.handleMultipleScore(this.state.indexQuestion)
 
-        this.countScore(this.state.indexQuestion);
+        //For Previous commented below==========>>>>>>>>>>===============>
+        // this.countScore(this.state.indexQuestion);
+        // this.getParticipants()
+        
         // var that = this;
         // setTimeout(function () {
         // 	if (that.state.indexQuestion < that.state.listArr.length && that.state.listArr[that.state.indexQuestion]['answerType'] === 2) {
@@ -786,8 +874,122 @@ class StartRound extends Component {
         // 		that.saveExitAnswer();
         // 	}
         // }, 2000);
+        console.log(this.state.listArr, "from save..........")
+        console.log(this.state, "from saveState .......")
+        //commented above==========>>>>>>>>>>===============>
     }
+    handleMultipleScore(index) {
+        if (
+            this.state.listArr.length > 0 &&
+            this.state.listArr[index] !== undefined
+        ) {
+            var score = 0;
+            if (this.state.listArr[index]["isAnswerTrue"]) {
+                score += this.state.listArr[index]["basePoints"];
+            } else {
+                if (this.state.listArr[index]["negativeScoring"]) {
+                    score =
+                        score - this.state.listArr[index]["negativeBasePoints"];
+                }
+            }
+            if (
+                this.state.listArr[index]["hint"] === 3 &&
+                this.state.listArr[index]["hintTextStyle"] !== undefined
+            ) {
+                score =
+                    score - this.state.listArr[index]["onDemandNegativePoints"];
+            }
 
+            var postData = {};
+
+            postData.userId = JSON.parse(
+                reactLocalStorage.get("userData")
+            ).userId;
+            postData.gameId = this.state.gameId;
+            postData.roomId = this.state.roomId;
+            postData.roundQuestionId = this.state.listArr[index]["_id"];
+            postData.selectedAnswer =
+                this.state.listArr[index]["selectAnswer"].toString() !== ""
+                    ? this.state.listArr[index]["selectAnswer"].toString()
+                    : "false";
+            postData.isCorrect =
+                this.state.listArr[index]["isAnswerTrue"] !== undefined
+                    ? this.state.listArr[index]["isAnswerTrue"]
+                    : false;
+            postData.score = score;
+            postData.timeAlloted = this.state.listArr[index]["timeAlloted"];
+            postData.timeUsed = this.state.listArr[index]["timeLimit"];
+
+           // creating a user information
+          
+           
+          
+          
+        
+
+        
+}
+let userInfo={}
+userInfo.image=JSON.parse(
+    reactLocalStorage.get("userData")
+).profilePic;
+userInfo.name=JSON.parse(
+    reactLocalStorage.get("userData")
+).name;
+        let finalObj={}
+        fetch(configuration.APIbaseURL + "game/submitQuestion", {
+            method: "post",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization:
+                    "Bearer " + reactLocalStorage.get("clientToken"),
+            },
+            body: JSON.stringify(postData),
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+
+                this.setState({resultwait:true,stopTimer:true})
+                console.log(data,"data Submit")
+                finalObj={...data.data,...userInfo}
+                console.log(finalObj,"finalObj")
+
+                socket_2.emit("participants-response-on-question-submit",finalObj)
+                // this.setState({
+                //     totalScore: this.state.totalScore + score,
+                // });
+            });
+            if(this.state.isModerator){
+    
+                         socket_2.on("active-player-data-on-submit",(data)=>{
+                
+                        
+                        console.log(data,"active-player-data-on-submit........")
+    
+                         this.setState({activelistArr:data,resultwait:false, openModelForGiveScore:true})
+                         console.log(this.state.resultwait,"m.................")
+    
+                    })
+       
+        // socket_2.emit("submitQuestion", {
+        //     roomID: this.state.roomIdd,
+        //     resultInfo: { helo: "hi" },
+        //     userId,
+        // });
+        // console.log("before ismoderator");
+        // if (this.props.isModerator) {
+        //     this.moderatorNextQue();
+        //     console.log("inside ismoderator");
+        // }
+            
+        }
+    }
+    // handleAllUsersSubmit(){
+
+    // }
     handleSingleSelectChange(index, e) {
         let fields = this.state.listArr;
         fields[index]["selectAnswer"] = e._id;
@@ -823,7 +1025,9 @@ class StartRound extends Component {
             fields[index]["selectAnswer"] = [];
             fields[index]["selectAnswer"].push(e._id);
         }
-
+       
+        //console.log(e,"MultiPlayers..........")
+        console.log(fields, "Multuiplayers..........1")
         this.setState({ listArr: fields });
     }
 
@@ -871,13 +1075,14 @@ class StartRound extends Component {
     }
 
     getQuestionList(roundId1) {
+        console.log("getQuestionList");
         let indexRoundNo = this.state.currentIndexRound;
         fetch(
             configuration.baseURL +
-                "roundQuestion/roundQuestion?roundId=" +
-                roundId1 +
-                "&gameType=" +
-                this.state.roundListArr[indexRoundNo].gameType,
+            "roundQuestion/roundQuestion?roundId=" +
+            roundId1 +
+            "&gameType=" +
+            this.state.roundListArr[indexRoundNo].gameType,
             {
                 method: "GET",
                 headers: {
@@ -892,12 +1097,17 @@ class StartRound extends Component {
                 return response.json();
             })
             .then((data) => {
-                var data = data.data;
+                //var data = data.data;
+                console.log(
+                    data,
+                    "data from roundQuestion/roundQuestion?roundId="
+                );
                 this.setState({
-                    listArr: data,
+                    listArr: data.data,
                     showRound: false,
                     saveExitAnswer: false,
                 });
+
                 if (
                     this.state.roundListArr[indexRoundNo].gameType ===
                     "Unscramble"
@@ -971,6 +1181,7 @@ class StartRound extends Component {
     }
 
     startTimer() {
+
         let fields = this.state.listArr;
         var that = this;
         let roundIndexIncrease = true;
@@ -1037,13 +1248,17 @@ class StartRound extends Component {
                             console.log("calling count score in timer");
                             that.countScore(that.state.indexQuestion);
                         }
-                        // that.setState({ indexQuestion: that.state.indexQuestion + 1 })
-                        // that.startTimer();
-                        // socket_2.emit("submitQuestion",{roomID:this.state.roomIdd,resultInfo: 50})
+                        //Comment****************
+                        that.setState({ indexQuestion: that.state.indexQuestion + 1 })
+                        that.startTimer();
+                        socket_2.emit("submitQuestion", { roomID: this.state.roomIdd, resultInfo: 50 })
+                        //******************* */
                     } else {
                         console.log("before else");
                         that.saveExitAnswer();
-                        // that.nextQuestion();
+                        //Comment****************
+                        that.nextQuestion();
+                        //******************* */
                     }
                 } else {
                     if (that.state.stopTimer == false) {
@@ -1053,8 +1268,11 @@ class StartRound extends Component {
             }, 1000);
         } else {
             that.saveExitAnswer();
-            // that.nextQuestion();
+            //Comment****************
+            that.nextQuestion();
+            //********************* */
         }
+
     }
 
     startTimerForBlankRound(gameTypeObj) {
@@ -1125,7 +1343,7 @@ class StartRound extends Component {
                         });
                         if (
                             that.state.roundListArr[
-                                that.state.currentIndexRound + 1
+                            that.state.currentIndexRound + 1
                             ] !== undefined
                         ) {
                             that.setState({ saveExitAnswer: true });
@@ -1218,9 +1436,48 @@ class StartRound extends Component {
             }, 2000);
         }
     }
+    //Fore the table integ
+//      fields = [
+//         { key: 'name', _style: { width: '40%'} },
+     
+       
+//         { key: 'isCorrect', _style: { width: '20%'} },
+//         { key: 'isActive', _style: { width: '20%'} },
+//         { key: 'timeAlloted', _style: { width: '20%'} },
+//         { key: 'timeUsed', _style: { width: '20%'} },
+//         {key:"score", _style: { width: '40%'}},
+//         {
+//           key: 'show_details',
+//           label: '',
+//           _style: { width: '1%' },
+//           sorter: false,
+//           filter: false
+//         }
+//       ]
+//          toggleDetails = (index) => {
+//             const details= this.state.activelistArr
+//     const position = details.indexOf(index)
+//     let newDetails = details.slice()
+//     if (position !== -1) {
+//       newDetails.splice(position, 1)
+//     } else {
+//       newDetails = [...details, index]
+//     }
+//     this.setState({activelistArr:newDetails})
+//   }
+    
+//        getBadge = (status)=>{
+//         switch (status) {
+//           case 'Correct': return 'success'
+//           case 'Wrong': return 'secondary'
+//           case 'Pending': return 'warning'
+//           case 'Banned': return 'danger'
+//           default: return 'primary'
+//         }
+//       }
 
     countScore(index) {
-        console.log("inside count score");
+
         if (
             this.state.listArr.length > 0 &&
             this.state.listArr[index] !== undefined
@@ -1261,7 +1518,7 @@ class StartRound extends Component {
             postData.score = score;
             postData.timeAlloted = this.state.listArr[index]["timeAlloted"];
             postData.timeUsed = this.state.listArr[index]["timeLimit"];
-            // console.log(postData);
+            console.log("");
             fetch(configuration.APIbaseURL + "game/submitQuestion", {
                 method: "post",
                 headers: {
@@ -1276,11 +1533,13 @@ class StartRound extends Component {
                     return response.json();
                 })
                 .then((data) => {
+
                     this.setState({
                         totalScore: this.state.totalScore + score,
                     });
                 });
-
+            console.log()
+            console.log(this.state.totalScore, "toslScore............")
             socket_2.emit("submitQuestion", {
                 roomID: this.state.roomIdd,
                 resultInfo: { helo: "hi" },
@@ -1315,7 +1574,7 @@ class StartRound extends Component {
         ) {
             if (
                 this.state.listArr[this.state.indexQuestion]["answers"][i][
-                    "answer"
+                "answer"
                 ] ===
                 this.state.listArr[this.state.indexQuestion]["selectAnswer"]
             ) {
@@ -1403,9 +1662,9 @@ class StartRound extends Component {
                     if (data.code === 200) {
                         this.props.history.push(
                             "/detail-contest/" +
-                                fields["contestId"] +
-                                "?" +
-                                data.data._id
+                            fields["contestId"] +
+                            "?" +
+                            data.data._id
                         );
                     } else {
                         return toast.error(data.message);
@@ -1508,21 +1767,24 @@ class StartRound extends Component {
                         // console.log(data.data);
                         // this.setState({totalScore:10})
 
-                        this.setState({ openModelForGiveScore: false });
+                        this.setState({ openModelForGiveScore: false, });
                     } else {
                         console.log("error");
                     }
                 });
+                console.log(this.state,"This State............")
+                socket_2.emit("scored-submited-by-moderator",{isScored:true,roomId:this.state.roomId,scoresByMod:this.state.activelistArr})
+               
         }
     }
 
     getParticipants() {
         fetch(
             configuration.baseURL +
-                "game/activeUser/?roomId=" +
-                roomId +
-                "&gameId=" +
-                this.state.gameId,
+            "game/activeUser/?roomId=" +
+            roomId +
+            "&gameId=" +
+            this.state.gameId,
             {
                 method: "GET",
                 headers: {
@@ -1538,11 +1800,13 @@ class StartRound extends Component {
             })
             .then((data) => {
                 if (data.data.length > 0) {
+                    console.log(data.data, "Participants........................")
                     this.setState({
                         activelistArr: data.data,
                         openModelForGiveScore: true,
                     });
                 } else {
+                    console.log(data, "Participants...error")
                 }
             });
     }
@@ -1590,6 +1854,7 @@ class StartRound extends Component {
             return e;
         });
         this.setState({ activelistArr: dataArr });
+        console.log(this.state.activelistArr,"on handle change......")
     }
 
     togglemodel() {
@@ -1603,7 +1868,9 @@ class StartRound extends Component {
         }
     }
     render() {
+        console.log("starting round");
         console.log("mydata", this.props.history);
+        console.log(this.state.timeFromSocket, "datdadadaadda................")
         return (
             <>
                 <TheHeaderInner />
@@ -1624,6 +1891,9 @@ class StartRound extends Component {
                     />
                     {!this.props.waitScreen ? (
                         <>
+                            {console.log("Questions......................", this.state.listArr[this.state.indexQuestion])}
+                            {console.log(this.props.waitScreen, "waitscreen")}
+                            //Toggle Eye Button
                             <a
                                 id="hideButton"
                                 style={{
@@ -1635,6 +1905,7 @@ class StartRound extends Component {
                                 onClick={this.togglemodel.bind(this)}
                             >
                                 <img
+                                    alt=""
                                     style={{ width: "33px" }}
                                     src={
                                         this.state.togglemodel
@@ -1752,12 +2023,13 @@ class StartRound extends Component {
                                                     }
                                                 </p>
                                                 <div class="quizz-quas">
+                                                    {console.log("Questions (number/Total) on this line........")}
                                                     {this.state.isBalnkRound ? (
                                                         <h4>Blank Round</h4>
                                                     ) : this.state.listArr[
-                                                          this.state
-                                                              .indexQuestion
-                                                      ] ? (
+                                                        this.state
+                                                            .indexQuestion
+                                                    ] ? (
                                                         <h4>
                                                             Question{" "}
                                                             {this.state
@@ -1800,15 +2072,15 @@ class StartRound extends Component {
                                                             (e, key) => {
                                                                 let classname =
                                                                     key ===
-                                                                    this.state
-                                                                        .indexQuestion
+                                                                        this.state
+                                                                            .indexQuestion
                                                                         ? "step_progress yellow_"
                                                                         : typeof e.selectAnswer !==
-                                                                          "undefined"
-                                                                        ? e.isAnswerTrue
-                                                                            ? "step_progress blue_"
-                                                                            : "step_progress pink_"
-                                                                        : "step_progress";
+                                                                            "undefined"
+                                                                            ? e.isAnswerTrue
+                                                                                ? "step_progress blue_"
+                                                                                : "step_progress pink_"
+                                                                            : "step_progress";
                                                                 return (
                                                                     <div
                                                                         className={
@@ -1865,6 +2137,7 @@ class StartRound extends Component {
                                                                     ></path>
                                                                 </g>
                                                             </svg>
+                                                            {console.log("Timer of quiz on this line .............")}
                                                             {this.state
                                                                 .isBalnkRound ? (
                                                                 <>
@@ -1878,18 +2151,18 @@ class StartRound extends Component {
                                                                             "displaytimeLimit"
                                                                         ]
                                                                             ? this
-                                                                                  .state
-                                                                                  .blankRoundObj[
-                                                                                  "displaytimeLimit"
-                                                                              ]
+                                                                                .state
+                                                                                .blankRoundObj[
+                                                                            "displaytimeLimit"
+                                                                            ]
                                                                             : "00:00"}
                                                                     </span>
                                                                 </>
                                                             ) : this.state
-                                                                  .listArr[
-                                                                  this.state
-                                                                      .indexQuestion
-                                                              ] ? (
+                                                                .listArr[
+                                                                this.state
+                                                                    .indexQuestion
+                                                            ] ? (
                                                                 <span
                                                                     id="base-timer-label"
                                                                     class="base-timer__label"
@@ -1903,14 +2176,14 @@ class StartRound extends Component {
                                                                         "displaytimeLimit"
                                                                     ]
                                                                         ? this
-                                                                              .state
-                                                                              .listArr[
-                                                                              this
-                                                                                  .state
-                                                                                  .indexQuestion
-                                                                          ][
-                                                                              "displaytimeLimit"
-                                                                          ]
+                                                                            .state
+                                                                            .listArr[
+                                                                        this
+                                                                            .state
+                                                                            .indexQuestion
+                                                                        ][
+                                                                        "displaytimeLimit"
+                                                                        ]
                                                                         : "00:00"}
                                                                 </span>
                                                             ) : (
@@ -1951,15 +2224,15 @@ class StartRound extends Component {
                                                         </div>
                                                     </>
                                                 ) : this.state.listArr[
-                                                      this.state.indexQuestion
-                                                  ] ? (
+                                                    this.state.indexQuestion
+                                                ] ? (
                                                     <div className="flexxxxx">
                                                         {this.state
                                                             .roundListArr[
                                                             this.state
                                                                 .currentIndexRound
                                                         ].gameType ===
-                                                        "Unscramble" ? (
+                                                            "Unscramble" ? (
                                                             <>
                                                                 <div className="flexboxbox">
                                                                     {this.state.unscrambleArr.map(
@@ -2044,7 +2317,7 @@ class StartRound extends Component {
                                                                     this.state
                                                                         .indexQuestion
                                                                 ]["hint"] ===
-                                                                2 ? (
+                                                                    2 ? (
                                                                     <p className="hintText">
                                                                         <span>
                                                                             Hint
@@ -2054,20 +2327,20 @@ class StartRound extends Component {
                                                                             this
                                                                                 .state
                                                                                 .listArr[
-                                                                                this
-                                                                                    .state
-                                                                                    .indexQuestion
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
                                                                             ][
-                                                                                "hintText"
+                                                                            "hintText"
                                                                             ]
                                                                         }
                                                                     </p>
                                                                 ) : this.state
-                                                                      .listArr[
-                                                                      this.state
-                                                                          .indexQuestion
-                                                                  ]["hint"] ===
-                                                                  3 ? (
+                                                                    .listArr[
+                                                                    this.state
+                                                                        .indexQuestion
+                                                                ]["hint"] ===
+                                                                    3 ? (
                                                                     <p className="hintText">
                                                                         {this
                                                                             .state
@@ -2079,24 +2352,24 @@ class StartRound extends Component {
                                                                             "hintTextStyle"
                                                                         ] !==
                                                                             undefined &&
-                                                                        this
-                                                                            .state
-                                                                            .listArr[
+                                                                            this
+                                                                                .state
+                                                                                .listArr[
                                                                             this
                                                                                 .state
                                                                                 .indexQuestion
-                                                                        ][
+                                                                            ][
                                                                             "hintTextStyle"
-                                                                        ] ===
+                                                                            ] ===
                                                                             true ? (
                                                                             this
                                                                                 .state
                                                                                 .listArr[
-                                                                                this
-                                                                                    .state
-                                                                                    .indexQuestion
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
                                                                             ][
-                                                                                "hintText"
+                                                                            "hintText"
                                                                             ]
                                                                         ) : (
                                                                             <button
@@ -2120,12 +2393,13 @@ class StartRound extends Component {
                                                                         "30px",
                                                                 }}
                                                             >
+                                                                {/* //For Images......... */}
                                                                 {this.state
                                                                     .listArr[
                                                                     this.state
                                                                         .indexQuestion
                                                                 ]["fileType"] ==
-                                                                "image" ? (
+                                                                    "image" ? (
                                                                     <div
                                                                         style={{
                                                                             width: "100%",
@@ -2138,15 +2412,16 @@ class StartRound extends Component {
                                                                         }}
                                                                     >
                                                                         <img
+                                                                            alt=""
                                                                             src={
                                                                                 this
                                                                                     .state
                                                                                     .listArr[
-                                                                                    this
-                                                                                        .state
-                                                                                        .indexQuestion
+                                                                                this
+                                                                                    .state
+                                                                                    .indexQuestion
                                                                                 ][
-                                                                                    "file"
+                                                                                "file"
                                                                                 ]
                                                                             }
                                                                             style={{
@@ -2161,7 +2436,7 @@ class StartRound extends Component {
                                                                     this.state
                                                                         .indexQuestion
                                                                 ]["fileType"] ==
-                                                                "video" ? (
+                                                                    "video" ? (
                                                                     <div
                                                                         style={{
                                                                             width: "300px",
@@ -2182,11 +2457,11 @@ class StartRound extends Component {
                                                                                     this
                                                                                         .state
                                                                                         .listArr[
-                                                                                        this
-                                                                                            .state
-                                                                                            .indexQuestion
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
                                                                                     ][
-                                                                                        "file"
+                                                                                    "file"
                                                                                     ]
                                                                                 }
                                                                                 type="video/mp4"
@@ -2206,7 +2481,7 @@ class StartRound extends Component {
                                                                     this.state
                                                                         .indexQuestion
                                                                 ]["fileType"] ==
-                                                                "audio" ? (
+                                                                    "audio" ? (
                                                                     <div
                                                                         style={{
                                                                             width: "300px",
@@ -2225,11 +2500,11 @@ class StartRound extends Component {
                                                                                     this
                                                                                         .state
                                                                                         .listArr[
-                                                                                        this
-                                                                                            .state
-                                                                                            .indexQuestion
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
                                                                                     ][
-                                                                                        "file"
+                                                                                    "file"
                                                                                     ]
                                                                                 }
                                                                                 type="audio/mpeg"
@@ -2251,7 +2526,7 @@ class StartRound extends Component {
                                                                     this.state
                                                                         .indexQuestion
                                                                 ]["fileType"] ==
-                                                                "link" ? (
+                                                                    "link" ? (
                                                                     <div
                                                                         style={{
                                                                             width: "300px",
@@ -2267,11 +2542,11 @@ class StartRound extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .listArr[
-                                                                                    this
-                                                                                        .state
-                                                                                        .indexQuestion
+                                                                                this
+                                                                                    .state
+                                                                                    .indexQuestion
                                                                                 ][
-                                                                                    "file"
+                                                                                "file"
                                                                                 ]
                                                                             }
                                                                             title="YouTube video player"
@@ -2309,11 +2584,11 @@ class StartRound extends Component {
                                                                                 this
                                                                                     .state
                                                                                     .listArr[
-                                                                                    this
-                                                                                        .state
-                                                                                        .indexQuestion
+                                                                                this
+                                                                                    .state
+                                                                                    .indexQuestion
                                                                                 ][
-                                                                                    "question"
+                                                                                "question"
                                                                                 ]
                                                                             }
                                                                         </h3>
@@ -2321,7 +2596,7 @@ class StartRound extends Component {
                                                                         {this
                                                                             .state
                                                                             .currentAssignedUser ==
-                                                                        userId ? (
+                                                                            userId ? (
                                                                             <>
                                                                                 <ul
                                                                                     style={{
@@ -2432,19 +2707,18 @@ class StartRound extends Component {
                                                                             this
                                                                                 .state
                                                                                 .listArr[
-                                                                                this
-                                                                                    .state
-                                                                                    .indexQuestion
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
                                                                             ][
-                                                                                "question"
+                                                                            "question"
                                                                             ]
                                                                         }
                                                                     </h3>
                                                                 )}
-
+                                                                {console.log(this.state.currentAssignedUser, "currentAssignedUser....")}
                                                                 {this.state
-                                                                    .currentAssignedUser ==
-                                                                userId ? (
+                                                                    .currentAssignedUser ? (
                                                                     <>
                                                                         {this
                                                                             .state
@@ -2455,7 +2729,7 @@ class StartRound extends Component {
                                                                         ][
                                                                             "hint"
                                                                         ] ===
-                                                                        2 ? (
+                                                                            2 ? (
                                                                             <p className="hintText">
                                                                                 <span>
                                                                                     Hint
@@ -2465,24 +2739,24 @@ class StartRound extends Component {
                                                                                     this
                                                                                         .state
                                                                                         .listArr[
-                                                                                        this
-                                                                                            .state
-                                                                                            .indexQuestion
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
                                                                                     ][
-                                                                                        "hintText"
+                                                                                    "hintText"
                                                                                     ]
                                                                                 }
                                                                             </p>
                                                                         ) : this
-                                                                              .state
-                                                                              .listArr[
-                                                                              this
-                                                                                  .state
-                                                                                  .indexQuestion
-                                                                          ][
-                                                                              "hint"
-                                                                          ] ===
-                                                                          3 ? (
+                                                                            .state
+                                                                            .listArr[
+                                                                            this
+                                                                                .state
+                                                                                .indexQuestion
+                                                                        ][
+                                                                            "hint"
+                                                                        ] ===
+                                                                            3 ? (
                                                                             <p className="hintText">
                                                                                 {this
                                                                                     .state
@@ -2494,24 +2768,24 @@ class StartRound extends Component {
                                                                                     "hintTextStyle"
                                                                                 ] !==
                                                                                     undefined &&
-                                                                                this
-                                                                                    .state
-                                                                                    .listArr[
+                                                                                    this
+                                                                                        .state
+                                                                                        .listArr[
                                                                                     this
                                                                                         .state
                                                                                         .indexQuestion
-                                                                                ][
+                                                                                    ][
                                                                                     "hintTextStyle"
-                                                                                ] ===
+                                                                                    ] ===
                                                                                     true ? (
                                                                                     this
                                                                                         .state
                                                                                         .listArr[
-                                                                                        this
-                                                                                            .state
-                                                                                            .indexQuestion
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
                                                                                     ][
-                                                                                        "hintText"
+                                                                                    "hintText"
                                                                                     ]
                                                                                 ) : (
                                                                                     <button
@@ -2537,34 +2811,47 @@ class StartRound extends Component {
                                                                             ][
                                                                                 "answerType"
                                                                             ] ===
-                                                                            1
+                                                                                1
                                                                                 ? this.state.listArr[
-                                                                                      this
-                                                                                          .state
-                                                                                          .indexQuestion
-                                                                                  ][
-                                                                                      "answers"
-                                                                                  ].map(
-                                                                                      (
-                                                                                          e,
-                                                                                          key
-                                                                                      ) => {
-                                                                                          var forclass =
-                                                                                              e._id +
-                                                                                              key;
-                                                                                          return (
-                                                                                              <p
-                                                                                                  className={
-                                                                                                      this
-                                                                                                          .state
-                                                                                                          .listArr[
-                                                                                                          this
-                                                                                                              .state
-                                                                                                              .indexQuestion
-                                                                                                      ][
-                                                                                                          "selectAnswer"
-                                                                                                      ]
-                                                                                                          ? this
+                                                                                    this
+                                                                                        .state
+                                                                                        .indexQuestion
+                                                                                ][
+                                                                                    "answers"
+                                                                                ].map(
+                                                                                    (
+                                                                                        e,
+                                                                                        key
+                                                                                    ) => {
+                                                                                        var forclass =
+                                                                                            e._id +
+                                                                                            key;
+                                                                                        return (
+                                                                                            <p
+                                                                                                className={
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "selectAnswer"
+                                                                                                    ]
+                                                                                                        ? this
+                                                                                                            .state
+                                                                                                            .listArr[
+                                                                                                            this
+                                                                                                                .state
+                                                                                                                .indexQuestion
+                                                                                                        ][
+                                                                                                            "selectAnswer"
+                                                                                                        ] ===
+                                                                                                            e._id &&
+                                                                                                            e.correctAnswer ===
+                                                                                                            true
+                                                                                                            ? "fancy2 highlight"
+                                                                                                            : this
                                                                                                                 .state
                                                                                                                 .listArr[
                                                                                                                 this
@@ -2574,162 +2861,149 @@ class StartRound extends Component {
                                                                                                                 "selectAnswer"
                                                                                                             ] ===
                                                                                                                 e._id &&
-                                                                                                            e.correctAnswer ===
-                                                                                                                true
-                                                                                                              ? "fancy2 highlight"
-                                                                                                              : this
+                                                                                                                e.correctAnswer ===
+                                                                                                                false
+                                                                                                                ? "fancy2 pinkhighlight"
+                                                                                                                : e.correctAnswer ===
+                                                                                                                    true
+                                                                                                                    ? "fancy2 highlight"
+                                                                                                                    : "fancy2 pinkhighlight"
+                                                                                                        : "fancy2"
+                                                                                                }
+                                                                                            >
+                                                                                                <label>
+                                                                                                    {key ===
+                                                                                                        0 ? (
+                                                                                                        <b class="option_ _a">
+                                                                                                            A
+                                                                                                        </b>
+                                                                                                    ) : null}
+                                                                                                    {key ===
+                                                                                                        1 ? (
+                                                                                                        <b class="option_ _b">
+                                                                                                            B
+                                                                                                        </b>
+                                                                                                    ) : null}
+                                                                                                    {key ===
+                                                                                                        2 ? (
+                                                                                                        <b class="option_ _c">
+                                                                                                            C
+                                                                                                        </b>
+                                                                                                    ) : null}
+                                                                                                    {key ===
+                                                                                                        3 ? (
+                                                                                                        <b class="option_ _d">
+                                                                                                            D
+                                                                                                        </b>
+                                                                                                    ) : null}
+                                                                                                    {key ===
+                                                                                                        4 ? (
+                                                                                                        <b class="option_ _e">
+                                                                                                            E
+                                                                                                        </b>
+                                                                                                    ) : null}
+                                                                                                    {key ===
+                                                                                                        5 ? (
+                                                                                                        <b class="option_ _f">
+                                                                                                            F
+                                                                                                        </b>
+                                                                                                    ) : null}
+
+                                                                                                    {this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "selectAnswer"
+                                                                                                    ] ===
+                                                                                                        e._id &&
+                                                                                                        e.correctAnswer ===
+                                                                                                        true ? (
+                                                                                                        <input
+                                                                                                            id={
+                                                                                                                forclass
+                                                                                                            }
+                                                                                                            name={
+                                                                                                                this
                                                                                                                     .state
                                                                                                                     .listArr[
-                                                                                                                    this
-                                                                                                                        .state
-                                                                                                                        .indexQuestion
+                                                                                                                this
+                                                                                                                    .state
+                                                                                                                    .indexQuestion
                                                                                                                 ][
-                                                                                                                    "selectAnswer"
-                                                                                                                ] ===
-                                                                                                                    e._id &&
-                                                                                                                e.correctAnswer ===
-                                                                                                                    false
-                                                                                                              ? "fancy2 pinkhighlight"
-                                                                                                              : e.correctAnswer ===
-                                                                                                                true
-                                                                                                              ? "fancy2 highlight"
-                                                                                                              : "fancy2 pinkhighlight"
-                                                                                                          : "fancy2"
-                                                                                                  }
-                                                                                              >
-                                                                                                  <label>
-                                                                                                      {key ===
-                                                                                                      0 ? (
-                                                                                                          <b class="option_ _a">
-                                                                                                              A
-                                                                                                          </b>
-                                                                                                      ) : null}
-                                                                                                      {key ===
-                                                                                                      1 ? (
-                                                                                                          <b class="option_ _b">
-                                                                                                              B
-                                                                                                          </b>
-                                                                                                      ) : null}
-                                                                                                      {key ===
-                                                                                                      2 ? (
-                                                                                                          <b class="option_ _c">
-                                                                                                              C
-                                                                                                          </b>
-                                                                                                      ) : null}
-                                                                                                      {key ===
-                                                                                                      3 ? (
-                                                                                                          <b class="option_ _d">
-                                                                                                              D
-                                                                                                          </b>
-                                                                                                      ) : null}
-                                                                                                      {key ===
-                                                                                                      4 ? (
-                                                                                                          <b class="option_ _e">
-                                                                                                              E
-                                                                                                          </b>
-                                                                                                      ) : null}
-                                                                                                      {key ===
-                                                                                                      5 ? (
-                                                                                                          <b class="option_ _f">
-                                                                                                              F
-                                                                                                          </b>
-                                                                                                      ) : null}
-
-                                                                                                      {this
-                                                                                                          .state
-                                                                                                          .listArr[
-                                                                                                          this
-                                                                                                              .state
-                                                                                                              .indexQuestion
-                                                                                                      ][
-                                                                                                          "selectAnswer"
-                                                                                                      ] ===
-                                                                                                          e._id &&
-                                                                                                      e.correctAnswer ===
-                                                                                                          true ? (
-                                                                                                          <input
-                                                                                                              id={
-                                                                                                                  forclass
-                                                                                                              }
-                                                                                                              name={
-                                                                                                                  this
-                                                                                                                      .state
-                                                                                                                      .listArr[
-                                                                                                                      this
-                                                                                                                          .state
-                                                                                                                          .indexQuestion
-                                                                                                                  ][
-                                                                                                                      "_id"
-                                                                                                                  ]
-                                                                                                              }
-                                                                                                              type="radio"
-                                                                                                              onChange={this.handleSingleSelectChange.bind(
-                                                                                                                  this,
-                                                                                                                  this
-                                                                                                                      .state
-                                                                                                                      .indexQuestion,
-                                                                                                                  e
-                                                                                                              )}
-                                                                                                              value={
-                                                                                                                  e.answer
-                                                                                                              }
-                                                                                                              checked="checked"
-                                                                                                              disabled={
-                                                                                                                  e.readonly
-                                                                                                                      ? "disabled"
-                                                                                                                      : ""
-                                                                                                              }
-                                                                                                          />
-                                                                                                      ) : (
-                                                                                                          <input
-                                                                                                              id={
-                                                                                                                  forclass
-                                                                                                              }
-                                                                                                              name={
-                                                                                                                  this
-                                                                                                                      .state
-                                                                                                                      .listArr[
-                                                                                                                      this
-                                                                                                                          .state
-                                                                                                                          .indexQuestion
-                                                                                                                  ][
-                                                                                                                      "_id"
-                                                                                                                  ]
-                                                                                                              }
-                                                                                                              type="radio"
-                                                                                                              onChange={this.handleSingleSelectChange.bind(
-                                                                                                                  this,
-                                                                                                                  this
-                                                                                                                      .state
-                                                                                                                      .indexQuestion,
-                                                                                                                  e
-                                                                                                              )}
-                                                                                                              value={
-                                                                                                                  e.answer
-                                                                                                              }
-                                                                                                              disabled={
-                                                                                                                  e.readonly
-                                                                                                                      ? "disabled"
-                                                                                                                      : ""
-                                                                                                              }
-                                                                                                          />
-                                                                                                      )}
-                                                                                                      <span
-                                                                                                          for={
-                                                                                                              forclass
-                                                                                                          }
-                                                                                                      >
-                                                                                                          {
-                                                                                                              e.answer
-                                                                                                          }
-                                                                                                      </span>
-                                                                                                  </label>
-                                                                                              </p>
-                                                                                          );
-                                                                                      }
-                                                                                  )
+                                                                                                                "_id"
+                                                                                                                ]
+                                                                                                            }
+                                                                                                            type="radio"
+                                                                                                            onChange={this.handleSingleSelectChange.bind(
+                                                                                                                this,
+                                                                                                                this
+                                                                                                                    .state
+                                                                                                                    .indexQuestion,
+                                                                                                                e
+                                                                                                            )}
+                                                                                                            value={
+                                                                                                                e.answer
+                                                                                                            }
+                                                                                                            checked="checked"
+                                                                                                            disabled={
+                                                                                                                e.readonly
+                                                                                                                    ? "disabled"
+                                                                                                                    : ""
+                                                                                                            }
+                                                                                                        />
+                                                                                                    ) : (
+                                                                                                        <input
+                                                                                                            id={
+                                                                                                                forclass
+                                                                                                            }
+                                                                                                            name={
+                                                                                                                this
+                                                                                                                    .state
+                                                                                                                    .listArr[
+                                                                                                                this
+                                                                                                                    .state
+                                                                                                                    .indexQuestion
+                                                                                                                ][
+                                                                                                                "_id"
+                                                                                                                ]
+                                                                                                            }
+                                                                                                            type="radio"
+                                                                                                            onChange={this.handleSingleSelectChange.bind(
+                                                                                                                this,
+                                                                                                                this
+                                                                                                                    .state
+                                                                                                                    .indexQuestion,
+                                                                                                                e
+                                                                                                            )}
+                                                                                                            value={
+                                                                                                                e.answer
+                                                                                                            }
+                                                                                                            disabled={
+                                                                                                                e.readonly
+                                                                                                                    ? "disabled"
+                                                                                                                    : ""
+                                                                                                            }
+                                                                                                        />
+                                                                                                    )}
+                                                                                                    <span
+                                                                                                        for={
+                                                                                                            forclass
+                                                                                                        }
+                                                                                                    >
+                                                                                                        {
+                                                                                                            e.answer
+                                                                                                        }
+                                                                                                    </span>
+                                                                                                </label>
+                                                                                            </p>
+                                                                                        );
+                                                                                    }
+                                                                                )
                                                                                 : null}
-
+//For the multiple answer type
                                                                             {this
                                                                                 .state
                                                                                 .listArr[
@@ -2739,7 +3013,7 @@ class StartRound extends Component {
                                                                             ][
                                                                                 "answerType"
                                                                             ] ===
-                                                                            2 ? (
+                                                                                2 ? (
                                                                                 <div className="row">
                                                                                     <div
                                                                                         className="col-12"
@@ -2775,15 +3049,15 @@ class StartRound extends Component {
                                                                                                     ][
                                                                                                         "selectAnswer"
                                                                                                     ] &&
-                                                                                                    this.state.listArr[
-                                                                                                        this
-                                                                                                            .state
-                                                                                                            .indexQuestion
-                                                                                                    ][
-                                                                                                        "selectAnswer"
-                                                                                                    ].includes(
-                                                                                                        e._id
-                                                                                                    )
+                                                                                                        this.state.listArr[
+                                                                                                            this
+                                                                                                                .state
+                                                                                                                .indexQuestion
+                                                                                                        ][
+                                                                                                            "selectAnswer"
+                                                                                                        ].includes(
+                                                                                                            e._id
+                                                                                                        )
                                                                                                         ? innnerpclass
                                                                                                         : "fancy2";
 
@@ -2797,23 +3071,23 @@ class StartRound extends Component {
                                                                                                     ][
                                                                                                         "isAnswerTrue"
                                                                                                     ] !==
-                                                                                                    undefined
+                                                                                                        undefined
                                                                                                         ? this.state.listArr[
-                                                                                                              this
-                                                                                                                  .state
-                                                                                                                  .indexQuestion
-                                                                                                          ][
-                                                                                                              "selectAnswer"
-                                                                                                          ].includes(
-                                                                                                              e.answer
-                                                                                                          ) &&
-                                                                                                          e.correctAnswer ===
-                                                                                                              true
+                                                                                                            this
+                                                                                                                .state
+                                                                                                                .indexQuestion
+                                                                                                        ][
+                                                                                                            "selectAnswer"
+                                                                                                        ].includes(
+                                                                                                            e.answer
+                                                                                                        ) &&
+                                                                                                            e.correctAnswer ===
+                                                                                                            true
                                                                                                             ? "fancy2 highlight"
                                                                                                             : e.correctAnswer ===
-                                                                                                              false
-                                                                                                            ? "fancy2 pinkhighlight"
-                                                                                                            : "fancy2 highlight"
+                                                                                                                false
+                                                                                                                ? "fancy2 pinkhighlight"
+                                                                                                                : "fancy2 highlight"
                                                                                                         : tempcls;
                                                                                                 // var pcalss = (this.state.listArr[this.state.indexQuestion]['selectAnswer'] && this.state.listArr[this.state.indexQuestion]['selectAnswer'].includes(e._id)) ? innnerpclass : "fancy2";
                                                                                                 var inputclass =
@@ -2827,37 +3101,37 @@ class StartRound extends Component {
                                                                                                     >
                                                                                                         <label>
                                                                                                             {key ===
-                                                                                                            0 ? (
+                                                                                                                0 ? (
                                                                                                                 <b class="option_ _a">
                                                                                                                     A
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            1 ? (
+                                                                                                                1 ? (
                                                                                                                 <b class="option_ _b">
                                                                                                                     B
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            2 ? (
+                                                                                                                2 ? (
                                                                                                                 <b class="option_ _c">
                                                                                                                     C
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            3 ? (
+                                                                                                                3 ? (
                                                                                                                 <b class="option_ _d">
                                                                                                                     D
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            4 ? (
+                                                                                                                4 ? (
                                                                                                                 <b class="option_ _e">
                                                                                                                     E
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            5 ? (
+                                                                                                                5 ? (
                                                                                                                 <b class="option_ _f">
                                                                                                                     F
                                                                                                                 </b>
@@ -2872,16 +3146,16 @@ class StartRound extends Component {
                                                                                                             ][
                                                                                                                 "selectAnswer"
                                                                                                             ] &&
-                                                                                                            this.state.listArr[
-                                                                                                                this
-                                                                                                                    .state
-                                                                                                                    .indexQuestion
-                                                                                                            ][
-                                                                                                                "selectAnswer"
-                                                                                                            ].includes(
-                                                                                                                e._id
-                                                                                                            ) &&
-                                                                                                            e.correctAnswer ===
+                                                                                                                this.state.listArr[
+                                                                                                                    this
+                                                                                                                        .state
+                                                                                                                        .indexQuestion
+                                                                                                                ][
+                                                                                                                    "selectAnswer"
+                                                                                                                ].includes(
+                                                                                                                    e._id
+                                                                                                                ) &&
+                                                                                                                e.correctAnswer ===
                                                                                                                 true ? (
                                                                                                                 <input
                                                                                                                     id={
@@ -2894,11 +3168,11 @@ class StartRound extends Component {
                                                                                                                         this
                                                                                                                             .state
                                                                                                                             .listArr[
-                                                                                                                            this
-                                                                                                                                .state
-                                                                                                                                .indexQuestion
+                                                                                                                        this
+                                                                                                                            .state
+                                                                                                                            .indexQuestion
                                                                                                                         ][
-                                                                                                                            "_id"
+                                                                                                                        "_id"
                                                                                                                         ]
                                                                                                                     }
                                                                                                                     type="checkbox"
@@ -2931,11 +3205,11 @@ class StartRound extends Component {
                                                                                                                         this
                                                                                                                             .state
                                                                                                                             .listArr[
-                                                                                                                            this
-                                                                                                                                .state
-                                                                                                                                .indexQuestion
+                                                                                                                        this
+                                                                                                                            .state
+                                                                                                                            .indexQuestion
                                                                                                                         ][
-                                                                                                                            "_id"
+                                                                                                                        "_id"
                                                                                                                         ]
                                                                                                                     }
                                                                                                                     type="checkbox"
@@ -3004,7 +3278,7 @@ class StartRound extends Component {
                                                                             ][
                                                                                 "answerType"
                                                                             ] ===
-                                                                            3 ? (
+                                                                                3 ? (
                                                                                 <div className="row">
                                                                                     <div
                                                                                         className="col-12"
@@ -3081,15 +3355,15 @@ class StartRound extends Component {
                                                                                                     ][
                                                                                                         "selectAnswer"
                                                                                                     ] &&
-                                                                                                    this.state.listArr[
-                                                                                                        this
-                                                                                                            .state
-                                                                                                            .indexQuestion
-                                                                                                    ][
-                                                                                                        "selectAnswer"
-                                                                                                    ].includes(
-                                                                                                        e._id
-                                                                                                    )
+                                                                                                        this.state.listArr[
+                                                                                                            this
+                                                                                                                .state
+                                                                                                                .indexQuestion
+                                                                                                        ][
+                                                                                                            "selectAnswer"
+                                                                                                        ].includes(
+                                                                                                            e._id
+                                                                                                        )
                                                                                                         ? innnerpclass
                                                                                                         : "fancy2 highlight";
                                                                                                 var inputclass =
@@ -3103,44 +3377,44 @@ class StartRound extends Component {
                                                                                                     >
                                                                                                         <label>
                                                                                                             {key ===
-                                                                                                            0 ? (
+                                                                                                                0 ? (
                                                                                                                 <b class="option_ _a">
                                                                                                                     A
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            1 ? (
+                                                                                                                1 ? (
                                                                                                                 <b class="option_ _b">
                                                                                                                     B
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            2 ? (
+                                                                                                                2 ? (
                                                                                                                 <b class="option_ _c">
                                                                                                                     C
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            3 ? (
+                                                                                                                3 ? (
                                                                                                                 <b class="option_ _d">
                                                                                                                     D
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            4 ? (
+                                                                                                                4 ? (
                                                                                                                 <b class="option_ _e">
                                                                                                                     E
                                                                                                                 </b>
                                                                                                             ) : null}
                                                                                                             {key ===
-                                                                                                            5 ? (
+                                                                                                                5 ? (
                                                                                                                 <b class="option_ _f">
                                                                                                                     F
                                                                                                                 </b>
                                                                                                             ) : null}
 
                                                                                                             {e.correctAnswer ===
-                                                                                                            true ? (
+                                                                                                                true ? (
                                                                                                                 <input
                                                                                                                     id={
                                                                                                                         forclass
@@ -3152,11 +3426,11 @@ class StartRound extends Component {
                                                                                                                         this
                                                                                                                             .state
                                                                                                                             .listArr[
-                                                                                                                            this
-                                                                                                                                .state
-                                                                                                                                .indexQuestion
+                                                                                                                        this
+                                                                                                                            .state
+                                                                                                                            .indexQuestion
                                                                                                                         ][
-                                                                                                                            "_id"
+                                                                                                                        "_id"
                                                                                                                         ]
                                                                                                                     }
                                                                                                                     type="checkbox"
@@ -3178,11 +3452,11 @@ class StartRound extends Component {
                                                                                                                         this
                                                                                                                             .state
                                                                                                                             .listArr[
-                                                                                                                            this
-                                                                                                                                .state
-                                                                                                                                .indexQuestion
+                                                                                                                        this
+                                                                                                                            .state
+                                                                                                                            .indexQuestion
                                                                                                                         ][
-                                                                                                                            "_id"
+                                                                                                                        "_id"
                                                                                                                         ]
                                                                                                                     }
                                                                                                                     type="checkbox"
@@ -3269,7 +3543,7 @@ class StartRound extends Component {
                                                                             ][
                                                                                 "answerType"
                                                                             ] ===
-                                                                            5 ? (
+                                                                                5 ? (
                                                                                 <div>
                                                                                     <p
                                                                                         className={
@@ -3282,42 +3556,42 @@ class StartRound extends Component {
                                                                                             ][
                                                                                                 "selectAnswer"
                                                                                             ] ===
-                                                                                            true
+                                                                                                true
                                                                                                 ? this
-                                                                                                      .state
-                                                                                                      .listArr[
-                                                                                                      this
-                                                                                                          .state
-                                                                                                          .indexQuestion
-                                                                                                  ][
-                                                                                                      "isAnswerTrue"
-                                                                                                  ] ===
-                                                                                                  true
+                                                                                                    .state
+                                                                                                    .listArr[
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion
+                                                                                                ][
+                                                                                                    "isAnswerTrue"
+                                                                                                ] ===
+                                                                                                    true
                                                                                                     ? "fancy2 highlight"
                                                                                                     : "fancy2 pinkhighlight"
                                                                                                 : this
-                                                                                                      .state
-                                                                                                      .listArr[
-                                                                                                      this
-                                                                                                          .state
-                                                                                                          .indexQuestion
-                                                                                                  ][
-                                                                                                      "isAnswerTrue"
-                                                                                                  ] ===
-                                                                                                  false
-                                                                                                ? "fancy2 highlight"
-                                                                                                : this
-                                                                                                      .state
-                                                                                                      .listArr[
-                                                                                                      this
-                                                                                                          .state
-                                                                                                          .indexQuestion
-                                                                                                  ][
-                                                                                                      "selectAnswer"
-                                                                                                  ] ===
-                                                                                                  false
-                                                                                                ? "fancy2 pinkhighlight"
-                                                                                                : "fancy2"
+                                                                                                    .state
+                                                                                                    .listArr[
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion
+                                                                                                ][
+                                                                                                    "isAnswerTrue"
+                                                                                                ] ===
+                                                                                                    false
+                                                                                                    ? "fancy2 highlight"
+                                                                                                    : this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "selectAnswer"
+                                                                                                    ] ===
+                                                                                                        false
+                                                                                                        ? "fancy2 pinkhighlight"
+                                                                                                        : "fancy2"
                                                                                         }
                                                                                     >
                                                                                         <label>
@@ -3330,11 +3604,11 @@ class StartRound extends Component {
                                                                                                     this
                                                                                                         .state
                                                                                                         .listArr[
-                                                                                                        this
-                                                                                                            .state
-                                                                                                            .indexQuestion
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion
                                                                                                     ][
-                                                                                                        "_id"
+                                                                                                    "_id"
                                                                                                     ]
                                                                                                 }
                                                                                                 type="radio"
@@ -3376,42 +3650,42 @@ class StartRound extends Component {
                                                                                             ][
                                                                                                 "selectAnswer"
                                                                                             ] ===
-                                                                                            false
+                                                                                                false
                                                                                                 ? this
-                                                                                                      .state
-                                                                                                      .listArr[
-                                                                                                      this
-                                                                                                          .state
-                                                                                                          .indexQuestion
-                                                                                                  ][
-                                                                                                      "isAnswerTrue"
-                                                                                                  ] ===
-                                                                                                  true
+                                                                                                    .state
+                                                                                                    .listArr[
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion
+                                                                                                ][
+                                                                                                    "isAnswerTrue"
+                                                                                                ] ===
+                                                                                                    true
                                                                                                     ? "fancy2 highlight"
                                                                                                     : "fancy2 pinkhighlight"
                                                                                                 : this
-                                                                                                      .state
-                                                                                                      .listArr[
-                                                                                                      this
-                                                                                                          .state
-                                                                                                          .indexQuestion
-                                                                                                  ][
-                                                                                                      "isAnswerTrue"
-                                                                                                  ] ===
-                                                                                                  false
-                                                                                                ? "fancy2 highlight"
-                                                                                                : this
-                                                                                                      .state
-                                                                                                      .listArr[
-                                                                                                      this
-                                                                                                          .state
-                                                                                                          .indexQuestion
-                                                                                                  ][
-                                                                                                      "selectAnswer"
-                                                                                                  ] ===
-                                                                                                  true
-                                                                                                ? "fancy2 pinkhighlight"
-                                                                                                : "fancy2"
+                                                                                                    .state
+                                                                                                    .listArr[
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion
+                                                                                                ][
+                                                                                                    "isAnswerTrue"
+                                                                                                ] ===
+                                                                                                    false
+                                                                                                    ? "fancy2 highlight"
+                                                                                                    : this
+                                                                                                        .state
+                                                                                                        .listArr[
+                                                                                                        this
+                                                                                                            .state
+                                                                                                            .indexQuestion
+                                                                                                    ][
+                                                                                                        "selectAnswer"
+                                                                                                    ] ===
+                                                                                                        true
+                                                                                                        ? "fancy2 pinkhighlight"
+                                                                                                        : "fancy2"
                                                                                         }
                                                                                     >
                                                                                         <label>
@@ -3424,11 +3698,11 @@ class StartRound extends Component {
                                                                                                     this
                                                                                                         .state
                                                                                                         .listArr[
-                                                                                                        this
-                                                                                                            .state
-                                                                                                            .indexQuestion
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .indexQuestion
                                                                                                     ][
-                                                                                                        "_id"
+                                                                                                    "_id"
                                                                                                     ]
                                                                                                 }
                                                                                                 type="radio"
@@ -3527,9 +3801,10 @@ class StartRound extends Component {
                                                                                 <div class="_1stimg">
                                                                                     <div class="leaderimg2">
                                                                                         <img
+
                                                                                             src={
                                                                                                 e.image !==
-                                                                                                ""
+                                                                                                    ""
                                                                                                     ? e.image
                                                                                                     : "avatars/placeholder-user.png"
                                                                                             }
@@ -3587,6 +3862,7 @@ class StartRound extends Component {
                                                             }
                                                         )
                                                     ) : (
+                                                        // Contest Completed Section
                                                         <>
                                                             <h3
                                                                 style={{
@@ -3655,6 +3931,7 @@ class StartRound extends Component {
                                                                 <div class="_1stimg">
                                                                     <div class="leaderimg2">
                                                                         <img
+                                                                            alt=""
                                                                             src={
                                                                                 this
                                                                                     .state
@@ -3714,6 +3991,8 @@ class StartRound extends Component {
                                         </section>
                                     ) : null
                                 ) : (
+
+                                    // <h1>Round Details Page here</h1> 
                                     <div className="container contest-detail-with-round">
                                         <div class="row">
                                             <div class="col-lg-12 col-md-1 col-12">
@@ -3725,8 +4004,8 @@ class StartRound extends Component {
                                                                 .contestData
                                                                 .image !== ""
                                                                 ? this.state
-                                                                      .contestData
-                                                                      .image
+                                                                    .contestData
+                                                                    .image
                                                                 : "avatars/placeholder.png"
                                                         }
                                                         alt="Game"
@@ -3777,7 +4056,7 @@ class StartRound extends Component {
                                                                                         .state
                                                                                         .roundListArr
                                                                                         .length >
-                                                                                    0 ? (
+                                                                                        0 ? (
                                                                                         <div>
                                                                                             {this
                                                                                                 .state
@@ -3788,14 +4067,14 @@ class StartRound extends Component {
                                                                                             ]
                                                                                                 .totalQuestions >
                                                                                                 0 ||
-                                                                                            this
-                                                                                                .state
-                                                                                                .roundListArr[
                                                                                                 this
                                                                                                     .state
-                                                                                                    .currentIndexRound
-                                                                                            ]
-                                                                                                .gameType ===
+                                                                                                    .roundListArr[
+                                                                                                    this
+                                                                                                        .state
+                                                                                                        .currentIndexRound
+                                                                                                ]
+                                                                                                    .gameType ===
                                                                                                 "Blank" ? (
                                                                                                 <div>
                                                                                                     <p>
@@ -3807,23 +4086,24 @@ class StartRound extends Component {
                                                                                                                 .currentIndexRound
                                                                                                         ]
                                                                                                             .title !==
-                                                                                                        ""
+                                                                                                            ""
                                                                                                             ? this
-                                                                                                                  .state
-                                                                                                                  .roundListArr[
-                                                                                                                  this
-                                                                                                                      .state
-                                                                                                                      .currentIndexRound
-                                                                                                              ]
-                                                                                                                  .title
+                                                                                                                .state
+                                                                                                                .roundListArr[
+                                                                                                                this
+                                                                                                                    .state
+                                                                                                                    .currentIndexRound
+                                                                                                            ]
+                                                                                                                .title
                                                                                                             : this
-                                                                                                                  .state
-                                                                                                                  .roundListArr[
-                                                                                                                  this
-                                                                                                                      .state
-                                                                                                                      .currentIndexRound
-                                                                                                              ]
-                                                                                                                  .gameType}
+                                                                                                                .state
+                                                                                                                .roundListArr[
+                                                                                                                this
+                                                                                                                    .state
+                                                                                                                    .currentIndexRound
+                                                                                                            ]
+                                                                                                                .gameType}
+                                                                                                        {/* ////////////////////Round Details */}
                                                                                                         {this
                                                                                                             .state
                                                                                                             .roundListArr[
@@ -3831,8 +4111,8 @@ class StartRound extends Component {
                                                                                                                 .state
                                                                                                                 .currentIndexRound
                                                                                                         ]
-                                                                                                            .gameType !=
-                                                                                                        "Blank" ? (
+                                                                                                            .gameType !==
+                                                                                                            "Blank" ? (
                                                                                                             <span>
                                                                                                                 (
                                                                                                                 {
@@ -3853,13 +4133,14 @@ class StartRound extends Component {
                                                                                                                         .currentIndexRound
                                                                                                                 ]
                                                                                                                     .totalQuestions >
-                                                                                                                1
+                                                                                                                    1
                                                                                                                     ? "Questions"
                                                                                                                     : "Question"}
 
                                                                                                                 )
                                                                                                             </span>
                                                                                                         ) : null}
+
                                                                                                     </p>
                                                                                                     <p>
                                                                                                         {" "}
@@ -3875,12 +4156,8 @@ class StartRound extends Component {
                                                                                                         }
                                                                                                     </p>
 
-                                                                                                    {/* {this.state.createdBy == JSON.parse(reactLocalStorage.get('userData')).userId ? (
-
-
-
-																				):(null)} */}
-
+                                                                                                    {/* {this.state.createdBy == JSON.parse(reactLocalStorage.get('userData')).userId ? (	):(null)} */}
+                                                                                                    {/* //Showing Start Button if its Moderator */}
                                                                                                     {this
                                                                                                         .props
                                                                                                         .isModerator ? (
@@ -3943,6 +4220,7 @@ class StartRound extends Component {
                             </section>
                         </>
                     ) : (
+                        // User Joining Request Page
                         <>
                             <section
                                 className="ff"
@@ -3966,8 +4244,9 @@ class StartRound extends Component {
                             </section>
                         </>
                     )}
-                </main>
 
+                </main>
+                {/* Report Model */}
                 <CModal
                     show={this.state.openModel}
                     closeOnBackdrop={false}
@@ -3986,7 +4265,10 @@ class StartRound extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -4052,8 +4334,8 @@ class StartRound extends Component {
                         </div>
                     </CModalBody>
                 </CModal>
-
-                <CModal
+                {/* Give Score Model */}
+                {this.state.isModerator && <CModal
                     show={this.state.openModelForGiveScore}
                     closeOnBackdrop={false}
                     onClose={() =>
@@ -4075,7 +4357,10 @@ class StartRound extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -4104,9 +4389,10 @@ class StartRound extends Component {
                                                                             <div className="col-md-4">
                                                                                 <div className="giveScoreImg_">
                                                                                     <img
+
                                                                                         src={
                                                                                             e.image !==
-                                                                                            ""
+                                                                                                ""
                                                                                                 ? e.image
                                                                                                 : "avatars/placeholder-user.png"
                                                                                         }
@@ -4137,7 +4423,11 @@ class StartRound extends Component {
                                                                                             color: "#ffffff85",
                                                                                         }}
                                                                                     >
-                                                                                        {" "}
+                                                                                        <span>Time Alloted :{e.timeAlloted} Seconds</span><br/>
+                                                                                        <span>Answer : {(e.isCorrect===true)?"Correct":"Wrong"}</span><br/>
+
+                                                                                        <span>Time Taken :{e.timeAlloted-e.timeUsed} Seconds</span><br/>
+                                                                                        <span>Score : {e.score}</span>
                                                                                     </p>
                                                                                 </div>
                                                                             </div>
@@ -4166,7 +4456,7 @@ class StartRound extends Component {
                                                                                         this
                                                                                             .state
                                                                                             .isActive ==
-                                                                                        e._id +
+                                                                                            e._id +
                                                                                             "" +
                                                                                             -10
                                                                                             ? "scoreBadge active-scoreBadge"
@@ -4185,7 +4475,7 @@ class StartRound extends Component {
                                                                                         this
                                                                                             .state
                                                                                             .isActive ==
-                                                                                        e._id +
+                                                                                            e._id +
                                                                                             "" +
                                                                                             -5
                                                                                             ? "scoreBadge active-scoreBadge"
@@ -4204,7 +4494,7 @@ class StartRound extends Component {
                                                                                         this
                                                                                             .state
                                                                                             .isActive ==
-                                                                                        e._id +
+                                                                                            e._id +
                                                                                             "" +
                                                                                             0
                                                                                             ? "scoreBadge active-scoreBadge"
@@ -4223,7 +4513,7 @@ class StartRound extends Component {
                                                                                         this
                                                                                             .state
                                                                                             .isActive ==
-                                                                                        e._id +
+                                                                                            e._id +
                                                                                             "" +
                                                                                             5
                                                                                             ? "scoreBadge active-scoreBadge"
@@ -4242,7 +4532,7 @@ class StartRound extends Component {
                                                                                         this
                                                                                             .state
                                                                                             .isActive ==
-                                                                                        e._id +
+                                                                                            e._id +
                                                                                             "" +
                                                                                             10
                                                                                             ? "scoreBadge active-scoreBadge"
@@ -4282,6 +4572,7 @@ class StartRound extends Component {
                                                 </button>
                                             </div>
                                         </>
+                                       
                                     ) : (
                                         <div
                                             style={{
@@ -4302,8 +4593,8 @@ class StartRound extends Component {
                             </div>
                         </div>
                     </CModalBody>
-                </CModal>
-
+                </CModal>}
+                {/* Member Model */}
                 <CModal
                     show={this.state.openModelForMembers}
                     closeOnBackdrop={false}
@@ -4326,7 +4617,10 @@ class StartRound extends Component {
                                     }
                                 >
                                     <span aria-hidden="true">
-                                        <img src="./murabbo/img/close.svg" />
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
                                     </span>
                                 </button>
                                 <div className="model_data">
@@ -4341,6 +4635,7 @@ class StartRound extends Component {
                                                     <div className="_1stimg">
                                                         <div className="memberImg_">
                                                             <img
+                                                                alt=""
                                                                 style={{
                                                                     height: "50px",
                                                                     width: "50px",
@@ -4387,6 +4682,7 @@ class StartRound extends Component {
                                                     <div className="_1stimg">
                                                         <div className="memberImg_">
                                                             <img
+                                                                alt=""
                                                                 style={{
                                                                     height: "50px",
                                                                     width: "50px",
@@ -4427,6 +4723,7 @@ class StartRound extends Component {
                                                     <div className="_1stimg">
                                                         <div className="memberImg_">
                                                             <img
+                                                                alt=""
                                                                 style={{
                                                                     height: "50px",
                                                                     width: "50px",
@@ -4469,8 +4766,119 @@ class StartRound extends Component {
                         </div>
                     </CModalBody>
                 </CModal>
+                {/* Wating screen */}
+              { this.state.resultwait&& <CModal
+                    show={this.state.resultwait}
+                    closeOnBackdrop={false}
+                    onClose={() =>
+                        this.setState({ resultwait: false })
+                    }
+                    color="danger"
+                    centered
+                >
+                    <CModalBody className="model-bg">
+                        <div>
+                            <div className="modal-body">
+                                <button
+                                    type="button"
+                                    className="close"
+                                    onClick={() =>
+                                        this.setState({
+                                           resultwait: false,
+                                        })
+                                    }
+                                >
+                                    <span aria-hidden="true">
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/close.svg"
+                                        />
+                                    </span>
+                                </button>
+                                <div className="model_data">
+                                    <div className="model-title">
+                                     { (this.state.isModerator) ? <h3>Waiting for all players to submit there answers</h3> : <h3>Waiting for Next Question</h3>}
+                                    </div>
+
+                                    <div className="container">
+                                        <div className="d-flex justify-content-center">
+                                        <CSpinner
+        style={{width:'4rem', height:'4rem'}}
+        color="danger"
+        variant="grow"
+      />
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CModalBody>
+                </CModal>}
             </>
+           
         );
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(StartRound);
+
+
+
+
+/// <CDataTable
+// items={this.state.activelistArr}
+// fields={this.fields}
+// columnFilter
+// tableFilter
+// footer
+// itemsPerPageSelect
+// itemsPerPage={5}
+// hover
+// sorter
+// pagination
+// scopedSlots = {{
+//   'status':
+//     (item)=>(
+//       <td>
+//         <CBadge color={this.getBadge(item.status)}>
+//           {item.status}
+//         </CBadge>
+//       </td>
+//     ),
+//   'show_details':
+//     (item, index)=>{
+//       return (
+//         <td className="py-2">
+//           <CButton
+//             color="primary"
+//             variant="outline"
+//             shape="square"
+//             size="sm"
+//             onClick={()=>{this.toggleDetails(index)}}
+//           >
+//             {this.state.activelistArr.includes(index) ? 'Hide' : 'Show'}
+//           </CButton>
+//         </td>
+//         )
+//     },
+//   'details':
+//       (item, index)=>{
+//         return (
+//         <CCollapse show={this.state.activelistArr.includes(index)}>
+//           <CCardBody>
+//             <h4>
+//               {item.username}
+//             </h4>
+//             <p className="text-muted">User since: {item.registered}</p>
+//             <CButton size="sm" color="info">
+//               User Settings
+//             </CButton>
+//             <CButton size="sm" color="danger" className="ml-1">
+//               Delete
+//             </CButton>
+//           </CCardBody>
+//         </CCollapse>
+//       )
+//     }
+// }}
+// />

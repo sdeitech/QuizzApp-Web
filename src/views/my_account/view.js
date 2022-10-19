@@ -438,6 +438,7 @@ class MyAccount extends Component {
                                                 >
                                                     <div class="inline">
                                                         <img
+                                                            alt=""
                                                             class="profile"
                                                             src={
                                                                 this.state
@@ -445,6 +446,7 @@ class MyAccount extends Component {
                                                             }
                                                         />
                                                         <img
+                                                            alt=""
                                                             class="onlinetick"
                                                             src={
                                                                 this.state
@@ -471,6 +473,7 @@ class MyAccount extends Component {
                                                         </span>
                                                         <br />
                                                         <img
+                                                            alt=""
                                                             src="./murabbo/img/diamond.svg"
                                                             style={{
                                                                 height: "auto",
@@ -483,7 +486,10 @@ class MyAccount extends Component {
                                                 </div>
                                                 <div class="col-lg-4 col-md-6">
                                                     <div class="scrore">
-                                                        <img src="./murabbo/img/tropy.svg" />
+                                                        <img
+                                                            alt=""
+                                                            src="./murabbo/img/tropy.svg"
+                                                        />
                                                         <p>Current Score</p>
                                                         <h2>
                                                             {
@@ -509,16 +515,21 @@ class MyAccount extends Component {
                                                         }}
                                                     >
                                                         <div class="profile-setting">
-                                                            <img src="./murabbo/img/member-card.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/member-card.svg"
+                                                            />
                                                             <h3>
                                                                 Membership{" "}
                                                                 <img
+                                                                    alt=""
                                                                     class="arrow-right"
                                                                     src="./murabbo/img/arrow-right.svg"
                                                                 />
                                                             </h3>
 
                                                             <img
+                                                                alt=""
                                                                 class="position_right"
                                                                 src="./murabbo/img/member-card2.svg"
                                                             />
@@ -528,16 +539,21 @@ class MyAccount extends Component {
                                                 <div class="col-lg-4 col-md-6">
                                                     <a href="javascript:void(0)">
                                                         <div class="profile-setting">
-                                                            <img src="./murabbo/img/account.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/account.svg"
+                                                            />
                                                             <h3>
                                                                 Social Accounts{" "}
                                                                 <img
+                                                                    alt=""
                                                                     class="arrow-right"
                                                                     src="./murabbo/img/arrow-right.svg"
                                                                 />
                                                             </h3>
 
                                                             <img
+                                                                alt=""
                                                                 class="position_right"
                                                                 src="./murabbo/img/account2.svg"
                                                             />
@@ -547,17 +563,22 @@ class MyAccount extends Component {
                                                 <div class="col-lg-4 col-md-6">
                                                     <a href="#/privacy_policy">
                                                         <div class="profile-setting">
-                                                            <img src="./murabbo/img/security.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/security.svg"
+                                                            />
                                                             <h3>
                                                                 Privacy &
                                                                 Security{" "}
                                                                 <img
+                                                                    alt=""
                                                                     class="arrow-right"
                                                                     src="./murabbo/img/arrow-right.svg"
                                                                 />
                                                             </h3>
 
                                                             <img
+                                                                alt=""
                                                                 class="position_right"
                                                                 src="./murabbo/img/security2.svg"
                                                             />
@@ -567,17 +588,22 @@ class MyAccount extends Component {
                                                 <div class="col-lg-4 col-md-6">
                                                     <a href="#/terms_conditions">
                                                         <div class="profile-setting">
-                                                            <img src="./murabbo/img/security.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/security.svg"
+                                                            />
                                                             <h3>
                                                                 Terms &
                                                                 Conditions{" "}
                                                                 <img
+                                                                    alt=""
                                                                     class="arrow-right"
                                                                     src="./murabbo/img/arrow-right.svg"
                                                                 />
                                                             </h3>
 
                                                             <img
+                                                                alt=""
                                                                 class="position_right"
                                                                 src="./murabbo/img/security2.svg"
                                                             />
@@ -587,16 +613,21 @@ class MyAccount extends Component {
                                                 <div class="col-lg-4 col-md-6">
                                                     <a href="javascript:void(0)">
                                                         <div class="profile-setting">
-                                                            <img src="./murabbo/img/pref.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/pref.svg"
+                                                            />
                                                             <h3>
                                                                 Preferences{" "}
                                                                 <img
+                                                                    alt=""
                                                                     class="arrow-right"
                                                                     src="./murabbo/img/arrow-right.svg"
                                                                 />
                                                             </h3>
 
                                                             <img
+                                                                alt=""
                                                                 class="position_right"
                                                                 src="./murabbo/img/pref2.svg"
                                                             />
@@ -615,16 +646,21 @@ class MyAccount extends Component {
                                                         }}
                                                     >
                                                         <div class="profile-setting">
-                                                            <img src="./murabbo/img/password_.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/password_.svg"
+                                                            />
                                                             <h3>
                                                                 Change Password{" "}
                                                                 <img
+                                                                    alt=""
                                                                     class="arrow-right"
                                                                     src="./murabbo/img/arrow-right.svg"
                                                                 />
                                                             </h3>
 
                                                             <img
+                                                                alt=""
                                                                 class="position_right"
                                                                 src="./murabbo/img/password_2.svg"
                                                             />
@@ -643,16 +679,21 @@ class MyAccount extends Component {
                                                         }}
                                                     >
                                                         <div class="profile-setting">
-                                                            <img src="./murabbo/img/resume.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="./murabbo/img/resume.svg"
+                                                            />
                                                             <h3>
                                                                 Edit Profile{" "}
                                                                 <img
+                                                                    alt=""
                                                                     class="arrow-right"
                                                                     src="./murabbo/img/arrow-right.svg"
                                                                 />
                                                             </h3>
 
                                                             <img
+                                                                alt=""
                                                                 class="position_right"
                                                                 src="./murabbo/img/resume2.svg"
                                                             />
@@ -756,7 +797,10 @@ class MyAccount extends Component {
                                         }}
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -798,6 +842,7 @@ class MyAccount extends Component {
                                                                     className="close_svg_profile"
                                                                 >
                                                                     <img
+                                                                        alt=""
                                                                         className="close_svg"
                                                                         src="./murabbo/img/close_dark.svg"
                                                                         onClick={this.removeImage.bind(
@@ -826,7 +871,10 @@ class MyAccount extends Component {
                                                                     "image"
                                                                 ] ? (
                                                                     <div className="edit-pencil">
-                                                                        <img src="/img/pen.svg" />
+                                                                        <img
+                                                                            alt=""
+                                                                            src="/img/pen.svg"
+                                                                        />
                                                                     </div>
                                                                 ) : null}
 
@@ -951,7 +999,10 @@ class MyAccount extends Component {
                                                                 border: "0px",
                                                             }}
                                                         >
-                                                            <img src="/img/pen.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="/img/pen.svg"
+                                                            />
                                                         </div>
                                                         <img
                                                             src="./murabbo/img/username.svg"
@@ -1020,7 +1071,10 @@ class MyAccount extends Component {
                                                                 border: "0px",
                                                             }}
                                                         >
-                                                            <img src="/img/pen.svg" />
+                                                            <img
+                                                                alt=""
+                                                                src="/img/pen.svg"
+                                                            />
                                                         </div>
                                                         <img
                                                             src="./murabbo/img/title.svg"
@@ -1113,7 +1167,10 @@ class MyAccount extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1151,7 +1208,10 @@ class MyAccount extends Component {
                                                         </div>
                                                     ) : null}
                                                     <div className="cus_input input_wrap">
-                                                        <img src="./murabbo/img/password.svg" />{" "}
+                                                        <img
+                                                            alt=""
+                                                            src="./murabbo/img/password.svg"
+                                                        />{" "}
                                                         <input
                                                             required
                                                             type="password"
@@ -1179,7 +1239,10 @@ class MyAccount extends Component {
                                                         }
                                                     </span>
                                                     <div className="cus_input input_wrap">
-                                                        <img src="./murabbo/img/password.svg" />{" "}
+                                                        <img
+                                                            alt=""
+                                                            src="./murabbo/img/password.svg"
+                                                        />{" "}
                                                         <input
                                                             required
                                                             type="password"
@@ -1207,7 +1270,10 @@ class MyAccount extends Component {
                                                         }
                                                     </span>
                                                     <div className="cus_input input_wrap">
-                                                        <img src="./murabbo/img/password.svg" />{" "}
+                                                        <img
+                                                            alt=""
+                                                            src="./murabbo/img/password.svg"
+                                                        />{" "}
                                                         <input
                                                             required
                                                             type="password"

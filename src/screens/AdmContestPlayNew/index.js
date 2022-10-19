@@ -1272,13 +1272,16 @@ const AdmContestPlay = (props) => {
   };
 
   const _generateLinkText = async () => {
+    const newLink ="https://play.murabbo.com"
+    const oldLink ="https://murabbo.page.link"
+
     const roomId = props?.contestInfo?.response?._id;
     const contestId = props.contestInfo._id;
     const link = await dynamicLinks().buildShortLink({
-      link: `https://murabbo.page.link?roomId=${roomId}&contestId=${contestId}`,
+      link: `${newLink}?roomId=${roomId}&contestId=${contestId}`,
       // link: `https://murabboapp.page.link?contestId=${}`,
       // domainUriPrefix is created in your Firebase console
-      domainUriPrefix: "https://murabbo.page.link",
+      domainUriPrefix: newLink,
       ios: {
         bundleId: "com.cozycrater.murabbo",
         appStoreId: "1554420524",

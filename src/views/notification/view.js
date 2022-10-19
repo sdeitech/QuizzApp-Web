@@ -106,7 +106,7 @@ class Notification extends Component {
                                         return (
                                             <div class="participate-list2">
                                                 <div class="inline">
-                                                    <img
+                                                <img alt=""
                                                         src={
                                                             e.invitedByImage
                                                                 ? e.invitedByImage

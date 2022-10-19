@@ -96,7 +96,7 @@ export const joinRoom = (stream, roomId, joinedUserId, isModerator = false) => (
 
         if (isModerator) {
             socket.emit('join-room', { userId, roomId, stream, joinedUserId, isModerator });
-
+            console.log("bbbbbbbbbbbb -vedioActionNB")
             socket.on("user-request-moderator", ({ userdata, socketId }) => {
                 try {
                     console.log("request from moderator => ", userdata, socketId);
@@ -132,6 +132,7 @@ export const joinRoom = (stream, roomId, joinedUserId, isModerator = false) => (
                     Actions.pop();
                 } else {
                     socket.emit('join-room', { userId, roomId, stream, joinedUserId, isModerator });
+                    console.log("bbbbbbbbbbbb -vedioActionNA")
                     dispatch({ type: actionTypes.ADD_VIDEO_USERID, payload: userId });
                     dispatch({ type: actionTypes.LOADER_FOR_REQUEST_MODERATOR, payload: false });
                 }

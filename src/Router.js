@@ -53,7 +53,7 @@ import HUGiScreen from './screens/HUGiScreen';
 import MyGroups from './screens/MyGroups';
 import Membership from './screens/Membership';
 import PrivacyPolicy from './screens/PrivacyPolicy';
-import EditProfile from './screens/EditProfile';
+import EditProfile from 'Scene./screens/EditProfile';
 import WordsListing from './screens/WordsListing';
 import MatchIt from './screens/MatchItScreen';
 import RoomListing from './screens/RoomListing';

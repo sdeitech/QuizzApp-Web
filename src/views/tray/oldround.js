@@ -499,7 +499,10 @@ class RoundTray extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -707,6 +710,7 @@ class RoundTray extends Component {
                                                                     }}
                                                                 >
                                                                     <img
+                                                                        alt=""
                                                                         src="./murabbo/img/minus.svg"
                                                                         onClick={this.btnClickHandler.bind(
                                                                             this,
@@ -732,6 +736,7 @@ class RoundTray extends Component {
                                                                     }}
                                                                 >
                                                                     <img
+                                                                        alt=""
                                                                         src="./murabbo/img/plus.svg"
                                                                         onClick={this.btnClickHandler.bind(
                                                                             this,
@@ -832,6 +837,7 @@ class RoundTray extends Component {
                                                                     ></label>
                                                                 </div>
                                                                 <img
+                                                                    alt=""
                                                                     style={{
                                                                         left: "auto",
                                                                         top: "0px",
@@ -1060,7 +1066,10 @@ class RoundTray extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1211,6 +1220,7 @@ class RoundTray extends Component {
                                                                 }}
                                                             >
                                                                 <img
+                                                                    alt=""
                                                                     src="./murabbo/img/minus.svg"
                                                                     onClick={this.btnClickHandler.bind(
                                                                         this,
@@ -1234,6 +1244,7 @@ class RoundTray extends Component {
                                                                 }}
                                                             >
                                                                 <img
+                                                                    alt=""
                                                                     src="./murabbo/img/plus.svg"
                                                                     onClick={this.btnClickHandler.bind(
                                                                         this,
@@ -1340,10 +1351,12 @@ class RoundTray extends Component {
                                             {/* <h4>Are you sure,you want to delete this round?</h4> */}
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -1423,7 +1436,10 @@ class RoundTray extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -1431,10 +1447,12 @@ class RoundTray extends Component {
                                             <h3>Do you want to save?</h3>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />

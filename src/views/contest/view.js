@@ -697,7 +697,10 @@ class Contest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -711,10 +714,12 @@ class Contest extends Component {
                                             </h3>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -795,16 +800,21 @@ class Contest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
                                         <div className="model-title"></div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -905,7 +915,10 @@ class Contest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -919,17 +932,22 @@ class Contest extends Component {
                                             </h4>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
                                         <div className="row">
                                             <div className="col-md-10 offset-md-1">
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/title.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/title.svg"
+                                                    />
                                                     <input
                                                         required
                                                         type="text"
@@ -955,7 +973,10 @@ class Contest extends Component {
                                                 </span>
 
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/password.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/password.svg"
+                                                    />
                                                     <input
                                                         required
                                                         type="text"

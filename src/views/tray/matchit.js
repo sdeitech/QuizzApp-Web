@@ -79,6 +79,7 @@ class matchit extends Component {
                                                     id="start"
                                                 >
                                                     <img
+                                                        alt=""
                                                         style={{
                                                             paddingBottom:
                                                                 "75px",
@@ -124,7 +125,10 @@ class matchit extends Component {
                                                     className="hidden"
                                                 />
                                                 <div id="start">
-                                                    <img src="./murabbo/img/upload.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/upload.svg"
+                                                    />
                                                     <div
                                                         id="notimage"
                                                         className="hidden"
@@ -164,7 +168,10 @@ class matchit extends Component {
                                                     className="hidden"
                                                 />
                                                 <div id="start">
-                                                    <img src="./murabbo/img/upload.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/upload.svg"
+                                                    />
                                                     <div
                                                         id="notimage"
                                                         className="hidden"
@@ -204,7 +211,10 @@ class matchit extends Component {
                                                     className="hidden"
                                                 />
                                                 <div id="start">
-                                                    <img src="./murabbo/img/upload.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/upload.svg"
+                                                    />
                                                     <div
                                                         id="notimage"
                                                         className="hidden"
@@ -227,18 +237,27 @@ class matchit extends Component {
                                         style={{ margin: "0px 0 5px 0" }}
                                         className="cus_input "
                                     >
-                                        <img src="./murabbo/img/clock.svg" />{" "}
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/clock.svg"
+                                        />{" "}
                                         <label className="cus_label">
                                             Time Limit
                                         </label>
                                     </div>
                                     <div className="number">
                                         <span className="minus">
-                                            <img src="./murabbo/img/minus.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/minus.svg"
+                                            />
                                         </span>
                                         <input type="text" value="1" />
                                         <span className="plus">
-                                            <img src="./murabbo/img/plus.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/plus.svg"
+                                            />
                                         </span>
                                     </div>
 
@@ -267,7 +286,10 @@ class matchit extends Component {
                                     </div>
 
                                     <div className="cus_input input_wrap">
-                                        <img src="./murabbo/img/game.svg" />{" "}
+                                        <img
+                                            alt=""
+                                            src="./murabbo/img/game.svg"
+                                        />{" "}
                                         <input
                                             type="text"
                                             required=""

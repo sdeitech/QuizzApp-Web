@@ -119,6 +119,7 @@ class DetailContest extends Component {
         // this.roomList();
         this.getList(contestId);
         this.props.flush();
+        console.log(this.state, "state in console");
     }
 
     toggleShowPassword() {
@@ -435,6 +436,7 @@ class DetailContest extends Component {
     }
 
     render() {
+        console.log("Selected");
         return (
             <>
                 <TheHeaderInner />
@@ -450,6 +452,7 @@ class DetailContest extends Component {
                                 <div class="col-lg-12 col-md-1 col-12">
                                     <div class="cate-box2">
                                         <img
+                                            alt=""
                                             src="img/undo.svg"
                                             className="undo_btn"
                                             onClick={() => {
@@ -538,14 +541,17 @@ class DetailContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
                                         <div className="model-title">
                                             <img
-                                                src="./murabbo/img/close_pink.png"
                                                 alt=""
+                                                src="./murabbo/img/close_pink.png"
                                             />
                                             <h3>
                                                 You need to purchase
@@ -553,10 +559,12 @@ class DetailContest extends Component {
                                             </h3>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -636,16 +644,21 @@ class DetailContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
                                         <div className="model-title"></div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -750,18 +763,23 @@ class DetailContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
                                         <div className="model-title">
-                                            <h3>Rooms</h3>
+                                            <h3>Rooms h</h3>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
@@ -904,7 +922,10 @@ class DetailContest extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                            <img
+                                                alt=""
+                                                src="./murabbo/img/close.svg"
+                                            />
                                         </span>
                                     </button>
                                     <div className="model_data">
@@ -918,17 +939,22 @@ class DetailContest extends Component {
                                             </h4>
                                         </div>
                                         <img
+                                            alt=""
                                             className="shape2"
                                             src="./murabbo/img/shape2.svg"
                                         />
                                         <img
+                                            alt=""
                                             className="shape3"
                                             src="./murabbo/img/shape3.svg"
                                         />
                                         <div className="row">
                                             <div className="col-md-10 offset-md-1">
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/title.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/title.svg"
+                                                    />
                                                     <input
                                                         required
                                                         type="text"
@@ -954,7 +980,10 @@ class DetailContest extends Component {
                                                 </span>
 
                                                 <div className="cus_input input_wrap">
-                                                    <img src="./murabbo/img/password.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/password.svg"
+                                                    />
                                                     <input
                                                         required
                                                         type={

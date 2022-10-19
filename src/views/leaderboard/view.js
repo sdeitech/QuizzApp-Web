@@ -178,14 +178,14 @@ class Leaderboard extends Component {
                                                     class="col-lg-8 col-md-6"
                                                 >
                                                     <div class="inline">
-                                                        <img
+                                                    <img alt=""
                                                             class="profile"
                                                             src={
                                                                 this.state
                                                                     .profile_picture
                                                             }
                                                         />
-                                                        <img
+                                                         <img alt=""
                                                             class="onlinetick"
                                                             src={
                                                                 this.state
@@ -211,7 +211,7 @@ class Leaderboard extends Component {
                                                             }
                                                         </span>
                                                         <br />
-                                                        <img
+                                                        <img alt=""
                                                             src="./murabbo/img/diamond.svg"
                                                             style={{
                                                                 height: "auto",
@@ -224,7 +224,7 @@ class Leaderboard extends Component {
                                                 </div>
                                                 <div class="col-lg-4 col-md-6">
                                                     <div class="scrore">
-                                                        <img src="./murabbo/img/tropy.svg" />
+                                                    <img alt="" src="./murabbo/img/tropy.svg" />
                                                         <p>
                                                             Current Rank :{" "}
                                                             {
@@ -285,7 +285,7 @@ class Leaderboard extends Component {
                                                             <div class="_1st2 two_no">
                                                                 <div class="_1stimg">
                                                                     <div class="leaderimg2_">
-                                                                        <img
+                                                                    <img alt=""
                                                                             src={
                                                                                 i.image !==
                                                                                 ""
@@ -312,7 +312,7 @@ class Leaderboard extends Component {
                                                                             }{" "}
                                                                             pt
                                                                         </h5>
-                                                                        <img
+                                                                        <img alt=""
                                                                             class="up-arrow"
                                                                             src="./murabbo/img/up-arrow.svg"
                                                                         />

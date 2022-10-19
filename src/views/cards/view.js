@@ -207,6 +207,7 @@ class View extends Component {
                                                                         </label>
                                                                         <span aria-hidden="true">
                                                                             <img
+                                                                                alt=""
                                                                                 src="./murabbo/img/close_black.svg"
                                                                                 className="delete_img"
                                                                                 onClick={this.deleteClickHandle.bind(
@@ -216,6 +217,7 @@ class View extends Component {
                                                                             />
                                                                         </span>
                                                                         <img
+                                                                            alt=""
                                                                             src={
                                                                                 "./murabbo/img/" +
                                                                                 e.brand

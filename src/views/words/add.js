@@ -235,7 +235,7 @@ class AddRoundQuestion extends Component {
                                                 }}
                                             >
                                                 <span aria-hidden="true">
-                                                    <img src="./murabbo/img/close.svg" />
+                                                <img alt="" src="./murabbo/img/close.svg" />
                                                 </span>
                                             </button>
                                             <span>{this.state.tosterMsg}</span>
@@ -271,7 +271,7 @@ class AddRoundQuestion extends Component {
                                                             cursor: "pointer",
                                                         }}
                                                     >
-                                                        <img
+                                                          <img alt=""
                                                             src="./murabbo/img/minus.svg"
                                                             onClick={this.btnClickHandler.bind(
                                                                 this,
@@ -293,7 +293,7 @@ class AddRoundQuestion extends Component {
                                                             cursor: "pointer",
                                                         }}
                                                     >
-                                                        <img
+                                                          <img alt=""
                                                             src="./murabbo/img/plus.svg"
                                                             onClick={this.btnClickHandler.bind(
                                                                 this,

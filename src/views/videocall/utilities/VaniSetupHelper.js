@@ -104,6 +104,7 @@ class VaniSetupHelper {
         VideoHandler.getInstance()
             .getMeetingHandler()
             .sendMessage(messagePayload);
+            
     }
 
     declineJoinRequest(participant) {

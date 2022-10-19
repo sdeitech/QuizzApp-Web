@@ -396,7 +396,7 @@ class MyGroups extends Component {
                                         }
                                     >
                                         <span aria-hidden="true">
-                                            <img src="./murabbo/img/close.svg" />
+                                        <img alt="" src="./murabbo/img/close.svg" />
                                         </span>
                                     </button>
                                     <div className="model_data">

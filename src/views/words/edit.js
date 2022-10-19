@@ -68,6 +68,7 @@ class EditRoundWord extends Component {
 
                         var that = this;
                         if (gameType) {
+                            console.log("Edit 2");
                             fetch(
                                 configuration.baseURL +
                                     "roundQuestion/roundQuestion?roundId=" +
@@ -286,7 +287,10 @@ class EditRoundWord extends Component {
                                                 }}
                                             >
                                                 <span aria-hidden="true">
-                                                    <img src="./murabbo/img/close.svg" />
+                                                    <img
+                                                        alt=""
+                                                        src="./murabbo/img/close.svg"
+                                                    />
                                                 </span>
                                             </button>
                                             <span>{this.state.tosterMsg}</span>
@@ -323,6 +327,7 @@ class EditRoundWord extends Component {
                                                         }}
                                                     >
                                                         <img
+                                                            alt=""
                                                             src="./murabbo/img/minus.svg"
                                                             onClick={this.btnClickHandler.bind(
                                                                 this,
@@ -345,6 +350,7 @@ class EditRoundWord extends Component {
                                                         }}
                                                     >
                                                         <img
+                                                            alt=""
                                                             src="./murabbo/img/plus.svg"
                                                             onClick={this.btnClickHandler.bind(
                                                                 this,

@@ -148,6 +148,7 @@ class YourFriends extends Component {
                                                             <div class="_1stimg">
                                                                 <div class="leaderimg2_">
                                                                     <img
+                                                                        alt=""
                                                                         src={
                                                                             i.image !==
                                                                             ""
@@ -197,6 +198,7 @@ class YourFriends extends Component {
                                                                         pt
                                                                     </h5>
                                                                     <img
+                                                                        alt=""
                                                                         class="up-arrow"
                                                                         src="./murabbo/img/up-arrow.svg"
                                                                     />
